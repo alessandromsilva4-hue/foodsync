@@ -1,0 +1,264 @@
+/* =======================================
+   FOODSYNCH - FORMULÁRIOS
+======================================= */
+
+
+
+.form-box {
+
+
+    background:#ffffff;
+
+
+    padding:25px;
+
+
+    border-radius:15px;
+
+
+    margin-bottom:25px;
+
+
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+
+
+}
+
+
+
+
+
+.form-box h2 {
+
+
+    margin-top:0;
+
+
+    margin-bottom:20px;
+
+
+    font-size:20px;
+
+
+}
+
+
+
+
+
+.form-grid {
+
+
+    display:grid;
+
+
+    grid-template-columns:repeat(2,1fr);
+
+
+    gap:20px;
+
+
+}
+
+
+
+
+
+.input-group {
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+}
+
+
+
+
+
+.input-group label {
+
+
+    font-size:14px;
+
+
+    font-weight:600;
+
+
+    margin-bottom:8px;
+
+
+    color:#333;
+
+
+}
+
+
+
+
+
+.input-group input,
+
+
+.input-group select,
+
+
+.input-group textarea {
+
+
+    width:100%;
+
+
+    padding:12px;
+
+
+    border-radius:10px;
+
+
+    border:1px solid #ddd;
+
+
+    font-size:14px;
+
+
+    outline:none;
+
+
+    box-sizing:border-box;
+
+
+}
+
+
+
+
+
+.input-group input:focus,
+
+
+.input-group select:focus,
+
+
+.input-group textarea:focus {
+
+
+    border-color:#111;
+
+
+}
+
+
+
+
+
+
+.campo-completo {
+
+
+    grid-column:1 / -1;
+
+
+}
+
+
+
+
+
+
+.form-box button {
+
+
+    margin-top:20px;
+
+
+    padding:13px 25px;
+
+
+    border:none;
+
+
+    border-radius:10px;
+
+
+    background:#111;
+
+
+    color:white;
+
+
+    cursor:pointer;
+
+
+    font-size:15px;
+
+
+    font-weight:600;
+
+
+}
+
+
+
+
+
+.form-box button:hover {
+
+
+    opacity:.85;
+
+
+}
+
+
+
+
+
+
+
+/* BOTÕES DE TABELA */
+
+
+table button {
+
+
+    padding:7px 12px;
+
+
+    border:none;
+
+
+    border-radius:8px;
+
+
+    cursor:pointer;
+
+
+}
+
+
+
+
+
+
+
+/* RESPONSIVO */
+
+
+@media(max-width:800px){
+
+
+
+.form-grid {
+
+
+    grid-template-columns:1fr;
+
+
+}
+
+
+
+}

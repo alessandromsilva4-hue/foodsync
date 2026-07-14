@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FoodSync - Dashboard</title>
+
+    <link rel="icon" href="img/favicon.png">
+
+    <!-- CSS PRINCIPAL -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- MENU LATERAL -->
+    <link rel="stylesheet" href="css/sidebar.css">
+
+    <!-- DASHBOARD -->
+    <link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+<body>
+
+<div class="layout">
+
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo-area">
+            <img src="img/logo.png" alt="FoodSync">
+        </div>
+
+
+        <nav class="menu">
+
+            <a href="dashboard.html" class="active">
+                <span>📊</span>
+                Dashboard
+            </a>
+
+
+            <a href="producao.html">
+                <span>🍱</span>
+                Produção
+            </a>
+
+
+            <a href="produtos.html">
+                <span>📦</span>
+                Produtos
+            </a>
+
+
+            <a href="etiquetas.html">
+                <span>🏷️</span>
+                Etiquetas
+            </a>
+
+
+            <a href="estoque.html">
+                <span>📋</span>
+                Estoque
+            </a>
+
+
+            <a href="relatorios.html">
+                <span>📈</span>
+                Relatórios
+            </a>
+
+
+            <a href="usuario.html">
+                <span>👤</span>
+                Usuários
+            </a>
+
+
+            <a href="configuracoes.html">
+                <span>⚙️</span>
+                Configurações
+            </a>
+
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <button onclick="logout()">
+                🚪 Sair
+            </button>
+
+        </div>
+
+
+    </aside>
+
+
+
+
+    <!-- CONTEÚDO PRINCIPAL -->
+
+    <main class="content">
+
+
+        <header class="top-header">
+
+            <div>
+                <h1>
+                    Dashboard
+                </h1>
+
+                <p>
+                    Controle de produção e etiquetas
+                </p>
+
+            </div>
+
+
+            <div class="user-info">
+
+                <span id="usuarioNome">
+                    Usuário
+                </span>
+
+            </div>
+
+
+        </header>
+
+
+
+
+
+        <!-- CARDS -->
+
+        <section class="cards">
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    🍱
+                </div>
+
+                <div>
+
+                    <h3>
+                        Produções Hoje
+                    </h3>
+
+                    <strong id="totalProducao">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    🏷️
+                </div>
+
+                <div>
+
+                    <h3>
+                        Etiquetas Geradas
+                    </h3>
+
+                    <strong id="totalEtiquetas">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    ⚠️
+                </div>
+
+
+                <div>
+
+                    <h3>
+                        Produtos Vencendo
+                    </h3>
+
+
+                    <strong id="produtosVencendo">
+                        0
+                    </strong>
+
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+
+            <div class="card">
+
+
+                <div class="card-icon">
+                    📦
+                </div>
+
+
+                <div>
+
+                    <h3>
+                        Estoque Baixo
+                    </h3>
+
+
+                    <strong id="estoqueBaixo">
+                        0
+                    </strong>
+
+
+                </div>
+
+
+            </div>
+
+
+
+        </section>
+
+
+
+
+
+        <!-- TABELA -->
+
+        <section class="dashboard-box">
+
+
+            <h2>
+                Últimas Produções
+            </h2>
+
+
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Produto
+                        </th>
+
+
+                        <th>
+                            Quantidade
+                        </th>
+
+
+                        <th>
+                            Data
+                        </th>
+
+
+                        <th>
+                            Status
+                        </th>
+
+
+                    </tr>
+
+
+                </thead>
+
+
+
+                <tbody id="listaProducao">
+
+
+                    <tr>
+
+                        <td colspan="4">
+                            Nenhuma produção registrada
+                        </td>
+
+                    </tr>
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </section>
+
+
+
+    </main>
+
+
+</div>
+
+
+
+
+<!-- FIREBASE -->
+
+<script type="module" src="js/firebase.js"></script>
+
+
+<!-- SISTEMA -->
+
+<script src="js/app.js"></script>
+
+
+<!-- DASHBOARD -->
+
+<script type="module" src="js/dashboard.js"></script>
+
+
+
+</body>
+
+</html>

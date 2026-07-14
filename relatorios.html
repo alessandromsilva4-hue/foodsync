@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>FoodSync - Relatórios</title>
+
+
+<link rel="icon" href="img/favicon.png">
+
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet" href="css/sidebar.css">
+
+<link rel="stylesheet" href="css/tabela.css">
+
+
+</head>
+
+
+
+<body>
+
+
+<div class="layout">
+
+
+
+<aside class="sidebar">
+
+
+<div class="logo-area">
+
+<img src="img/logo.png">
+
+</div>
+
+
+
+
+<nav class="menu">
+
+
+<a href="dashboard.html">
+📊 Dashboard
+</a>
+
+
+<a href="producao.html">
+🍱 Produção
+</a>
+
+
+<a href="produtos.html">
+📦 Produtos
+</a>
+
+
+<a href="etiquetas.html">
+🏷️ Etiquetas
+</a>
+
+
+<a href="estoque.html">
+📋 Estoque
+</a>
+
+
+<a href="relatorios.html" class="active">
+📈 Relatórios
+</a>
+
+
+<a href="usuario.html">
+👤 Usuários
+</a>
+
+
+<a href="configuracoes.html">
+⚙️ Configurações
+</a>
+
+
+</nav>
+
+
+
+
+<div class="sidebar-footer">
+
+
+<button onclick="logout()">
+
+🚪 Sair
+
+</button>
+
+
+</div>
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+<main class="content">
+
+
+
+<header class="top-header">
+
+
+<div>
+
+
+<h1>
+Relatórios
+</h1>
+
+
+<p>
+Análise dos dados do FoodSync
+</p>
+
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+
+
+<section class="cards">
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+🍱
+
+</div>
+
+
+<div>
+
+
+<h3>
+Produções
+</h3>
+
+
+<strong id="totalProducoes">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+🏷️
+
+</div>
+
+
+<div>
+
+
+<h3>
+Etiquetas
+</h3>
+
+
+<strong id="totalEtiquetas">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+📦
+
+</div>
+
+
+<div>
+
+
+<h3>
+Produtos
+</h3>
+
+
+<strong id="totalProdutos">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+⚠️
+
+</div>
+
+
+<div>
+
+
+<h3>
+Estoque Baixo
+</h3>
+
+
+<strong id="totalEstoqueBaixo">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<section class="table-box">
+
+
+<h2>
+Últimas Produções
+</h2>
+
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+Produto
+</th>
+
+
+<th>
+Quantidade
+</th>
+
+
+<th>
+Responsável
+</th>
+
+
+<th>
+Data
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+<tbody id="relatorioProducao">
+
+
+<tr>
+
+<td colspan="4">
+
+Sem dados
+
+</td>
+
+
+</tr>
+
+
+</tbody>
+
+
+
+
+</table>
+
+
+</section>
+
+
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+
+
+<script type="module" src="js/firebase.js"></script>
+
+<script src="js/app.js"></script>
+
+<script type="module" src="js/relatorios.js"></script>
+
+<script type="module" src="js/auth.js"></script>
+
+
+
+</body>
+
+</html>

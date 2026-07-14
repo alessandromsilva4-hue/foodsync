@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>FoodSync - Produtos</title>
+
+
+<link rel="icon" href="img/favicon.png">
+
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet" href="css/sidebar.css">
+
+<link rel="stylesheet" href="css/formulario.css">
+
+<link rel="stylesheet" href="css/tabela.css">
+
+
+</head>
+
+
+<body>
+
+
+<div class="layout">
+
+
+<!-- MENU -->
+
+<aside class="sidebar">
+
+
+<div class="logo-area">
+
+<img src="img/logo.png">
+
+</div>
+
+
+
+<nav class="menu">
+
+
+<a href="dashboard.html">
+📊 Dashboard
+</a>
+
+
+<a href="producao.html">
+🍱 Produção
+</a>
+
+
+<a href="produtos.html" class="active">
+📦 Produtos
+</a>
+
+
+<a href="etiquetas.html">
+🏷️ Etiquetas
+</a>
+
+
+<a href="estoque.html">
+📋 Estoque
+</a>
+
+
+<a href="relatorios.html">
+📈 Relatórios
+</a>
+
+
+<a href="usuario.html">
+👤 Usuários
+</a>
+
+
+<a href="configuracoes.html">
+⚙️ Configurações
+</a>
+
+
+</nav>
+
+
+<div class="sidebar-footer">
+
+<button onclick="logout()">
+
+🚪 Sair
+
+</button>
+
+</div>
+
+
+</aside>
+
+
+
+
+
+<!-- CONTEÚDO -->
+
+
+<main class="content">
+
+
+<header class="top-header">
+
+
+<div>
+
+<h1>
+Produtos
+</h1>
+
+
+<p>
+Cadastro e controle de produtos
+</p>
+
+
+</div>
+
+
+
+</header>
+
+
+
+
+
+
+<section class="form-box">
+
+
+<h2>
+Novo Produto
+</h2>
+
+
+
+<div class="form-grid">
+
+
+<div class="input-group">
+
+<label>
+Código do Produto
+</label>
+
+<input 
+type="text"
+id="codigoProduto"
+placeholder="Ex: SAL001">
+
+</div>
+
+
+
+
+<div class="input-group">
+
+<label>
+Nome do Produto
+</label>
+
+<input 
+type="text"
+id="nomeProduto"
+required>
+
+</div>
+
+
+
+
+
+<div class="input-group">
+
+<label>
+Categoria
+</label>
+
+
+<select id="categoriaProduto">
+
+
+<option value="">
+Selecione
+</option>
+
+
+<option>
+Poke
+</option>
+
+
+<option>
+Entrada
+</option>
+
+
+<option>
+Molho
+</option>
+
+
+<option>
+Bebida
+</option>
+
+
+<option>
+Insumo
+</option>
+
+
+<option>
+Outro
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+<label>
+Unidade
+</label>
+
+
+<select id="unidadeProduto">
+
+
+<option>
+KG
+</option>
+
+
+<option>
+UN
+</option>
+
+
+<option>
+L
+</option>
+
+
+<option>
+ML
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+<label>
+Validade Fechado (dias)
+</label>
+
+
+<input 
+type="number"
+id="validadeProduto"
+value="1">
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+<label>
+Validade Após Aberto (dias)
+</label>
+
+
+<input 
+type="number"
+id="validadeAberto"
+value="1">
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+<label>
+Temperatura Armazenamento
+</label>
+
+
+<select id="temperaturaProduto">
+
+
+<option>
+Refrigerado 0°C a 5°C
+</option>
+
+
+<option>
+Congelado -18°C
+</option>
+
+
+<option>
+Ambiente
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+Setor
+</label>
+
+
+<select id="setorProduto">
+
+
+<option>
+Cozinha
+</option>
+
+
+<option>
+Sushi
+</option>
+
+
+<option>
+Estoque
+</option>
+
+
+<option>
+Expedição
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+Status
+</label>
+
+
+<select id="statusProduto">
+
+
+<option value="ativo">
+Ativo
+</option>
+
+
+<option value="inativo">
+Inativo
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+<div class="input-group campo-completo">
+
+
+<label>
+Observação
+</label>
+
+
+<textarea 
+id="observacaoProduto"
+rows="3"></textarea>
+
+
+</div>
+
+
+
+</div>
+
+
+<div class="form-grid">
+
+
+
+<div class="input-group">
+
+<label>
+Nome do Produto
+</label>
+
+<input 
+type="text"
+id="nomeProduto"
+required>
+
+</div>
+
+
+
+
+
+<div class="input-group">
+
+<label>
+Categoria
+</label>
+
+
+<select id="categoriaProduto">
+
+
+<option value="">
+Selecione
+</option>
+
+
+<option>
+Poke
+</option>
+
+
+<option>
+Entrada
+</option>
+
+
+<option>
+Molho
+</option>
+
+
+<option>
+Bebida
+</option>
+
+
+<option>
+Outro
+</option>
+
+
+</select>
+
+</div>
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+Validade (dias)
+</label>
+
+
+<input 
+type="number"
+id="validadeProduto"
+value="1">
+
+
+</div>
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+Setor
+</label>
+
+
+<select id="setorProduto">
+
+
+<option>
+Cozinha
+</option>
+
+
+<option>
+Sushi
+</option>
+
+
+<option>
+Estoque
+</option>
+
+
+<option>
+Expedição
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+<button type="submit">
+
+Salvar Produto
+
+</button>
+
+
+
+
+</form>
+
+
+</section>
+
+
+
+
+
+
+
+<section class="table-box">
+
+
+<h2>
+Produtos cadastrados
+</h2>
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+Produto
+</th>
+
+
+<th>
+Categoria
+</th>
+
+
+<th>
+Validade
+</th>
+
+
+<th>
+Setor
+</th>
+
+
+<th>
+Ações
+</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody id="listaProdutos">
+
+
+<tr>
+
+<td colspan="5">
+
+Nenhum produto cadastrado
+
+</td>
+
+</tr>
+
+
+</tbody>
+
+
+
+</table>
+
+
+
+</section>
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+<script type="module" src="js/firebase.js"></script>
+
+<script src="js/app.js"></script>
+
+<script type="module" src="js/produtos.js"></script>
+
+<script type="module" src="js/auth.js"></script>
+
+
+
+</body>
+
+</html>
