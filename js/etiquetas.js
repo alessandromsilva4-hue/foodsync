@@ -1,356 +1,287 @@
 // =======================================
-// FOODSYNCH - ETIQUETAS
+// FOODSYNC - ETIQUETAS
 // =======================================
-
 
 import { db } from "./firebase.js";
 
-
 import {
-
     collection,
     getDocs,
     addDoc,
+    query,
+    where,
+    orderBy,
+    limit,
     serverTimestamp
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
+alert("ETIQUETAS NOVA VERSÃO");
 
 
+console.log("ETIQUETAS.JS CARREGADO");
 
-const produtoSelect =
-document.getElementById("produtoEtiqueta");
+// ELEMENTOS
 
-
-const etiquetaForm =
-document.getElementById("etiquetaForm");
-
-
-
-
+const etiquetaForm = document.getElementById("etiquetaForm");
+const produtoSelect = document.getElementById("produtoEtiqueta");
 
 let produtos = [];
-
-
-
-
-
 
 // =======================================
 // CARREGAR PRODUTOS
 // =======================================
 
+async function carregarProdutos() {
 
-async function carregarProdutos(){
+    if (!produtoSelect) return;
 
+    produtoSelect.innerHTML = `
+        <option value="">Selecione o produto</option>
+    `;
 
+    produtos = [];
 
-if(!produtoSelect)
-return;
+    try {
 
+        const snapshot = await getDocs(
+            collection(db, "produtos")
+        );
 
+        snapshot.forEach(doc => {
 
-const snapshot =
-await getDocs(
-collection(db,"produtos")
-);
+            const produto = {
+                id: doc.id,
+                ...doc.data()
+            };
 
+            produtos.push(produto);
 
+            produtoSelect.innerHTML += `
+                <option value="${produto.nome}">
+                    ${produto.nome}
+                </option>
+            `;
 
-produtos=[];
+        });
 
+        console.log("Produtos carregados:", produtos);
 
+    } catch (error) {
 
-produtoSelect.innerHTML =
-`
-<option value="">
-Selecione o produto
-</option>
-`;
+        console.error("Erro ao carregar produtos:", error);
 
-
-
-
-snapshot.forEach(doc=>{
-
-
-const p = doc.data();
-
-
-
-produtos.push({
-
-id:doc.id,
-
-...p
-
-});
-
-
-
-produtoSelect.innerHTML += `
-
-<option value="${doc.id}">
-
-${p.nome}
-
-</option>
-
-`;
-
-
-
-});
-
-
+    }
 
 }
 
+// =======================================
+// BUSCAR ÚLTIMA PRODUÇÃO
+// =======================================
 
+async function buscarUltimaProducao(nomeProduto) {
 
+    const consulta = query(
+        collection(db, "producoes"),
+        where("produto", "==", nomeProduto),
+        orderBy("dataProducao", "desc"),
+        limit(1)
+    );
 
+    const snapshot = await getDocs(consulta);
 
+    if (snapshot.empty) {
+        return null;
+    }
 
+    return snapshot.docs[0].data();
 
-
+}
 
 // =======================================
 // GERAR ETIQUETA
 // =======================================
 
+if (etiquetaForm) {
 
-if(etiquetaForm){
+    etiquetaForm.addEventListener("submit", async (e) => {
 
+        e.preventDefault();
 
+        const nomeProduto = produtoSelect.value;
 
-etiquetaForm.addEventListener(
+        if (!nomeProduto) {
 
-"submit",
+            alert("Selecione um produto.");
 
-async(e)=>{
+            return;
 
+        }
 
-e.preventDefault();
+        const producao = await buscarUltimaProducao(nomeProduto);
 
+        if (!producao) {
 
+            alert("Não existe produção registrada para este produto.");
 
+            return;
 
+        }
 
-const idProduto =
-produtoSelect.value;
+        // Dados da produção
 
+        const dataProducao = producao.dataProducao.toDate();
+        const validade = producao.validade.toDate();
 
+        const producaoFormatada =
+            dataProducao.toLocaleDateString("pt-BR");
 
-const produto =
-produtos.find(
-p=>p.id===idProduto
+        const validadeFormatada =
+            validade.toLocaleDateString("pt-BR");
+
+        // Preencher etiqueta
+
+        document.getElementById("nomeEtiqueta").innerText =
+            producao.produto;
+
+        document.getElementById("dataEtiqueta").innerText =
+            producaoFormatada;
+
+        document.getElementById("validadeEtiqueta").innerText =
+            validadeFormatada;
+// TEMPERATURA
+
+const produtoAtual = produtos.find(
+    p => p.nome === nomeProduto
 );
 
+document.getElementById("temperaturaEtiqueta").innerText =
+    "TEMP. " + (produtoAtual?.temperatura || producao.temperatura || "AMBIENTE");
 
 
+// RESPONSÁVEL
+
+document.getElementById("responsavelEtiqueta").innerText =
+    producao.responsavel || producao.usuario || "admin";
 
 
-if(!produto){
+// GERAR QR CODE
+
+const qrDiv = document.getElementById("qrcodeEtiqueta");
 
 
-alert(
-"Selecione um produto"
+if(qrDiv){
+
+    qrDiv.innerHTML = "";
+
+
+    const codigoEtiqueta = 
+        "FS-" + Date.now();
+
+
+  new QRCode(
+
+    qrDiv,
+
+    {
+
+        text:
+"https://alessandromsilva4-hue.github.io/Label-Control/consulta.html?codigo=" + codigoEtiqueta,
+
+        width:80,
+
+        height:80
+
+    }
+
 );
-
-
-return;
-
 
 }
 
+// Salvar histórico
 
+try {
 
+   await addDoc(
+    collection(db, "etiquetas"),
+    {
+        codigo: codigoEtiqueta,
 
+        produto: producao.produto,
 
+        quantidade: producao.quantidade,
 
-const dataProducao =
-new Date(
-document.getElementById("dataProducao").value
+        unidade: producao.unidade || "UN",
+
+        dataProducao: producao.dataProducao,
+
+        validade: producao.validade,
+
+        usuario: producao.usuario || "admin",
+
+        temperatura: produtoAtual?.temperatura || "AMBIENTE",
+
+        lote: codigoEtiqueta,
+
+        observacao: "",
+
+        criadoEm: serverTimestamp()
+    }
 );
 
+    console.log("Etiqueta salva.");
+
+        } catch (erro) {
+
+            console.error(
+                "Erro ao salvar etiqueta:",
+                erro
+            );
+
+        }
 
 
-
-const validade =
-new Date(dataProducao);
-
-
-
-validade.setDate(
-
-validade.getDate()
-+
-Number(produto.validade)
-
-);
-
-
-
-
-
-
-
-const validadeFormatada =
-validade.toLocaleDateString(
-"pt-BR"
-);
-
-
-
-
-const producaoFormatada =
-dataProducao.toLocaleDateString(
-"pt-BR"
-);
-
-
-
-
-
-
-
-// preencher etiqueta
-
-
-document.getElementById(
-"nomeEtiqueta"
-).innerText =
-produto.nome;
-
-
-
-document.getElementById(
-"dataEtiqueta"
-).innerText =
-producaoFormatada;
-
-
-
-document.getElementById(
-"validadeEtiqueta"
-).innerText =
-validadeFormatada;
-
-
-
-document.getElementById(
-"qtdEtiqueta"
-).innerText =
-document.getElementById(
-"quantidadeEtiqueta"
-).value;
-
-
-
-
-
-
-
-// salvar histórico
-
-
-await addDoc(
-
-collection(db,"etiquetas"),
-
-{
-
-
-produto:
-produto.nome,
-
-
-produtoId:
-produto.id,
-
-
-dataProducao:
-producaoFormatada,
-
-
-validade:
-validadeFormatada,
-
-
-quantidade:
-Number(
-document.getElementById(
-"quantidadeEtiqueta"
-).value
-),
-
-
-criadoEm:
-serverTimestamp()
-
+    });
 
 }
-
-
-
-);
-
-
-
-}
-
-
-);
-
-
-}
-
-
-
-
-
-
-
-
 // =======================================
-// IMPRESSÃO
+// IMPRIMIR ETIQUETA
 // =======================================
 
+window.imprimirEtiqueta = function () {
 
-window.imprimirEtiqueta =
-function(){
-
-
-window.print();
-
+    window.print();
 
 };
 
 
-
-
-
-
-
 // =======================================
-// INICIAR
+// INICIALIZAÇÃO
 // =======================================
-
 
 document.addEventListener(
-
 "DOMContentLoaded",
+async()=>{
 
-()=>{
-
-
-carregarProdutos();
+    await carregarProdutos();
 
 
+    const campoData =
+    document.getElementById("dataProducao");
 
-}
 
-);
+    if(campoData){
+
+        const hoje = new Date();
+
+        campoData.value =
+        hoje.toISOString().split("T")[0];
+
+    }
+
+
+    console.log(
+    "Módulo de etiquetas iniciado."
+    );
+
+});

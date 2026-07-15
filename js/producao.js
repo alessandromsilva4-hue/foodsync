@@ -21,11 +21,11 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
-
+console.log("PRODUCAO.JS CARREGADO");
 
 
 const produtoSelect =
-document.getElementById("produtoProducao");
+document.getElementById("produtoSelect");
 
 
 const producaoForm =
@@ -33,7 +33,7 @@ document.getElementById("producaoForm");
 
 
 const listaProducao =
-document.getElementById("listaProducao");
+document.getElementById("listaProducoes");
 
 
 
@@ -51,7 +51,6 @@ let produtos = [];
 
 
 async function carregarProdutos(){
-
 
 
 if(!produtoSelect)
@@ -75,7 +74,6 @@ Selecione o produto
 </option>
 
 `;
-
 
 
 
@@ -110,17 +108,88 @@ ${p.nome}
 
 `;
 
-
+console.log("ADICIONANDO NO SELECT:", p.nome);
 
 });
 
+
+
+console.log(
+"Produtos carregados:",
+produtos
+);
 
 
 }
 
 
 
+// =======================================
+// PREENCHER DADOS DO PRODUTO
+// =======================================
 
+if(produtoSelect){
+
+produtoSelect.addEventListener(
+"change",
+()=>{
+
+
+const produtoSelecionado =
+produtos.find(
+p=>p.id === produtoSelect.value
+);
+
+
+
+if(!produtoSelecionado)
+return;
+
+
+
+const hoje = new Date();
+
+
+
+document.getElementById(
+"dataProducao"
+).value =
+hoje.toISOString().split("T")[0];
+
+
+
+const dias =
+produtoSelecionado.validadeDias || 1;
+
+
+
+const validade =
+new Date();
+
+
+validade.setDate(
+hoje.getDate() + dias
+);
+
+
+
+document.getElementById(
+"validadeProducao"
+).value =
+validade.toISOString().split("T")[0];
+
+
+
+document.getElementById(
+"temperaturaProducao"
+).value =
+produtoSelecionado.temperatura || "AMBIENTE";
+
+
+
+});
+
+}
 
 
 
@@ -180,19 +249,27 @@ return;
 
 
 
+const hoje = new Date();
+
+const validadeDias = produto.validadeDias || 1;
+
+const dataValidade = new Date();
+
+dataValidade.setDate(
+    hoje.getDate() + validadeDias
+);
+
+
 
 const producao = {
-
 
 
 produtoId:
 produto.id,
 
 
-
 produto:
 produto.nome,
-
 
 
 quantidade:
@@ -203,12 +280,18 @@ document.getElementById(
 ),
 
 
+unidade:
+produto.unidade || "UN",
+
+
+temperatura:
+produto.temperatura || "AMBIENTE",
+
 
 responsavel:
 document.getElementById(
 "responsavelProducao"
-).value,
-
+).value || "admin",
 
 
 status:
@@ -217,22 +300,19 @@ document.getElementById(
 ).value,
 
 
+dataProducao:
+hoje,
 
-data:
-new Date()
-.toLocaleDateString(
-"pt-BR"
-),
 
+validade:
+dataValidade,
 
 
 criadoEm:
 serverTimestamp()
 
 
-
 };
-
 
 
 
@@ -284,10 +364,6 @@ error
 
 
 }
-
-
-
-
 
 
 
@@ -379,47 +455,41 @@ doc.data();
 
 
 
-
 listaProducao.innerHTML += `
-
 
 <tr>
 
-
 <td>
-${p.produto}
+${p.produto || "-"}
 </td>
 
-
-
 <td>
-${p.quantidade}
+${p.quantidade || 0} ${p.unidade || ""}
 </td>
 
-
-
 <td>
-${p.responsavel || "-"}
+${p.dataProducao 
+? p.dataProducao.toDate().toLocaleDateString("pt-BR") 
+: "-"
+}
 </td>
 
-
-
 <td>
-${p.data}
+${p.validade 
+? p.validade.toDate().toLocaleDateString("pt-BR") 
+: "-"
+}
 </td>
 
-
-
 <td>
-${p.status}
+${p.status || "Finalizado"}
 </td>
-
-
 
 </tr>
 
-
 `;
+
+
 
 
 

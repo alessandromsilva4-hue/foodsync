@@ -1,204 +1,220 @@
 /* =======================================
-   FOODSYNCH - ETIQUETAS
+   FOODSYNC - ETIQUETA IMPRESSÃO
 ======================================= */
 
 
-
-.etiqueta-preview {
-
-
-    background: #ffffff;
+.etiqueta-preview{
+    margin-top:30px;
+}
 
 
-    padding: 25px;
+.etiqueta{
 
+    width:80mm;
+    min-height:50mm;
 
-    border-radius: 15px;
+    background:white;
 
+    border:1px solid #000;
 
-    margin-top: 25px;
+    padding:5mm;
 
+    box-sizing:border-box;
 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    font-family:Arial, sans-serif;
 
+    position:relative;
 
 }
 
 
 
+.etiqueta-logo{
 
+    font-size:11px;
 
-.etiqueta {
+    font-weight:bold;
 
+    text-align:center;
 
-    width: 352px;
+    border-bottom:1px solid #000;
 
+    padding-bottom:3px;
 
-    height: 180px;
-
-
-    border: 2px solid #000;
-
-
-    background: white;
-
-
-    padding: 15px;
-
-
-    box-sizing: border-box;
-
-
-    font-family: Arial, sans-serif;
-
-
-    text-align: center;
-
-
-    margin-bottom: 20px;
-
-
+    margin-bottom:5px;
 
 }
 
 
 
+#nomeEtiqueta{
 
-.etiqueta-logo {
+    font-size:18px;
 
+    font-weight:bold;
 
-    font-size: 18px;
+    text-align:center;
 
+    text-transform:uppercase;
 
-    font-weight: bold;
-
-
-    margin-bottom: 8px;
-
-
-}
-
-
-
-
-.etiqueta h3 {
-
-
-    font-size: 22px;
-
-
-    margin: 10px 0;
-
+    margin:6px 0;
 
 }
 
 
 
+.etiqueta p{
 
-.etiqueta p {
+    font-size:12px;
 
-
-    margin: 6px 0;
-
-
-    font-size: 14px;
-
+    margin:4px 0;
 
 }
 
 
 
+#qrcodeEtiqueta{
 
-.etiqueta span {
+    position:absolute;
 
+    right:4mm;
 
-    font-weight: bold;
-
-
-}
-
-
-
-
-
-.etiqueta-preview button {
-
-
-    padding: 12px 25px;
-
-
-    border: none;
-
-
-    border-radius: 8px;
-
-
-    cursor: pointer;
-
-
-    background: #111;
-
-
-    color: white;
-
-
-    font-size: 15px;
-
-
+    bottom:3mm;
 
 }
 
 
 
+#responsavelEtiqueta{
+
+    font-weight:bold;
+
+}
 
 
 
-/* IMPRESSÃO */
+/* =======================================
+   IMPRESSÃO
+======================================= */
 
+
+@media print{
+
+
+body *{
+
+    visibility:hidden;
+
+}
+
+
+
+#etiquetaGerada,
+#etiquetaGerada *{
+
+    visibility:visible;
+
+}
+
+
+
+#etiquetaGerada{
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+}
+
+
+
+button{
+
+    display:none;
+
+}
+
+
+}
+
+/* =======================================
+   IMPRESSÃO ETIQUETA 80x50mm
+======================================= */
 
 @media print {
 
+    @page {
+
+        size: 80mm 50mm portrait;
+
+        margin: 0;
+
+    }
 
 
-body * {
+    html, body {
+
+        width:80mm;
+
+        height:50mm;
+
+        margin:0;
+
+        padding:0;
+
+    }
 
 
-    visibility: hidden;
+    body * {
 
+        visibility:hidden;
+
+    }
+
+
+    #etiquetaGerada,
+    #etiquetaGerada * {
+
+        visibility:visible;
+
+    }
+
+
+    #etiquetaGerada {
+
+        position:absolute;
+
+        left:0;
+
+        top:0;
+
+        width:80mm;
+
+        height:50mm;
+
+        transform:none;
+
+    }
+
+
+    button {
+
+        display:none !important;
+
+    }
 
 }
 
+/* =======================================
+   TAMANHO QR CODE
+======================================= */
 
+#qrcodeEtiqueta img {
 
+    width:80px !important;
 
-.etiqueta,
-
-
-.etiqueta * {
-
-
-    visibility: visible;
-
-
-}
-
-
-
-
-.etiqueta {
-
-
-    position: absolute;
-
-
-    left: 0;
-
-
-    top: 0;
-
-
-}
-
-
+    height:80px !important;
 
 }

@@ -265,62 +265,52 @@ Pré-visualização
 
 
 
-<div id="etiquetaGerada"
-class="etiqueta">
+<div id="etiquetaGerada" class="etiqueta">
 
 
 <div class="etiqueta-logo">
-
-FoodSync
-
+Controle de Validade
 </div>
-
 
 
 <h3 id="nomeEtiqueta">
-
 Produto
-
 </h3>
 
 
+<p id="temperaturaEtiqueta">
+TEMP.
+</p>
+
 
 <p>
-
-Produção:
+MANIPULAÇÃO:
 <span id="dataEtiqueta">
 --
 </span>
-
 </p>
 
 
-
 <p>
-
-Validade:
+VALIDADE:
 <span id="validadeEtiqueta">
 --
 </span>
-
 </p>
-
 
 
 <p>
-
-Quantidade:
-<span id="qtdEtiqueta">
-0
+RESP.:
+<span id="responsavelEtiqueta">
+--
 </span>
-
 </p>
 
 
+<div id="qrcodeEtiqueta"></div>
+
+
 </div>
-
-
-
 
 
 <button 
@@ -350,12 +340,13 @@ onclick="imprimirEtiqueta()">
 
 <script type="module" src="js/firebase.js"></script>
 
-<script src="js/app.js"></script>
+<script type="module" src="js/app.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <script type="module" src="js/etiquetas.js"></script>
 
 <script type="module" src="js/auth.js"></script>
-
 
 
 </body>

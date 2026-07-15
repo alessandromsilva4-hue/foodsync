@@ -1,0 +1,460 @@
+/* ==========================================
+   FOODSYNCH v2 - PRODUTOS
+========================================== */
+
+
+/* BARRA DE CONTROLE */
+
+.produto-toolbar {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    margin-bottom:25px;
+
+}
+
+
+
+.pesquisa {
+
+    width:350px;
+
+}
+
+
+
+.pesquisa input {
+
+    height:45px;
+
+}
+
+
+
+/* BOTÕES */
+
+.btn-primary {
+
+
+    background:#16a34a;
+
+
+    color:white;
+
+
+    border:none;
+
+
+    padding:12px 22px;
+
+
+    border-radius:10px;
+
+
+    cursor:pointer;
+
+
+    font-weight:600;
+
+
+}
+
+
+
+.btn-primary:hover {
+
+
+    background:#052e16;
+
+
+}
+
+
+
+
+.btn-secondary {
+
+
+    background:#e2e8f0;
+
+
+    color:#1f2937;
+
+
+    border:none;
+
+
+    padding:12px 22px;
+
+
+    border-radius:10px;
+
+
+    cursor:pointer;
+
+
+}
+
+
+
+
+
+
+/* MODAL */
+
+
+.modal {
+
+
+    display:none;
+
+
+    position:fixed;
+
+
+    top:0;
+
+
+    left:0;
+
+
+    width:100%;
+
+
+    height:100%;
+
+
+    background:
+
+    rgba(0,0,0,.45);
+
+
+    justify-content:center;
+
+
+    align-items:center;
+
+
+    z-index:2000;
+
+
+}
+
+
+
+.modal.active {
+
+
+    display:flex;
+
+
+}
+
+
+
+
+
+.modal-content {
+
+
+    background:white;
+
+
+    width:800px;
+
+
+    max-width:95%;
+
+
+    border-radius:18px;
+
+
+    padding:25px;
+
+
+    box-shadow:
+
+    0 10px 30px rgba(0,0,0,.2);
+
+
+}
+
+
+
+
+
+.modal-header {
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+    align-items:center;
+
+
+    margin-bottom:20px;
+
+
+}
+
+
+
+.modal-header button {
+
+
+    background:none;
+
+
+    color:#64748b;
+
+
+    font-size:22px;
+
+
+    padding:5px;
+
+
+}
+
+
+
+
+/* FORMULÁRIO */
+
+
+.form-grid {
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    repeat(2,1fr);
+
+
+    gap:20px;
+
+
+}
+
+
+
+.input-group {
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    gap:7px;
+
+
+}
+
+
+
+.input-group label {
+
+
+    font-weight:600;
+
+
+    font-size:14px;
+
+
+}
+
+
+
+.campo-completo {
+
+
+    grid-column:
+
+    1 / -1;
+
+
+}
+
+
+
+
+
+/* FOOTER MODAL */
+
+
+.modal-footer {
+
+
+    margin-top:25px;
+
+
+    display:flex;
+
+
+    justify-content:flex-end;
+
+
+    gap:15px;
+
+
+}
+
+
+
+
+
+/* TABELA */
+
+
+.table-box table {
+
+
+    background:white;
+
+
+}
+
+
+
+.table-box tbody tr:hover {
+
+
+    background:#f0fdf4;
+
+
+}
+
+
+
+
+
+/* STATUS */
+
+
+.status-ativo {
+
+
+    background:#dcfce7;
+
+
+    color:#166534;
+
+
+    padding:5px 12px;
+
+
+    border-radius:20px;
+
+
+    font-size:13px;
+
+
+}
+
+
+
+.status-inativo {
+
+
+    background:#fee2e2;
+
+
+    color:#991b1b;
+
+
+    padding:5px 12px;
+
+
+    border-radius:20px;
+
+
+    font-size:13px;
+
+
+}
+
+
+
+
+
+
+/* AÇÕES */
+
+
+.btn-editar {
+
+
+    background:#2563eb;
+
+
+    padding:8px 12px;
+
+
+}
+
+
+
+.btn-excluir {
+
+
+    background:#dc2626;
+
+
+    padding:8px 12px;
+
+
+}
+
+
+
+
+
+/* RESPONSIVO */
+
+
+@media(max-width:700px){
+
+
+.produto-toolbar {
+
+
+    flex-direction:column;
+
+
+}
+
+
+
+.pesquisa {
+
+
+    width:100%;
+
+
+}
+
+
+
+.form-grid {
+
+
+    grid-template-columns:1fr;
+
+
+}
+
+
+}
