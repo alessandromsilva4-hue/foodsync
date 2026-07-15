@@ -1,0 +1,443 @@
+/* ==========================================
+   FOODSYNCH v2 - DESIGN SYSTEM
+========================================== */
+
+
+:root {
+
+    --primary: #16a34a;
+    --primary-dark: #052e16;
+
+    --secondary: #22c55e;
+
+    --background: #f8fafc;
+
+    --surface: #ffffff;
+
+    --text: #1f2937;
+
+    --text-light: #64748b;
+
+    --border: #e2e8f0;
+
+    --danger: #dc2626;
+
+    --warning: #f59e0b;
+
+    --success: #16a34a;
+
+    --radius: 12px;
+
+    --shadow:
+    0 4px 15px rgba(0,0,0,0.08);
+
+}
+
+
+
+/* ==========================================
+   RESET
+========================================== */
+
+
+* {
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+}
+
+
+body {
+
+    font-family:
+
+    "Inter",
+    Arial,
+    sans-serif;
+
+    background:
+
+    var(--background);
+
+    color:
+
+    var(--text);
+
+}
+
+
+
+
+a {
+
+    text-decoration:none;
+
+    color:inherit;
+
+}
+
+
+
+button,
+input,
+select,
+textarea {
+
+    font-family:inherit;
+
+}
+
+
+
+
+/* ==========================================
+   LAYOUT PRINCIPAL
+========================================== */
+
+
+.layout {
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+
+
+
+/* ==========================================
+   CONTEÚDO
+========================================== */
+
+
+.content {
+
+    flex:1;
+
+    padding:30px;
+
+    margin-left:250px;
+
+}
+
+
+
+/* ==========================================
+   HEADER
+========================================== */
+
+
+.top-header {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:30px;
+
+}
+
+
+
+.top-header h1 {
+
+    font-size:28px;
+
+    font-weight:700;
+
+}
+
+
+
+.top-header p {
+
+    color:
+
+    var(--text-light);
+
+    margin-top:5px;
+
+}
+
+
+
+/* ==========================================
+   CARDS
+========================================== */
+
+
+.cards {
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+}
+
+
+
+.card {
+
+    background:
+
+    var(--surface);
+
+    padding:25px;
+
+    border-radius:
+
+    var(--radius);
+
+    box-shadow:
+
+    var(--shadow);
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+
+
+.card strong {
+
+    font-size:32px;
+
+}
+
+
+
+.card-icon {
+
+    font-size:40px;
+
+}
+
+
+
+
+
+/* ==========================================
+   CAIXAS
+========================================== */
+
+
+.dashboard-box,
+.form-box,
+.table-box {
+
+
+    background:
+
+    var(--surface);
+
+
+    padding:25px;
+
+
+    border-radius:
+
+    var(--radius);
+
+
+    margin-top:25px;
+
+
+    box-shadow:
+
+    var(--shadow);
+
+
+}
+
+
+
+/* ==========================================
+   BOTÕES
+========================================== */
+
+
+button {
+
+
+    background:
+
+    var(--primary);
+
+
+    color:white;
+
+
+    border:none;
+
+
+    padding:
+
+    12px 22px;
+
+
+    border-radius:
+
+    8px;
+
+
+    cursor:pointer;
+
+
+    font-weight:600;
+
+
+    transition:.2s;
+
+
+}
+
+
+
+button:hover {
+
+
+    background:
+
+    var(--primary-dark);
+
+
+}
+
+
+
+/* ==========================================
+   INPUTS
+========================================== */
+
+
+input,
+select,
+textarea {
+
+
+    width:100%;
+
+
+    padding:12px;
+
+
+    border:
+
+    1px solid var(--border);
+
+
+    border-radius:8px;
+
+
+    outline:none;
+
+
+}
+
+
+
+input:focus,
+select:focus,
+textarea:focus {
+
+
+    border-color:
+
+    var(--primary);
+
+
+}
+
+
+
+
+
+/* ==========================================
+   TABELAS
+========================================== */
+
+
+table {
+
+
+    width:100%;
+
+
+    border-collapse:collapse;
+
+
+}
+
+
+
+th {
+
+
+    background:#f1f5f9;
+
+
+    text-align:left;
+
+
+    padding:14px;
+
+
+}
+
+
+
+td {
+
+
+    padding:14px;
+
+
+    border-bottom:
+
+    1px solid var(--border);
+
+
+}
+
+
+
+
+/* ==========================================
+   RESPONSIVO
+========================================== */
+
+
+@media(max-width:900px){
+
+
+.content {
+
+    margin-left:0;
+
+    padding:15px;
+
+}
+
+
+.cards {
+
+    grid-template-columns:1fr;
+
+}
+
+
+}

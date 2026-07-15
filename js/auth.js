@@ -106,7 +106,7 @@ if(loginForm){
 
 
             mensagem.innerHTML =
-            "E-mail ou senha inválidos.";
+            error.code;
 
 
 

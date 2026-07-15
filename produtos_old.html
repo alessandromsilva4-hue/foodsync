@@ -18,10 +18,13 @@
 
 <link rel="stylesheet" href="css/sidebar.css">
 
-<link rel="stylesheet" href="css/producao.css">
+<link rel="stylesheet" href="css/formulario.css">
+
+<link rel="stylesheet" href="css/tabela.css">
 
 
 </head>
+
 
 
 <body>
@@ -30,16 +33,16 @@
 <div class="layout">
 
 
-<!-- SIDEBAR -->
 
 <aside class="sidebar">
 
 
 <div class="logo-area">
 
-<img src="img/logo.png" alt="FoodSync">
+<img src="img/logo.png">
 
 </div>
+
 
 
 
@@ -47,74 +50,42 @@
 
 
 <a href="dashboard.html">
-
-<span>📊</span>
-
-Dashboard
-
+📊 Dashboard
 </a>
 
 
 <a href="producao.html" class="active">
-
-<span>🍱</span>
-
-Produção
-
+🍱 Produção
 </a>
 
 
 <a href="produtos.html">
-
-<span>📦</span>
-
-Produtos
-
+📦 Produtos
 </a>
 
 
 <a href="etiquetas.html">
-
-<span>🏷️</span>
-
-Etiquetas
-
+🏷️ Etiquetas
 </a>
 
 
 <a href="estoque.html">
-
-<span>📋</span>
-
-Estoque
-
+📋 Estoque
 </a>
 
 
 <a href="relatorios.html">
-
-<span>📈</span>
-
-Relatórios
-
+📈 Relatórios
 </a>
 
 
 <a href="usuario.html">
-
-<span>👤</span>
-
-Usuários
-
+👤 Usuários
 </a>
 
 
 <a href="configuracoes.html">
-
-<span>⚙️</span>
-
-Configurações
-
+⚙️ Configurações
 </a>
 
 
@@ -122,8 +93,8 @@ Configurações
 
 
 
-<div class="sidebar-footer">
 
+<div class="sidebar-footer">
 
 <button onclick="logout()">
 
@@ -131,17 +102,21 @@ Configurações
 
 </button>
 
-
 </div>
+
 
 
 </aside>
 
 
-<!-- CONTEÚDO PRINCIPAL -->
+
+
+
+
 
 
 <main class="content">
+
 
 
 <header class="top-header">
@@ -149,17 +124,14 @@ Configurações
 
 <div>
 
+
 <h1>
-
-🍱 Produção
-
+Produção
 </h1>
 
-<p>
 
 <p>
-Controle de produção e validade
-</p>
+Controle diário de produção
 </p>
 
 
@@ -169,7 +141,11 @@ Controle de produção e validade
 </header>
 
 
-<!-- ÁREA DE PRODUÇÃO -->
+
+
+
+
+
 
 <section class="form-box">
 
@@ -180,110 +156,102 @@ Nova Produção
 
 
 
+
 <form id="producaoForm">
+
 
 
 <div class="form-grid">
 
 
 
+
+
+
 <div class="input-group">
+
 
 <label>
 Produto
 </label>
 
 
-<select id="produtoSelect">
 
-<option value="">
-Selecione o produto
+<select id="produtoProducao">
+
+
+<option>
+Carregando produtos...
 </option>
+
 
 </select>
 
 
+
 </div>
+
+
+
 
 
 
 
 <div class="input-group">
 
+
 <label>
-Quantidade
+Quantidade Produzida
 </label>
 
-<input 
+
+<input
+
 type="number"
+
 id="quantidadeProducao"
-value="1">
+
+value="1"
+
+required>
+
 
 </div>
 
 
-<!-- NOVOS CAMPOS -->
 
-<div class="input-group">
 
-<label>
-Data Produção
-</label>
 
-<input 
-type="date"
-id="dataProducao">
 
-</div>
 
 
 <div class="input-group">
 
-<label>
-Validade
-</label>
-
-<input 
-type="date"
-id="validadeProducao"
-readonly>
-
-</div>
-
-
-<div class="input-group">
-
-<label>
-Temperatura
-</label>
-
-<input 
-type="text"
-id="temperaturaProducao"
-readonly>
-
-</div>
-
-
-<!-- RESPONSÁVEL -->
-
-<div class="input-group">
 
 <label>
 Responsável
 </label>
 
+
 <input
+
 type="text"
+
 id="responsavelProducao"
-value="admin">
+
+placeholder="Nome">
+
 
 </div>
 
 
 
 
+
+
+
 <div class="input-group">
+
 
 <label>
 Status
@@ -293,40 +261,45 @@ Status
 <select id="statusProducao">
 
 
-<option value="Finalizado">
-Finalizado
+<option>
+Produzindo
 </option>
 
 
-<option value="Em produção">
-Em produção
+<option>
+Finalizado
 </option>
 
 
 </select>
 
 
-</div>
-
-
 
 </div>
 
 
 
-<button 
-type="submit"
-class="btn-primary">
 
 
-💾 Registrar Produção
 
+</div>
+
+
+
+
+
+
+<button type="submit">
+
+Registrar Produção
 
 </button>
 
 
 
+
 </form>
+
 
 
 </section>
@@ -335,17 +308,17 @@ class="btn-primary">
 
 
 
-<!-- LISTA DE PRODUÇÕES -->
+
+
 
 
 <section class="table-box">
 
 
 <h2>
-
-Produções realizadas
-
+Produções Registradas
 </h2>
+
 
 
 
@@ -353,7 +326,6 @@ Produções realizadas
 
 
 <thead>
-
 
 <tr>
 
@@ -369,12 +341,12 @@ Quantidade
 
 
 <th>
-Data Produção
+Responsável
 </th>
 
 
 <th>
-Validade
+Data
 </th>
 
 
@@ -390,7 +362,7 @@ Status
 
 
 
-<tbody id="listaProducoes">
+<tbody id="listaProducao">
 
 
 <tr>
@@ -411,28 +383,37 @@ Nenhuma produção registrada
 </table>
 
 
+
 </section>
 
-<!-- FIREBASE -->
+
+
+
+
+
+
+</main>
+
+
+
+</div>
+
+
+
+
+
+
 
 <script type="module" src="js/firebase.js"></script>
 
-
-<!-- SISTEMA -->
-
 <script type="module" src="js/app.js"></script>
 
-
-<!-- PRODUÇÃO -->
-
 <script type="module" src="js/producao.js"></script>
-
 
 <script type="module" src="js/auth.js"></script>
 
 
 
 </body>
-
 
 </html>
