@@ -323,3 +323,53 @@ footer {
     text-transform:uppercase;
 
 }
+/* =====================================
+   VALIDADE EM DESTAQUE
+===================================== */
+
+
+.validade-destaque {
+
+    background:#f0fdf4;
+
+    border:3px solid #16a34a;
+
+    border-radius:12px;
+
+    padding:15px;
+
+    margin:15px 0;
+
+    text-align:center;
+
+}
+
+
+
+.validade-destaque span {
+
+    display:block;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    color:#166534;
+
+    letter-spacing:2px;
+
+}
+
+
+
+.validade-destaque strong {
+
+    display:block;
+
+    font-size:32px;
+
+    color:#052e16;
+
+    margin-top:5px;
+
+}
