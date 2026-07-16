@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-<<head>
+<head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>FoodSync - Consulta Etiqueta</title>
+<title>FoodSync - Consulta de Etiqueta</title>
 
-<link rel="icon" type="image/png" href="img/favicon.png">
-
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="./css/consulta.css">
 
 </head>
 
@@ -19,25 +16,47 @@
 <body>
 
 
-<div class="content">
-
-<h1>
-Controle de Validade
-</h1>
+<div class="container">
 
 
-<div id="resultadoEtiqueta">
+    <div class="logo">
 
-Buscando etiqueta...
+        <h1>🥗 FoodSync</h1>
+        <p>Controle Inteligente de Validade</p>
+
+    </div>
+
+
+
+    <div id="resultadoEtiqueta" class="etiqueta">
+
+
+    <div class="carregando">
+
+        Consultando etiqueta...
+
+    </div>
+
+
+    <div id="qrcodeConsulta"></div>
+
 
 </div>
 
 
+
+<footer>
+
+    FoodSync © Controle de Produção
+
+</footer>
+
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
+<script type="module" src="./js/consulta.js"></script>
 
-<script type="module" src="./consulta.js"></script>
 
 </body>
 
