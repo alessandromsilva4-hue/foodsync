@@ -1,212 +1,237 @@
-*{
+/* =====================================
+   FOODSYNCH - ETIQUETA CONSULTA
+===================================== */
 
-box-sizing:border-box;
-font-family:Arial, Helvetica, sans-serif;
+
+body {
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    background:#f3f4f6;
+
+    display:flex;
+
+    justify-content:center;
+
+    padding:20px;
+
+}
+
+
+/* CARD DA ETIQUETA */
+
+.etiqueta {
+
+    width:350px;
+
+    background:white;
+
+    border-radius:12px;
+
+    padding:20px;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+
+    text-align:center;
 
 }
 
 
 
-body{
+/* STATUS */
 
-background:#f1f5f9;
-margin:0;
-padding:20px;
+.status {
+
+    font-weight:bold;
+
+    padding:10px;
+
+    border-radius:8px;
+
+    margin-bottom:15px;
+
+}
+
+
+.valido {
+
+    background:#dcfce7;
+
+    color:#166534;
+
+}
+
+
+.alerta {
+
+    background:#fef9c3;
+
+    color:#854d0e;
+
+}
+
+
+.vencido {
+
+    background:#fee2e2;
+
+    color:#991b1b;
 
 }
 
 
 
-.container{
+/* TITULO */
 
-max-width:450px;
-margin:auto;
+.etiqueta h2 {
 
-}
+    margin:10px 0;
 
-
-
-.logo{
-
-text-align:center;
-margin-bottom:20px;
+    color:#052e16;
 
 }
 
 
 
-.logo h1{
+/* CAMPOS */
 
-color:#16a34a;
-margin:0;
-font-size:32px;
+.campo {
+
+    text-align:left;
+
+    padding:8px 0;
+
+    border-bottom:1px solid #e5e7eb;
+
+    font-size:14px;
 
 }
 
 
-.logo p{
+.campo strong {
 
-color:#64748b;
-
-}
-
-
-
-.etiqueta{
-
-background:white;
-border-radius:18px;
-padding:25px;
-
-box-shadow:
-0 10px 25px rgba(0,0,0,.12);
+    color:#166534;
 
 }
 
 
 
-.etiqueta h2{
+/* QR CODE */
 
-color:#052e16;
-border-bottom:2px solid #16a34a;
-padding-bottom:10px;
+#qrcodeConsulta {
 
-}
+    margin:20px auto;
 
+    display:flex;
 
-
-.campo{
-
-margin:12px 0;
+    justify-content:center;
 
 }
 
 
 
-.campo strong{
+/* BOTÃO */
 
-color:#334155;
+.btn-imprimir {
 
-}
+    background:#16a34a;
 
+    color:white;
 
+    border:none;
 
-.status{
+    padding:12px 20px;
 
-padding:15px;
-border-radius:12px;
-text-align:center;
-font-weight:bold;
-margin-bottom:20px;
+    border-radius:8px;
 
-}
+    cursor:pointer;
 
-
-
-.valido{
-
-background:#dcfce7;
-color:#166534;
+    font-size:15px;
 
 }
 
 
 
-.alerta{
+.btn-imprimir:hover {
 
-background:#fef9c3;
-color:#854d0e;
-
-}
-
-
-
-.vencido{
-
-background:#fee2e2;
-color:#991b1b;
+    background:#15803d;
 
 }
 
 
 
-footer{
-
-text-align:center;
-margin-top:20px;
-font-size:12px;
-color:#64748b;
-
-}
-.btn-imprimir{
-
-width:100%;
-
-margin-top:25px;
-
-padding:14px;
-
-border:none;
-
-border-radius:12px;
-
-background:#16a34a;
-
-color:white;
-
-font-size:16px;
-
-font-weight:bold;
-
-cursor:pointer;
-
-}
+/* =====================================
+   IMPRESSÃO
+===================================== */
 
 
-
-.btn-imprimir:hover{
-
-background:#15803d;
-
-}
 @media print {
 
 
-body{
+body {
 
-background:white;
+    background:white;
 
-padding:0;
-
-}
-
-
-
-.logo,
-footer,
-.btn-imprimir{
-
-display:none;
+    padding:0;
 
 }
 
 
 
-.container{
+.etiqueta {
 
-max-width:100%;
+    width:80mm;
+
+    box-shadow:none;
+
+    border-radius:0;
+
+    padding:10px;
+
+}
+
+
+
+.btn-imprimir {
+
+    display:none;
 
 }
 
 
 
-.etiqueta{
+.status {
 
-box-shadow:none;
-
-border:1px solid #000;
+    border:1px solid #000;
 
 }
+
+
+
+.campo {
+
+    font-size:12px;
+
+}
+
+
+
+#qrcodeConsulta img {
+
+    width:90px !important;
+
+    height:90px !important;
+
+}
+
+
+
+footer {
+
+    display:none;
+
+}
+
 
 
 }
