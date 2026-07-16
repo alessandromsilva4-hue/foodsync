@@ -179,7 +179,7 @@ if (qrDiv) {
     qrDiv.innerHTML = "";
 
    const linkConsulta =
-"https://alessandromsilva4-hue.github.io/consulta.html?codigo="
+"https://alessandromsilva4-hue.github.io/foodsync/consulta.html?codigo="
 + codigoEtiqueta;
 
 
