@@ -203,6 +203,35 @@ verificarValidade(dataValidade);
 resultado.innerHTML = `
 
 
+<div class="cabecalho-etiqueta">
+
+    <img 
+    src="./img/logo.png" 
+    class="logo-foodsync"
+    alt="FoodSync">
+
+
+    <h1>FoodSync</h1>
+
+    <p>
+    Controle Inteligente de Validade
+    </p>
+
+</div>
+
+
+
+<div class="codigo-etiqueta">
+
+Código:
+
+<strong>
+${dados.codigo || dados.lote || "-"}
+</strong>
+
+</div>
+
+
 
 <div class="status ${status.classe}">
 
@@ -212,14 +241,11 @@ ${status.texto}
 
 
 
-
 <h2>Controle de Validade</h2>
 
 
 
-<div class="campo">
-
-<strong>Produto:</strong>
+<div class="produto-destaque">
 
 ${dados.produto}
 
