@@ -104,15 +104,20 @@ async function buscarUltimaProducao(nomeProduto) {
 
 if (etiquetaForm) {
 
-    etiquetaForm.addEventListener("submit", async (e) => {
+   etiquetaForm.addEventListener("submit", async (e) => {
 
-        e.preventDefault();
+    e.preventDefault();
+
+    const codigoEtiqueta = "FS-" + Date.now();
+
+
+console.log("TESTE CODIGO:", codigoEtiqueta);
 
         const nomeProduto = produtoSelect.value;
 
         if (!nomeProduto) {
 
-            alert("Selecione um produto.");
+            alert("Selecione o produto.");
 
             return;
 
@@ -169,79 +174,71 @@ document.getElementById("responsavelEtiqueta").innerText =
 
 const qrDiv = document.getElementById("qrcodeEtiqueta");
 
-
-if(qrDiv){
+if (qrDiv) {
 
     qrDiv.innerHTML = "";
 
+   const linkConsulta =
+"https://alessandromsilva4-hue.github.io/consulta.html?codigo="
++ codigoEtiqueta;
 
-    const codigoEtiqueta = 
-        "FS-" + Date.now();
+
+    console.log("Link QR:", linkConsulta);
 
 
-  new QRCode(
-
-    qrDiv,
-
-    {
-
-        text:
-"https://alessandromsilva4-hue.github.io/Label-Control/consulta.html?codigo=" + codigoEtiqueta,
-
-        width:80,
-
-        height:80
-
-    }
-
-);
+    new QRCode(qrDiv, {
+        text: linkConsulta,
+        width: 90,
+        height: 90,
+        correctLevel: QRCode.CorrectLevel.H
+    });
 
 }
+
 
 // Salvar histórico
 
 try {
 
-   await addDoc(
-    collection(db, "etiquetas"),
-    {
-        codigo: codigoEtiqueta,
+    await addDoc(
+        collection(db, "etiquetas"),
+        {
+            codigo: codigoEtiqueta,
 
-        produto: producao.produto,
+            produto: producao.produto,
 
-        quantidade: producao.quantidade,
+            quantidade: producao.quantidade,
 
-        unidade: producao.unidade || "UN",
+            unidade: producao.unidade || "UN",
 
-        dataProducao: producao.dataProducao,
+            dataProducao: producao.dataProducao,
 
-        validade: producao.validade,
+            validade: producao.validade,
 
-        usuario: producao.usuario || "admin",
+            usuario: producao.usuario || "admin",
 
-        temperatura: produtoAtual?.temperatura || "AMBIENTE",
+            temperatura: produtoAtual?.temperatura || "AMBIENTE",
 
-        lote: codigoEtiqueta,
+            lote: codigoEtiqueta,
 
-        observacao: "",
+            observacao: "",
 
-        criadoEm: serverTimestamp()
-    }
-);
-
-    console.log("Etiqueta salva.");
-
-        } catch (erro) {
-
-            console.error(
-                "Erro ao salvar etiqueta:",
-                erro
-            );
-
+            criadoEm: serverTimestamp()
         }
+    );
 
+       console.log("Etiqueta salva.");
 
-    });
+} catch (erro) {
+
+    console.error(
+        "Erro ao salvar etiqueta:",
+        erro
+    );
+
+}
+
+});
 
 }
 // =======================================
