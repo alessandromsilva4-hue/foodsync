@@ -278,12 +278,13 @@ ${dados.dataProducao
 
 
 
-<div class="campo">
+<div class="validade-destaque">
 
-<strong>Validade:</strong>
+    <span>VALIDADE</span>
 
-${dataValidade
-.toLocaleDateString("pt-BR")}
+    <strong>
+    ${dataValidade.toLocaleDateString("pt-BR")}
+    </strong>
 
 </div>
 
