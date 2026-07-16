@@ -150,3 +150,14 @@ resultado.innerHTML =
 }
 
 }
+
+
+buscarEtiqueta()
+.catch((erro) => {
+
+    console.error(
+        "Erro ao iniciar consulta:",
+        erro
+    );
+
+});
