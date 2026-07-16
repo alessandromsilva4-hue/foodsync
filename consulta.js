@@ -1,12 +1,11 @@
-import { db } from "./firebase.js";
+import { db } from "./js/firebase.js";
 
 
 import {
-
-collection,
-query,
-where,
-getDocs
+    collection,
+    query,
+    where,
+    getDocs
 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
