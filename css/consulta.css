@@ -235,3 +235,91 @@ footer {
 
 
 }
+/* CABEÇALHO */
+
+.cabecalho-etiqueta {
+
+    text-align:center;
+
+    margin-bottom:15px;
+
+}
+
+
+.logo-foodsync {
+
+    width:70px;
+
+    height:70px;
+
+    object-fit:contain;
+
+}
+
+
+.cabecalho-etiqueta h1 {
+
+    margin:5px 0;
+
+    color:#16a34a;
+
+    font-size:24px;
+
+}
+
+
+.cabecalho-etiqueta p {
+
+    margin:0;
+
+    font-size:13px;
+
+    color:#555;
+
+}
+
+
+
+/* CÓDIGO DA ETIQUETA */
+
+.codigo-etiqueta {
+
+    background:#f0fdf4;
+
+    border:1px dashed #16a34a;
+
+    padding:10px;
+
+    margin:15px 0;
+
+    border-radius:8px;
+
+    font-size:16px;
+
+}
+
+
+.codigo-etiqueta strong {
+
+    display:block;
+
+    font-size:20px;
+
+    color:#052e16;
+
+}
+.produto-destaque {
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    color:#052e16;
+
+    text-align:center;
+
+    margin:15px 0;
+
+    text-transform:uppercase;
+
+}
