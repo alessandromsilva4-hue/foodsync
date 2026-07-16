@@ -1,4 +1,4 @@
-import { db } from "./firebase.js";
+import { db } from "./js/firebase.js";
 
 
 import {
@@ -186,34 +186,6 @@ console.log(
 dados
 );
 
-// ===============================
-// GERAR QR CODE NA CONSULTA
-// ===============================
-
-const qrDiv =
-document.getElementById("qrcodeConsulta");
-
-
-if(qrDiv){
-
-
-qrDiv.innerHTML="";
-
-
-new QRCode(qrDiv,{
-
-text:window.location.href,
-
-width:120,
-
-height:120,
-
-correctLevel:QRCode.CorrectLevel.H
-
-});
-
-
-}
 
 
 const dataValidade =
@@ -350,6 +322,33 @@ onclick="window.print()">
 
 `;
 
+
+// ===============================
+// GERAR QR CODE NA CONSULTA
+// ===============================
+
+const qrDiv =
+document.getElementById("qrcodeConsulta");
+
+
+if(qrDiv){
+
+    qrDiv.innerHTML = "";
+
+
+    new QRCode(qrDiv, {
+
+        text: window.location.href,
+
+        width:120,
+
+        height:120,
+
+        correctLevel:QRCode.CorrectLevel.H
+
+    });
+
+}
 
 }catch(erro){
 
