@@ -108,9 +108,9 @@ html,body{
 #qrcodeEtiqueta img,
 #qrcodeEtiqueta canvas{
 
-    width:14mm !important;
+    width:20mm !important;
 
-    height:14mm !important;
+    height:20mm !important;
 
 }
 

@@ -180,10 +180,10 @@ if (qrDiv) {
     console.log("Link QR:", linkConsulta);
 
 
-    new QRCode(qrDiv, {
+new QRCode(qrDiv, {
     text: linkConsulta,
-    width: 55,
-    height: 55,
+    width: 80,
+    height: 80,
     correctLevel: QRCode.CorrectLevel.H
 });
 
@@ -249,7 +249,7 @@ window.imprimirEtiqueta = function () {
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8
+<meta charset="UTF-8">
 
 <style>
 
@@ -281,7 +281,6 @@ html,body{
 
 }
 
-.<style>
 
 .etiqueta-logo{
 
@@ -368,19 +367,15 @@ html,body{
 ${conteudo}
 
 <script>
-
 window.onload = () => {
 
     setTimeout(() => {
 
         window.print();
 
-        window.close();
-
-    },300);
+    },1000);
 
 }
-
 </script>
 
 </body>
