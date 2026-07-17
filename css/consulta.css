@@ -373,3 +373,275 @@ footer {
     margin-top:5px;
 
 }
+/* =====================================
+   IMPRESSÃO ETIQUETA FOODSYNCH
+===================================== */
+
+@media print {
+
+
+    @page {
+
+        size: 80mm auto;
+
+        margin:0;
+
+    }
+
+
+    body {
+
+        background:white;
+
+        padding:0;
+
+        margin:0;
+
+    }
+
+
+    body * {
+
+        visibility:hidden;
+
+    }
+
+
+    #resultadoEtiqueta,
+    #resultadoEtiqueta * {
+
+        visibility:visible;
+
+    }
+
+
+    #resultadoEtiqueta {
+
+        position:absolute;
+
+        top:0;
+
+        left:0;
+
+        width:80mm;
+
+        min-height:70mm;
+
+        background:white;
+
+        padding:5mm;
+
+        margin:0;
+
+        box-sizing:border-box;
+
+        border-radius:0;
+
+        box-shadow:none;
+
+        font-family:Arial, Helvetica, sans-serif;
+
+    }
+
+
+
+    /* ESCONDER ELEMENTOS DA TELA */
+
+    .logo,
+    .cabecalho-etiqueta,
+    footer,
+    .btn-imprimir,
+    button {
+
+        display:none !important;
+
+    }
+
+
+
+    /* CAMPOS */
+
+    .campo {
+
+        font-size:12px;
+
+        line-height:1.4;
+
+    }
+
+
+    .campo strong {
+
+        font-weight:bold;
+
+    }
+
+
+
+    /* STATUS */
+
+    .status {
+
+        border:1px solid #000;
+
+        padding:5px;
+
+        margin-top:8px;
+
+        text-align:center;
+
+        font-weight:bold;
+
+    }
+
+
+
+    /* LINHAS DE SEPARAÇÃO */
+
+    .linha {
+
+        border-top:1px dashed #000;
+
+        margin:8px 0;
+
+    }
+
+
+
+    /* QR CODE */
+
+    #qrcodeConsulta {
+
+        display:flex !important;
+
+        justify-content:center;
+
+        align-items:center;
+
+        margin-top:10px;
+
+    }
+
+
+    #qrcodeConsulta img {
+
+        width:90px !important;
+
+        height:90px !important;
+
+    }
+
+
+
+    /* CÓDIGO DA ETIQUETA */
+
+    .codigo-etiqueta {
+
+        text-align:center;
+
+        font-size:11px;
+
+        margin-top:5px;
+
+    }
+
+
+
+.etiqueta {
+
+    width:350px;
+
+    background:white;
+
+    border-radius:12px;
+
+    padding:20px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.15);
+
+}
+
+
+.cabecalho-etiqueta {
+
+    text-align:center;
+
+}
+
+
+.cabecalho-etiqueta h2 {
+
+    margin:0;
+
+    color:#16a34a;
+
+}
+
+
+.campo {
+
+    margin:8px 0;
+
+    font-size:14px;
+
+}
+
+
+.linha {
+
+    border-top:1px dashed #aaa;
+
+    margin:12px 0;
+
+}
+
+
+.status {
+
+    padding:8px;
+
+    text-align:center;
+
+    border-radius:6px;
+
+    font-weight:bold;
+
+}
+
+
+.valido {
+
+    background:#dcfce7;
+
+    color:#166534;
+
+}
+
+
+.alerta {
+
+    background:#fef9c3;
+
+    color:#854d0e;
+
+}
+
+
+.vencido {
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+}
+
+
+.codigo-etiqueta {
+
+    text-align:center;
+
+    margin-top:8px;
+
+    font-size:12px;
+
+}

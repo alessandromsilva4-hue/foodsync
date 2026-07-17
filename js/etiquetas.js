@@ -16,7 +16,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-alert("ETIQUETAS NOVA VERSÃO");
 
 
 console.log("ETIQUETAS.JS CARREGADO");
@@ -133,37 +132,32 @@ console.log("TESTE CODIGO:", codigoEtiqueta);
 
         }
 
-        // Dados da produção
+    // Dados da produção
 
-        const dataProducao = producao.dataProducao.toDate();
-        const validade = producao.validade.toDate();
+const dataProducao = new Date(producao.dataProducao);
 
-        const producaoFormatada =
-            dataProducao.toLocaleDateString("pt-BR");
+const validade = new Date(producao.validade);
 
-        const validadeFormatada =
-            validade.toLocaleDateString("pt-BR");
+const producaoFormatada =
+    dataProducao.toLocaleDateString("pt-BR");
 
-        // Preencher etiqueta
+const validadeFormatada =
+    validade.toLocaleDateString("pt-BR");
 
-        document.getElementById("nomeEtiqueta").innerText =
-            producao.produto;
+// Preencher etiqueta
 
-        document.getElementById("dataEtiqueta").innerText =
-            producaoFormatada;
+document.getElementById("nomeEtiqueta").innerText =
+    producao.produto;
 
-        document.getElementById("validadeEtiqueta").innerText =
-            validadeFormatada;
-// TEMPERATURA
+document.getElementById("dataEtiqueta").innerText =
+    producaoFormatada;
 
-const produtoAtual = produtos.find(
-    p => p.nome === nomeProduto
-);
+document.getElementById("validadeEtiqueta").innerText =
+    validadeFormatada;
 
+// Temperatura
 document.getElementById("temperaturaEtiqueta").innerText =
-    "TEMP. " + (produtoAtual?.temperatura || producao.temperatura || "AMBIENTE");
-
-
+    producao.temperatura || "-";
 // RESPONSÁVEL
 
 document.getElementById("responsavelEtiqueta").innerText =
@@ -217,7 +211,7 @@ try {
 
             usuario: producao.usuario || "admin",
 
-            temperatura: produtoAtual?.temperatura || "AMBIENTE",
+            temperatura: producao.temperatura || "AMBIENTE",
 
             lote: codigoEtiqueta,
 

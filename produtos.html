@@ -389,13 +389,70 @@ Novo Produto
 
 <form id="produtoForm">
 
+    <div class="campo">
 
+<label for="categoriaProduto">
+Categoria
+</label>
+
+<select id="categoriaProduto">
+
+<option value="">
+Selecione a categoria
+</option>
+
+<option value="Ingrediente">
+Ingrediente
+</option>
+
+<option value="Produto acabado">
+Produto acabado
+</option>
+
+<option value="Bebida">
+Bebida
+</option>
+
+<option value="Embalagem">
+Embalagem
+</option>
+
+</select>
+
+</div>
+
+<div class="campo">
+
+<label for="codigoProduto">
+Código do Produto
+</label>
+
+<input
+type="text"
+id="codigoProduto"
+placeholder="Ex: SAL001"
+>
+
+</div>
 
 
 
 <div class="form-grid">
 
 
+<div class="input-group">
+
+<label>
+Nome do Produto
+</label>
+
+<input
+type="text"
+id="nomeProduto"
+placeholder="Digite o nome do produto"
+required>
+
+</div>
 
 
 
@@ -481,7 +538,7 @@ Validade Fechado (dias)
 
 type="number"
 
-id="validadeProduto"
+id="validadeFechado"
 
 value="1">
 
@@ -525,8 +582,7 @@ Temperatura Armazenamento
 </label>
 
 
-<select id="temperaturaProduto">
-
+<select id="temperaturaArmazenamento">
 
 <option>
 
