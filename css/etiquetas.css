@@ -1,164 +1,168 @@
-/* =======================================
-   FOODSYNC - ETIQUETA IMPRESSÃO
-======================================= */
+/* ==========================================
+   FOODSYNC - ETIQUETAS
+========================================== */
 
+@page{
+    size:60mm 60mm;
+    margin:0;
+}
 
-.etiqueta-preview{
-    margin-top:30px;
+html,body{
+
+    width:60mm;
+    height:60mm;
+
+    margin:0;
+    padding:0;
+
+    font-family:Arial,Helvetica,sans-serif;
+
 }
 
 
 .etiqueta{
 
-    width:80mm;
-    min-height:50mm;
-
-    background:white;
-
-    border:1px solid #000;
-
-    padding:5mm;
+    width:60mm;
+    height:60mm;
 
     box-sizing:border-box;
 
-    font-family:Arial, sans-serif;
+    padding:2mm;
 
-    position:relative;
+    display:flex;
+
+    flex-direction:column;
+
+    overflow:hidden;
 
 }
 
 
-
 .etiqueta-logo{
+
+    text-align:center;
+
+    font-size:10px;
+
+    font-weight:bold;
+
+    border-bottom:1px solid #000;
+
+    padding-bottom:1mm;
+
+    margin-bottom:1mm;
+
+}
+
+
+#nomeEtiqueta{
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    text-align:center;
+
+    margin:1mm 0;
+
+    border-bottom:1px solid #000;
+
+    padding-bottom:1mm;
+
+}
+
+
+#temperaturaEtiqueta{
 
     font-size:11px;
 
     font-weight:bold;
 
-    text-align:center;
-
-    border-bottom:1px solid #000;
-
-    padding-bottom:3px;
-
-    margin-bottom:5px;
+    margin:1mm 0;
 
 }
-
-
-
-#nomeEtiqueta{
-
-    font-size:18px;
-
-    font-weight:bold;
-
-    text-align:center;
-
-    text-transform:uppercase;
-
-    margin:6px 0;
-
-}
-
 
 
 .etiqueta p{
 
-    font-size:12px;
+    font-size:10px;
 
-    margin:4px 0;
+    margin:1mm 0;
+
+    line-height:1.1;
 
 }
-
 
 
 #qrcodeEtiqueta{
 
-    position:absolute;
+    margin-top:auto;
 
-    right:4mm;
+    display:flex;
 
-    bottom:3mm;
+    justify-content:flex-end;
 
 }
 
 
+#qrcodeEtiqueta img,
+#qrcodeEtiqueta canvas{
 
-#responsavelEtiqueta{
+    width:14mm !important;
+
+    height:14mm !important;
+
+}
+
+/* BOTÃO */
+
+.etiqueta-preview button{
+
+    padding:12px 26px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#15803d;
+
+    color:#fff;
+
+    font-size:16px;
 
     font-weight:bold;
 
-}
+    cursor:pointer;
 
-
-
-/* =======================================
-   IMPRESSÃO
-======================================= */
-
-
-@media print{
-
-
-body *{
-
-    visibility:hidden;
+    transition:.2s;
 
 }
 
+.etiqueta-preview button:hover{
 
-
-#etiquetaGerada,
-#etiquetaGerada *{
-
-    visibility:visible;
+    background:#166534;
 
 }
 
-
-
-#etiquetaGerada{
-
-    position:absolute;
-
-    left:0;
-
-    top:0;
-
-}
-
-
-
-button{
-
-    display:none;
-
-}
-
-
-}
-
-/* =======================================
-   IMPRESSÃO ETIQUETA 80x50mm
-======================================= */
+/* IMPRESSÃO */
 
 @media print {
 
     @page {
 
-        size: 80mm 50mm portrait;
+        size: 60mm 60mm;
 
-        margin: 0;
+        margin:0;
 
     }
 
 
-    html, body {
+    html,
+    body {
 
-        width:80mm;
+        width:60mm;
 
-        height:50mm;
+        height:60mm;
 
         margin:0;
 
@@ -182,39 +186,29 @@ button{
     }
 
 
-    #etiquetaGerada {
+  #etiquetaGerada {
 
-        position:absolute;
+    position:absolute;
 
-        left:0;
+    left:0;
 
-        top:0;
+    top:0;
 
-        width:80mm;
+    width:60mm;
 
-        height:50mm;
+    height:60mm;
 
-        transform:none;
+    margin:0;
 
-    }
+    padding:2mm;
 
+    box-sizing:border-box;
 
-    button {
+    border:none !important;
 
-        display:none !important;
-
-    }
+    border-radius:0;
 
 }
 
-/* =======================================
-   TAMANHO QR CODE
-======================================= */
-
-#qrcodeEtiqueta img {
-
-    width:90px !important;
-
-    height:90px !important;
 
 }

@@ -181,11 +181,11 @@ if (qrDiv) {
 
 
     new QRCode(qrDiv, {
-        text: linkConsulta,
-        width: 90,
-        height: 90,
-        correctLevel: QRCode.CorrectLevel.H
-    });
+    text: linkConsulta,
+    width: 55,
+    height: 55,
+    correctLevel: QRCode.CorrectLevel.H
+});
 
 }
 
@@ -241,10 +241,156 @@ try {
 
 window.imprimirEtiqueta = function () {
 
-    window.print();
+    const conteudo = document.getElementById("etiquetaGerada").outerHTML;
+
+    const janela = window.open("", "_blank", "width=500,height=500");
+
+    janela.document.write(`
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8
+
+<style>
+
+@page{
+    size:60mm 60mm;
+    margin:0;
+}
+
+html,body{
+    width:60mm;
+    height:60mm;
+    margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+.etiqueta{
+
+    width:60mm;
+    height:60mm;
+
+    box-sizing:border-box;
+
+    padding:2mm;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.<style>
+
+.etiqueta-logo{
+
+    text-align:center;
+
+    font-size:10px;
+
+    font-weight:bold;
+
+    border-bottom:1px solid #000;
+
+    padding-bottom:1mm;
+
+    margin-bottom:1mm;
+
+}
+
+
+#nomeEtiqueta{
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    text-align:center;
+
+    margin:1mm 0;
+
+    border-bottom:1px solid #000;
+
+    padding-bottom:1mm;
+
+}
+
+
+#temperaturaEtiqueta{
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    margin:1mm 0;
+
+}
+
+
+.etiqueta p{
+
+    font-size:10px;
+
+    margin:1mm 0;
+
+    line-height:1.1;
+
+}
+
+
+#qrcodeEtiqueta{
+
+    margin-top:auto;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+}
+
+
+#qrcodeEtiqueta img,
+#qrcodeEtiqueta canvas{
+
+    width:14mm !important;
+
+    height:14mm !important;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+${conteudo}
+
+<script>
+
+window.onload = () => {
+
+    setTimeout(() => {
+
+        window.print();
+
+        window.close();
+
+    },300);
+
+}
+
+</script>
+
+</body>
+
+</html>
+`);
+
+    janela.document.close();
 
 };
-
 
 // =======================================
 // INICIALIZAÇÃO
