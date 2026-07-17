@@ -8,18 +8,52 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-async function limparEtiquetas(){
+// CONVERTER DATA
 
-    const confirmar = confirm(
-        "Deseja apagar TODAS as etiquetas?"
-    );
+function converterData(data){
 
-    if(!confirmar){
-        return;
+    if(!data) return null;
+
+
+    if(typeof data.toDate === "function"){
+
+        return data.toDate();
+
     }
 
 
+    return new Date(data);
+
+}
+
+
+
+// LIMPAR ETIQUETAS VENCIDAS
+
+async function limparEtiquetas(){
+
+
+    const confirmar = confirm(
+        "Deseja apagar somente etiquetas vencidas?"
+    );
+
+
+    if(!confirmar){
+
+        return;
+
+    }
+
+
+
     try{
+
+
+        const hoje = new Date();
+
+        hoje.setHours(0,0,0,0);
+
+
 
         const snapshot =
         await getDocs(
@@ -27,27 +61,65 @@ async function limparEtiquetas(){
         );
 
 
+
         let contador = 0;
+
 
 
         for(const item of snapshot.docs){
 
-            await deleteDoc(
-                doc(
-                    db,
-                    "etiquetas",
-                    item.id
-                )
+
+            const etiqueta =
+            item.data();
+
+
+
+            const validade =
+            converterData(
+                etiqueta.validade
             );
 
-            contador++;
+
+
+            if(validade && validade < hoje){
+
+
+
+                await deleteDoc(
+
+                    doc(
+                        db,
+                        "etiquetas",
+                        item.id
+                    )
+
+                );
+
+
+                contador++;
+
+
+                console.log(
+                    "Removida:",
+                    etiqueta.produto,
+                    etiqueta.codigo
+                );
+
+
+            }
+
 
         }
 
 
+
         alert(
-            contador + " etiquetas removidas com sucesso!"
+
+            contador +
+            " etiquetas vencidas removidas!"
+
         );
+
 
 
         console.log(
@@ -56,16 +128,21 @@ async function limparEtiquetas(){
         );
 
 
+
     }catch(error){
+
 
         console.error(
             "Erro ao limpar etiquetas:",
             error
         );
 
+
     }
 
+
 }
+
 
 
 limparEtiquetas();

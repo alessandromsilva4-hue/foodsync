@@ -274,3 +274,17 @@ grid-template-columns:1fr;
 
 
 }
+
+/* =======================================
+   GRÁFICO DASHBOARD
+======================================= */
+
+.grafico-container {
+
+    position: relative;
+
+    height: 350px;
+
+    width: 100%;
+
+}
