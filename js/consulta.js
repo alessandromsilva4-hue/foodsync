@@ -1,5 +1,4 @@
 console.log("ARQUIVO CONSULTA NOVO CARREGADO");
-
 import { db } from "./firebase.js";
 
 import {
@@ -182,8 +181,7 @@ ${formatarData(dados.validade)}
 
 </div>
 
-consulta.js:383 Erro dentro da busca: TypeError: dados.validade.toDate is not a function
-    at buscarEtiqueta (consulta.js:192:16)${dados.quantidade || "-"}
+
 
 ${dados.unidade || ""}
 
