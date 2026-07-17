@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FoodSync - Histórico de Etiquetas</title>
+
+    <link rel="icon" href="./img/favicon.png">
+
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/sidebar.css">
+    <link rel="stylesheet" href="./css/historico.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+       <div class="logo-area">
+
+    <img src="./img/logo.png" alt="FoodSync">
+
+</div>
+
+        <nav>
+
+            <a href="dashboard.html">🏠 Dashboard</a>
+
+            <a href="producao.html">🍳 Produção</a>
+
+            <a href="etiquetas.html">🏷️ Etiquetas</a>
+
+            <a href="historico.html" class="active">📋 Histórico</a>
+
+            <a href="produtos.html">📦 Produtos</a>
+
+            <a href="estoque.html">📦 Estoque</a>
+
+            <a href="relatorios.html">📊 Relatórios</a>
+
+            <a href="configuracoes.html">⚙️ Configurações</a>
+
+        </nav>
+
+    </aside>
+
+    <!-- Conteúdo -->
+    <main class="conteudo">
+
+        <h1>📋 Histórico de Etiquetas</h1>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Total</h3>
+                <span id="totalEtiquetas">0</span>
+            </div>
+
+            <div class="card">
+                <h3>🟢 Válidas</h3>
+                <span id="totalValidas">0</span>
+            </div>
+
+            <div class="card">
+                <h3>🟡 Vencem Hoje</h3>
+                <span id="totalHoje">0</span>
+            </div>
+
+            <div class="card">
+                <h3>🔴 Vencidas</h3>
+                <span id="totalVencidas">0</span>
+            </div>
+
+        </div>
+
+        <div class="filtros">
+
+            <input
+                type="text"
+                id="pesquisa"
+                placeholder="Pesquisar produto, lote ou código...">
+
+        </div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Produto</th>
+                    <th>Lote</th>
+                    <th>Produção</th>
+                    <th>Validade</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="tabelaHistorico">
+
+            </tbody>
+
+        </table>
+
+    </main>
+
+</div>
+
+<script type="module" src="./js/historico.js"></script>
+
+</body>
+</html>

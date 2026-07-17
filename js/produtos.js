@@ -334,7 +334,19 @@ async(e)=>{
 
 e.preventDefault();
 
+console.log("CHECK CAMPOS");
 
+console.log("codigo:", document.getElementById("codigoProduto"));
+console.log("nome:", document.getElementById("nomeProduto"));
+console.log("categoria:", document.getElementById("categoriaProduto"));
+console.log("unidade:", document.getElementById("unidadeProduto"));
+console.log("validade:", document.getElementById("validadeProduto"));
+console.log("aberto:", document.getElementById("validadeAberto"));
+console.log("temperatura:", document.getElementById("temperaturaProduto"));
+console.log("setor:", document.getElementById("setorProduto"));
+console.log("estoque:", document.getElementById("estoqueMinimoProduto"));
+console.log("status:", document.getElementById("statusProduto"));
+console.log("observacao:", document.getElementById("observacaoProduto"));
 
 
 const dados = {
@@ -398,101 +410,73 @@ serverTimestamp()
 
 
 
-try{
+try {
 
 
-
-if(produtoEditando){
-
+    if(produtoEditando){
 
 
-await updateDoc(
+        await updateDoc(
 
-doc(
-db,
-"produtos",
-produtoEditando
+            doc(
+                db,
+                "produtos",
+                produtoEditando
+            ),
 
-),
+            dados
 
-dados
-
-);
-
+        );
 
 
-alert(
-"Produto atualizado!"
-);
+        alert(
+            "Produto atualizado!"
+        );
 
 
-
-}else{
-
+    }else{
 
 
-dados.criadoEm =
-serverTimestamp();
+        dados.criadoEm =
+        serverTimestamp();
 
 
-await addDoc(
-collection(db,"produtos"),
-{
-
-nome: nomeProduto,
-
-temperatura:
-document.getElementById("temperaturaProduto").value,
-
-validadeDias:
-Number(
-document.getElementById("validadeProduto").value
-),
-
-unidade:
-document.getElementById("unidadeProduto").value
-
-}
-);
+        await addDoc(
+            collection(db,"produtos"),
+            dados
+        );
 
 
+        alert(
+            "Produto cadastrado!"
+        );
 
-fecharModalProduto();
+
+    }
 
 
+    fecharModalProduto();
 
-carregarProdutos();
-
+    carregarProdutos();
 
 
 }
-
-
-
 catch(error){
 
 
-console.error(
-
-"Erro salvar produto:",
-
-error
-
-);
+    console.error(
+        "Erro salvar produto:",
+        error
+    );
 
 
 }
 
 
-
-});
+}); 
 
 
 }
-
-
-
-
 
 
 
@@ -722,7 +706,6 @@ mostrarProdutos(resultado);
 // =======================================
 // INICIAR
 // =======================================
-
 
 document.addEventListener(
 

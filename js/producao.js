@@ -1,19 +1,14 @@
-// =======================================
-// FOODSYNCH - PRODUÇÃO
-// =======================================
-
+console.log("PRODUCAO.JS CARREGADO");
 
 import { db } from "./firebase.js";
 
 
 import {
 
-    collection,
-    addDoc,
-    getDocs,
-    serverTimestamp,
-    orderBy,
-    query
+collection,
+getDocs,
+addDoc,
+serverTimestamp
 
 }
 
@@ -21,20 +16,12 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
-console.log("PRODUCAO.JS CARREGADO");
-
-
 const produtoSelect =
 document.getElementById("produtoSelect");
 
 
-const producaoForm =
+const formulario =
 document.getElementById("producaoForm");
-
-
-const listaProducao =
-document.getElementById("listaProducoes");
-
 
 
 let produtos = [];
@@ -42,23 +29,14 @@ let produtos = [];
 
 
 
-
-
-
-// =======================================
+// =====================================
 // CARREGAR PRODUTOS
-// =======================================
-
+// =====================================
 
 async function carregarProdutos(){
 
 
-if(!produtoSelect)
-return;
-
-
-
-const dados =
+const snapshot =
 await getDocs(
 collection(db,"produtos")
 );
@@ -68,54 +46,45 @@ collection(db,"produtos")
 produtoSelect.innerHTML = `
 
 <option value="">
-
 Selecione o produto
-
 </option>
 
 `;
 
 
 
-produtos=[];
+snapshot.forEach(doc=>{
 
 
-
-dados.forEach(doc=>{
-
-
-const p = doc.data();
-
-
-
-produtos.push({
+const produto = {
 
 id:doc.id,
 
-...p
+...doc.data()
 
-});
+};
+
+
+produtos.push(produto);
 
 
 
 produtoSelect.innerHTML += `
 
-<option value="${doc.id}">
+<option value="${produto.id}">
 
-${p.nome}
+${produto.nome}
 
 </option>
 
 `;
 
-console.log("ADICIONANDO NO SELECT:", p.nome);
 
 });
 
 
-
 console.log(
-"Produtos carregados:",
+"Produtos disponíveis:",
 produtos
 );
 
@@ -124,51 +93,112 @@ produtos
 
 
 
-// =======================================
-// PREENCHER DADOS DO PRODUTO
-// =======================================
 
-if(produtoSelect){
+
+// =====================================
+// PREENCHER DADOS AUTOMÁTICOS
+// =====================================
+
 
 produtoSelect.addEventListener(
 "change",
 ()=>{
 
 
-const produtoSelecionado =
-produtos.find(
-p=>p.id === produtoSelect.value
+const produto = produtos.find(
+
+p =>
+p.id === produtoSelect.value
+
 );
 
 
 
-if(!produtoSelecionado)
+if(!produto)
 return;
 
 
 
-const hoje = new Date();
+document.getElementById(
+"temperaturaProducao"
+).value =
+produto.temperatura || "";
 
+
+
+const data =
+document.getElementById(
+"dataProducao"
+).value;
+
+
+
+if(data && produto.validadeDias){
+
+
+calcularValidade(
+produto.validadeDias
+);
+
+
+}
+
+
+});
+
+
+
+
+// =====================================
+// CALCULAR VALIDADE
+// =====================================
 
 
 document.getElementById(
 "dataProducao"
-).value =
-hoje.toISOString().split("T")[0];
+)
+.addEventListener(
+"change",
+()=>{
+
+
+const produto =
+produtos.find(
+
+p =>
+p.id === produtoSelect.value
+
+);
 
 
 
-const dias =
-produtoSelecionado.validadeDias || 1;
+if(produto){
+
+calcularValidade(
+produto.validadeDias
+);
+
+}
+
+
+});
 
 
 
-const validade =
-new Date();
+function calcularValidade(dias){
 
 
-validade.setDate(
-hoje.getDate() + dias
+const data =
+new Date(
+document.getElementById(
+"dataProducao"
+).value
+);
+
+
+
+data.setDate(
+data.getDate()+dias
 );
 
 
@@ -176,34 +206,22 @@ hoje.getDate() + dias
 document.getElementById(
 "validadeProducao"
 ).value =
-validade.toISOString().split("T")[0];
 
+data.toISOString()
+.split("T")[0];
 
-
-document.getElementById(
-"temperaturaProducao"
-).value =
-produtoSelecionado.temperatura || "AMBIENTE";
-
-
-
-});
 
 }
 
 
 
 
-// =======================================
-// CADASTRAR PRODUÇÃO
-// =======================================
+// =====================================
+// SALVAR PRODUÇÃO
+// =====================================
 
 
-if(producaoForm){
-
-
-
-producaoForm.addEventListener(
+formulario.addEventListener(
 
 "submit",
 
@@ -214,54 +232,16 @@ e.preventDefault();
 
 
 
+const produto = produtos.find(
 
+p =>
+p.id === produtoSelect.value
 
-const produtoId =
-produtoSelect.value;
-
-
-
-
-const produto =
-produtos.find(
-p=>p.id===produtoId
 );
 
 
 
-
-
-if(!produto){
-
-
-alert(
-"Selecione um produto"
-);
-
-
-return;
-
-
-}
-
-
-
-
-
-
-const hoje = new Date();
-
-const validadeDias = produto.validadeDias || 1;
-
-const dataValidade = new Date();
-
-dataValidade.setDate(
-    hoje.getDate() + validadeDias
-);
-
-
-
-const producao = {
+const dados = {
 
 
 produtoId:
@@ -272,6 +252,10 @@ produto:
 produto.nome,
 
 
+codigo:
+produto.codigo,
+
+
 quantidade:
 Number(
 document.getElementById(
@@ -280,32 +264,34 @@ document.getElementById(
 ),
 
 
-unidade:
-produto.unidade || "UN",
+dataProducao:
+document.getElementById(
+"dataProducao"
+).value,
+
+
+validade:
+document.getElementById(
+"validadeProducao"
+).value,
 
 
 temperatura:
-produto.temperatura || "AMBIENTE",
+document.getElementById(
+"temperaturaProducao"
+).value,
 
 
 responsavel:
 document.getElementById(
 "responsavelProducao"
-).value || "admin",
+).value,
 
 
 status:
 document.getElementById(
 "statusProducao"
 ).value,
-
-
-dataProducao:
-hoje,
-
-
-validade:
-dataValidade,
 
 
 criadoEm:
@@ -316,20 +302,82 @@ serverTimestamp()
 
 
 
+const producaoRef = await addDoc(
+
+collection(db,"producoes"),
+
+dados
+
+);
+
+
+// =====================================
+// GERAR ETIQUETA AUTOMÁTICA
+// =====================================
+
+
+const codigoEtiqueta = 
+"FS-" + Date.now();
 
 
 
-try{
+const etiqueta = {
+
+
+codigoEtiqueta,
+
+
+producaoId:
+producaoRef.id,
+
+
+produto:
+produto.nome,
+
+
+codigo:
+produto.codigo,
+
+
+quantidade:
+dados.quantidade,
+
+
+dataProducao:
+dados.dataProducao,
+
+
+validade:
+dados.validade,
+
+
+temperatura:
+dados.temperatura,
+
+
+responsavel:
+dados.responsavel,
+
+
+status:
+"ativa",
+
+
+criadoEm:
+serverTimestamp()
+
+
+};
+
 
 
 await addDoc(
 
-collection(db,"producoes"),
+collection(db,"etiquetas"),
 
-producao
+etiqueta
 
 );
-
 
 
 alert(
@@ -338,193 +386,16 @@ alert(
 
 
 
-producaoForm.reset();
-
-
-
-carregarProducoes();
-
-
-
-}catch(error){
-
-
-console.error(
-"Erro produção:",
-error
-);
-
-
-
-}
-
+formulario.reset();
 
 
 });
 
 
-}
 
 
-
-
-
-// =======================================
-// LISTAR PRODUÇÕES
-// =======================================
-
-
-async function carregarProducoes(){
-
-
-
-if(!listaProducao)
-return;
-
-
-
-
-
-listaProducao.innerHTML="";
-
-
-
-
-const consulta =
-query(
-
-collection(db,"producoes"),
-
-orderBy(
-"criadoEm",
-"desc"
-)
-
-);
-
-
-
-
-const dados =
-await getDocs(
-consulta
-);
-
-
-
-
-
-
-
-if(dados.empty){
-
-
-listaProducao.innerHTML = `
-
-
-<tr>
-
-<td colspan="5">
-
-Nenhuma produção registrada
-
-</td>
-
-</tr>
-
-
-`;
-
-return;
-
-
-}
-
-
-
-
-
-
-
-dados.forEach(doc=>{
-
-
-const p =
-doc.data();
-
-
-
-
-listaProducao.innerHTML += `
-
-<tr>
-
-<td>
-${p.produto || "-"}
-</td>
-
-<td>
-${p.quantidade || 0} ${p.unidade || ""}
-</td>
-
-<td>
-${p.dataProducao 
-? p.dataProducao.toDate().toLocaleDateString("pt-BR") 
-: "-"
-}
-</td>
-
-<td>
-${p.validade 
-? p.validade.toDate().toLocaleDateString("pt-BR") 
-: "-"
-}
-</td>
-
-<td>
-${p.status || "Finalizado"}
-</td>
-
-</tr>
-
-`;
-
-
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =======================================
-// INICIALIZAÇÃO
-// =======================================
-
-
-document.addEventListener(
-
-"DOMContentLoaded",
-
-()=>{
-
+// =====================================
+// INICIAR
+// =====================================
 
 carregarProdutos();
-
-
-carregarProducoes();
-
-
-}
-
-);
