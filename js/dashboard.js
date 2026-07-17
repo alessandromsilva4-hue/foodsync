@@ -372,6 +372,262 @@ async function carregarVencimentos(){
 
 }
 // =======================================
+// GRÁFICO PRODUÇÃO POR DIA
+// =======================================
+
+async function carregarGraficoProducao(){
+
+    try{
+
+        const snapshot =
+        await getDocs(
+            collection(db,"producoes")
+        );
+
+
+        const producaoPorDia = {};
+
+
+        snapshot.forEach(doc=>{
+
+            const p = doc.data();
+
+
+            const data =
+            formatarData(p.dataProducao);
+
+
+
+            if(producaoPorDia[data]){
+
+                producaoPorDia[data] +=
+                Number(p.quantidade || 0);
+
+            }
+            else{
+
+                producaoPorDia[data] =
+                Number(p.quantidade || 0);
+
+            }
+
+
+        });
+
+
+
+        const canvas =
+        document.getElementById(
+            "graficoProducao"
+        );
+
+
+        if(!canvas) return;
+
+console.log("DADOS GRÁFICO:", producaoPorDia);
+console.log("CANVAS:", canvas);
+console.log("CHART:", typeof Chart);
+
+        new Chart(canvas, {
+
+
+            type:"bar",
+
+
+            data:{
+
+
+                labels:
+                Object.keys(producaoPorDia),
+
+
+                datasets:[{
+
+
+                    label:
+                    "Quantidade Produzida",
+
+
+                    data:
+                    Object.values(producaoPorDia)
+
+
+                }]
+
+
+            },
+
+
+           options:{
+
+    responsive:true,
+
+    maintainAspectRatio:false
+
+}
+
+
+        });
+
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Erro gráfico produção:",
+            error
+        );
+
+    }
+
+}
+// =======================================
+// GRÁFICO DE VALIDADE
+// =======================================
+
+async function carregarGraficoValidade(){
+
+    try{
+
+        const snapshot =
+        await getDocs(
+            collection(db,"etiquetas")
+        );
+
+
+        let hoje = 0;
+        let tresDias = 0;
+        let seteDias = 0;
+        let acima = 0;
+
+
+        snapshot.forEach(doc=>{
+
+            const e = doc.data();
+
+            const dias =
+            diasRestantes(e.validade);
+
+
+
+            if(dias < 0){
+
+                return;
+
+            }
+
+
+            if(dias === 0){
+
+                hoje++;
+
+            }
+
+            else if(dias <=3){
+
+                tresDias++;
+
+            }
+
+            else if(dias <=7){
+
+                seteDias++;
+
+            }
+
+            else{
+
+                acima++;
+
+            }
+
+
+        });
+
+
+
+        const canvas =
+        document.getElementById(
+            "graficoValidade"
+        );
+
+
+        if(!canvas) return;
+
+
+
+        new Chart(canvas, {
+
+
+            type:"doughnut",
+
+
+            data:{
+
+
+                labels:[
+
+                    "Vence hoje",
+
+                    "1-3 dias",
+
+                    "4-7 dias",
+
+                    "Acima de 7 dias"
+
+                ],
+
+
+                datasets:[{
+
+                    label:"Etiquetas",
+
+                    data:[
+
+                        hoje,
+
+                        tresDias,
+
+                        seteDias,
+
+                        acima
+
+                    ]
+
+                }]
+
+            },
+
+
+            options:{
+
+
+                responsive:true,
+
+                maintainAspectRatio:false
+
+
+            }
+
+
+        });
+
+
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Erro gráfico validade:",
+            error
+        );
+
+    }
+
+}
+// =======================================
 // DASHBOARD
 // =======================================
 
@@ -382,6 +638,10 @@ async function carregarDashboard() {
     await carregarProducoesRecentes();
 
     await carregarVencimentos();
+
+    await carregarGraficoProducao();
+
+    await carregarGraficoValidade();
 
 }
 
