@@ -188,10 +188,14 @@ ${formatarData(dados.validade)}
 </div>
 
 
+<div class="campo">
 
-${dados.unidade || ""}
+<strong>Quantidade:</strong>
+
+${dados.quantidade || "-"} ${dados.unidade || ""}
 
 </div>
+
 
 <div class="campo">
 
