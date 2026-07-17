@@ -22,17 +22,23 @@ function converterData(data) {
 
     if (!data) return null;
 
-    if (typeof data?.toDate === "function") {
+    if (typeof data.toDate === "function") {
         return data.toDate();
     }
 
-    if (data instanceof Date) {
-        return data;
+    if (typeof data === "string") {
+
+        const [ano, mes, dia] = data.split("-");
+
+        return new Date(
+            Number(ano),
+            Number(mes) - 1,
+            Number(dia)
+        );
     }
 
     return new Date(data);
 }
-
 // =======================================
 // FORMATAR DATA
 // =======================================
