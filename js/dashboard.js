@@ -2,6 +2,8 @@
 // FOODSYNC - DASHBOARD
 // =======================================
 
+console.log("DASHBOARD.JS NOVO CARREGADO");
+
 import { db } from "./firebase.js";
 
 import {
@@ -14,15 +16,54 @@ import {
 // FORMATAR DATA
 // =======================================
 
-function formatarData(data){
+function converterData(data) {
 
-    if(!data) return "-";
+    if (!data) return null;
 
-    const d = new Date(data);
+    // Timestamp do Firestore
+    if (typeof data?.toDate === "function") {
+        return data.toDate();
+    }
+
+    // String YYYY-MM-DD
+    if (typeof data === "string") {
+
+        const partes = data.split("-");
+
+        if (partes.length === 3) {
+
+            return new Date(
+                Number(partes[0]),
+                Number(partes[1]) - 1,
+                Number(partes[2])
+            );
+
+        }
+
+        return new Date(data);
+    }
+
+    if (data instanceof Date) {
+        return data;
+    }
+
+    return new Date(data);
+
+}
+
+
+function formatarData(data) {
+
+    const d = converterData(data);
+
+    if (!d || isNaN(d.getTime())) {
+        return "-";
+    }
 
     return d.toLocaleDateString("pt-BR");
 
 }
+
 
 
 // =======================================
@@ -31,22 +72,21 @@ function formatarData(data){
 
 function diasRestantes(data){
 
+    const validade = converterData(data);
+
+    if (!validade) return 9999;
+
     const hoje = new Date();
 
     hoje.setHours(0,0,0,0);
 
-    const validade = new Date(data);
-
     validade.setHours(0,0,0,0);
 
     return Math.floor(
-
-        (validade-hoje)/(1000*60*60*24)
-
+        (validade - hoje) / (1000 * 60 * 60 * 24)
     );
 
 }
-
 
 
 // =======================================
@@ -164,55 +204,173 @@ async function carregarProducoesRecentes() {
 
         const lista = [];
 
-        snapshot.forEach(doc => {
+snapshot.forEach(doc => {
 
-            lista.push(doc.data());
+    lista.push(doc.data());
+
+});
+
+lista.sort((a, b) => {
+
+    return converterData(b.dataProducao) - converterData(a.dataProducao);
+
+});
+
+lista.slice(0, 5).forEach(p => {
+
+    console.log("PRODUÇÃO:", p);
+
+    const linha = document.createElement("tr");
+
+    linha.innerHTML = `
+
+        <td>${p.produto || "-"}</td>
+
+        <td>${p.quantidade || 0} ${p.unidade || ""}</td>
+
+        <td>${formatarData(p.dataProducao)}</td>
+
+        <td>${formatarData(p.validade)}</td>
+
+        <td>${p.responsavel || "admin"}</td>
+
+    `;
+
+    tabela.appendChild(linha);
+
+});
+
+
+} catch (error) {
+
+    console.error(
+        "Erro produções:",
+        error
+    );
+
+}
+
+} // fecha carregarProducoesRecentes
+
+// =======================================
+// PRÓXIMOS VENCIMENTOS
+// =======================================
+
+async function carregarVencimentos(){
+
+    try{
+
+        const tabela =
+        document.getElementById("listaVencimentos");
+
+
+        tabela.innerHTML = "";
+
+
+        const snapshot =
+        await getDocs(
+            collection(db,"etiquetas")
+        );
+
+
+        const lista = [];
+
+
+        snapshot.forEach(doc=>{
+
+            const e = doc.data();
+
+
+            const dias =
+            diasRestantes(e.validade);
+
+
+            if(dias <= 7 && dias >= 0){
+
+                lista.push({
+
+                    produto: e.produto || "-",
+
+                    lote: e.lote || e.codigo || "-",
+
+                    validade: e.validade,
+
+                    dias: dias
+
+                });
+
+            }
+
 
         });
 
-        lista.sort((a, b) => {
 
-            return new Date(b.dataProducao) - new Date(a.dataProducao);
+
+        lista.sort((a,b)=>{
+
+            return a.dias - b.dias;
 
         });
 
-        lista.slice(0, 5).forEach(p => {
 
-            const linha = document.createElement("tr");
 
-            linha.innerHTML = `
+        if(lista.length === 0){
 
-                <td>${p.produto || "-"}</td>
+            tabela.innerHTML = `
 
-                <td>${p.quantidade || 0} ${p.unidade || ""}</td>
+            <tr>
 
-                <td>${formatarData(p.dataProducao)}</td>
+                <td colspan="4">
+                    Nenhum vencimento próximo
+                </td>
 
-                <td>${formatarData(p.validade)}</td>
-
-                <td>${p.responsavel || "admin"}</td>
+            </tr>
 
             `;
 
+            return;
+
+        }
+
+
+
+        lista.slice(0,10).forEach(v=>{
+
+
+            const linha =
+            document.createElement("tr");
+
+
+            linha.innerHTML = `
+
+                <td>${v.produto}</td>
+
+                <td>${v.lote}</td>
+
+                <td>${formatarData(v.validade)}</td>
+
+                <td>${v.dias} dia(s)</td>
+
+            `;
+
+
             tabela.appendChild(linha);
+
 
         });
 
-    }
 
-    catch (error) {
+    }
+    catch(error){
 
         console.error(
-            "Erro produções:",
+            "Erro vencimentos:",
             error
         );
 
     }
 
 }
-
-
-
 // =======================================
 // DASHBOARD
 // =======================================
@@ -223,8 +381,9 @@ async function carregarDashboard() {
 
     await carregarProducoesRecentes();
 
-}
+    await carregarVencimentos();
 
+}
 
 
 // =======================================
@@ -232,9 +391,6 @@ async function carregarDashboard() {
 // =======================================
 
 document.addEventListener(
-
     "DOMContentLoaded",
-
     carregarDashboard
-
 );
