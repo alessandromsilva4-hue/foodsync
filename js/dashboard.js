@@ -1,248 +1,227 @@
 // =======================================
-// FOODSYNCH - DASHBOARD FIRESTORE
+// FOODSYNC - DASHBOARD
 // =======================================
 
 import { db } from "./firebase.js";
 
 import {
     collection,
-    getDocs,
-    query,
-    orderBy,
-    limit
+    getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 // =======================================
-// CARREGAR DASHBOARD
+// FORMATAR DATA
 // =======================================
 
-async function carregarDashboard(){
+function formatarData(data){
 
-try{
+    if(!data) return "-";
 
+    const d = new Date(data);
 
-// ===============================
-// PRODUÇÕES HOJE
-// ===============================
-
-const producaoSnap = await getDocs(
-    collection(db,"producoes")
-);
-
-
-let totalProducao = 0;
-
-
-producaoSnap.forEach(doc=>{
-
-const dados = doc.data();
-
-if(dados.dataProducao){
-
-totalProducao++;
-
-}
-
-});
-
-
-document.getElementById("totalProducao").innerText =
-totalProducao;
-
-
-
-// ===============================
-// ETIQUETAS
-// ===============================
-
-
-const etiquetasSnap = await getDocs(
-collection(db,"etiquetas")
-);
-
-
-document.getElementById("totalEtiquetas").innerText =
-etiquetasSnap.size;
-
-
-
-// ===============================
-// PRODUTOS VENCENDO
-// ===============================
-
-
-const produtosSnap = await getDocs(
-collection(db,"produtos")
-);
-
-
-let vencendo = 0;
-
-
-produtosSnap.forEach(doc=>{
-
-
-const produto = doc.data();
-
-
-if(produto.validadeDias <= 3){
-
-vencendo++;
+    return d.toLocaleDateString("pt-BR");
 
 }
 
 
-});
+// =======================================
+// DIFERENÇA EM DIAS
+// =======================================
 
+function diasRestantes(data){
 
-document.getElementById("produtosVencendo").innerText =
-vencendo;
+    const hoje = new Date();
 
+    hoje.setHours(0,0,0,0);
 
+    const validade = new Date(data);
 
-// ===============================
-// ESTOQUE BAIXO
-// ===============================
+    validade.setHours(0,0,0,0);
 
+    return Math.floor(
 
-const estoqueSnap = await getDocs(
-collection(db,"estoque")
-);
+        (validade-hoje)/(1000*60*60*24)
 
-
-let baixo = 0;
-
-
-estoqueSnap.forEach(doc=>{
-
-
-const item = doc.data();
-
-
-if(item.Saldo <= 3){
-
-baixo++;
+    );
 
 }
 
 
-});
+
+// =======================================
+// CARDS
+// =======================================
+
+async function carregarCards(){
+
+    try{
+
+        const produtos =
+        await getDocs(collection(db,"produtos"));
+
+        const producoes =
+        await getDocs(collection(db,"producoes"));
+
+        const etiquetas =
+        await getDocs(collection(db,"etiquetas"));
+
+        const usuarios =
+        await getDocs(collection(db,"usuarios"));
 
 
-document.getElementById("estoqueBaixo").innerText =
-baixo;
+        document.getElementById("totalProdutos").innerText =
+        produtos.size;
 
 
+        document.getElementById("totalProducoes").innerText =
+        producoes.size;
 
-// ===============================
+
+        document.getElementById("totalEtiquetas").innerText =
+        etiquetas.size;
+
+
+        document.getElementById("totalUsuarios").innerText =
+        usuarios.size;
+
+
+        let vencendo = 0;
+
+        let vencidos = 0;
+
+
+        etiquetas.forEach(doc=>{
+
+            const e = doc.data();
+
+            const dias =
+            diasRestantes(e.validade);
+
+
+            if(dias < 0){
+
+                vencidos++;
+
+            }
+
+            else if(dias <=3){
+
+                vencendo++;
+
+            }
+
+        });
+
+
+        document.getElementById("produtosVencendo").innerText =
+        vencendo;
+
+
+        document.getElementById("produtosVencidos").innerText =
+        vencidos;
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Erro cards:",
+            error
+        );
+
+    }
+
+}
+// =======================================
 // ÚLTIMAS PRODUÇÕES
-// ===============================
+// =======================================
 
+async function carregarProducoesRecentes() {
 
-const tabela =
-document.getElementById("listaProducao");
+    try {
 
+        const tabela =
+            document.getElementById("listaProducao");
 
-tabela.innerHTML="";
+        tabela.innerHTML = "";
 
+        const snapshot =
+            await getDocs(collection(db, "producoes"));
 
-const ultimas = query(
+        if (snapshot.empty) {
 
-collection(db,"producoes"),
+            tabela.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        Nenhuma produção registrada
+                    </td>
+                </tr>
+            `;
 
-orderBy("dataProducao","desc"),
+            return;
+        }
 
-limit(5)
+        const lista = [];
 
-);
+        snapshot.forEach(doc => {
 
+            lista.push(doc.data());
 
+        });
 
-const producoes =
-await getDocs(ultimas);
+        lista.sort((a, b) => {
 
+            return new Date(b.dataProducao) - new Date(a.dataProducao);
 
+        });
 
-if(producoes.empty){
+        lista.slice(0, 5).forEach(p => {
 
+            const linha = document.createElement("tr");
 
-tabela.innerHTML=`
+            linha.innerHTML = `
 
-<tr>
+                <td>${p.produto || "-"}</td>
 
-<td colspan="4">
+                <td>${p.quantidade || 0} ${p.unidade || ""}</td>
 
-Nenhuma produção registrada
+                <td>${formatarData(p.dataProducao)}</td>
 
-</td>
+                <td>${formatarData(p.validade)}</td>
 
-</tr>
+                <td>${p.responsavel || "admin"}</td>
 
-`;
+            `;
 
-return;
+            tabela.appendChild(linha);
 
-}
+        });
 
+    }
 
+    catch (error) {
 
-producoes.forEach(doc=>{
+        console.error(
+            "Erro produções:",
+            error
+        );
 
-
-const p = doc.data();
-
-
-console.log(p);
-
-
-let data = "-";
-
-
-if(p.dataProducao){
-
-data =
-p.dataProducao.toDate()
-.toLocaleDateString("pt-BR");
-
-}
-
-
-
-let nomeProduto = p.Produto || p["Produto "] || p.produto || "-";
-
-console.log("NOME DO PRODUTO:", nomeProduto);
-
-const linha = document.createElement("tr");
-
-linha.innerHTML = `
-
-<td>${nomeProduto}</td>
-
-<td>${p.quantidade || 0}</td>
-
-<td>${data}</td>
-
-<td>Finalizado</td>
-
-`;
-
-tabela.appendChild(linha);
-
-});
-
+    }
 
 }
 
-catch(error){
 
-console.error(
-"Erro dashboard:",
-error
-);
 
-}
+// =======================================
+// DASHBOARD
+// =======================================
 
+async function carregarDashboard() {
+
+    await carregarCards();
+
+    await carregarProducoesRecentes();
 
 }
 
@@ -252,8 +231,10 @@ error
 // INICIAR
 // =======================================
 
-
 document.addEventListener(
-"DOMContentLoaded",
-carregarDashboard
+
+    "DOMContentLoaded",
+
+    carregarDashboard
+
 );
