@@ -8,33 +8,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-// CONVERTER DATA
-
-function converterData(data){
-
-    if(!data) return null;
-
-
-    if(typeof data.toDate === "function"){
-
-        return data.toDate();
-
-    }
-
-
-    return new Date(data);
-
-}
-
-
-
-// LIMPAR ETIQUETAS VENCIDAS
-
 async function limparEtiquetas(){
 
-
     const confirmar = confirm(
-        "Deseja apagar somente etiquetas vencidas?"
+        "ATENÇÃO: Deseja apagar TODAS as etiquetas?"
     );
 
 
@@ -45,21 +22,13 @@ async function limparEtiquetas(){
     }
 
 
-
     try{
-
-
-        const hoje = new Date();
-
-        hoje.setHours(0,0,0,0);
-
 
 
         const snapshot =
         await getDocs(
             collection(db,"etiquetas")
         );
-
 
 
         let contador = 0;
@@ -69,44 +38,18 @@ async function limparEtiquetas(){
         for(const item of snapshot.docs){
 
 
-            const etiqueta =
-            item.data();
+            await deleteDoc(
 
+                doc(
+                    db,
+                    "etiquetas",
+                    item.id
+                )
 
-
-            const validade =
-            converterData(
-                etiqueta.validade
             );
 
 
-
-            if(validade && validade < hoje){
-
-
-
-                await deleteDoc(
-
-                    doc(
-                        db,
-                        "etiquetas",
-                        item.id
-                    )
-
-                );
-
-
-                contador++;
-
-
-                console.log(
-                    "Removida:",
-                    etiqueta.produto,
-                    etiqueta.codigo
-                );
-
-
-            }
+            contador++;
 
 
         }
@@ -114,22 +57,21 @@ async function limparEtiquetas(){
 
 
         alert(
-
-            contador +
-            " etiquetas vencidas removidas!"
-
+            contador + 
+            " etiquetas removidas com sucesso!"
         );
 
 
 
         console.log(
-            "Limpeza concluída:",
+            "Limpeza total concluída:",
             contador
         );
 
 
 
-    }catch(error){
+    }
+    catch(error){
 
 
         console.error(
