@@ -1,35 +1,20 @@
-
 // =======================================
-// FOODSYNCH - SISTEMA PRINCIPAL
+// FOODSYNC - SISTEMA PRINCIPAL
 // =======================================
-
-
-// Importar Firebase
 
 import { auth } from "./firebase.js";
 
-
 import {
-
     onAuthStateChanged
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 
 // =======================================
-// VERIFICAR USUÁRIO LOGADO
+// USUÁRIO LOGADO
 // =======================================
 
-
-onAuthStateChanged(
-
-auth,
-
-(user)=>{
+onAuthStateChanged(auth,(user)=>{
 
 
     const nomeUsuario =
@@ -40,13 +25,41 @@ auth,
     if(user){
 
 
+        console.log(
+            "Usuário conectado:",
+            user.email
+        );
+
+
 
         if(nomeUsuario){
 
 
-            nomeUsuario.innerText =
-            user.email;
+            const usuarioSalvo =
+            JSON.parse(
+                localStorage.getItem(
+                    "usuarioFoodSync"
+                )
+            );
 
+
+
+            if(usuarioSalvo?.nome){
+
+
+                nomeUsuario.innerText =
+                usuarioSalvo.nome;
+
+
+            }
+            else{
+
+
+                nomeUsuario.innerText =
+                user.email;
+
+
+            }
 
 
         }
@@ -61,22 +74,15 @@ auth,
 
 
 
-
-
 // =======================================
-// DATA ATUAL DO SISTEMA
+// DATA ATUAL
 // =======================================
-
 
 function dataAtual(){
 
 
-    const hoje =
-    new Date();
-
-
-
-    return hoje.toLocaleDateString(
+    return new Date()
+    .toLocaleDateString(
         "pt-BR"
     );
 
@@ -84,18 +90,16 @@ function dataAtual(){
 }
 
 
-
-window.dataAtual = dataAtual;
-
+window.dataAtual =
+dataAtual;
 
 
 
 
 
 // =======================================
-// ALERTAS PADRÃO
+// MENSAGEM GLOBAL
 // =======================================
-
 
 window.mostrarMensagem = function(
     mensagem,
@@ -123,7 +127,6 @@ window.mostrarMensagem = function(
 
 
 
-
     setTimeout(()=>{
 
 
@@ -142,11 +145,11 @@ window.mostrarMensagem = function(
 
 
 // =======================================
-// CONFIRMAR AÇÃO
+// CONFIRMAÇÃO
 // =======================================
 
 
-window.confirmarAcao = function(
+window.confirmarAcao=function(
     mensagem
 ){
 
@@ -156,3 +159,15 @@ window.confirmarAcao = function(
 
 };
 
+
+
+
+
+
+// =======================================
+// LOG SISTEMA
+// =======================================
+
+console.log(
+    "FOODSYNC APP.JS CARREGADO"
+);

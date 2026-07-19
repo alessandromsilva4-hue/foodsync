@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FoodSync - Administração SAC</title>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/tabela.css">
+<link rel="icon" href="img/favicon.png">
+</head>
+
+
+<body>
+
+
+<div class="layout">
+
+
+<aside class="sidebar">
+
+<div class="logo-area">
+
+<img src="img/logo.png">
+
+</div>
+
+
+<nav class="menu">
+
+<a href="dashboard.html">📊 Dashboard</a>
+
+<a href="producao.html">🍱 Produção</a>
+
+<a href="produtos.html">📦 Produtos</a>
+
+<a href="etiquetas.html">🏷️ Etiquetas</a>
+
+<a href="estoque.html">📋 Estoque</a>
+
+<a href="relatorios.html">📈 Relatórios</a>
+
+<a href="usuario.html">👤 Usuários</a>
+
+<a href="sac-admin.html" class="active">
+🎧 SAC Admin
+</a>
+
+
+</nav>
+
+
+</aside>
+
+
+
+<main class="content">
+
+
+<header class="top-header">
+
+<h1>
+🎧 Atendimento SAC
+</h1>
+
+<p>
+Gerenciamento de chamados
+</p>
+
+</header>
+
+
+
+<section class="table-box">
+
+
+<h2>
+Chamados recebidos
+</h2>
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+Data
+</th>
+
+<th>
+Tipo
+</th>
+
+<th>
+Assunto
+</th>
+
+<th>
+Prioridade
+</th>
+
+<th>
+Status
+</th>
+
+<th>
+Ação
+</th>
+
+
+</tr>
+
+</thead>
+
+
+<tbody id="listaSACAdmin">
+
+
+<tr>
+
+<td colspan="6">
+Carregando...
+</td>
+
+</tr>
+
+
+</tbody>
+
+
+</table>
+
+
+</section>
+
+
+
+</main>
+
+
+</div>
+
+
+<!-- MODAL ATENDIMENTO SAC -->
+
+<div id="modalSAC" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>
+            🎧 Atendimento SAC
+            </h2>
+
+            <button onclick="fecharModalSAC()">
+            ✖
+            </button>
+
+        </div>
+
+
+        <div id="dadosChamado"></div>
+
+
+        <div class="campo">
+
+            <label>
+            Resposta do suporte
+            </label>
+
+            <textarea 
+            id="respostaSAC"
+            rows="5">
+            </textarea>
+
+        </div>
+
+
+        <div class="campo">
+
+            <label>Status</label>
+
+            <select id="statusSAC">
+
+                <option value="Aberto">
+                Aberto
+                </option>
+
+                <option value="Em análise">
+                Em análise
+                </option>
+
+                <option value="Resolvido">
+                Resolvido
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <button
+        class="btn-primary"
+        onclick="salvarAtendimentoSAC()">
+
+        💾 Salvar atendimento
+
+        </button>
+
+
+    </div>
+
+</div>
+
+
+<!-- SCRIPTS NO FINAL -->
+
+<script type="module" src="js/firebase.js"></script>
+
+<script type="module" src="js/sac-admin.js"></script>
+
+<script type="module" src="js/auth.js"></script>
+
+
+</body>
+</html>
