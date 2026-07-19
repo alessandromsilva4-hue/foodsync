@@ -87,8 +87,21 @@
 </a>
 
 
-</nav>
+<a href="ajuda.html">
+❓ Ajuda
+</a>
 
+
+<a href="sac.html">
+🎧 SAC
+</a>
+
+
+<a href="auditoria.html">
+📝 Auditoria
+</a>
+
+</nav>
 
 
 
@@ -141,7 +154,23 @@ Análise dos dados do FoodSync
 </header>
 
 
+<div class="acoes-relatorio">
 
+<button onclick="exportarExcel()">
+📊 Exportar Excel
+</button>
+
+
+<button onclick="exportarCSV()">
+📄 Exportar CSV
+</button>
+
+
+<button onclick="imprimirRelatorio()">
+🖨️ Imprimir
+</button>
+
+</div>
 
 
 
@@ -292,7 +321,15 @@ Estoque Baixo
 
 </section>
 
+<section class="table-box">
 
+<h2>
+📊 Produção por Produto
+</h2>
+
+<canvas id="graficoProducao"></canvas>
+
+</section>
 
 
 
@@ -387,7 +424,9 @@ Sem dados
 
 
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
 <script type="module" src="js/firebase.js"></script>
 

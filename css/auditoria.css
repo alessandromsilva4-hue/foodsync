@@ -1,0 +1,80 @@
+/* =======================================
+   FOODSYNC - AUDITORIA
+======================================= */
+
+
+.filtros-auditoria{
+
+display:flex;
+
+gap:10px;
+
+margin-bottom:20px;
+
+align-items:center;
+
+}
+
+
+
+.filtros-auditoria select,
+.filtros-auditoria input{
+
+padding:8px;
+
+border-radius:6px;
+
+border:1px solid #ccc;
+
+}
+
+
+
+.filtros-auditoria button{
+
+padding:8px 15px;
+
+border:none;
+
+border-radius:6px;
+
+cursor:pointer;
+
+}
+
+
+
+#tabelaAuditoria{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+
+
+#tabelaAuditoria th{
+
+text-align:left;
+
+}
+
+
+
+#tabelaAuditoria td,
+#tabelaAuditoria th{
+
+padding:10px;
+
+}
+
+
+
+#tabelaAuditoria span{
+
+padding:4px 8px;
+
+border-radius:5px;
+
+}

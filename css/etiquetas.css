@@ -1,214 +1,356 @@
 /* ==========================================
-   FOODSYNC - ETIQUETAS
+   FOODSYNC - ETIQUETAS V4
+   Zebra ZD220 - 60x60mm
 ========================================== */
 
-@page{
+
+/* TAMANHO DA ETIQUETA */
+
+@page {
+
     size:60mm 60mm;
+
     margin:0;
+
 }
 
-html,body{
+
+/* BASE */
+
+html,
+body {
 
     width:60mm;
+
     height:60mm;
 
     margin:0;
+
     padding:0;
 
-    font-family:Arial,Helvetica,sans-serif;
+    font-family:Arial, Helvetica, sans-serif;
 
 }
 
 
-.etiqueta{
+
+/* ==========================================
+   ETIQUETA
+========================================== */
+
+
+.etiqueta {
+
 
     width:60mm;
+
     height:60mm;
+
 
     box-sizing:border-box;
 
+
     padding:2mm;
+
 
     display:flex;
 
+
     flex-direction:column;
+
 
     overflow:hidden;
 
+
+    background:white;
+
+
 }
 
 
-.etiqueta-logo{
+
+/* LOGO */
+
+.etiqueta-logo {
+
 
     text-align:center;
 
-    font-size:10px;
-
-    font-weight:bold;
-
-    border-bottom:1px solid #000;
-
-    padding-bottom:1mm;
-
-    margin-bottom:1mm;
-
-}
-
-
-#nomeEtiqueta{
 
     font-size:14px;
 
+
     font-weight:bold;
 
-    text-align:center;
-
-    margin:1mm 0;
 
     border-bottom:1px solid #000;
 
+
     padding-bottom:1mm;
+
+
+    margin-bottom:1mm;
+
 
 }
 
 
-#temperaturaEtiqueta{
+
+/* PRODUTO */
+
+#nomeEtiqueta {
+
+
+    font-size:18px;
+
+
+    font-weight:900;
+
+
+    text-align:center;
+
+
+    margin:2mm 0;
+
+
+    line-height:1.1;
+
+
+}
+
+
+
+/* INFORMAÇÕES */
+
+.etiqueta p {
 
     font-size:11px;
 
     font-weight:bold;
 
-    margin:1mm 0;
-
-}
-
-
-.etiqueta p{
-
-    font-size:10px;
-
-    margin:1mm 0;
+    margin:0.8mm 0;
 
     line-height:1.1;
 
 }
 
 
-#qrcodeEtiqueta{
 
-    margin-top:auto;
+/* TEMPERATURA */
 
-    display:flex;
+#temperaturaEtiqueta {
 
-    justify-content:flex-end;
-
-}
-
-
-#qrcodeEtiqueta img,
-#qrcodeEtiqueta canvas{
-
-    width:20mm !important;
-
-    height:20mm !important;
-
-}
-
-/* BOTÃO */
-
-.etiqueta-preview button{
-
-    padding:12px 26px;
-
-    border:none;
-
-    border-radius:8px;
-
-    background:#15803d;
-
-    color:#fff;
-
-    font-size:16px;
 
     font-weight:bold;
 
+
+}
+
+
+
+/* QR CODE */
+
+
+#qrcodeEtiqueta {
+
+
+    margin-top:1mm;
+
+
+    display:flex;
+
+
+    justify-content:center;
+
+
+    align-items:center;
+
+
+    height:20mm;
+
+
+}
+
+
+
+#qrcodeEtiqueta img,
+#qrcodeEtiqueta canvas {
+
+
+    width:22mm !important;
+
+
+    height:22mm !important;
+
+
+}
+
+
+
+/* ==========================================
+   BOTÃO
+========================================== */
+
+
+.etiqueta-preview button {
+
+
+    margin-top:15px;
+
+
+    padding:12px 25px;
+
+
+    border:none;
+
+
+    border-radius:8px;
+
+
+    background:#15803d;
+
+
+    color:white;
+
+
+    font-weight:bold;
+
+
     cursor:pointer;
 
-    transition:.2s;
 
 }
 
-.etiqueta-preview button:hover{
 
-    background:#166534;
 
-}
+/* ==========================================
+   IMPRESSÃO
+========================================== */
 
-/* IMPRESSÃO */
 
 @media print {
 
+
     @page {
 
-        size: 60mm 60mm;
+        size:60mm 60mm;
 
         margin:0;
 
     }
+
 
 
     html,
     body {
 
+
         width:60mm;
+
 
         height:60mm;
 
+
         margin:0;
+
 
         padding:0;
 
+
+        overflow:hidden;
+
+
     }
+
 
 
     body * {
 
+
         visibility:hidden;
 
+
     }
+
 
 
     #etiquetaGerada,
     #etiquetaGerada * {
 
+
         visibility:visible;
+
 
     }
 
 
-  #etiquetaGerada {
 
-    position:absolute;
+    #etiquetaGerada {
 
-    left:0;
 
-    top:0;
+        position:absolute;
 
-    width:60mm;
 
-    height:60mm;
+        left:0;
 
-    margin:0;
 
-    padding:2mm;
+        top:0;
 
-    box-sizing:border-box;
 
-    border:none !important;
+        width:60mm;
 
-    border-radius:0;
 
-}
+        height:60mm;
+
+
+        padding:2mm;
+
+
+        margin:0;
+
+
+        box-sizing:border-box;
+
+
+        overflow:hidden;
+
+
+        page-break-after:avoid;
+
+
+        page-break-before:avoid;
+
+
+        page-break-inside:avoid;
+
+
+    }
+
+
+
+    .etiqueta-preview button {
+
+
+        display:none;
+
+
+    }
+
+
+
+    * {
+
+
+        page-break-after:avoid !important;
+
+
+        page-break-before:avoid !important;
+
+
+        page-break-inside:avoid !important;
+
+
+    }
 
 
 }

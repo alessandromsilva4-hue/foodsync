@@ -12,13 +12,15 @@ import {
     where,
     orderBy,
     limit,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    serverTimestamp,
+    deleteDoc,
+    doc
+}from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
 
-console.log("ETIQUETAS.JS CARREGADO");
+console.log("ETIQUETAS.JS VERSÃO NOVA - 19/07/2026");
 
 // ELEMENTOS
 
@@ -73,7 +75,154 @@ async function carregarProdutos() {
     }
 
 }
+// =======================================
+// HISTÓRICO DE ETIQUETAS
+// =======================================
 
+async function carregarHistoricoEtiquetas(){
+
+    const tabela =
+    document.getElementById("listaEtiquetas");
+
+
+    if(!tabela) return;
+
+
+    tabela.innerHTML="";
+
+
+    try {
+
+
+        const consulta = query(
+
+            collection(db,"etiquetas"),
+
+            orderBy(
+                "criadoEm",
+                "desc"
+            )
+
+        );
+
+
+        const snapshot =
+        await getDocs(consulta);
+
+
+
+        if(snapshot.empty){
+
+            tabela.innerHTML = `
+
+            <tr>
+            <td colspan="7">
+            Nenhuma etiqueta gerada
+            </td>
+            </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+
+        snapshot.forEach(item=>{
+
+
+            const etiqueta =
+            item.data();
+
+
+
+            tabela.innerHTML += `
+
+            <tr>
+
+            <td>
+            ${etiqueta.codigo}
+            </td>
+
+
+            <td>
+            ${etiqueta.produto}
+            </td>
+
+
+            <td>
+            ${etiqueta.quantidade || "-"}
+            ${etiqueta.unidade || ""}
+            </td>
+
+
+            <td>
+            ${formatarData(etiqueta.dataProducao)}
+            </td>
+
+
+            <td>
+            ${formatarData(etiqueta.validade)}
+            </td>
+
+
+            <td>
+            ${etiqueta.usuario}
+            </td>
+
+
+            <td>
+
+            <button onclick="
+            reimprimirEtiqueta('${item.id}')
+            ">
+            🖨️
+            </button>
+
+
+            <button onclick="
+            excluirEtiqueta('${item.id}')
+            ">
+            🗑️
+            </button>
+
+
+            </td>
+
+            </tr>
+
+            `;
+
+
+        });
+
+
+
+    }catch(error){
+
+        console.error(
+            "Erro histórico:",
+            error
+        );
+
+    }
+
+}
+
+
+
+
+function formatarData(data){
+
+    if(!data)
+        return "-";
+
+
+    return new Date(data)
+    .toLocaleDateString("pt-BR");
+
+}
 // =======================================
 // BUSCAR ÚLTIMA PRODUÇÃO
 // =======================================
@@ -113,6 +262,11 @@ if (etiquetaForm) {
 console.log("TESTE CODIGO:", codigoEtiqueta);
 
         const nomeProduto = produtoSelect.value;
+const produtoSelecionado = produtos.find(
+    p => p.nome === nomeProduto
+);
+
+console.log("Produto selecionado:", produtoSelecionado);
 
         if (!nomeProduto) {
 
@@ -124,45 +278,138 @@ console.log("TESTE CODIGO:", codigoEtiqueta);
 
         const producao = await buscarUltimaProducao(nomeProduto);
 
-        if (!producao) {
 
-            alert("Não existe produção registrada para este produto.");
+if (!producao) {
 
-            return;
+    alert("Não existe produção registrada para este produto.");
 
-        }
+    return;
 
-    // Dados da produção
+}
 
-const dataProducao = new Date(producao.dataProducao);
 
-const validade = new Date(producao.validade);
+// Buscar dados do produto cadastrado
+
+const produtoDados = produtos.find(
+    p => p.nome === nomeProduto
+);
+
+
+
+// ================================
+// DADOS DA ETIQUETA
+// ================================
+
+
+const dataProducao = new Date(
+    producao.dataProducao
+);
+
+
+let validade;
+
+
+if(produtoSelecionado?.validadeDias){
+
+    validade = new Date(dataProducao);
+
+    validade.setDate(
+        validade.getDate() + Number(produtoSelecionado.validadeDias)
+    );
+
+}else{
+
+    validade = new Date(producao.validade);
+
+}
+
+
 
 const producaoFormatada =
-    dataProducao.toLocaleDateString("pt-BR");
+dataProducao.toLocaleDateString("pt-BR");
+
 
 const validadeFormatada =
-    validade.toLocaleDateString("pt-BR");
+validade.toLocaleDateString("pt-BR");
 
-// Preencher etiqueta
+
+
+
+// PRODUTO
 
 document.getElementById("nomeEtiqueta").innerText =
-    producao.produto;
+(producao.produto || nomeProduto)
+.toUpperCase();
+
+
+
+
+
+document.getElementById("categoriaEtiqueta").innerText =
+produtoSelecionado?.categoria || "--";
+
+
+document.getElementById("temperaturaEtiqueta").innerText =
+produtoSelecionado?.temperatura || "--";
+
+
+document.getElementById("quantidadeEtiqueta").innerText =
+(producao.quantidade || 1) 
++ " "
++ (produtoSelecionado?.unidade || "UN");
+
+
+
+// DATAS
 
 document.getElementById("dataEtiqueta").innerText =
-    producaoFormatada;
+producaoFormatada;
+
 
 document.getElementById("validadeEtiqueta").innerText =
-    validadeFormatada;
+validadeFormatada;
 
-// Temperatura
+
+
+
+// TEMPERATURA DO PRODUTO
+
 document.getElementById("temperaturaEtiqueta").innerText =
-    producao.temperatura || "-";
+produtoSelecionado?.temperatura || "AMBIENTE";
+
+
+
+
 // RESPONSÁVEL
 
 document.getElementById("responsavelEtiqueta").innerText =
-    producao.responsavel || producao.usuario || "admin";
 
+producao.responsavel ||
+
+producao.usuario ||
+
+"Alessandro";
+
+
+
+
+
+// QUANTIDADE
+
+document.getElementById("quantidadeEtiqueta").innerText =
+(producao.quantidade || 1)
++ " "
++ (produtoSelecionado?.unidade || "UN");
+
+
+
+
+
+// LOTE
+
+document.getElementById("loteEtiqueta").innerText =
+
+codigoEtiqueta.substring(0,12);
 
 // GERAR QR CODE
 
@@ -172,7 +419,7 @@ if (qrDiv) {
 
     qrDiv.innerHTML = "";
 
-   const linkConsulta =
+  const linkConsulta =
 "https://alessandromsilva4-hue.github.io/foodsync/consulta.html?codigo="
 + codigoEtiqueta;
 
@@ -182,8 +429,8 @@ if (qrDiv) {
 
 new QRCode(qrDiv, {
     text: linkConsulta,
-    width: 80,
-    height: 80,
+    width: 200,
+    height: 200,
     correctLevel: QRCode.CorrectLevel.H
 });
 
@@ -207,22 +454,25 @@ try {
 
             dataProducao: producao.dataProducao,
 
-            validade: producao.validade,
+           validade: validade.toISOString().split("T")[0],
 
-            usuario: producao.usuario || "admin",
+categoria: produtoSelecionado?.categoria || "",
 
-            temperatura: producao.temperatura || "AMBIENTE",
+usuario: producao.responsavel || "Alessandro",
 
-            lote: codigoEtiqueta,
+temperatura: produtoSelecionado?.temperatura || "AMBIENTE",
 
-            observacao: "",
+lote: codigoEtiqueta,
+
+observacao: "",
 
             criadoEm: serverTimestamp()
         }
     );
 
-       console.log("Etiqueta salva.");
+      console.log("Etiqueta salva.");
 
+await carregarHistoricoEtiquetas();
 } catch (erro) {
 
     console.error(
@@ -236,57 +486,192 @@ try {
 
 }
 // =======================================
+// EXCLUIR ETIQUETA
+// =======================================
+
+window.excluirEtiqueta = async function(id){
+
+
+    if(!confirm("Excluir etiqueta?"))
+    return;
+
+
+    await deleteDoc(
+        doc(db,"etiquetas",id)
+    );
+
+
+    await carregarHistoricoEtiquetas();
+
+
+};
+
+
+
+// =======================================
+// REIMPRIMIR ETIQUETA
+// =======================================
+
+window.reimprimirEtiqueta = async function(id){
+
+
+    const snapshot =
+    await getDocs(
+        collection(db,"etiquetas")
+    );
+
+
+    snapshot.forEach(item=>{
+
+
+        if(item.id === id){
+
+
+            const dados =
+            item.data();
+
+
+
+            document.getElementById(
+                "nomeEtiqueta"
+            ).innerText =
+            dados.produto;
+
+
+
+            document.getElementById(
+                "dataEtiqueta"
+            ).innerText =
+            formatarData(
+                dados.dataProducao
+            );
+
+
+
+            document.getElementById(
+                "validadeEtiqueta"
+            ).innerText =
+            formatarData(
+                dados.validade
+            );
+
+
+
+            document.getElementById(
+                "temperaturaEtiqueta"
+            ).innerText =
+            dados.temperatura;
+
+
+
+            document.getElementById(
+                "responsavelEtiqueta"
+            ).innerText =
+            "RESP: " + dados.usuario;
+
+
+
+            imprimirEtiqueta();
+
+
+        }
+
+
+    });
+
+
+};
+// =======================================
 // IMPRIMIR ETIQUETA
 // =======================================
 
 window.imprimirEtiqueta = function () {
 
-    const conteudo = document.getElementById("etiquetaGerada").outerHTML;
 
-    const janela = window.open("", "_blank", "width=500,height=500");
+    const conteudo =
+    document.getElementById("etiquetaGerada").outerHTML;
+
+
+
+    const janela =
+    window.open(
+        "",
+        "_blank",
+        "width=227,height=227"
+    );
+
+
 
     janela.document.write(`
+
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
+
 <meta charset="UTF-8">
+
 
 <style>
 
+
 @page{
+
     size:60mm 60mm;
+
     margin:0;
+
 }
 
-html,body{
+
+
+html,
+body{
+
     width:60mm;
+
     height:60mm;
+
     margin:0;
+
     padding:0;
+
+    overflow:hidden;
+
     font-family:Arial,Helvetica,sans-serif;
+
 }
+
+
 
 .etiqueta{
 
+
     width:60mm;
+
     height:60mm;
+
 
     box-sizing:border-box;
 
+
     padding:2mm;
 
-    display:flex;
 
-    flex-direction:column;
+    overflow:hidden;
+
 
 }
+
 
 
 .etiqueta-logo{
 
+
     text-align:center;
 
-    font-size:10px;
+    font-size:12px;
 
     font-weight:bold;
 
@@ -294,14 +679,14 @@ html,body{
 
     padding-bottom:1mm;
 
-    margin-bottom:1mm;
-
 }
+
 
 
 #nomeEtiqueta{
 
-    font-size:14px;
+
+    font-size:16px;
 
     font-weight:bold;
 
@@ -309,84 +694,117 @@ html,body{
 
     margin:1mm 0;
 
-    border-bottom:1px solid #000;
-
-    padding-bottom:1mm;
-
 }
 
-
-#temperaturaEtiqueta{
-
-    font-size:11px;
-
-    font-weight:bold;
-
-    margin:1mm 0;
-
-}
 
 
 .etiqueta p{
 
+
     font-size:10px;
 
-    margin:1mm 0;
-
-    line-height:1.1;
+    margin:0.5mm 0;
 
 }
+
 
 
 #qrcodeEtiqueta{
 
-    margin-top:auto;
 
     display:flex;
 
-    justify-content:flex-end;
+    justify-content:center;
+
+    margin-top:2mm;
 
 }
+
 
 
 #qrcodeEtiqueta img,
 #qrcodeEtiqueta canvas{
 
-    width:14mm !important;
 
-    height:14mm !important;
+    width:15mm!important;
+
+    height:15mm!important;
+
 
 }
+
+
+
+@media print{
+
+
+    html,
+    body{
+
+
+        width:60mm;
+
+        height:60mm;
+
+        overflow:hidden;
+
+    }
+
+
+}
+
+
 
 </style>
 
+
 </head>
+
 
 <body>
 
+
 ${conteudo}
 
-<script>
-window.onload = () => {
 
-    setTimeout(() => {
+
+<script>
+
+
+window.onload=function(){
+
+
+    setTimeout(()=>{
+
 
         window.print();
 
-    },1000);
+
+    },300);
+
 
 }
+
+
+
 </script>
+
+
 
 </body>
 
+
 </html>
+
 `);
+
+
 
     janela.document.close();
 
-};
 
+
+};
 // =======================================
 // INICIALIZAÇÃO
 // =======================================
@@ -396,6 +814,8 @@ document.addEventListener(
 async()=>{
 
     await carregarProdutos();
+
+await carregarHistoricoEtiquetas();
 
 
     const campoData =

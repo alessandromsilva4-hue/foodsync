@@ -117,6 +117,14 @@ Configurações
 
 </a>
 
+<a href="ajuda.html">
+❓ Ajuda
+</a>
+
+
+<a href="sac.html">
+🎧 SAC
+</a>
 
 </nav>
 
@@ -207,7 +215,6 @@ Selecione o produto
 
 
 
-
 <div class="input-group">
 
 <label>
@@ -220,6 +227,40 @@ id="quantidadeProducao"
 value="1">
 
 </div>
+
+
+<div class="input-group">
+
+<label>
+Unidade
+</label>
+
+<select id="unidadeProducao">
+
+<option value="UN">
+UN
+</option>
+
+<option value="KG">
+KG
+</option>
+
+<option value="G">
+G
+</option>
+
+<option value="L">
+L
+</option>
+
+<option value="ML">
+ML
+</option>
+
+</select>
+
+</div>
+
 
 
 <!-- NOVOS CAMPOS -->
@@ -334,9 +375,7 @@ class="btn-primary">
 
 
 
-
 <!-- LISTA DE PRODUÇÕES -->
-
 
 <section class="table-box">
 
@@ -351,40 +390,35 @@ Produções realizadas
 
 <table>
 
-
 <thead>
 
-
 <tr>
-
 
 <th>
 Produto
 </th>
 
-
 <th>
 Quantidade
 </th>
-
 
 <th>
 Data Produção
 </th>
 
-
 <th>
 Validade
 </th>
-
 
 <th>
 Status
 </th>
 
+<th>
+Ações
+</th>
 
 </tr>
-
 
 </thead>
 
@@ -395,7 +429,7 @@ Status
 
 <tr>
 
-<td colspan="5">
+<td colspan="6">
 
 Nenhuma produção registrada
 
@@ -412,7 +446,6 @@ Nenhuma produção registrada
 
 
 </section>
-
 <!-- FIREBASE -->
 
 <script type="module" src="js/firebase.js"></script>

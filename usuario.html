@@ -15,11 +15,8 @@
 
 
 <link rel="stylesheet" href="css/style.css">
-
 <link rel="stylesheet" href="css/sidebar.css">
-
 <link rel="stylesheet" href="css/formulario.css">
-
 <link rel="stylesheet" href="css/tabela.css">
 
 
@@ -39,10 +36,9 @@
 
 <div class="logo-area">
 
-<img src="img/logo.png">
+<img src="img/logo.png" alt="FoodSync">
 
 </div>
-
 
 
 
@@ -80,6 +76,11 @@
 </a>
 
 
+<a href="auditoria.html">
+📝 Auditoria
+</a>
+
+
 <a href="usuario.html" class="active">
 👤 Usuários
 </a>
@@ -90,8 +91,18 @@
 </a>
 
 
+<a href="ajuda.html">
+❓ Ajuda
+</a>
+
+
+<a href="sac.html">
+🎧 SAC
+</a>
+
 
 </nav>
+
 
 
 
@@ -130,12 +141,12 @@
 
 
 <h1>
-Usuários
+👤 Usuários
 </h1>
 
 
 <p>
-Controle de acesso ao sistema
+Controle de usuários e permissões do FoodSync
 </p>
 
 
@@ -143,7 +154,6 @@ Controle de acesso ao sistema
 
 
 </header>
-
 
 
 
@@ -171,6 +181,7 @@ Novo Usuário
 
 
 
+
 <div class="input-group">
 
 <label>
@@ -178,12 +189,19 @@ Nome
 </label>
 
 
-<input 
+<input
+
 type="text"
+
 id="nomeUsuario"
+
+placeholder="Nome do usuário"
+
 required>
 
+
 </div>
+
 
 
 
@@ -198,12 +216,19 @@ E-mail
 </label>
 
 
-<input 
+<input
+
 type="email"
+
 id="emailUsuario"
+
+placeholder="usuario@email.com"
+
 required>
 
+
 </div>
+
 
 
 
@@ -214,30 +239,31 @@ required>
 <div class="input-group">
 
 <label>
-Perfil
+Perfil de Acesso
 </label>
 
 
 <select id="perfilUsuario">
 
 
-<option>
-Administrador
+<option value="Administrador">
+
+👑 Administrador
+
 </option>
 
 
-<option>
-Produção
+<option value="Operador">
+
+🍱 Operador
+
 </option>
 
 
-<option>
-Estoque
-</option>
+<option value="Consulta">
 
+👀 Consulta
 
-<option>
-Visualização
 </option>
 
 
@@ -245,6 +271,7 @@ Visualização
 
 
 </div>
+
 
 
 
@@ -263,12 +290,16 @@ Status
 
 
 <option value="ativo">
-Ativo
+
+🟢 Ativo
+
 </option>
 
 
 <option value="inativo">
-Inativo
+
+🔴 Inativo
+
 </option>
 
 
@@ -280,8 +311,8 @@ Inativo
 
 
 
-</div>
 
+</div>
 
 
 
@@ -290,9 +321,10 @@ Inativo
 
 <button type="submit">
 
-Salvar Usuário
+💾 Salvar Usuário
 
 </button>
+
 
 
 
@@ -310,12 +342,14 @@ Salvar Usuário
 
 
 
+
 <section class="table-box">
 
 
 <h2>
-Usuários cadastrados
+📋 Usuários Cadastrados
 </h2>
+
 
 
 
@@ -350,6 +384,11 @@ Status
 
 
 <th>
+Criado em
+</th>
+
+
+<th>
 Ação
 </th>
 
@@ -363,14 +402,19 @@ Ação
 
 
 
+
+
 <tbody id="listaUsuarios">
 
 
 <tr>
 
-<td colspan="5">
+
+<td colspan="6">
+
 
 Nenhum usuário cadastrado
+
 
 </td>
 
@@ -394,10 +438,12 @@ Nenhum usuário cadastrado
 
 
 
+
 </main>
 
 
 </div>
+
 
 
 
@@ -413,6 +459,8 @@ Nenhum usuário cadastrado
 <script type="module" src="js/usuarios.js"></script>
 
 <script type="module" src="js/auth.js"></script>
+
+
 
 
 
