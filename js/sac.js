@@ -2,10 +2,12 @@
 // FOODSYNC - SAC
 // =======================================
 
-console.log("SAC.JS CARREGADO");
+console.log("SAC.JS VERSÃO FINAL");
 
 
-import { db } from "./firebase.js";
+// FIREBASE
+
+import { db, auth } from "./firebase.js";
 
 
 import {
@@ -14,6 +16,7 @@ collection,
 addDoc,
 getDocs,
 query,
+where,
 orderBy,
 serverTimestamp
 
@@ -21,6 +24,14 @@ serverTimestamp
 
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+
+import {
+
+onAuthStateChanged
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 import {
@@ -48,17 +59,22 @@ document.getElementById("listaChamados");
 
 
 
+let usuarioAtual = null;
+
+
+
 
 // =======================================
-// CARREGAR CHAMADOS
+// CARREGAR CHAMADOS DO USUÁRIO
 // =======================================
 
 
 async function carregarChamados(){
 
 
-if(!tabela)
+if(!tabela || !usuarioAtual)
 return;
+
 
 
 try{
@@ -66,12 +82,22 @@ try{
 
 const consulta = query(
 
+
 collection(db,"sac"),
+
+
+where(
+"usuarioId",
+"==",
+usuarioAtual.uid
+),
+
 
 orderBy(
 "criadoEm",
 "desc"
 )
+
 
 );
 
@@ -82,18 +108,18 @@ await getDocs(consulta);
 
 
 
-tabela.innerHTML = "";
+tabela.innerHTML="";
 
 
 
 if(snapshot.empty){
 
 
-tabela.innerHTML = `
+tabela.innerHTML=`
 
 <tr>
 
-<td colspan="5">
+<td colspan="6">
 
 Nenhum chamado encontrado.
 
@@ -103,7 +129,6 @@ Nenhum chamado encontrado.
 
 `;
 
-
 return;
 
 }
@@ -111,26 +136,30 @@ return;
 
 
 
-snapshot.forEach(doc=>{
+snapshot.forEach(item=>{
 
 
 const chamado =
-doc.data();
+item.data();
 
 
 
-let data = "-";
+let data="-";
+
 
 
 if(chamado.criadoEm?.seconds){
 
 
 data =
+
 new Date(
 
 chamado.criadoEm.seconds * 1000
 
-).toLocaleString(
+)
+
+.toLocaleString(
 "pt-BR"
 );
 
@@ -139,36 +168,67 @@ chamado.criadoEm.seconds * 1000
 
 
 
+
+let status = chamado.status || "Aberto";
+
+
+
 tabela.innerHTML += `
+
 
 <tr>
 
+
 <td>
+
 ${data}
+
 </td>
 
 
 <td>
+
 ${chamado.tipo || "-"}
+
 </td>
 
 
+
 <td>
+
 ${chamado.assunto || "-"}
+
 </td>
 
 
+
 <td>
+
 ${chamado.prioridade || "-"}
+
 </td>
+
 
 
 <td>
-${chamado.status || "-"}
+
+${status}
+
 </td>
+
+
+
+<td>
+
+${chamado.resposta || 
+"Aguardando atendimento"}
+
+</td>
+
 
 
 </tr>
+
 
 `;
 
@@ -179,18 +239,23 @@ ${chamado.status || "-"}
 
 
 }
+
 catch(error){
 
 
 console.error(
-"Erro carregar chamados:",
+"Erro carregar SAC:",
 error
 );
 
 
+
 mostrarToast(
+
 "Erro ao carregar chamados.",
+
 "erro"
+
 );
 
 
@@ -198,6 +263,56 @@ mostrarToast(
 
 
 }
+
+
+
+
+
+
+// =======================================
+// LOGIN DO USUÁRIO
+// =======================================
+
+
+onAuthStateChanged(auth,(user)=>{
+
+
+if(user){
+
+
+usuarioAtual = user;
+
+
+console.log(
+
+"Usuário SAC:",
+
+usuarioAtual.email
+
+);
+
+
+
+carregarChamados();
+
+
+}
+
+
+else{
+
+
+console.log(
+"Nenhum usuário logado"
+);
+
+
+}
+
+
+
+});
+
 
 
 
@@ -214,9 +329,7 @@ if(formulario){
 
 formulario.addEventListener(
 
-
 "submit",
-
 
 async(e)=>{
 
@@ -225,23 +338,50 @@ e.preventDefault();
 
 
 
+
+if(!usuarioAtual){
+
+
+mostrarToast(
+
+"Usuário não autenticado.",
+
+"erro"
+
+);
+
+
+return;
+
+}
+
+
+
+
+
 const tipo =
+
 document.getElementById("tipo").value;
 
 
 
 const prioridade =
+
 document.getElementById("prioridade").value;
 
 
 
 const assunto =
+
 document.getElementById("assunto").value.trim();
 
 
 
 const descricao =
+
 document.getElementById("descricao").value.trim();
+
+
 
 
 
@@ -264,6 +404,8 @@ return;
 
 
 
+
+
 try{
 
 
@@ -278,19 +420,50 @@ tipo,
 
 prioridade,
 
+
 assunto,
+
 
 descricao,
 
-
-usuario:"admin",
 
 
 status:"Aberto",
 
 
+
+resposta:"",
+
+
+
+usuarioId:
+
+usuarioAtual.uid,
+
+
+
+usuarioNome:
+
+usuarioAtual.displayName || "Usuário",
+
+
+
+usuarioEmail:
+
+usuarioAtual.email,
+
+
+
 criadoEm:
+
+serverTimestamp(),
+
+
+
+atualizadoEm:
+
 serverTimestamp()
+
 
 
 }
@@ -300,7 +473,10 @@ serverTimestamp()
 
 
 
-// Registrar auditoria
+
+// =======================================
+// AUDITORIA
+// =======================================
 
 
 await addDoc(
@@ -310,17 +486,33 @@ collection(db,"auditoria"),
 {
 
 
-usuario:"admin",
+usuario:
 
-modulo:"SAC",
+usuarioAtual.email,
 
-acao:"Novo chamado",
 
-detalhes:assunto,
+modulo:
 
-status:"Sucesso",
+"SAC",
+
+
+acao:
+
+"Novo chamado",
+
+
+detalhes:
+
+assunto,
+
+
+status:
+
+"Sucesso",
+
 
 data:
+
 serverTimestamp()
 
 
@@ -330,11 +522,15 @@ serverTimestamp()
 
 
 
+
+
+
 mostrarToast(
 
 "Chamado enviado com sucesso!"
 
 );
+
 
 
 
@@ -348,10 +544,17 @@ carregarChamados();
 
 }
 
+
 catch(error){
 
 
-console.error(error);
+console.error(
+
+"Erro enviar SAC:",
+
+error
+
+);
 
 
 
@@ -368,31 +571,9 @@ mostrarToast(
 
 
 
-});
-
-
-}
-
-
-
-
-
-
-// =======================================
-// INICIAR
-// =======================================
-
-
-document.addEventListener(
-
-"DOMContentLoaded",
-
-()=>{
-
-
-carregarChamados();
-
-
 }
 
 );
+
+
+}

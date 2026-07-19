@@ -2,34 +2,28 @@
 // FOODSYNC - AUTENTICAÇÃO E PERMISSÕES
 // =======================================
 
-
 import { auth, db } from "./firebase.js";
 
 
 import {
-
-signInWithEmailAndPassword,
-
-onAuthStateChanged,
-
-signOut
-
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    signOut
 }
-
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 import {
-
-collection,
-query,
-where,
-getDocs
-
+    collection,
+    query,
+    where,
+    getDocs
 }
-
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+
+
+console.log("AUTH.JS CARREGADO");
 
 
 
@@ -47,14 +41,11 @@ if(loginForm){
 
 
 loginForm.addEventListener(
-
 "submit",
-
 async(e)=>{
 
 
 e.preventDefault();
-
 
 
 const email =
@@ -74,22 +65,17 @@ try{
 
 
 await signInWithEmailAndPassword(
-
 auth,
-
 email,
-
 senha
-
 );
 
 
 
-mensagem.style.color="#28a745";
-
+mensagem.style.color="#16a34a";
 
 mensagem.innerHTML =
-"Login realizado com sucesso...";
+"Login realizado com sucesso!";
 
 
 
@@ -105,23 +91,22 @@ window.location.href =
 
 
 }
-
 catch(error){
 
 
-console.error(error);
+console.error(
+"Erro login:",
+error
+);
 
 
-
-mensagem.style.color="#d9534f";
-
+mensagem.style.color="#dc2626";
 
 mensagem.innerHTML =
 "Usuário ou senha inválidos";
 
 
 }
-
 
 
 });
@@ -133,11 +118,8 @@ mensagem.innerHTML =
 
 
 
-
-
-
 // =======================================
-// BUSCAR PERFIL DO USUÁRIO
+// CARREGAR PERFIL FIRESTORE
 // =======================================
 
 
@@ -147,18 +129,15 @@ async function carregarPerfil(user){
 try{
 
 
-const consulta = query(
+const consulta =
+query(
 
 collection(db,"usuarios"),
 
 where(
-
 "email",
-
 "==",
-
 user.email
-
 )
 
 );
@@ -173,18 +152,19 @@ await getDocs(consulta);
 if(resultado.empty){
 
 
-
 console.warn(
-"Usuário sem perfil cadastrado"
+"Perfil não encontrado"
 );
 
 
-
-return;
-
+return null;
 
 
 }
+
+
+
+let perfil;
 
 
 
@@ -196,15 +176,12 @@ doc.data();
 
 
 
-localStorage.setItem(
+perfil = {
 
-"usuarioFoodSync",
-
-JSON.stringify({
 
 id:doc.id,
 
-nome:dados.nome,
+nome:dados.nome || "",
 
 email:dados.email,
 
@@ -212,12 +189,10 @@ perfil:dados.perfil,
 
 status:dados.status,
 
-permissoes:dados.permissoes
+permissoes:dados.permissoes || {}
 
 
-})
-
-);
+};
 
 
 
@@ -225,20 +200,33 @@ permissoes:dados.permissoes
 
 
 
-}
+localStorage.setItem(
 
-catch(error){
+"usuarioFoodSync",
 
-
-console.error(
-
-"Erro carregar perfil:",
-
-error
+JSON.stringify(perfil)
 
 );
 
 
+
+return perfil;
+
+
+
+}
+catch(error){
+
+
+console.error(
+"Erro perfil:",
+error
+);
+
+
+return null;
+
+
 }
 
 
@@ -251,23 +239,38 @@ error
 
 
 
+// =======================================
+// PROTEÇÃO DAS PÁGINAS
+// =======================================
 
 
-// =======================================
-// VERIFICAR LOGIN E PERMISSÕES
-// =======================================
+const paginasProtegidas = {
+    "produtos.html": "produtos",
+    "producao.html": "producoes",
+    "etiquetas.html": "etiquetas",
+    "estoque.html": "estoque",
+    "relatorios.html": "relatorios",
+    "auditoria.html": "auditoria",
+    "usuario.html": "usuarios",
+    "configuracoes.html": "configuracoes",
+    "sac.html": "sac"
+};
+
+
+
+
+
 
 
 onAuthStateChanged(
-
 auth,
-
 async(user)=>{
 
 
-
 const pagina =
-window.location.pathname.split("/").pop();
+window.location.pathname
+.split("/")
+.pop();
 
 
 
@@ -275,91 +278,35 @@ if(user){
 
 
 
+const usuario =
 await carregarPerfil(user);
 
 
 
+if(usuario){
 
 
-const paginasProtegidas = {
-
-
-"produtos.html":"produtos",
-
-"producao.html":"producao",
-
-"etiquetas.html":"etiquetas",
-
-"estoque.html":"estoque",
-
-"relatorios.html":"relatorios",
-
-"auditoria.html":"auditoria",
-
-"usuario.html":"usuarios",
-
-"configuracoes.html":"configuracoes",
-
-"sac.html":"sac"
-
-
-};
-
-
-
-
-
-const permissaoNecessaria =
-
+const permissao =
 paginasProtegidas[pagina];
 
 
 
-
-
-const usuarioSalvo =
-
-JSON.parse(
-
-localStorage.getItem(
-
-"usuarioFoodSync"
-
-)
-
-);
+if(permissao){
 
 
 
+// administrador libera tudo
 
-
-if(
-
-permissaoNecessaria &&
-
-usuarioSalvo &&
-
-usuarioSalvo.permissoes
-
-){
+if(usuario.perfil !== "Administrador"){
 
 
 
-if(
-
-usuarioSalvo.permissoes[permissaoNecessaria]
-
-!== true
-
-){
+if(usuario.permissoes[permissao] !== true){
 
 
 alert(
-
-"Você não possui permissão para acessar esta página."
-
+"Sem permissão para acessar esta página."
 );
-
 
 
 window.location.href =
@@ -372,27 +319,25 @@ return;
 }
 
 
+}
+
+
 
 }
 
 
 
+controlarMenu(usuario);
 
-// esconder menus
 
-
-controlarMenu();
+}
 
 
 
 if(
-
 pagina === "index.html"
-
 ||
-
 pagina === ""
-
 ){
 
 
@@ -404,21 +349,14 @@ window.location.href =
 
 
 
-
 }
-
 else{
 
 
-
 if(
-
 pagina !== "index.html"
-
 &&
-
 pagina !== ""
-
 ){
 
 
@@ -442,112 +380,74 @@ window.location.href =
 
 
 
-
-
-
 // =======================================
 // CONTROLAR MENU
 // =======================================
 
+function controlarMenu(usuario) {
 
-function controlarMenu(){
+    const mapa = {
 
+        "dashboard.html": "dashboard",
+        "produtos.html": "produtos",
+        "producao.html": "producoes",
+        "etiquetas.html": "etiquetas",
+        "estoque.html": "estoque",
+        "relatorios.html": "relatorios",
+        "auditoria.html": "auditoria",
+        "usuario.html": "usuarios",
+        "configuracoes.html": "configuracoes",
+        "sac.html": "sac"
 
-const usuario =
+    };
 
-JSON.parse(
+    document.querySelectorAll(".menu a").forEach(link => {
 
-localStorage.getItem(
+        const pagina = link.getAttribute("href");
 
-"usuarioFoodSync"
+        // SAC Admin é tratado separadamente
+        if (pagina === "sac-admin.html") {
 
-)
+            if (usuario.perfil === "Administrador") {
 
-);
+                link.style.display = "block";
 
+            } else {
 
+                link.style.display = "none";
 
-if(!usuario || !usuario.permissoes)
-return;
+            }
 
+            return;
 
+        }
 
-const mapa = {
+        const permissao = mapa[pagina];
 
+        if (!permissao) return;
 
-"produtos.html":"produtos",
+        // Administrador vê tudo
+        if (usuario.perfil === "Administrador") {
 
-"producao.html":"producao",
+            link.style.display = "block";
+            return;
 
-"etiquetas.html":"etiquetas",
+        }
 
-"estoque.html":"estoque",
+        // Mostrar ou esconder conforme a permissão
+        if (usuario.permissoes && usuario.permissoes[permissao] === true) {
 
-"relatorios.html":"relatorios",
+            link.style.display = "block";
 
-"auditoria.html":"auditoria",
+        } else {
 
-"usuario.html":"usuarios",
+            link.style.display = "none";
 
-"configuracoes.html":"configuracoes",
+        }
 
-"sac.html":"sac"
-
-
-};
-
-
-
-document.querySelectorAll(
-
-".menu a"
-
-)
-
-.forEach(link=>{
-
-
-const destino =
-
-link.getAttribute("href");
-
-
-
-const permissao =
-
-mapa[destino];
-
-
-
-if(
-
-permissao &&
-
-usuario.permissoes[permissao] !== true
-
-){
-
-
-link.style.display="none";
-
+    });
 
 }
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
 
 // =======================================
 // LOGOUT
@@ -565,9 +465,13 @@ await signOut(auth);
 
 
 localStorage.removeItem(
-
 "usuarioFoodSync"
+);
 
+
+
+console.log(
+"Logout realizado"
 );
 
 
@@ -578,16 +482,12 @@ window.location.href =
 
 
 }
-
 catch(error){
 
 
 console.error(
-
-"Erro ao sair:",
-
+"Erro logout:",
 error
-
 );
 
 
