@@ -77,9 +77,9 @@ dados.data();
 
 
 document.getElementById(
-"nomeEmpresa"
+"nomeSistema"
 ).value =
-c.nomeEmpresa || "FoodSync";
+c.nomeSistema || "FoodSync";
 
 
 
@@ -108,6 +108,11 @@ document.getElementById(
 ).value =
 c.impressora || "";
 
+
+document.getElementById(
+"qrCode"
+).value =
+c.qrCode || "sim";
 
 
 }
@@ -149,11 +154,10 @@ const configuracao = {
 
 
 
-nomeEmpresa:
+nomeSistema:
 document.getElementById(
-"nomeEmpresa"
+"nomeSistema"
 ).value,
-
 
 
 tamanhoEtiqueta:
@@ -177,7 +181,10 @@ document.getElementById(
 "impressora"
 ).value,
 
-
+qrCode:
+document.getElementById(
+"qrCode"
+).value,
 
 atualizadoEm:
 serverTimestamp()

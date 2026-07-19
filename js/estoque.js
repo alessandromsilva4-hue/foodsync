@@ -1,5 +1,5 @@
 // =======================================
-// FOODSYNCH - ESTOQUE
+// FOODSYNC - ESTOQUE
 // =======================================
 
 
@@ -9,27 +9,34 @@ import { db } from "./firebase.js";
 import {
 
     collection,
-    addDoc,
     getDocs,
+    addDoc,
+    updateDoc,
     deleteDoc,
     doc,
+    query,
+    where,
     serverTimestamp
 
-}
-
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
+console.log("ESTOQUE.JS CARREGADO");
 
 
 
-const produtoSelect =
-document.getElementById("produtoEstoque");
+// =======================================
+// ELEMENTOS
+// =======================================
 
 
 const estoqueForm =
 document.getElementById("estoqueForm");
+
+
+const produtoSelect =
+document.getElementById("produtoEstoque");
 
 
 const listaEstoque =
@@ -37,13 +44,50 @@ document.getElementById("listaEstoque");
 
 
 
-let produtos=[];
+const quantidadeInput =
+document.getElementById("quantidadeEstoque");
+
+
+const minimoInput =
+document.getElementById("estoqueMinimo");
+
+
+const maximoInput =
+document.getElementById("estoqueMaximo");
 
 
 
+let produtos = [];
+
+let estoqueAtual = [];
+
+// =======================================
+// MOVIMENTAÇÃO DE ESTOQUE
+// =======================================
 
 
+const movimentacaoForm =
+document.getElementById("movimentacaoForm");
 
+
+const produtoMovimentacao =
+document.getElementById("produtoMovimentacao");
+
+
+const tipoMovimentacao =
+document.getElementById("tipoMovimentacao");
+
+
+const quantidadeMovimentacao =
+document.getElementById("quantidadeMovimentacao");
+
+
+const motivoMovimentacao =
+document.getElementById("motivoMovimentacao");
+
+
+const listaMovimentacoes =
+document.getElementById("listaMovimentacoes");
 
 // =======================================
 // CARREGAR PRODUTOS
@@ -53,80 +97,343 @@ let produtos=[];
 async function carregarProdutos(){
 
 
-
-if(!produtoSelect)
-return;
+    if(!produtoSelect) return;
 
 
+    produtoSelect.innerHTML = `
 
+        <option value="">
+            Selecione o produto
+        </option>
 
-const dados =
-await getDocs(
-collection(db,"produtos")
-);
-
+    `;
 
 
 
-produtoSelect.innerHTML = `
+    try{
 
-<option value="">
 
-Selecione o produto
-
-</option>
-
-`;
+        const snapshot =
+        await getDocs(
+            collection(db,"produtos")
+        );
 
 
 
-produtos=[];
+        produtos = [];
 
 
 
-
-dados.forEach(doc=>{
-
-
-const p =
-doc.data();
+snapshot.forEach(item=>{
 
 
+    const produto = {
 
-produtos.push({
+        id:item.id,
 
-id:doc.id,
+        ...item.data()
 
-...p
+    };
+
+
+    produtos.push(produto);
+
+
+
+    produtoSelect.innerHTML += `
+
+        <option value="${produto.nome}">
+
+            ${produto.nome}
+
+        </option>
+
+    `;
+
+
+
+    if(produtoMovimentacao){
+
+
+        produtoMovimentacao.innerHTML += `
+
+        <option value="${produto.nome}">
+
+            ${produto.nome}
+
+        </option>
+
+        `;
+
+
+    }
+
 
 });
 
 
 
-produtoSelect.innerHTML += `
-
-
-<option value="${doc.id}">
-
-${p.nome}
-
-</option>
-
-
-`;
+        console.log(
+            "Produtos carregados:",
+            produtos
+        );
 
 
 
-});
+    }catch(error){
 
+
+        console.error(
+            "Erro ao carregar produtos:",
+            error
+        );
+
+
+    }
 
 
 }
 
 
 
+// =======================================
+// BUSCAR ESTOQUE
+// =======================================
 
 
+async function carregarEstoque(){
+
+
+    if(!listaEstoque) return;
+
+
+
+    listaEstoque.innerHTML="";
+
+
+
+    try{
+
+
+        const snapshot =
+        await getDocs(
+            collection(db,"estoque")
+        );
+
+
+
+        estoqueAtual=[];
+
+
+
+        if(snapshot.empty){
+
+
+            listaEstoque.innerHTML = `
+
+            <tr>
+
+                <td colspan="7">
+
+                    Nenhum estoque cadastrado
+
+                </td>
+
+            </tr>
+
+            `;
+
+
+            return;
+
+        }
+
+
+
+        snapshot.forEach(item=>{
+
+
+            estoqueAtual.push({
+
+                id:item.id,
+
+                ...item.data()
+
+            });
+
+
+        });
+
+
+
+        renderizarEstoque();
+
+
+
+    }catch(error){
+
+
+        console.error(
+            "Erro ao carregar estoque:",
+            error
+        );
+
+
+    }
+
+
+}
+// =======================================
+// STATUS DO ESTOQUE
+// =======================================
+
+
+function verificarStatus(item){
+
+
+    const atual =
+    Number(item.quantidade || 0);
+
+
+    const minimo =
+    Number(item.minimo || 0);
+
+
+
+    if(atual <= minimo){
+
+
+        return `
+        <span style="color:red;font-weight:bold">
+        🔴 Crítico
+        </span>
+        `;
+
+
+    }
+
+
+
+    if(atual <= minimo + 5){
+
+
+        return `
+        <span style="color:#ca8a04;font-weight:bold">
+        🟡 Atenção
+        </span>
+        `;
+
+
+    }
+
+
+
+    return `
+
+    <span style="color:green;font-weight:bold">
+
+    🟢 Normal
+
+    </span>
+
+    `;
+
+
+}
+
+
+
+// =======================================
+// RENDERIZAR TABELA
+// =======================================
+
+
+function renderizarEstoque(){
+
+
+    listaEstoque.innerHTML="";
+
+
+
+    estoqueAtual.forEach(item=>{
+
+
+        listaEstoque.innerHTML += `
+
+        <tr>
+
+
+            <td>
+
+                ${item.produto}
+
+            </td>
+
+
+
+            <td>
+
+                ${item.quantidade || 0}
+
+            </td>
+
+
+
+            <td>
+
+                ${item.unidade || "UN"}
+
+            </td>
+
+
+
+            <td>
+
+                ${item.minimo || 0}
+
+            </td>
+
+
+
+            <td>
+
+                ${item.maximo || 0}
+
+            </td>
+
+
+
+            <td>
+
+                ${verificarStatus(item)}
+
+            </td>
+
+
+
+            <td>
+
+
+                <button
+                onclick="excluirEstoque('${item.id}')">
+
+                    🗑️
+
+                </button>
+
+
+            </td>
+
+
+        </tr>
+
+        `;
+
+
+    });
+
+
+}
 
 
 
@@ -138,11 +445,8 @@ ${p.nome}
 if(estoqueForm){
 
 
-
 estoqueForm.addEventListener(
-
 "submit",
-
 async(e)=>{
 
 
@@ -150,88 +454,73 @@ e.preventDefault();
 
 
 
-
-
-const produtoId =
-produtoSelect.value;
-
-
-
 const produto =
-produtos.find(
-p=>p.id===produtoId
-);
-
-
-
+produtoSelect.value;
 
 
 
 if(!produto){
 
 
-alert(
-"Selecione um produto"
-);
+    alert(
+    "Selecione o produto."
+    );
 
 
-return;
-
+    return;
 
 }
 
 
 
-
-
-const estoque = {
-
-
-
-produtoId:
-produto.id,
+const existente =
+estoqueAtual.find(
+item =>
+item.produto === produto
+);
 
 
 
-produto:
-produto.nome,
+const dados = {
 
 
+    produto:produto,
 
-quantidade:
-Number(
-document.getElementById(
-"quantidadeEstoque"
-).value
+
+    quantidade:
+    Number(
+        quantidadeInput.value
+    ),
+
+
+    minimo:
+    Number(
+        minimoInput.value
+    ),
+
+
+    maximo:
+    Number(
+        maximoInput.value
+    ),
+
+
+  unidade:
+(
+    produtos.find(
+        p => p.nome === produto
+    )?.unidade || "UN"
 ),
 
 
-
-minimo:
-Number(
-document.getElementById(
-"estoqueMinimo"
-).value
-),
+    atualizadoEm:
+    serverTimestamp(),
 
 
-
-maximo:
-Number(
-document.getElementById(
-"estoqueMaximo"
-).value
-),
-
-
-
-criadoEm:
-serverTimestamp()
-
+    usuario:"admin"
 
 
 };
-
 
 
 
@@ -240,27 +529,343 @@ serverTimestamp()
 try{
 
 
-await addDoc(
 
-collection(db,"estoque"),
+    if(existente){
 
-estoque
+
+
+        await updateDoc(
+
+            doc(
+                db,
+                "estoque",
+                existente.id
+            ),
+
+            dados
+
+        );
+
+
+
+        console.log(
+        "Estoque atualizado."
+        );
+
+
+
+    }else{
+
+
+
+        await addDoc(
+
+            collection(
+                db,
+                "estoque"
+            ),
+
+            dados
+
+        );
+
+
+
+        console.log(
+        "Estoque criado."
+        );
+
+
+
+    }
+
+
+
+    estoqueForm.reset();
+
+
+
+    await carregarEstoque();
+
+
+
+}catch(error){
+
+
+
+    console.error(
+        "Erro ao salvar estoque:",
+        error
+    );
+
+
+}
+
+
+
+});
+
+
+}
+// =======================================
+// EXCLUIR ESTOQUE
+// =======================================
+
+
+window.excluirEstoque = async function(id){
+
+
+    const confirmar =
+    confirm(
+        "Deseja excluir este estoque?"
+    );
+
+
+
+    if(!confirmar){
+
+        return;
+
+    }
+
+
+
+    try{
+
+
+        await deleteDoc(
+
+            doc(
+                db,
+                "estoque",
+                id
+            )
+
+        );
+
+
+
+        console.log(
+            "Estoque excluído."
+        );
+
+
+
+        await carregarEstoque();
+
+
+
+    }catch(error){
+
+
+        console.error(
+            "Erro ao excluir estoque:",
+            error
+        );
+
+
+    }
+
+
+}
+
+// =======================================
+// REGISTRAR MOVIMENTAÇÃO
+// =======================================
+
+
+if(movimentacaoForm){
+
+
+movimentacaoForm.addEventListener(
+"submit",
+async(e)=>{
+
+
+e.preventDefault();
+
+
+
+const produto =
+produtoMovimentacao.value;
+
+
+const tipo =
+tipoMovimentacao.value;
+
+
+const quantidade =
+Number(
+quantidadeMovimentacao.value
+);
+
+
+
+const motivo =
+motivoMovimentacao.value || "-";
+
+
+
+if(!produto){
+
+
+alert(
+"Selecione o produto."
+);
+
+
+return;
+
+
+}
+
+
+
+try{
+
+
+const estoque =
+estoqueAtual.find(
+
+item => item.produto === produto
 
 );
+
+
+
+if(!estoque){
+
+
+alert(
+"Produto não encontrado no estoque."
+);
+
+
+return;
+
+
+}
+
+
+
+let novaQuantidade =
+Number(estoque.quantidade);
+
+
+
+if(tipo === "ENTRADA"){
+
+
+novaQuantidade += quantidade;
+
+
+}
+
+
+
+if(tipo === "SAIDA"){
+
+
+novaQuantidade -= quantidade;
+
+
+}
+
+
+
+if(novaQuantidade < 0){
+
+
+alert(
+"Estoque insuficiente."
+);
+
+
+return;
+
+
+}
+
+
+
+
+// Atualiza estoque
+
+
+await updateDoc(
+
+doc(
+db,
+"estoque",
+estoque.id
+),
+
+{
+
+quantidade:
+novaQuantidade,
+
+atualizadoEm:
+serverTimestamp()
+
+}
+
+);
+
+
+
+
+
+// Salva histórico
+
+
+await addDoc(
+
+collection(
+db,
+"movimentacoes"
+),
+
+{
+
+produto,
+
+tipo,
+
+quantidade,
+
+motivo,
+
+usuario:"admin",
+
+data:
+serverTimestamp()
+
+}
+
+);
+
+
 
 
 
 alert(
-"Estoque salvo!"
+"Movimentação registrada com sucesso!"
 );
 
 
 
-estoqueForm.reset();
+movimentacaoForm.reset();
 
 
 
-carregarEstoque();
+await carregarEstoque();
+
+
+
+console.log(
+"Movimentação salva."
+);
 
 
 
@@ -268,8 +873,10 @@ carregarEstoque();
 
 
 console.error(
-"Erro estoque:",
+
+"Erro na movimentação:",
 error
+
 );
 
 
@@ -281,251 +888,131 @@ error
 
 
 }
-
-
-
-
-
-
-
-
-
 // =======================================
-// LISTAR ESTOQUE
+// CARREGAR MOVIMENTAÇÕES
 // =======================================
 
-
-async function carregarEstoque(){
-
+async function carregarMovimentacoes(){
 
 
-if(!listaEstoque)
-return;
+    if(!listaMovimentacoes) return;
 
 
+    listaMovimentacoes.innerHTML = "";
 
 
-
-listaEstoque.innerHTML="";
-
+    try{
 
 
-const dados =
-await getDocs(
-collection(db,"estoque")
-);
+        const snapshot = await getDocs(
+            collection(db,"movimentacoes")
+        );
 
 
 
+        if(snapshot.empty){
 
 
-if(dados.empty){
+            listaMovimentacoes.innerHTML = `
+
+            <tr>
+
+                <td colspan="6">
+
+                    Nenhuma movimentação
+
+                </td>
+
+            </tr>
+
+            `;
+
+
+            return;
+
+        }
 
 
 
-listaEstoque.innerHTML = `
+        snapshot.forEach(item=>{
 
 
-<tr>
-
-<td colspan="6">
-
-Nenhum estoque cadastrado
-
-</td>
-
-</tr>
+           const mov = item.data();
 
 
-`;
+if(!mov.produto || !mov.tipo){
 
-
-return;
-
+    return;
 
 }
 
 
+            const data = mov.data?.toDate
+            ? mov.data.toDate().toLocaleDateString("pt-BR")
+            : "-";
 
 
 
-dados.forEach(item=>{
+            listaMovimentacoes.innerHTML += `
+
+            <tr>
+
+                <td>${mov.produto}</td>
+
+                <td>${mov.tipo}</td>
+
+                <td>${mov.quantidade}</td>
+
+                <td>${mov.motivo}</td>
+
+                <td>${mov.usuario}</td>
+
+                <td>${data}</td>
+
+            </tr>
+
+            `;
 
 
-const e =
-item.data();
+        });
 
 
 
-let situacao =
-"Normal";
+    }catch(error){
 
 
+        console.error(
+            "Erro ao carregar movimentações:",
+            error
+        );
 
-if(
-e.quantidade <= e.minimo
-){
 
-
-situacao =
-"⚠️ Baixo";
+    }
 
 
 }
 
-
-
-
-listaEstoque.innerHTML += `
-
-
-<tr>
-
-
-<td>
-
-${e.produto}
-
-</td>
-
-
-
-
-<td>
-
-${e.quantidade}
-
-</td>
-
-
-
-
-<td>
-
-${e.minimo}
-
-</td>
-
-
-
-
-<td>
-
-${e.maximo}
-
-</td>
-
-
-
-
-<td>
-
-${situacao}
-
-</td>
-
-
-
-
-
-<td>
-
-
-<button
-onclick="excluirEstoque('${item.id}')">
-
-🗑️
-
-</button>
-
-
-</td>
-
-
-
-</tr>
-
-
-`;
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
 // =======================================
-// EXCLUIR ESTOQUE
-// =======================================
-
-
-window.excluirEstoque =
-async function(id){
-
-
-
-if(!confirm(
-"Excluir registro de estoque?"
-))
-
-return;
-
-
-
-
-
-await deleteDoc(
-
-doc(
-db,
-"estoque",
-id
-)
-
-);
-
-
-
-carregarEstoque();
-
-
-
-};
-
-
-
-
-
-
-
-
-// =======================================
-// INICIAR
+// INICIALIZAÇÃO
 // =======================================
 
 
 document.addEventListener(
-
 "DOMContentLoaded",
-
-()=>{
-
-
-carregarProdutos();
+async()=>{
 
 
-carregarEstoque();
+    await carregarProdutos();
 
 
-}
+    await carregarEstoque();
 
-);
+
+    await carregarMovimentacoes();
+
+    console.log(
+        "Módulo Estoque iniciado."
+    );
+
+
+});

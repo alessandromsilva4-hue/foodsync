@@ -10,6 +10,10 @@ console.log("PRODUTOS.JS CARREGADO");
 
 import { db } from "./firebase.js";
 
+import {
+    mostrarToast
+}
+from "./utils.js";
 
 import {
 
@@ -429,9 +433,9 @@ try {
         );
 
 
-        alert(
-            "Produto atualizado!"
-        );
+       mostrarToast(
+"Produto atualizado com sucesso!"
+);
 
 
     }else{
@@ -447,9 +451,9 @@ try {
         );
 
 
-        alert(
-            "Produto cadastrado!"
-        );
+        mostrarToast(
+"Produto cadastrado com sucesso!"
+);
 
 
     }
@@ -469,6 +473,10 @@ catch(error){
         error
     );
 
+mostrarToast(
+"Erro ao salvar produto.",
+"erro"
+);
 
 }
 
@@ -630,8 +638,11 @@ id
 
 
 
-carregarProdutos();
+mostrarToast(
+"Produto excluído com sucesso!"
+);
 
+carregarProdutos();
 
 
 };

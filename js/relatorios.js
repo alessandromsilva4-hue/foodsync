@@ -43,7 +43,8 @@ const tabelaProducao =
 document.getElementById("relatorioProducao");
 
 
-
+const graficoProducao =
+document.getElementById("graficoProducao");
 
 
 
@@ -79,7 +80,92 @@ producoes.size;
 
 }
 
+// =======================================
+// GRÁFICO PRODUÇÃO POR PRODUTO
+// =======================================
 
+if(graficoProducao){
+
+
+let dadosGrafico = {};
+
+
+
+producoes.forEach(doc=>{
+
+
+const p = doc.data();
+
+
+const nome =
+p.produto || "Sem nome";
+
+
+const quantidade =
+Number(p.quantidade || 0);
+
+
+
+if(!dadosGrafico[nome]){
+
+dadosGrafico[nome] = 0;
+
+}
+
+
+dadosGrafico[nome] += quantidade;
+
+
+});
+
+
+
+new Chart(
+
+graficoProducao,
+
+{
+
+type:"bar",
+
+
+data:{
+
+
+labels:
+Object.keys(dadosGrafico),
+
+
+datasets:[{
+
+label:
+"Quantidade Produzida",
+
+
+data:
+Object.values(dadosGrafico)
+
+}]
+
+
+},
+
+
+options:{
+
+
+responsive:true
+
+
+}
+
+
+}
+
+);
+
+
+}
 
 
 
@@ -290,7 +376,7 @@ ${p.responsavel || "-"}
 
 
 <td>
-${p.data || "-"}
+${formatarData(p.dataProducao)}
 </td>
 
 
@@ -333,7 +419,48 @@ error
 
 
 
+// =======================================
+// FORMATAR DATA
+// =======================================
 
+function formatarData(data){
+
+
+if(!data)
+return "-";
+
+
+// Firebase Timestamp
+
+if(data.seconds){
+
+return new Date(
+data.seconds * 1000
+).toLocaleDateString("pt-BR");
+
+}
+
+
+// Data YYYY-MM-DD
+
+if(typeof data === "string"){
+
+const partes =
+data.split("-");
+
+
+if(partes.length === 3){
+
+return `${partes[2]}/${partes[1]}/${partes[0]}`;
+
+}
+
+}
+
+
+return data;
+
+}
 
 
 
@@ -356,3 +483,150 @@ carregarRelatorios();
 }
 
 );
+// =======================================
+// EXPORTAR EXCEL
+// =======================================
+
+window.exportarExcel = function(){
+
+
+const tabela =
+document.querySelector("table");
+
+
+if(!tabela){
+
+alert("Tabela não encontrada");
+
+return;
+
+}
+
+
+
+const workbook =
+XLSX.utils.table_to_book(tabela);
+
+
+
+XLSX.writeFile(
+
+workbook,
+
+"relatorio-foodsync.xlsx"
+
+);
+
+
+};
+
+
+
+
+// =======================================
+// EXPORTAR CSV
+// =======================================
+
+window.exportarCSV = function(){
+
+
+const tabela =
+document.querySelector("table");
+
+
+if(!tabela){
+
+alert("Tabela não encontrada");
+
+return;
+
+}
+
+
+
+let csv=[];
+
+
+
+tabela.querySelectorAll("tr")
+.forEach(linha=>{
+
+
+let dados=[];
+
+
+
+linha.querySelectorAll("th,td")
+.forEach(coluna=>{
+
+
+dados.push(
+coluna.innerText
+);
+
+
+});
+
+
+
+csv.push(
+dados.join(";")
+);
+
+
+
+});
+
+
+
+const arquivo =
+csv.join("\n");
+
+
+
+const blob =
+new Blob(
+
+[arquivo],
+
+{
+type:"text/csv;charset=utf-8;"
+}
+
+);
+
+
+
+const link =
+document.createElement("a");
+
+
+
+link.href =
+URL.createObjectURL(blob);
+
+
+
+link.download =
+"relatorio-foodsync.csv";
+
+
+
+link.click();
+
+
+
+};
+
+
+
+
+// =======================================
+// IMPRIMIR RELATÓRIO
+// =======================================
+
+window.imprimirRelatorio = function(){
+
+window.print();
+
+};
