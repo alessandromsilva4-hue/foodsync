@@ -1,5 +1,5 @@
 // =======================================
-// FOODSYNC - ESTOQUE
+// FOODSYNC - ESTOQUE V2
 // =======================================
 
 
@@ -8,21 +8,21 @@ import { db } from "./firebase.js";
 
 import {
 
-    collection,
-    getDocs,
-    addDoc,
-    updateDoc,
-    deleteDoc,
-    doc,
-    query,
-    where,
-    serverTimestamp
+collection,
+getDocs,
+addDoc,
+updateDoc,
+deleteDoc,
+doc,
+serverTimestamp
 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-console.log("ESTOQUE.JS CARREGADO");
+
+console.log("ESTOQUE.JS V2 CARREGADO");
+
 
 
 
@@ -43,7 +43,6 @@ const listaEstoque =
 document.getElementById("listaEstoque");
 
 
-
 const quantidadeInput =
 document.getElementById("quantidadeEstoque");
 
@@ -55,15 +54,6 @@ document.getElementById("estoqueMinimo");
 const maximoInput =
 document.getElementById("estoqueMaximo");
 
-
-
-let produtos = [];
-
-let estoqueAtual = [];
-
-// =======================================
-// MOVIMENTAÇÃO DE ESTOQUE
-// =======================================
 
 
 const movimentacaoForm =
@@ -89,6 +79,16 @@ document.getElementById("motivoMovimentacao");
 const listaMovimentacoes =
 document.getElementById("listaMovimentacoes");
 
+
+
+let produtos=[];
+
+
+let estoqueAtual=[];
+
+
+
+
 // =======================================
 // CARREGAR PRODUTOS
 // =======================================
@@ -97,356 +97,313 @@ document.getElementById("listaMovimentacoes");
 async function carregarProdutos(){
 
 
-    if(!produtoSelect) return;
-
-
-    produtoSelect.innerHTML = `
-
-        <option value="">
-            Selecione o produto
-        </option>
-
-    `;
+if(!produtoSelect)
+return;
 
 
 
-    try{
+produtoSelect.innerHTML=`
+
+<option value="">
+Selecione o produto
+</option>
+
+`;
 
 
-        const snapshot =
-        await getDocs(
-            collection(db,"produtos")
-        );
+
+if(produtoMovimentacao){
+
+produtoMovimentacao.innerHTML=`
+
+<option value="">
+Selecione o produto
+</option>
+
+`;
+
+}
 
 
 
-        produtos = [];
+const snapshot =
+await getDocs(
+collection(db,"produtos")
+);
+
+
+
+produtos=[];
 
 
 
 snapshot.forEach(item=>{
 
 
-    const produto = {
+const produto={
 
-        id:item.id,
+id:item.id,
 
-        ...item.data()
+...item.data()
 
-    };
-
-
-    produtos.push(produto);
+};
 
 
 
-    produtoSelect.innerHTML += `
-
-        <option value="${produto.nome}">
-
-            ${produto.nome}
-
-        </option>
-
-    `;
+produtos.push(produto);
 
 
 
-    if(produtoMovimentacao){
+produtoSelect.innerHTML +=`
 
+<option value="${produto.id}">
+${produto.nome}
+</option>
 
-        produtoMovimentacao.innerHTML += `
-
-        <option value="${produto.nome}">
-
-            ${produto.nome}
-
-        </option>
-
-        `;
-
-
-    }
-
-
-});
+`;
 
 
 
-        console.log(
-            "Produtos carregados:",
-            produtos
-        );
+if(produtoMovimentacao){
 
 
+produtoMovimentacao.innerHTML +=`
 
-    }catch(error){
+<option value="${produto.id}">
+${produto.nome}
+</option>
 
-
-        console.error(
-            "Erro ao carregar produtos:",
-            error
-        );
-
-
-    }
-
+`;
 
 }
 
 
 
+});
+
+
+console.log(
+"Produtos:",
+produtos
+);
+
+
+}
 // =======================================
-// BUSCAR ESTOQUE
+// CARREGAR ESTOQUE
 // =======================================
 
 
 async function carregarEstoque(){
 
 
-    if(!listaEstoque) return;
+if(!listaEstoque)
+return;
 
 
 
-    listaEstoque.innerHTML="";
+listaEstoque.innerHTML="";
 
 
 
-    try{
-
-
-        const snapshot =
-        await getDocs(
-            collection(db,"estoque")
-        );
+const snapshot =
+await getDocs(
+collection(db,"estoque")
+);
 
 
 
-        estoqueAtual=[];
+estoqueAtual=[];
 
 
 
-        if(snapshot.empty){
+snapshot.forEach(item=>{
 
 
-            listaEstoque.innerHTML = `
+estoqueAtual.push({
 
-            <tr>
+id:item.id,
 
-                <td colspan="7">
+...item.data()
 
-                    Nenhum estoque cadastrado
-
-                </td>
-
-            </tr>
-
-            `;
+});
 
 
-            return;
-
-        }
+});
 
 
 
-        snapshot.forEach(item=>{
-
-
-            estoqueAtual.push({
-
-                id:item.id,
-
-                ...item.data()
-
-            });
-
-
-        });
-
-
-
-        renderizarEstoque();
-
-
-
-    }catch(error){
-
-
-        console.error(
-            "Erro ao carregar estoque:",
-            error
-        );
-
-
-    }
+renderizarEstoque();
 
 
 }
+
+
+
 // =======================================
-// STATUS DO ESTOQUE
+// STATUS ESTOQUE
 // =======================================
 
 
 function verificarStatus(item){
 
 
-    const atual =
-    Number(item.quantidade || 0);
-
-
-    const minimo =
-    Number(item.minimo || 0);
+const quantidade =
+Number(item.quantidade || 0);
 
 
 
-    if(atual <= minimo){
-
-
-        return `
-        <span style="color:red;font-weight:bold">
-        🔴 Crítico
-        </span>
-        `;
-
-
-    }
+const minimo =
+Number(item.minimo || 0);
 
 
 
-    if(atual <= minimo + 5){
+if(quantidade <= minimo){
 
 
-        return `
-        <span style="color:#ca8a04;font-weight:bold">
-        🟡 Atenção
-        </span>
-        `;
+return `
+
+<span style="color:red;font-weight:bold">
+
+🔴 Crítico
+
+</span>
+
+`;
+
+}
 
 
-    }
+
+if(quantidade <= minimo + 5){
+
+
+return `
+
+<span style="color:#ca8a04;font-weight:bold">
+
+🟡 Atenção
+
+</span>
+
+`;
+
+}
 
 
 
-    return `
+return `
 
-    <span style="color:green;font-weight:bold">
+<span style="color:green;font-weight:bold">
 
-    🟢 Normal
+🟢 Normal
 
-    </span>
+</span>
 
-    `;
+`;
 
 
 }
 
 
 
+
+
 // =======================================
-// RENDERIZAR TABELA
+// RENDERIZAR ESTOQUE
 // =======================================
 
 
 function renderizarEstoque(){
 
 
-    listaEstoque.innerHTML="";
+listaEstoque.innerHTML="";
 
 
 
-    estoqueAtual.forEach(item=>{
+estoqueAtual.forEach(item=>{
 
 
-        listaEstoque.innerHTML += `
+listaEstoque.innerHTML +=`
 
-        <tr>
-
-
-            <td>
-
-                ${item.produto}
-
-            </td>
+<tr>
 
 
-
-            <td>
-
-                ${item.quantidade || 0}
-
-            </td>
+<td>
+${item.produto}
+</td>
 
 
-
-            <td>
-
-                ${item.unidade || "UN"}
-
-            </td>
+<td>
+${item.quantidade || 0}
+</td>
 
 
-
-            <td>
-
-                ${item.minimo || 0}
-
-            </td>
+<td>
+${item.unidade || "UN"}
+</td>
 
 
-
-            <td>
-
-                ${item.maximo || 0}
-
-            </td>
+<td>
+${item.minimo || 0}
+</td>
 
 
-
-            <td>
-
-                ${verificarStatus(item)}
-
-            </td>
+<td>
+${item.maximo || 0}
+</td>
 
 
+<td>
 
-            <td>
+${verificarStatus(item)}
 
-
-                <button
-                onclick="excluirEstoque('${item.id}')">
-
-                    🗑️
-
-                </button>
+</td>
 
 
-            </td>
+<td>
 
 
-        </tr>
+<button
+onclick="excluirEstoque('${item.id}')">
 
-        `;
+🗑️
+
+</button>
 
 
-    });
+</td>
+
+
+</tr>
+
+`;
+
+
+
+});
 
 
 }
 
 
 
+
+
+
 // =======================================
-// SALVAR ESTOQUE
+// SALVAR / ATUALIZAR ESTOQUE
 // =======================================
 
 
 if(estoqueForm){
 
 
+
 estoqueForm.addEventListener(
+
 "submit",
+
 async(e)=>{
 
 
@@ -454,70 +411,115 @@ e.preventDefault();
 
 
 
-const produto =
+const produtoId =
 produtoSelect.value;
+
+
+
+const produto =
+produtos.find(
+
+p =>
+p.id === produtoId
+
+);
 
 
 
 if(!produto){
 
 
-    alert(
-    "Selecione o produto."
-    );
+alert(
+"Selecione um produto."
+);
 
 
-    return;
+return;
+
 
 }
 
 
 
+
+
 const existente =
 estoqueAtual.find(
+
 item =>
-item.produto === produto
+
+item.produtoId === produtoId
+
 );
 
 
 
-const dados = {
 
 
-    produto:produto,
+const dados={
 
 
-    quantidade:
-    Number(
-        quantidadeInput.value
-    ),
+
+produtoId:
 
 
-    minimo:
-    Number(
-        minimoInput.value
-    ),
+produto.id,
 
 
-    maximo:
-    Number(
-        maximoInput.value
-    ),
+
+produto:
 
 
-  unidade:
-(
-    produtos.find(
-        p => p.nome === produto
-    )?.unidade || "UN"
-),
+produto.nome,
 
 
-    atualizadoEm:
-    serverTimestamp(),
+
+quantidade:
 
 
-    usuario:"admin"
+Number(
+quantidadeInput.value
+) || 0,
+
+
+
+minimo:
+
+
+Number(
+minimoInput.value
+) || 0,
+
+
+
+maximo:
+
+
+Number(
+maximoInput.value
+) || 0,
+
+
+
+unidade:
+
+
+produto.unidade || "UN",
+
+
+
+atualizadoEm:
+
+
+serverTimestamp(),
+
+
+
+usuario:
+
+
+"admin"
+
 
 
 };
@@ -530,62 +532,75 @@ try{
 
 
 
-    if(existente){
+if(existente){
 
 
 
-        await updateDoc(
-
-            doc(
-                db,
-                "estoque",
-                existente.id
-            ),
-
-            dados
-
-        );
+await updateDoc(
 
 
+doc(
+db,
+"estoque",
+existente.id
+),
 
-        console.log(
-        "Estoque atualizado."
-        );
+
+dados
+
+
+);
 
 
 
-    }else{
+console.log(
+"Estoque atualizado"
+);
 
 
 
-        await addDoc(
-
-            collection(
-                db,
-                "estoque"
-            ),
-
-            dados
-
-        );
+}else{
 
 
 
-        console.log(
-        "Estoque criado."
-        );
+await addDoc(
+
+
+collection(
+db,
+"estoque"
+),
+
+
+dados
+
+
+);
 
 
 
-    }
+console.log(
+"Estoque criado"
+);
 
 
 
-    estoqueForm.reset();
+}
 
 
 
-    await carregarEstoque();
+
+alert(
+"Estoque salvo com sucesso!"
+);
+
+
+
+estoqueForm.reset();
+
+
+
+await carregarEstoque();
 
 
 
@@ -593,10 +608,11 @@ try{
 
 
 
-    console.error(
-        "Erro ao salvar estoque:",
-        error
-    );
+console.error(
+"Erro estoque:",
+error
+);
+
 
 
 }
@@ -607,68 +623,46 @@ try{
 
 
 }
+
+
+
+
+
+
 // =======================================
 // EXCLUIR ESTOQUE
 // =======================================
 
 
-window.excluirEstoque = async function(id){
-
-
-    const confirmar =
-    confirm(
-        "Deseja excluir este estoque?"
-    );
+window.excluirEstoque =
+async function(id){
 
 
 
-    if(!confirmar){
+if(!confirm(
+"Deseja excluir este estoque?"
+))
 
-        return;
-
-    }
-
-
-
-    try{
-
-
-        await deleteDoc(
-
-            doc(
-                db,
-                "estoque",
-                id
-            )
-
-        );
+return;
 
 
 
-        console.log(
-            "Estoque excluído."
-        );
+await deleteDoc(
+
+doc(
+db,
+"estoque",
+id
+)
+
+);
 
 
 
-        await carregarEstoque();
-
-
-
-    }catch(error){
-
-
-        console.error(
-            "Erro ao excluir estoque:",
-            error
-        );
-
-
-    }
+await carregarEstoque();
 
 
 }
-
 // =======================================
 // REGISTRAR MOVIMENTAÇÃO
 // =======================================
@@ -678,7 +672,9 @@ if(movimentacaoForm){
 
 
 movimentacaoForm.addEventListener(
+
 "submit",
+
 async(e)=>{
 
 
@@ -686,12 +682,40 @@ e.preventDefault();
 
 
 
-const produto =
+const produtoId =
 produtoMovimentacao.value;
+
+
+
+const produto =
+produtos.find(
+
+p =>
+p.id === produtoId
+
+);
+
+
+
+if(!produto){
+
+
+alert(
+"Selecione um produto."
+);
+
+
+return;
+
+
+}
+
+
 
 
 const tipo =
 tipoMovimentacao.value;
+
 
 
 const quantidade =
@@ -706,30 +730,18 @@ motivoMovimentacao.value || "-";
 
 
 
-if(!produto){
-
-
-alert(
-"Selecione o produto."
-);
-
-
-return;
-
-
-}
-
-
-
-try{
 
 
 const estoque =
 estoqueAtual.find(
 
-item => item.produto === produto
+item =>
+
+item.produtoId === produtoId
 
 );
+
+
 
 
 
@@ -748,8 +760,13 @@ return;
 
 
 
+
+
 let novaQuantidade =
-Number(estoque.quantidade);
+Number(
+estoque.quantidade || 0
+);
+
 
 
 
@@ -773,6 +790,7 @@ novaQuantidade -= quantidade;
 
 
 
+
 if(novaQuantidade < 0){
 
 
@@ -789,10 +807,16 @@ return;
 
 
 
+
+try{
+
+
+
 // Atualiza estoque
 
 
 await updateDoc(
+
 
 doc(
 db,
@@ -800,15 +824,20 @@ db,
 estoque.id
 ),
 
+
 {
+
 
 quantidade:
 novaQuantidade,
 
+
 atualizadoEm:
 serverTimestamp()
 
+
 }
+
 
 );
 
@@ -816,32 +845,71 @@ serverTimestamp()
 
 
 
-// Salva histórico
+
+// Salva movimentação
 
 
 await addDoc(
+
 
 collection(
 db,
 "movimentacoes"
 ),
 
+
 {
 
-produto,
+
+produtoId:
+
+
+produto.id,
+
+
+
+produto:
+
+
+produto.nome,
+
+
 
 tipo,
 
+
+
 quantidade,
+
+
+
+unidade:
+
+
+produto.unidade || "UN",
+
+
 
 motivo,
 
-usuario:"admin",
+
+
+usuario:
+
+
+"admin",
+
+
 
 data:
+
+
 serverTimestamp()
 
+
+
 }
+
 
 );
 
@@ -849,8 +917,90 @@ serverTimestamp()
 
 
 
+
+
+// Auditoria
+
+
+await addDoc(
+
+
+collection(
+db,
+"auditoria"
+),
+
+
+{
+
+
+usuario:
+
+
+"admin",
+
+
+
+modulo:
+
+
+"Estoque",
+
+
+
+acao:
+
+
+"Movimentação de estoque",
+
+
+
+detalhes:
+
+
+produto.nome +
+
+" - " +
+
+tipo +
+
+": " +
+
+quantidade +
+
+" " +
+
+(produto.unidade || "UN"),
+
+
+
+status:
+
+
+"Sucesso",
+
+
+
+data:
+
+
+serverTimestamp()
+
+
+
+}
+
+
+);
+
+
+
+
+
+
+
 alert(
-"Movimentação registrada com sucesso!"
+"Movimentação registrada!"
 );
 
 
@@ -863,21 +1013,15 @@ await carregarEstoque();
 
 
 
-console.log(
-"Movimentação salva."
-);
-
-
-
 }catch(error){
 
 
+
 console.error(
-
-"Erro na movimentação:",
+"Erro movimentação:",
 error
-
 );
+
 
 
 }
@@ -888,109 +1032,162 @@ error
 
 
 }
+
+
+
+
+
+
+
 // =======================================
 // CARREGAR MOVIMENTAÇÕES
 // =======================================
 
+
 async function carregarMovimentacoes(){
 
 
-    if(!listaMovimentacoes) return;
 
-
-    listaMovimentacoes.innerHTML = "";
-
-
-    try{
-
-
-        const snapshot = await getDocs(
-            collection(db,"movimentacoes")
-        );
+if(!listaMovimentacoes)
+return;
 
 
 
-        if(snapshot.empty){
 
-
-            listaMovimentacoes.innerHTML = `
-
-            <tr>
-
-                <td colspan="6">
-
-                    Nenhuma movimentação
-
-                </td>
-
-            </tr>
-
-            `;
-
-
-            return;
-
-        }
+listaMovimentacoes.innerHTML="";
 
 
 
-        snapshot.forEach(item=>{
+
+const snapshot =
+await getDocs(
+
+collection(
+db,
+"movimentacoes"
+)
+
+);
 
 
-           const mov = item.data();
 
 
-if(!mov.produto || !mov.tipo){
 
-    return;
+if(snapshot.empty){
+
+
+listaMovimentacoes.innerHTML=`
+
+<tr>
+
+<td colspan="6">
+
+Nenhuma movimentação
+
+</td>
+
+</tr>
+
+`;
+
+return;
+
+
+}
+
+
+
+
+
+
+
+snapshot.forEach(item=>{
+
+
+
+const mov =
+item.data();
+
+
+
+
+const data =
+
+mov.data?.toDate
+
+?
+
+mov.data
+.toDate()
+.toLocaleDateString("pt-BR")
+
+:
+
+"-";
+
+
+
+
+
+listaMovimentacoes.innerHTML +=`
+
+
+<tr>
+
+
+<td>
+${mov.produto || "-"}
+</td>
+
+
+
+<td>
+${mov.tipo || "-"}
+</td>
+
+
+
+<td>
+${mov.quantidade || 0}
+</td>
+
+
+
+<td>
+${mov.motivo || "-"}
+</td>
+
+
+
+<td>
+${mov.usuario || "-"}
+</td>
+
+
+
+<td>
+${data}
+</td>
+
+
+
+</tr>
+
+
+`;
+
+
+
+});
+
+
 
 }
 
 
-            const data = mov.data?.toDate
-            ? mov.data.toDate().toLocaleDateString("pt-BR")
-            : "-";
 
 
 
-            listaMovimentacoes.innerHTML += `
-
-            <tr>
-
-                <td>${mov.produto}</td>
-
-                <td>${mov.tipo}</td>
-
-                <td>${mov.quantidade}</td>
-
-                <td>${mov.motivo}</td>
-
-                <td>${mov.usuario}</td>
-
-                <td>${data}</td>
-
-            </tr>
-
-            `;
-
-
-        });
-
-
-
-    }catch(error){
-
-
-        console.error(
-            "Erro ao carregar movimentações:",
-            error
-        );
-
-
-    }
-
-
-}
 
 // =======================================
 // INICIALIZAÇÃO
@@ -998,21 +1195,26 @@ if(!mov.produto || !mov.tipo){
 
 
 document.addEventListener(
+
 "DOMContentLoaded",
+
 async()=>{
 
 
-    await carregarProdutos();
+await carregarProdutos();
 
 
-    await carregarEstoque();
+await carregarEstoque();
 
 
-    await carregarMovimentacoes();
+await carregarMovimentacoes();
 
-    console.log(
-        "Módulo Estoque iniciado."
-    );
+
+
+console.log(
+"ESTOQUE V2 INICIADO"
+);
+
 
 
 });

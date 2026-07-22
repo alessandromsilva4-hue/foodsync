@@ -23,12 +23,23 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // ELEMENTOS
 
-const tabela = document.getElementById("listaAuditoria");
+const tabela =
+document.getElementById("listaAuditoria");
 
 
-// armazenar dados para filtros/exportação
+const filtroModulo =
+document.getElementById("filtroModulo");
+
+
+const filtroData =
+document.getElementById("filtroData");
+
+
+
+// DADOS
 
 let dadosAuditoria = [];
+
 
 
 
@@ -48,11 +59,11 @@ return;
 try{
 
 
-tabela.innerHTML = "";
+tabela.innerHTML="";
 
 
-
-const consulta = query(
+const consulta =
+query(
 
 collection(db,"auditoria"),
 
@@ -65,11 +76,12 @@ orderBy(
 
 
 
-const snapshot = await getDocs(consulta);
+const snapshot =
+await getDocs(consulta);
 
 
 
-dadosAuditoria = [];
+dadosAuditoria=[];
 
 
 
@@ -89,46 +101,25 @@ id:item.id,
 
 
 
-if(dadosAuditoria.length === 0){
-
-
-tabela.innerHTML = `
-
-<tr>
-
-<td colspan="6">
-
-Nenhuma ação registrada
-
-</td>
-
-</tr>
-
-`;
-
-
-return;
-
-}
-
-
-
-renderizarTabela(dadosAuditoria);
-
-
-
-}catch(error){
-
-
-console.error(
-
-"Erro ao carregar auditoria:",
-error
-
+renderizarTabela(
+dadosAuditoria
 );
 
 
-tabela.innerHTML = `
+
+}
+
+catch(error){
+
+
+console.error(
+"Erro auditoria:",
+error
+);
+
+
+
+tabela.innerHTML=`
 
 <tr>
 
@@ -153,15 +144,40 @@ Erro ao carregar auditoria
 
 
 
+
 // =======================================
-// RENDERIZAR TABELA
+// TABELA
 // =======================================
 
 
 function renderizarTabela(lista){
 
 
-tabela.innerHTML = "";
+tabela.innerHTML="";
+
+
+
+if(lista.length===0){
+
+
+tabela.innerHTML=`
+
+<tr>
+
+<td colspan="6">
+
+Nenhuma ação registrada
+
+</td>
+
+</tr>
+
+`;
+
+return;
+
+
+}
 
 
 
@@ -172,41 +188,33 @@ tabela.innerHTML += `
 
 <tr>
 
-
 <td>
 ${formatarData(a.data)}
 </td>
-
 
 <td>
 ${a.usuario || "-"}
 </td>
 
-
 <td>
 ${a.modulo || "-"}
 </td>
-
 
 <td>
 ${a.acao || "-"}
 </td>
 
-
 <td>
 ${a.detalhes || "-"}
 </td>
-
 
 <td>
 ${a.status || "-"}
 </td>
 
-
 </tr>
 
 `;
-
 
 
 });
@@ -219,8 +227,9 @@ ${a.status || "-"}
 
 
 
+
 // =======================================
-// FORMATAR DATA
+// DATA FIREBASE
 // =======================================
 
 
@@ -231,8 +240,22 @@ if(!data)
 return "-";
 
 
-
 // Timestamp Firebase
+
+if(data.toDate){
+
+
+return data
+.toDate()
+.toLocaleString(
+"pt-BR"
+);
+
+
+}
+
+
+// formato antigo
 
 if(data.seconds){
 
@@ -241,13 +264,13 @@ return new Date(
 
 data.seconds * 1000
 
-).toLocaleString(
+)
+.toLocaleString(
 "pt-BR"
 );
 
 
 }
-
 
 
 return data;
@@ -260,9 +283,140 @@ return data;
 
 
 
+
+
 // =======================================
-// INICIAR
+// FILTROS
 // =======================================
+
+
+window.filtrarAuditoria=function(){
+
+
+let resultado =
+[...dadosAuditoria];
+
+
+
+if(
+filtroModulo &&
+filtroModulo.value
+){
+
+
+resultado =
+resultado.filter(a=>
+
+a.modulo === filtroModulo.value
+
+);
+
+
+}
+
+
+
+
+if(
+filtroData &&
+filtroData.value
+){
+
+
+resultado =
+resultado.filter(a=>{
+
+
+let data =
+formatarData(a.data);
+
+
+return data.includes(
+filtroData.value
+);
+
+
+});
+
+
+}
+
+
+
+renderizarTabela(resultado);
+
+
+}
+
+
+
+
+
+
+
+
+// =======================================
+// EXPORTAR EXCEL
+// =======================================
+
+
+window.exportarExcel=function(){
+
+
+if(!dadosAuditoria.length)
+return;
+
+
+const ws =
+XLSX.utils.json_to_sheet(
+dadosAuditoria
+);
+
+
+const wb =
+XLSX.utils.book_new();
+
+
+XLSX.utils.book_append_sheet(
+wb,
+ws,
+"Auditoria"
+);
+
+
+XLSX.writeFile(
+wb,
+"auditoria-foodsync.xlsx"
+);
+
+
+}
+
+
+
+
+
+
+
+
+// =======================================
+// IMPRIMIR
+// =======================================
+
+
+window.imprimirAuditoria=function(){
+
+
+window.print();
+
+
+}
+
+
+
+
+
+
 
 
 document.addEventListener(

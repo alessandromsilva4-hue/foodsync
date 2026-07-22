@@ -1,61 +1,120 @@
 // =======================================
-// FOODSYNC - USUÁRIOS
+// FOODSYNC - USUÁRIOS V4
 // =======================================
 
-console.log("USUARIOS.JS CARREGADO");
+console.log("USUARIOS.JS V4 CARREGADO");
 
 
-import { db } from "./firebase.js";
-
+import { db, auth } from "./firebase.js";
 
 import {
-
 collection,
-addDoc,
 getDocs,
-deleteDoc,
 doc,
-serverTimestamp,
-query,
-orderBy
-
+setDoc,
+updateDoc,
+deleteDoc,
+serverTimestamp
 }
-
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 import {
-
-mostrarToast
-
+createUserWithEmailAndPassword
 }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+
+import {
+mostrarToast
+}
 from "./utils.js";
 
 
 
 
+// ELEMENTOS
 
-const usuarioForm =
-document.getElementById("usuarioForm");
-
-
-const listaUsuarios =
-document.getElementById("listaUsuarios");
+const tabelaUsuarios =
+document.getElementById("tabelaUsuarios");
 
 
+const btnNovoUsuario =
+document.getElementById("btnNovoUsuario");
+
+
+const modalUsuario =
+document.getElementById("modalUsuario");
+
+
+const btnCancelar =
+document.getElementById("btnCancelar");
+
+
+const fecharModal =
+document.getElementById("fecharModal");
+
+
+const formUsuario =
+document.getElementById("formUsuario");
+
+
+// CAMPOS FORMULÁRIO
+
+const nomeUsuario =
+document.getElementById("nomeUsuario");
+
+const emailUsuario =
+document.getElementById("emailUsuario");
+
+const senhaUsuario =
+document.getElementById("senhaUsuario");
+
+const perfilUsuario =
+document.getElementById("perfilUsuario");
+
+const statusUsuario =
+document.getElementById("statusUsuario");
+
+
+
+let usuarios=[];
+
+let usuarioEditando=null;
 
 
 
 // =======================================
-// PERMISSÕES POR PERFIL
+// PERMISSÕES
 // =======================================
-
 
 function definirPermissoes(perfil){
 
 
-if(perfil === "Administrador"){
+perfil =
+perfil.toLowerCase();
+
+
+
+if(perfil==="administrador"){
+
+return {
+
+dashboard:true,
+produtos:true,
+producao:true,
+etiquetas:true,
+estoque:true,
+movimentacoes:true,
+relatorios:true,
+auditoria:true,
+usuarios:true,
+configuracoes:true,
+sac:true
+
+};
+
+}
 
 
 return {
@@ -65,29 +124,7 @@ produtos:true,
 producao:true,
 etiquetas:true,
 estoque:true,
-relatorios:true,
-auditoria:true,
-usuarios:true,
-configuracoes:true,
-sac:true
-
-};
-
-
-}
-
-
-
-if(perfil === "Operador"){
-
-
-return {
-
-dashboard:true,
-produtos:false,
-producao:true,
-etiquetas:true,
-estoque:true,
+movimentacoes:true,
 relatorios:false,
 auditoria:false,
 usuarios:false,
@@ -101,20 +138,68 @@ sac:true
 
 
 
-return {
 
-dashboard:true,
-produtos:false,
-producao:false,
-etiquetas:false,
-estoque:false,
-relatorios:true,
-auditoria:true,
-usuarios:false,
-configuracoes:false,
-sac:false
+// =======================================
+// CARREGAR USUÁRIOS
+// =======================================
 
-};
+async function carregarUsuarios(){
+
+
+if(!tabelaUsuarios)
+return;
+
+
+try{
+
+
+const snap =
+await getDocs(
+collection(db,"usuarios")
+);
+
+
+
+usuarios=[];
+
+
+snap.forEach(item=>{
+
+
+usuarios.push({
+
+id:item.id,
+
+...item.data()
+
+});
+
+
+});
+
+
+
+mostrarUsuarios(usuarios);
+
+atualizarCards();
+
+
+}
+
+catch(error){
+
+console.error(
+"Erro carregando usuários:",
+error
+);
+
+mostrarToast(
+"Erro ao carregar usuários",
+"erro"
+);
+
+
+}
 
 
 }
@@ -124,18 +209,202 @@ sac:false
 
 
 
+// =======================================
+// CARDS
+// =======================================
+
+function atualizarCards(){
+
+
+const total =
+document.getElementById("cardTotal");
+
+
+const ativos =
+document.getElementById("cardAtivos");
+
+
+const admins =
+document.getElementById("cardAdmins");
+
+
+const operadores =
+document.getElementById("cardOperadores");
+
+
+
+if(total)
+total.innerText =
+usuarios.length;
+
+
+
+if(ativos)
+
+ativos.innerText =
+
+usuarios.filter(u=>
+
+(u.status || "")
+.toLowerCase()
+==="ativo"
+
+).length;
+
+
+
+if(admins)
+
+admins.innerText =
+
+usuarios.filter(u=>
+
+(u.perfil || "")
+.toLowerCase()
+==="administrador"
+
+).length;
+
+
+
+if(operadores)
+
+operadores.innerText =
+
+usuarios.filter(u=>
+
+(u.perfil || "")
+.toLowerCase()
+==="operador"
+
+).length;
+
+
+
+}
+
+
+
+
 
 
 // =======================================
-// CADASTRAR USUÁRIO
+// TABELA
 // =======================================
 
+function mostrarUsuarios(lista){
 
-if(usuarioForm){
+
+if(!tabelaUsuarios)
+return;
 
 
-usuarioForm.addEventListener(
 
+tabelaUsuarios.innerHTML="";
+
+
+
+lista.forEach(u=>{
+
+
+tabelaUsuarios.innerHTML += `
+
+<tr>
+
+<td>${u.nome || "-"}</td>
+
+<td>${u.email || "-"}</td>
+
+<td>${u.perfil || "-"}</td>
+
+<td>${u.status || "-"}</td>
+
+
+<td>
+
+<button onclick="editarUsuario('${u.id}')">
+✏️
+</button>
+
+
+<button onclick="excluirUsuario('${u.id}')">
+🗑️
+</button>
+
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+
+}
+
+
+
+
+
+
+// =======================================
+// MODAL
+// =======================================
+
+btnNovoUsuario?.addEventListener(
+"click",
+()=>{
+
+
+usuarioEditando=null;
+
+
+formUsuario.reset();
+
+
+
+document.getElementById(
+"tituloModal"
+).innerText="👤 Novo Usuário";
+
+
+
+modalUsuario.style.display="flex";
+
+
+});
+
+
+function fechar(){
+
+modalUsuario.style.display="none";
+
+}
+
+
+
+btnCancelar?.addEventListener(
+"click",
+fechar
+);
+
+
+fecharModal?.addEventListener(
+"click",
+fechar
+);
+
+
+
+
+
+
+// =======================================
+// SALVAR
+// =======================================
+
+formUsuario?.addEventListener(
 "submit",
 
 async(e)=>{
@@ -145,36 +414,79 @@ e.preventDefault();
 
 
 
+try{
+
+
 const nome =
-document.getElementById("nomeUsuario").value.trim();
+nomeUsuario.value.trim();
 
 
 const email =
-document.getElementById("emailUsuario").value.trim();
+emailUsuario.value.trim();
+
+
+const senha =
+senhaUsuario.value;
 
 
 const perfil =
-document.getElementById("perfilUsuario").value;
+perfilUsuario.value;
 
 
 const status =
-document.getElementById("statusUsuario").value;
+statusUsuario.value;
 
 
 
-const usuario = {
+
+
+if(!usuarioEditando){
+
+
+const credencial =
+
+await createUserWithEmailAndPassword(
+
+auth,
+
+email,
+
+senha
+
+);
+
+
+
+const uid =
+credencial.user.uid;
+
+
+
+await setDoc(
+
+doc(
+db,
+"usuarios",
+uid
+),
+
+{
 
 
 nome,
 
 email,
 
-perfil,
+perfil:
+perfil.toLowerCase(),
 
-status,
+
+status:
+status.toLowerCase(),
 
 
 permissoes:
+
 definirPermissoes(perfil),
 
 
@@ -182,47 +494,52 @@ criadoEm:
 serverTimestamp()
 
 
-};
-
-
-
-try{
-
-
-await addDoc(
-
-collection(db,"usuarios"),
-
-usuario
+}
 
 );
 
 
 
+mostrarToast(
+"Usuário criado!"
+);
 
-// Auditoria
 
 
-await addDoc(
+}
 
-collection(db,"auditoria"),
+
+else{
+
+
+await updateDoc(
+
+doc(
+db,
+"usuarios",
+usuarioEditando
+),
 
 {
 
 
-usuario:"admin",
+nome,
 
-modulo:"Usuários",
 
-acao:"Novo usuário criado",
+perfil:
+perfil.toLowerCase(),
 
-detalhes:
 
-`${nome} - ${perfil}`,
+status:
+status.toLowerCase(),
 
-status:"Sucesso",
 
-data:
+permissoes:
+
+definirPermissoes(perfil),
+
+
+atualizadoEm:
 serverTimestamp()
 
 
@@ -231,16 +548,19 @@ serverTimestamp()
 );
 
 
-
 mostrarToast(
-
-"Usuário cadastrado com sucesso!"
-
+"Usuário atualizado!"
 );
 
 
+}
 
-usuarioForm.reset();
+
+
+fechar();
+
+
+formUsuario.reset();
 
 
 carregarUsuarios();
@@ -252,22 +572,12 @@ carregarUsuarios();
 catch(error){
 
 
-console.error(
-
-"Erro usuário:",
-
-error
-
-);
-
+console.error(error);
 
 
 mostrarToast(
-
-"Erro ao cadastrar usuário.",
-
+"Erro ao salvar usuário",
 "erro"
-
 );
 
 
@@ -278,306 +588,102 @@ mostrarToast(
 });
 
 
-}
-
-
-
-
 
 
 
 
 
 // =======================================
-// LISTAR USUÁRIOS
+// EDITAR
 // =======================================
 
-
-async function carregarUsuarios(){
-
-
-
-if(!listaUsuarios)
-return;
-
-
-
-try{
-
-
-const consulta = query(
-
-collection(db,"usuarios"),
-
-orderBy(
-"criadoEm",
-"desc"
-)
-
-);
-
-
-
-const dados =
-await getDocs(consulta);
-
-
-
-listaUsuarios.innerHTML="";
-
-
-
-if(dados.empty){
-
-
-listaUsuarios.innerHTML = `
-
-<tr>
-
-<td colspan="6">
-
-Nenhum usuário cadastrado
-
-</td>
-
-</tr>
-
-`;
-
-
-return;
-
-
-}
-
-
-
-
-
-dados.forEach(item=>{
+window.editarUsuario=function(id){
 
 
 const u =
-item.data();
-
-
-
-let data="-";
-
-
-if(u.criadoEm?.seconds){
-
-
-data =
-new Date(
-
-u.criadoEm.seconds * 1000
-
-).toLocaleDateString(
-"pt-BR"
+usuarios.find(
+x=>x.id===id
 );
 
 
-}
-
-
-
-
-listaUsuarios.innerHTML += `
-
-
-<tr>
-
-
-<td>
-${u.nome || "-"}
-</td>
-
-
-<td>
-${u.email || "-"}
-</td>
-
-
-<td>
-${u.perfil || "-"}
-</td>
-
-
-<td>
-${u.status || "-"}
-</td>
-
-
-<td>
-${data}
-</td>
-
-
-<td>
-
-
-<button
-
-onclick="excluirUsuario('${item.id}')">
-
-🗑️
-
-</button>
-
-
-</td>
-
-
-</tr>
-
-
-`;
-
-
-
-});
-
-
-
-}
-
-catch(error){
-
-
-console.error(
-
-"Erro carregar usuários:",
-
-error
-
-);
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-// =======================================
-// EXCLUIR USUÁRIO
-// =======================================
-
-
-window.excluirUsuario =
-
-async function(id){
-
-
-
-if(!confirm(
-
-"Deseja excluir este usuário?"
-
-))
-
+if(!u)
 return;
 
 
 
+usuarioEditando=id;
 
-try{
+
+
+document.getElementById(
+"tituloModal"
+).innerText="✏️ Editar Usuário";
+
+
+
+nomeUsuario.value =
+u.nome || "";
+
+
+emailUsuario.value =
+u.email || "";
+
+
+perfilUsuario.value =
+u.perfil || "operador";
+
+
+statusUsuario.value =
+u.status || "ativo";
+
+
+senhaUsuario.value="";
+
+
+modalUsuario.style.display="flex";
+
+
+};
+
+
+
+
+
+
+
+// =======================================
+// EXCLUIR
+// =======================================
+
+window.excluirUsuario=async function(id){
+
+
+if(!confirm(
+"Deseja excluir este usuário?"
+))
+return;
+
 
 
 await deleteDoc(
 
 doc(
-
 db,
-
 "usuarios",
-
 id
-
 )
 
 );
 
 
 
-
-await addDoc(
-
-collection(db,"auditoria"),
-
-{
-
-
-usuario:"admin",
-
-modulo:"Usuários",
-
-acao:"Usuário excluído",
-
-detalhes:id,
-
-status:"Sucesso",
-
-data:
-serverTimestamp()
-
-
-}
-
-);
-
-
-
-
 mostrarToast(
-
-"Usuário excluído com sucesso!"
-
+"Usuário removido!"
 );
 
 
 
 carregarUsuarios();
-
-
-
-}
-
-catch(error){
-
-
-console.error(
-
-"Erro excluir usuário:",
-
-error
-
-);
-
-
-
-mostrarToast(
-
-"Erro ao excluir usuário.",
-
-"erro"
-
-);
-
-
-
-}
-
 
 
 };
@@ -587,24 +693,54 @@ mostrarToast(
 
 
 
-
-
-
 // =======================================
-// INICIAR
+// PESQUISA
 // =======================================
 
+document.getElementById(
+"pesquisaUsuario"
+)
+?.addEventListener(
+"input",
 
-document.addEventListener(
-
-"DOMContentLoaded",
-
-()=>{
-
-
-carregarUsuarios();
+(e)=>{
 
 
-}
+const texto =
+e.target.value.toLowerCase();
+
+
+
+mostrarUsuarios(
+
+usuarios.filter(u=>
+
+(u.nome||"")
+.toLowerCase()
+.includes(texto)
+
+
+||
+
+(u.email||"")
+.toLowerCase()
+.includes(texto)
+
+)
 
 );
+
+
+});
+
+
+
+
+
+
+
+// =======================================
+// INICIO
+// =======================================
+
+carregarUsuarios();
