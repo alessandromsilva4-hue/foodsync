@@ -23,114 +23,79 @@
 </head>
 
 
-
 <body>
 
 
 <div class="layout">
 
 
+<!-- SIDEBAR -->
 
 <aside class="sidebar">
 
+    <div class="logo-area">
 
-<div class="logo-area">
-
-<img src="img/logo.png" alt="FoodSync">
+    <div class="logo">
+        🥗 FoodSync
+    </div>
 
 </div>
-
-
 
 
 <nav class="menu">
 
+        <a href="dashboard.html">
+            📊 Dashboard
+        </a>
 
-<a href="dashboard.html">
-📊 Dashboard
-</a>
+        <a href="produtos.html">
+            📦 Produtos
+        </a>
 
+        <a href="producao.html">
+            🏭 Produção
+        </a>
 
-<a href="producao.html">
-🍱 Produção
-</a>
+        <a href="etiquetas.html">
+            🏷️ Etiquetas
+        </a>
 
+        <a href="estoque.html">
+            📋 Estoque
+        </a>
 
-<a href="produtos.html">
-📦 Produtos
-</a>
-
-
-<a href="etiquetas.html">
-🏷️ Etiquetas
-</a>
-
-
-<a href="estoque.html">
-📋 Estoque
-</a>
-
-
-<a href="relatorios.html">
-📈 Relatórios
+        <a href="relatorios.html">
+    📈 Relatórios
 </a>
 
 
 <a href="auditoria.html">
-📝 Auditoria
+    📝 Auditoria
 </a>
 
 
 <a href="usuario.html" class="active">
-👤 Usuários
+    👥 Usuários
 </a>
 
+        <a href="configuracoes.html">
+            ⚙️ Configurações
+        </a>
 
-<a href="configuracoes.html">
-⚙️ Configurações
-</a>
+    </nav>
 
-
-<a href="ajuda.html">
-❓ Ajuda
-</a>
-
-
-<a href="sac.html">
-🎧 SAC
-</a>
-
-<a href="sac-admin.html" id="menuSacAdmin">
-🎧 SAC Admin
-</a>
-</nav>
-
-
-
-
-
-<div class="sidebar-footer">
-
-
+    <div class="sidebar-footer">
 <button onclick="logout()">
-
 🚪 Sair
-
 </button>
-
-
 </div>
-
 
 </aside>
 
 
 
 
-
-
-
-
+<!-- CONTEÚDO -->
 
 <main class="content">
 
@@ -138,21 +103,22 @@
 
 <header class="top-header">
 
-
 <div>
 
-
 <h1>
-👤 Usuários
+👥 Usuários
 </h1>
 
-
 <p>
-Controle de usuários e permissões do FoodSync
+Gerenciamento de usuários do FoodSync
 </p>
 
-
 </div>
+
+
+<button id="btnNovoUsuario" class="btn-primary">
++ Novo Usuário
+</button>
 
 
 </header>
@@ -161,177 +127,98 @@ Controle de usuários e permissões do FoodSync
 
 
 
+<!-- CARDS -->
+
+<section class="cards">
 
 
-<section class="form-box">
+<div class="card">
+
+<div class="card-icon">
+👥
+</div>
+
+<div>
+
+<h3>
+Total
+</h3>
+
+<strong id="cardTotal">
+0
+</strong>
+
+</div>
+
+</div>
 
 
-<h2>
-Novo Usuário
-</h2>
 
+<div class="card">
 
+<div class="card-icon">
+👑
+</div>
 
+<div>
 
-<form id="usuarioForm">
+<h3>
+Administradores
+</h3>
 
+<strong id="cardAdmins">
+0
+</strong>
 
-
-<div class="form-grid">
-
-
-
-
-
-
-<div class="input-group">
-
-<label>
-Nome
-</label>
-
-
-<input
-
-type="text"
-
-id="nomeUsuario"
-
-placeholder="Nome do usuário"
-
-required>
-
+</div>
 
 </div>
 
 
 
 
+<div class="card">
 
+<div class="card-icon">
+👤
+</div>
 
+<div>
 
+<h3>
+Operadores
+</h3>
 
-<div class="input-group">
+<strong id="cardOperadores">
+0
+</strong>
 
-<label>
-E-mail
-</label>
-
-
-<input
-
-type="email"
-
-id="emailUsuario"
-
-placeholder="usuario@email.com"
-
-required>
-
+</div>
 
 </div>
 
 
 
 
+<div class="card">
 
+<div class="card-icon">
+✅
+</div>
 
+<div>
 
+<h3>
+Ativos
+</h3>
 
-<div class="input-group">
-
-<label>
-Perfil de Acesso
-</label>
-
-
-<select id="perfilUsuario">
-
-
-<option value="Administrador">
-
-👑 Administrador
-
-</option>
-
-
-<option value="Operador">
-
-🍱 Operador
-
-</option>
-
-
-<option value="Consulta">
-
-👀 Consulta
-
-</option>
-
-
-</select>
-
+<strong id="cardAtivos">
+0
+</strong>
 
 </div>
 
-
-
-
-
-
-
-
-<div class="input-group">
-
-<label>
-Status
-</label>
-
-
-<select id="statusUsuario">
-
-
-<option value="ativo">
-
-🟢 Ativo
-
-</option>
-
-
-<option value="inativo">
-
-🔴 Inativo
-
-</option>
-
-
-</select>
-
-
 </div>
-
-
-
-
-
-</div>
-
-
-
-
-
-
-<button type="submit">
-
-💾 Salvar Usuário
-
-</button>
-
-
-
-
-
-</form>
 
 
 
@@ -343,17 +230,9 @@ Status
 
 
 
+<!-- TABELA -->
 
-
-<section class="table-box">
-
-
-<h2>
-📋 Usuários Cadastrados
-</h2>
-
-
-
+<section class="table-container">
 
 
 <table>
@@ -361,83 +240,45 @@ Status
 
 <thead>
 
-
 <tr>
-
 
 <th>
 Nome
 </th>
 
-
 <th>
-E-mail
+Email
 </th>
-
 
 <th>
 Perfil
 </th>
 
-
 <th>
 Status
 </th>
 
-
 <th>
-Criado em
-</th>
-
-
-<th>
-Ação
+Ações
 </th>
 
 
 </tr>
-
 
 </thead>
 
 
 
-
-
-
-
-<tbody id="listaUsuarios">
-
-
-<tr>
-
-
-<td colspan="6">
-
-
-Nenhum usuário cadastrado
-
-
-</td>
-
-
-</tr>
+<tbody id="tabelaUsuarios">
 
 
 </tbody>
-
-
-
 
 
 </table>
 
 
 </section>
-
-
-
-
 
 
 
@@ -452,6 +293,199 @@ Nenhum usuário cadastrado
 
 
 
+<!-- MODAL -->
+
+<div id="modalUsuario" class="modal-usuario">
+
+
+<div class="usuario-modal">
+
+<h2 id="tituloModal">
+Novo Usuário
+</h2>
+
+
+
+<form id="formUsuario">
+
+
+<label>
+Nome
+</label>
+
+<input 
+type="text"
+id="nomeUsuario"
+required>
+
+
+
+<label>
+Email
+</label>
+
+<input 
+type="email"
+id="emailUsuario"
+required>
+
+
+
+<label>
+Senha
+</label>
+
+<input 
+type="password"
+id="senhaUsuario"
+required>
+
+
+
+
+<label>
+Perfil
+</label>
+
+
+<select id="perfilUsuario">
+
+
+<option value="Administrador">
+Administrador
+</option>
+
+<option value="Operador">
+Operador
+</option>
+
+</select>
+
+
+<label>
+Status
+</label>
+
+<select id="statusUsuario">
+
+<option value="ativo">
+Ativo
+</option>
+
+<option value="inativo">
+Inativo
+</option>
+
+</select>
+
+
+
+
+
+
+
+<h3>
+Permissões
+</h3>
+
+
+<div class="permissoes">
+
+
+<label>
+<input type="checkbox" id="permDashboard">
+Dashboard
+</label>
+
+
+<label>
+<input type="checkbox" id="permProdutos">
+Produtos
+</label>
+
+
+<label>
+<input type="checkbox" id="permProducao">
+Produção
+</label>
+
+
+<label>
+<input type="checkbox" id="permEtiquetas">
+Etiquetas
+</label>
+
+
+<label>
+<input type="checkbox" id="permEstoque">
+Estoque
+</label>
+
+
+<label>
+<input type="checkbox" id="permRelatorios">
+Relatórios
+</label>
+
+
+<label>
+<input type="checkbox" id="permUsuarios">
+Usuários
+</label>
+
+
+<label>
+<input type="checkbox" id="permConfiguracoes">
+Configurações
+</label>
+
+
+</div>
+
+
+
+
+
+<div class="modal-buttons">
+
+
+<button 
+type="submit"
+class="btn-primary">
+
+Salvar
+
+</button>
+
+
+
+<button 
+type="button"
+id="btnCancelar"
+class="btn-secondary">
+
+Cancelar
+
+</button>
+
+
+</div>
+
+
+
+
+</form>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
 
 
 <script type="module" src="js/firebase.js"></script>
@@ -461,8 +495,6 @@ Nenhum usuário cadastrado
 <script type="module" src="js/usuarios.js"></script>
 
 <script type="module" src="js/auth.js"></script>
-
-
 
 
 

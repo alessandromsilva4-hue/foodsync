@@ -2,6 +2,7 @@
 // FOODSYNC - AUTENTICAÇÃO E PERMISSÕES
 // =======================================
 
+
 import { auth, db } from "./firebase.js";
 
 
@@ -17,13 +18,107 @@ import {
     collection,
     query,
     where,
-    getDocs
+    getDocs,
+    addDoc,
+    serverTimestamp
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
 console.log("AUTH.JS CARREGADO");
+
+
+
+
+
+
+
+
+// =======================================
+// REGISTRAR AUDITORIA
+// =======================================
+
+
+window.registrarAuditoria = async function(
+    modulo,
+    acao,
+    detalhes=""
+){
+
+
+    try{
+
+
+        const usuario =
+        JSON.parse(
+            localStorage.getItem("usuarioFoodSync")
+        );
+
+
+
+        await addDoc(
+            collection(db,"auditoria"),
+            {
+
+
+                usuario:
+                usuario?.nome || "Sistema",
+
+
+                email:
+                usuario?.email || "",
+
+
+                modulo:
+                modulo,
+
+
+                acao:
+                acao,
+
+
+                detalhes:
+                detalhes,
+
+
+                status:
+                "Sucesso",
+
+
+                data:
+                serverTimestamp()
+
+
+            }
+        );
+
+
+
+        console.log(
+            "Auditoria registrada:",
+            acao
+        );
+
+
+
+    }
+    catch(error){
+
+
+        console.error(
+            "Erro auditoria:",
+            error
+        );
+
+
+    }
+
+
+};
+
+
+
 
 
 
@@ -48,12 +143,15 @@ async(e)=>{
 e.preventDefault();
 
 
+
 const email =
 document.getElementById("email").value;
 
 
+
 const senha =
 document.getElementById("senha").value;
+
 
 
 const mensagem =
@@ -64,15 +162,60 @@ document.getElementById("mensagemLogin");
 try{
 
 
+const resultadoLogin =
 await signInWithEmailAndPassword(
-auth,
-email,
-senha
+    auth,
+    email,
+    senha
 );
 
 
+// busca usuário no Firestore para pegar o nome
+
+const perfilLogin = await carregarPerfil(
+    auth.currentUser
+);
+
+
+// grava auditoria do login
+
+await addDoc(
+    collection(db,"auditoria"),
+    {
+
+        usuario:
+        perfilLogin?.nome || email,
+
+
+        email:
+        email,
+
+
+        modulo:
+        "Sistema",
+
+
+        acao:
+        "LOGIN",
+
+
+        detalhes:
+        "Usuário realizou login no sistema",
+
+
+        status:
+        "Sucesso",
+
+
+        data:
+        serverTimestamp()
+
+    }
+);
+
 
 mensagem.style.color="#16a34a";
+
 
 mensagem.innerHTML =
 "Login realizado com sucesso!";
@@ -100,10 +243,13 @@ error
 );
 
 
+
 mensagem.style.color="#dc2626";
+
 
 mensagem.innerHTML =
 "Usuário ou senha inválidos";
+
 
 
 }
@@ -113,6 +259,9 @@ mensagem.innerHTML =
 
 
 }
+
+
+
 
 
 
@@ -149,6 +298,7 @@ await getDocs(consulta);
 
 
 
+
 if(resultado.empty){
 
 
@@ -179,17 +329,29 @@ doc.data();
 perfil = {
 
 
-id:doc.id,
+id:
+doc.id,
 
-nome:dados.nome || "",
 
-email:dados.email,
+nome:
+dados.nome || "",
 
-perfil:dados.perfil,
 
-status:dados.status,
+email:
+dados.email,
 
-permissoes:dados.permissoes || {}
+
+perfil:
+(dados.perfil || "").trim(),
+
+
+status:
+dados.status,
+
+
+permissoes:
+dados.permissoes || {}
+
 
 
 };
@@ -197,6 +359,7 @@ permissoes:dados.permissoes || {}
 
 
 });
+
 
 
 
@@ -239,21 +402,52 @@ return null;
 
 
 
+
+
 // =======================================
-// PROTEÇÃO DAS PÁGINAS
+// PÁGINAS PROTEGIDAS
 // =======================================
 
 
 const paginasProtegidas = {
-    "produtos.html": "produtos",
-    "producao.html": "producoes",
-    "etiquetas.html": "etiquetas",
-    "estoque.html": "estoque",
-    "relatorios.html": "relatorios",
-    "auditoria.html": "auditoria",
-    "usuario.html": "usuarios",
-    "configuracoes.html": "configuracoes",
-    "sac.html": "sac"
+
+
+"produtos.html":
+"produtos",
+
+
+"producao.html":
+"producao",
+
+
+"etiquetas.html":
+"etiquetas",
+
+
+"estoque.html":
+"estoque",
+
+
+"relatorios.html":
+"relatorios",
+
+
+"auditoria.html":
+"auditoria",
+
+
+"usuario.html":
+"usuarios",
+
+
+"configuracoes.html":
+"configuracoes",
+
+
+"sac.html":
+"sac"
+
+
 };
 
 
@@ -262,15 +456,25 @@ const paginasProtegidas = {
 
 
 
+
+// =======================================
+// VERIFICAÇÃO DE LOGIN
+// =======================================
+
+
 onAuthStateChanged(
+
 auth,
+
 async(user)=>{
+
 
 
 const pagina =
 window.location.pathname
 .split("/")
 .pop();
+
 
 
 
@@ -286,8 +490,43 @@ await carregarPerfil(user);
 if(usuario){
 
 
+if(
+!sessionStorage.getItem(
+"loginAuditoriaRegistrado"
+)
+){
+
+
+sessionStorage.setItem(
+"loginAuditoriaRegistrado",
+"true"
+);
+
+
+await registrarAuditoria(
+
+"Sistema",
+
+"LOGIN",
+
+"Usuário realizou login no sistema"
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
 const permissao =
 paginasProtegidas[pagina];
+
 
 
 
@@ -297,16 +536,31 @@ if(permissao){
 
 // administrador libera tudo
 
-if(usuario.perfil !== "Administrador"){
+
+if(
+
+usuario.perfil.toLowerCase()
+!==
+"administrador"
+
+){
 
 
 
-if(usuario.permissoes[permissao] !== true){
+if(
+
+usuario.permissoes[permissao]
+!==
+true
+
+){
+
 
 
 alert(
 "Sem permissão para acessar esta página."
 );
+
 
 
 window.location.href =
@@ -319,25 +573,33 @@ return;
 }
 
 
-}
-
-
 
 }
+
+
+
+}
+
 
 
 
 controlarMenu(usuario);
 
 
+
 }
 
 
 
+
 if(
+
 pagina === "index.html"
+
 ||
+
 pagina === ""
+
 ){
 
 
@@ -349,14 +611,20 @@ window.location.href =
 
 
 
+
 }
 else{
 
 
+
 if(
+
 pagina !== "index.html"
+
 &&
+
 pagina !== ""
+
 ){
 
 
@@ -372,7 +640,11 @@ window.location.href =
 
 
 
-});
+}
+
+);
+
+
 
 
 
@@ -384,70 +656,143 @@ window.location.href =
 // CONTROLAR MENU
 // =======================================
 
-function controlarMenu(usuario) {
 
-    const mapa = {
+function controlarMenu(usuario){
 
-        "dashboard.html": "dashboard",
-        "produtos.html": "produtos",
-        "producao.html": "producoes",
-        "etiquetas.html": "etiquetas",
-        "estoque.html": "estoque",
-        "relatorios.html": "relatorios",
-        "auditoria.html": "auditoria",
-        "usuario.html": "usuarios",
-        "configuracoes.html": "configuracoes",
-        "sac.html": "sac"
 
-    };
 
-    document.querySelectorAll(".menu a").forEach(link => {
+const mapa = {
 
-        const pagina = link.getAttribute("href");
 
-        // SAC Admin é tratado separadamente
-        if (pagina === "sac-admin.html") {
+"dashboard.html":
+"dashboard",
 
-            if (usuario.perfil === "Administrador") {
 
-                link.style.display = "block";
+"produtos.html":
+"produtos",
 
-            } else {
 
-                link.style.display = "none";
+"producao.html":
+"producao",
 
-            }
 
-            return;
+"etiquetas.html":
+"etiquetas",
 
-        }
 
-        const permissao = mapa[pagina];
+"estoque.html":
+"estoque",
 
-        if (!permissao) return;
 
-        // Administrador vê tudo
-        if (usuario.perfil === "Administrador") {
+"relatorios.html":
+"relatorios",
 
-            link.style.display = "block";
-            return;
 
-        }
+"auditoria.html":
+"auditoria",
 
-        // Mostrar ou esconder conforme a permissão
-        if (usuario.permissoes && usuario.permissoes[permissao] === true) {
 
-            link.style.display = "block";
+"usuario.html":
+"usuarios",
 
-        } else {
 
-            link.style.display = "none";
+"configuracoes.html":
+"configuracoes",
 
-        }
 
-    });
+"sac.html":
+"sac"
+
+
+
+};
+
+
+
+
+document
+.querySelectorAll(".menu a")
+.forEach(link=>{
+
+
+const pagina =
+link.getAttribute("href");
+
+
+
+const permissao =
+mapa[pagina];
+
+
+
+if(!permissao)
+return;
+
+
+
+
+// administrador vê tudo
+
+
+if(
+
+usuario.perfil.toLowerCase()
+===
+"administrador"
+
+){
+
+
+link.style.display="block";
+
+
+return;
+
 
 }
+
+
+
+
+if(
+
+usuario.permissoes
+&&
+
+usuario.permissoes[permissao]
+===true
+
+){
+
+
+link.style.display="block";
+
+
+}
+
+else{
+
+
+link.style.display="none";
+
+
+}
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
 
 // =======================================
 // LOGOUT
@@ -461,6 +806,8 @@ try{
 
 
 await signOut(auth);
+
+
 
 
 
@@ -489,6 +836,7 @@ console.error(
 "Erro logout:",
 error
 );
+
 
 
 }

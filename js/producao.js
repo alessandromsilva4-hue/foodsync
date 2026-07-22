@@ -1,4 +1,9 @@
-console.log("PRODUCAO.JS CARREGADO");
+// =======================================
+// FOODSYNC - PRODUÇÃO V2
+// =======================================
+
+console.log("PRODUCAO.JS V2 CARREGADO");
+
 
 import { db } from "./firebase.js";
 
@@ -14,6 +19,7 @@ doc,
 serverTimestamp
 
 }
+
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
@@ -30,66 +36,93 @@ let produtos = [];
 
 
 
+// =======================================
+// USUÁRIO LOGADO
+// =======================================
 
-// =====================================
+
+function usuarioAtual(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem("usuarioFoodSync")
+        );
+
+    }
+    catch{
+
+        return null;
+
+    }
+
+}
+
+
+
+
+
+// =======================================
 // CARREGAR PRODUTOS
-// =====================================
+// =======================================
+
 
 async function carregarProdutos(){
 
-produtos = [];
 
-const snapshot =
-await getDocs(
-collection(db,"produtos")
-);
+    produtos = [];
 
 
-
-produtoSelect.innerHTML = `
-
-<option value="">
-Selecione o produto
-</option>
-
-`;
+    const snapshot =
+    await getDocs(
+        collection(db,"produtos")
+    );
 
 
 
-snapshot.forEach(doc=>{
+    produtoSelect.innerHTML = `
 
+    <option value="">
+    Selecione o produto
+    </option>
 
-const produto = {
-
-id:doc.id,
-
-...doc.data()
-
-};
-
-
-produtos.push(produto);
+    `;
 
 
 
-produtoSelect.innerHTML += `
-
-<option value="${produto.id}">
-
-${produto.nome}
-
-</option>
-
-`;
+    snapshot.forEach(item=>{
 
 
-});
+        const produto = {
+
+            id:item.id,
+
+            ...item.data()
+
+        };
 
 
-console.log(
-"Produtos disponíveis:",
-produtos
-);
+        produtos.push(produto);
+
+
+
+        produtoSelect.innerHTML += `
+
+        <option value="${produto.id}">
+            ${produto.nome}
+        </option>
+
+        `;
+
+
+    });
+
+
+
+    console.log(
+        "Produtos carregados:",
+        produtos
+    );
 
 
 }
@@ -97,32 +130,41 @@ produtos
 
 
 
+// =======================================
+// BUSCAR PRODUTO SELECIONADO
+// =======================================
 
-// =====================================
-// PREENCHER DADOS AUTOMÁTICOS
-// =====================================
+
+function produtoSelecionado(){
+
+
+    return produtos.find(
+
+        p =>
+        p.id === produtoSelect.value
+
+    );
+
+
+}
+
+
+
+
+// =======================================
+// ALTERAÇÃO DO PRODUTO
+// =======================================
 
 
 produtoSelect.addEventListener(
+
 "change",
+
 ()=>{
 
 
-const produto = produtos.find(
-
-p =>
-p.id === produtoSelect.value
-
-);
-
-
-if(!produto){
-
-alert("Produto não encontrado");
-
-return;
-
-}
+const produto =
+produtoSelecionado();
 
 
 
@@ -134,6 +176,7 @@ return;
 document.getElementById(
 "temperaturaProducao"
 ).value =
+
 produto.temperatura || "";
 
 
@@ -145,42 +188,36 @@ document.getElementById(
 
 
 
-if(data && produto.validadeDias){
-
+if(
+data &&
+produto.validadeDias
+){
 
 calcularValidade(
 produto.validadeDias
 );
 
-
 }
 
 
+
 });
-
-
-
-
-// =====================================
+// =======================================
 // CALCULAR VALIDADE
-// =====================================
+// =======================================
 
 
-document.getElementById(
-"dataProducao"
-)
+document
+.getElementById("dataProducao")
 .addEventListener(
+
 "change",
+
 ()=>{
 
 
 const produto =
-produtos.find(
-
-p =>
-p.id === produtoSelect.value
-
-);
+produtoSelecionado();
 
 
 
@@ -196,21 +233,30 @@ produto.validadeDias
 });
 
 
-
 function calcularValidade(dias){
+
+
+const campo =
+document.getElementById(
+"dataProducao"
+);
+
+
+
+if(!campo.value)
+return;
+
 
 
 const data =
 new Date(
-document.getElementById(
-"dataProducao"
-).value
+campo.value + "T00:00:00"
 );
 
 
 
 data.setDate(
-data.getDate()+dias
+data.getDate() + Number(dias)
 );
 
 
@@ -228,9 +274,12 @@ data.toISOString()
 
 
 
-// =====================================
+
+
+
+// =======================================
 // SALVAR PRODUÇÃO
-// =====================================
+// =======================================
 
 
 formulario.addEventListener(
@@ -244,12 +293,29 @@ e.preventDefault();
 
 
 
-const produto = produtos.find(
+try{
 
-p =>
-p.id === produtoSelect.value
 
+const produto =
+produtoSelecionado();
+
+
+
+if(!produto){
+
+alert(
+"Selecione um produto"
 );
+
+return;
+
+}
+
+
+
+const usuario =
+usuarioAtual();
+
 
 
 
@@ -265,51 +331,78 @@ produto.nome,
 
 
 codigo:
-produto.codigo,
+produto.codigo || "",
+
 
 
 quantidade:
+
 Number(
+
 document.getElementById(
 "quantidadeProducao"
 ).value
+
 ) || 1,
 
+
+
 unidade:
+
 produto.unidade || "UN",
 
 
+
 dataProducao:
+
 document.getElementById(
 "dataProducao"
 ).value,
 
 
+
 validade:
+
 document.getElementById(
 "validadeProducao"
 ).value,
 
 
+
 temperatura:
+
 document.getElementById(
 "temperaturaProducao"
 ).value,
 
 
+
 responsavel:
+
 document.getElementById(
 "responsavelProducao"
-).value,
+).value
+
+||
+
+usuario?.nome
+
+||
+
+"Sistema",
+
 
 
 status:
+
 document.getElementById(
 "statusProducao"
-).value,
+).value || "Finalizado",
+
 
 
 criadoEm:
+
 serverTimestamp()
 
 
@@ -317,16 +410,30 @@ serverTimestamp()
 
 
 
-const producaoRef = await addDoc(
+
+
+// SALVA PRODUÇÃO
+
+
+const producaoRef =
+
+await addDoc(
 
 collection(db,"producoes"),
 
 dados
 
 );
-// =====================================
-// REGISTRAR AUDITORIA
-// =====================================
+
+
+
+
+
+
+// =======================================
+// AUDITORIA PRODUÇÃO
+// =======================================
+
 
 await addDoc(
 
@@ -334,43 +441,74 @@ collection(db,"auditoria"),
 
 {
 
+
 usuario:
-dados.responsavel || "admin",
+
+usuario?.nome || "Sistema",
 
 
-acao:
-"Nova produção criada",
+
+email:
+
+usuario?.email || "",
+
 
 
 modulo:
+
 "Produção",
+
+
+
+acao:
+
+"NOVA PRODUÇÃO",
+
 
 
 detalhes:
 
 produto.nome +
+
 " - Quantidade: " +
+
 dados.quantidade +
+
 " " +
+
 dados.unidade,
 
 
-data:
-serverTimestamp(),
-
 
 status:
-"Sucesso"
+
+"Sucesso",
+
+
+
+data:
+
+serverTimestamp()
+
 
 }
 
 );
-// =====================================
-// BAIXAR ESTOQUE AUTOMATICAMENTE
-// =====================================
 
 
-const estoqueSnapshot = await getDocs(
+
+
+
+
+
+// =======================================
+// BAIXA ESTOQUE
+// =======================================
+
+
+const estoqueSnapshot =
+
+await getDocs(
 
 collection(db,"estoque")
 
@@ -378,24 +516,50 @@ collection(db,"estoque")
 
 
 
-estoqueSnapshot.forEach(async(item)=>{
+for(
+const item of estoqueSnapshot.docs
+){
 
 
-const estoque = item.data();
+
+const estoque =
+item.data();
 
 
 
-if(estoque.produto === produto.nome){
+const corresponde =
+
+
+estoque.produtoId === produto.id
+
+||
+
+estoque.produto === produto.nome
+
+||
+
+estoque.produto?.toLowerCase()
+===
+produto.nome?.toLowerCase();
+
+
+
+if(corresponde){
 
 
 
 const novaQuantidade =
 
-Number(estoque.quantidade)
+Number(
+estoque.quantidade || 0
+)
 
 -
 
-Number(dados.quantidade);
+Number(
+dados.quantidade
+);
+
 
 
 
@@ -410,11 +574,21 @@ item.id
 
 {
 
+
 quantidade:
+
 novaQuantidade,
 
+
+produtoId:
+
+produto.id,
+
+
 atualizadoEm:
+
 serverTimestamp()
+
 
 }
 
@@ -422,6 +596,9 @@ serverTimestamp()
 
 
 
+
+
+// movimentação
 
 
 await addDoc(
@@ -430,139 +607,155 @@ collection(db,"movimentacoes"),
 
 {
 
+
+produtoId:
+
+produto.id,
+
+
 produto:
+
 produto.nome,
 
+
 tipo:
+
 "SAIDA",
 
+
 quantidade:
+
 dados.quantidade,
 
+
 unidade:
+
 dados.unidade,
+
 
 motivo:
+
 "Produção",
 
+
 usuario:
-"admin",
+
+usuario?.nome || "Sistema",
+
 
 data:
+
 serverTimestamp()
 
-}
-
-);
-
-
-// =====================================
-// AUDITORIA ESTOQUE
-// =====================================
-
-await addDoc(
-
-collection(db,"auditoria"),
-
-{
-
-usuario:
-"admin",
-
-
-acao:
-"Estoque movimentado",
-
-
-modulo:
-"Estoque",
-
-
-detalhes:
-
-produto.nome +
-" - Saída: " +
-dados.quantidade +
-" " +
-dados.unidade,
-
-
-data:
-serverTimestamp(),
-
-
-status:
-"Sucesso"
 
 }
 
 );
 
 
+
 }
 
 
 
-});
-// =====================================
+}
+
+// =======================================
 // GERAR ETIQUETA AUTOMÁTICA
-// =====================================
+// =======================================
 
 
-const codigoEtiqueta = 
+const codigoEtiqueta =
+
 "FS-" + Date.now();
+
 
 
 
 const etiqueta = {
 
 
+codigoEtiqueta:
+
+
 codigoEtiqueta,
 
 
+
 producaoId:
+
 producaoRef.id,
 
 
+
+produtoId:
+
+produto.id,
+
+
+
 produto:
+
 produto.nome,
 
 
+
 codigo:
-produto.codigo,
+
+produto.codigo || "",
+
 
 
 quantidade:
+
 dados.quantidade,
 
 
-dataProducao:
-dados.dataProducao,
 
 unidade:
+
 dados.unidade,
 
+
+
+dataProducao:
+
+dados.dataProducao,
+
+
+
 validade:
+
 dados.validade,
 
 
+
 temperatura:
+
 dados.temperatura,
 
 
+
 responsavel:
+
 dados.responsavel,
 
 
+
 status:
+
 "ativa",
 
 
+
 criadoEm:
+
 serverTimestamp()
 
 
 };
+
+
 
 
 
@@ -573,9 +766,16 @@ collection(db,"etiquetas"),
 etiqueta
 
 );
-// =====================================
-// AUDITORIA ETIQUETA AUTOMÁTICA
-// =====================================
+
+
+
+
+
+
+// =======================================
+// AUDITORIA ETIQUETA
+// =======================================
+
 
 await addDoc(
 
@@ -583,70 +783,141 @@ collection(db,"auditoria"),
 
 {
 
+
 usuario:
-dados.responsavel || "admin",
+
+usuario?.nome || "Sistema",
 
 
-acao:
-"Etiqueta criada automaticamente",
+
+email:
+
+usuario?.email || "",
+
 
 
 modulo:
+
 "Etiquetas",
+
+
+
+acao:
+
+"ETIQUETA GERADA",
+
 
 
 detalhes:
 
 produto.nome +
+
 " - Código: " +
+
 codigoEtiqueta,
 
 
-data:
-serverTimestamp(),
-
 
 status:
-"Sucesso"
+
+"Sucesso",
+
+
+
+data:
+
+serverTimestamp()
+
 
 }
 
 );
 
+
+
+
+
+
 alert(
-"Produção registrada!"
+
+"Produção registrada com sucesso!"
+
 );
 
-carregarProducoes();
+
 
 formulario.reset();
 
 
+
+carregarProducoes();
+
+
+
+
+
+}
+
+catch(error){
+
+
+
+console.error(
+
+"Erro ao salvar produção:",
+
+error
+
+);
+
+
+
+alert(
+
+"Erro ao registrar produção"
+
+);
+
+
+}
+
+
+
 });
-
-
-
-
-// =====================================
+// =======================================
 // CARREGAR PRODUÇÕES
-// =====================================
+// =======================================
+
 
 async function carregarProducoes(){
 
 
 const lista =
+
 document.getElementById(
 "listaProducoes"
 );
 
 
+
+if(!lista)
+return;
+
+
+
 lista.innerHTML = "";
 
 
+
 const snapshot =
+
 await getDocs(
+
 collection(db,"producoes")
+
 );
+
+
 
 
 
@@ -657,7 +928,7 @@ lista.innerHTML = `
 
 <tr>
 
-<td colspan="5">
+<td colspan="6">
 
 Nenhuma produção registrada
 
@@ -667,16 +938,20 @@ Nenhuma produção registrada
 
 `;
 
+
 return;
+
 
 }
 
 
 
-snapshot.forEach(doc=>{
 
 
-const producao = doc.data();
+snapshot.forEach(item=>{
+
+
+const producao = item.data();
 
 
 
@@ -684,45 +959,79 @@ lista.innerHTML += `
 
 <tr>
 
-<td>${producao.produto}</td>
+
+<td>
+${producao.produto || "-"}
+</td>
+
 
 <td>
 ${producao.quantidade || 1}
 ${producao.unidade || "UN"}
 </td>
 
-<td>${formatarData(producao.dataProducao)}</td>
 
-<td>${formatarData(producao.validade)}</td>
+<td>
+${formatarData(
+producao.dataProducao
+)}
+</td>
 
-<td>${producao.status || "Finalizado"}</td>
+
+<td>
+${formatarData(
+producao.validade
+)}
+</td>
+
+
+<td>
+${producao.status || "Finalizado"}
+</td>
+
 
 <td>
 
+
 <button
+
 class="btn-delete"
-onclick="excluirProducao('${doc.id}')">
+
+onclick="excluirProducao('${item.id}')"
+
+>
 
 🗑️
 
 </button>
 
+
 </td>
+
 
 </tr>
 
 `;
 
 
+
 });
+
 
 
 }
 
 
-// =====================================
+
+
+
+
+
+
+// =======================================
 // FORMATAR DATA
-// =====================================
+// =======================================
+
 
 function formatarData(data){
 
@@ -731,51 +1040,99 @@ if(!data)
 return "-";
 
 
-// Firebase Timestamp
+
+// Timestamp Firebase
 
 if(data.seconds){
 
-const d =
-new Date(
+
+return new Date(
+
 data.seconds * 1000
+
+)
+
+.toLocaleDateString(
+"pt-BR"
 );
 
-return d.toLocaleDateString("pt-BR");
 
 }
 
 
-// Data normal YYYY-MM-DD
+
+// YYYY-MM-DD
 
 if(typeof data === "string"){
+
 
 const partes =
 data.split("-");
 
 
+
 if(partes.length === 3){
 
-return `${partes[2]}/${partes[1]}/${partes[0]}`;
+
+return (
+
+partes[2]
+
++
+
+"/"
+
++
+
+partes[1]
+
++
+
+"/"
+
++
+
+partes[0]
+
+);
+
 
 }
 
+
+
 }
+
 
 
 return data;
 
+
 }
-// =====================================
+
+
+
+
+
+
+
+
+// =======================================
 // EXCLUIR PRODUÇÃO
-// =====================================
+// =======================================
+
 
 window.excluirProducao = async function(id){
 
 
 const confirmar =
+
 confirm(
+
 "Deseja excluir esta produção?"
+
 );
+
 
 
 if(!confirmar)
@@ -783,21 +1140,30 @@ return;
 
 
 
+
 try{
 
 
 await deleteDoc(
+
 doc(
+
 db,
+
 "producoes",
+
 id
+
 )
+
 );
 
 
 
 alert(
-"Produção excluída com sucesso!"
+
+"Produção excluída!"
+
 );
 
 
@@ -806,28 +1172,47 @@ carregarProducoes();
 
 
 
-}catch(error){
+}
+
+catch(error){
+
 
 
 console.error(
-"Erro ao excluir produção:",
+
+"Erro ao excluir:",
+
 error
+
 );
+
 
 
 alert(
+
 "Erro ao excluir produção"
+
 );
 
 
 }
 
 
+
 }
 
-// =====================================
-// INICIAR
-// =====================================
+
+
+
+
+
+
+
+// =======================================
+// INICIALIZAÇÃO
+// =======================================
+
 
 carregarProdutos();
+
 carregarProducoes();
