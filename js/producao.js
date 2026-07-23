@@ -179,7 +179,11 @@ document.getElementById(
 
 produto.temperatura || "";
 
+document.getElementById("unidadeProducao").value =
+produto.unidade || "";
 
+document.getElementById("responsavelProducao").value =
+usuarioAtual()?.nome || "Sistema";
 
 const data =
 document.getElementById(
@@ -248,11 +252,7 @@ return;
 
 
 
-const data =
-new Date(
-campo.value + "T00:00:00"
-);
-
+const data = new Date(campo.value);
 
 
 data.setDate(
@@ -261,12 +261,8 @@ data.getDate() + Number(dias)
 
 
 
-document.getElementById(
-"validadeProducao"
-).value =
-
-data.toISOString()
-.split("T")[0];
+document.getElementById("validadeProducao").value =
+data.toISOString().slice(0,16);
 
 
 }
@@ -274,7 +270,34 @@ data.toISOString()
 
 
 
+// =======================================
+// GERAR LOTE
+// =======================================
 
+function gerarLote() {
+
+    const agora = new Date();
+
+    const lote =
+        "FS-" +
+        agora.getFullYear() +
+        String(agora.getMonth() + 1).padStart(2, "0") +
+        String(agora.getDate()).padStart(2, "0") +
+        "-" +
+        String(Date.now()).slice(-4);
+
+const campoLote = document.getElementById("loteProducao");
+
+if (campoLote) {
+
+    campoLote.value = lote;
+
+    console.log("Lote gerado:", lote);
+
+}
+
+return lote;
+}
 
 
 // =======================================
@@ -317,6 +340,7 @@ const usuario =
 usuarioAtual();
 
 
+const lote = gerarLote();
 
 
 const dados = {
@@ -399,7 +423,7 @@ document.getElementById(
 "statusProducao"
 ).value || "Finalizado",
 
-
+lote: lote,
 
 criadoEm:
 
@@ -740,7 +764,7 @@ responsavel:
 
 dados.responsavel,
 
-
+lote: lote,
 
 status:
 
@@ -839,18 +863,21 @@ serverTimestamp()
 
 
 alert(
-
 "Produção registrada com sucesso!"
-
 );
-
-
 
 formulario.reset();
 
-
+preencherDataAtual();
+// Limpa os campos automáticos
+document.getElementById("temperaturaProducao").value = "";
+document.getElementById("responsavelProducao").value = "";
+document.getElementById("validadeProducao").value = "";
+document.getElementById("unidadeProducao").value = "";
 
 carregarProducoes();
+
+
 
 
 
@@ -1032,81 +1059,32 @@ onclick="excluirProducao('${item.id}')"
 // FORMATAR DATA
 // =======================================
 
+function formatarData(data) {
 
-function formatarData(data){
+    if (!data) return "-";
 
+    // Timestamp do Firestore
+    if (data.seconds) {
 
-if(!data)
-return "-";
+        return new Date(data.seconds * 1000)
+            .toLocaleString("pt-BR");
 
+    }
 
+    // String (datetime-local)
+    if (typeof data === "string") {
 
-// Timestamp Firebase
+        const dt = new Date(data);
 
-if(data.seconds){
+        if (!isNaN(dt)) {
 
+            return dt.toLocaleString("pt-BR");
 
-return new Date(
+        }
 
-data.seconds * 1000
+    }
 
-)
-
-.toLocaleDateString(
-"pt-BR"
-);
-
-
-}
-
-
-
-// YYYY-MM-DD
-
-if(typeof data === "string"){
-
-
-const partes =
-data.split("-");
-
-
-
-if(partes.length === 3){
-
-
-return (
-
-partes[2]
-
-+
-
-"/"
-
-+
-
-partes[1]
-
-+
-
-"/"
-
-+
-
-partes[0]
-
-);
-
-
-}
-
-
-
-}
-
-
-
-return data;
-
+    return data;
 
 }
 
@@ -1205,14 +1183,38 @@ alert(
 
 
 
+// =======================================
+// DATA/HORA ATUAL
+// =======================================
 
+function preencherDataAtual() {
+    const agora = new Date();
+
+    const dataFormatada = new Date(
+        agora.getTime() - agora.getTimezoneOffset() * 60000
+    )
+    .toISOString()
+    .slice(0, 16);
+
+    document.getElementById("dataProducao").value = dataFormatada;
+}
+
+preencherDataAtual();
 
 
 // =======================================
 // INICIALIZAÇÃO
 // =======================================
 
+document.addEventListener("DOMContentLoaded", () => {
 
-carregarProdutos();
+    preencherDataAtual();
 
-carregarProducoes();
+    carregarProdutos();
+
+    carregarProducoes();
+
+    gerarLote();
+
+});
+
