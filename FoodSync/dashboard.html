@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>FoodSync - Dashboard</title>
+
+
+<link rel="icon" href="img/favicon.png">
+
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet" href="css/sidebar.css">
+
+<link rel="stylesheet" href="css/dashboard.css">
+
+
+</head>
+
+
+<body>
+
+
+<div class="layout">
+
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+
+<div class="logo-area">
+
+<img src="img/logo.png" alt="FoodSync">
+
+</div>
+
+
+
+<nav class="menu">
+
+
+<a href="dashboard.html" class="active">
+
+<span>📊</span>
+
+Dashboard
+
+</a>
+
+
+
+<a href="producao.html">
+
+<span>🍱</span>
+
+Produção
+
+</a>
+
+
+
+<a href="produtos.html">
+
+<span>📦</span>
+
+Produtos
+
+</a>
+
+
+
+<a href="etiquetas.html">
+
+<span>🏷️</span>
+
+Etiquetas
+
+</a>
+
+
+
+<a href="estoque.html">
+
+<span>📋</span>
+
+Estoque
+
+</a>
+
+
+
+<a href="relatorios.html">
+
+<span>📈</span>
+
+Relatórios
+
+</a>
+
+
+
+<a href="auditoria.html">
+
+<span>📝</span>
+
+Auditoria
+
+</a>
+
+
+
+<a href="usuario.html">
+
+<span>👤</span>
+
+Usuários
+
+</a>
+
+
+
+<a href="configuracoes.html">
+
+<span>⚙️</span>
+
+Configurações
+
+</a>
+
+
+
+<a href="ajuda.html">
+
+❓ Ajuda
+
+</a>
+
+
+
+<a href="sac.html">
+
+🎧 SAC
+
+</a>
+
+
+
+<a href="sac-admin.html" id="menuSacAdmin">
+
+🎧 SAC Admin
+
+</a>
+
+
+
+</nav>
+
+
+
+<div class="sidebar-footer">
+
+
+<button onclick="logout()">
+
+🚪 Sair
+
+</button>
+
+
+</div>
+
+
+
+</aside>
+
+
+
+
+
+<!-- CONTEÚDO -->
+
+
+<main class="content">
+
+
+
+<header class="top-header">
+
+
+<div>
+
+
+<h1>
+
+Dashboard
+
+</h1>
+
+
+<p>
+
+Controle de produção, etiquetas e estoque
+
+</p>
+
+
+</div>
+
+
+
+<div class="user-info">
+
+
+<span id="usuarioNome">
+
+Usuário
+
+</span>
+
+
+</div>
+
+
+
+</header>
+
+
+
+
+
+<!-- CARDS -->
+
+
+<section class="cards">
+
+
+<div class="card">
+
+<div class="card-icon">
+📦
+</div>
+
+
+<div>
+
+<h3>
+Produtos
+</h3>
+
+
+<strong id="totalProdutos">
+0
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+🍱
+</div>
+
+
+<div>
+
+<h3>
+Produções
+</h3>
+
+
+<strong id="totalProducoes">
+0
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+🏷️
+</div>
+
+
+<div>
+
+<h3>
+Etiquetas
+</h3>
+
+
+<strong id="totalEtiquetas">
+0
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+⚠️
+</div>
+
+
+<div>
+
+<h3>
+Vencendo
+</h3>
+
+
+<strong id="produtosVencendo">
+0
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+🔴
+</div>
+
+
+<div>
+
+<h3>
+Vencidos
+</h3>
+
+
+<strong id="produtosVencidos">
+0
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+🛒
+</div>
+
+
+<div>
+
+<h3>
+Estoque Baixo
+</h3>
+
+
+<strong id="estoqueBaixo">
+0
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+👤
+</div>
+
+
+<div>
+
+<h3>
+Usuários
+</h3>
+
+
+<strong id="totalUsuarios">
+0
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+<!-- ALERTA DE COMPRA -->
+
+<section class="dashboard-box">
+
+
+<h2>
+🛒 Alertas de Compra
+</h2>
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+Produto
+</th>
+
+
+<th>
+Estoque Atual
+</th>
+
+
+<th>
+Estoque Mínimo
+</th>
+
+
+<th>
+Situação
+</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody id="listaEstoqueBaixo">
+
+
+<tr>
+
+<td colspan="4">
+
+🟢 Nenhum alerta de compra
+
+</td>
+
+</tr>
+
+
+</tbody>
+
+
+
+</table>
+
+
+</section>
+
+
+
+
+
+
+<!-- ÚLTIMAS PRODUÇÕES -->
+
+
+<section class="dashboard-box">
+
+
+<h2>
+
+Últimas Produções
+
+</h2>
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+Produto
+</th>
+
+
+<th>
+Quantidade
+</th>
+
+
+<th>
+Data
+</th>
+
+
+<th>
+Status
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+<tbody id="listaProducao">
+
+
+<tr>
+
+
+<td colspan="4">
+
+Nenhuma produção registrada
+
+</td>
+
+
+</tr>
+
+
+</tbody>
+
+
+
+</table>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- PRÓXIMOS VENCIMENTOS -->
+
+
+<section class="dashboard-box">
+
+
+<h2>
+
+⚠️ Próximos Vencimentos
+
+</h2>
+
+
+
+
+<table>
+
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+Produto
+</th>
+
+
+<th>
+Lote
+</th>
+
+
+<th>
+Validade
+</th>
+
+
+<th>
+Dias Restantes
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+<tbody id="listaVencimentos">
+
+
+<tr>
+
+
+<td colspan="4">
+
+Nenhum vencimento próximo
+
+</td>
+
+
+</tr>
+
+
+</tbody>
+
+
+
+</table>
+
+
+
+</section>
+<!-- GRÁFICO PRODUÇÃO POR DIA -->
+
+
+<section class="dashboard-box">
+
+
+<h2>
+
+📊 Produção por Dia
+
+</h2>
+
+
+
+<div class="grafico-container">
+
+
+<canvas id="graficoProducao"></canvas>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- GRÁFICO VALIDADE -->
+
+
+<section class="dashboard-box">
+
+
+<h2>
+
+⚠️ Etiquetas por Validade
+
+</h2>
+
+
+
+<div class="grafico-container">
+
+
+<canvas id="graficoValidade"></canvas>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+<!-- CHART.JS -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+
+
+<!-- FIREBASE -->
+
+<script type="module" src="js/firebase.js"></script>
+
+
+
+
+
+<!-- AUTENTICAÇÃO -->
+
+<script type="module" src="js/auth.js"></script>
+
+
+
+
+
+<!-- SISTEMA -->
+
+<script type="module" src="js/app.js"></script>
+
+
+
+
+
+<!-- DASHBOARD -->
+
+<script type="module" src="js/dashboard.js"></script>
+
+
+
+
+</body>
+
+
+</html>

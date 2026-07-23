@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>FoodSync - Produtos</title>
+
+
+<link rel="icon" href="img/favicon.png">
+
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet" href="css/sidebar.css">
+
+<link rel="stylesheet" href="css/tabela.css">
+
+<link rel="stylesheet" href="css/produtos.css">
+
+<link rel="stylesheet" href="css/toast.css">
+
+</head>
+
+
+<body>
+
+
+<div class="layout">
+
+
+
+<!-- SIDEBAR -->
+
+
+<aside class="sidebar">
+
+
+<div class="logo-area">
+
+<img src="img/logo.png" alt="FoodSync">
+
+</div>
+
+
+
+
+
+<nav class="menu">
+
+
+<a href="dashboard.html">
+
+<span>📊</span>
+
+Dashboard
+
+</a>
+
+
+
+<a href="producao.html">
+
+<span>🍱</span>
+
+Produção
+
+</a>
+
+
+
+<a href="produtos.html" class="active">
+
+<span>📦</span>
+
+Produtos
+
+</a>
+
+
+
+<a href="etiquetas.html">
+
+<span>🏷️</span>
+
+Etiquetas
+
+</a>
+
+
+
+<a href="estoque.html">
+
+<span>📋</span>
+
+Estoque
+
+</a>
+
+
+
+<a href="relatorios.html">
+
+<span>📈</span>
+
+Relatórios
+
+</a>
+
+<a href="auditoria.html">
+
+<span>📝</span>
+
+Auditoria
+
+</a>
+
+
+<a href="usuario.html">
+
+<span>👤</span>
+
+Usuários
+
+</a>
+
+
+
+<a href="configuracoes.html">
+
+<span>⚙️</span>
+
+Configurações
+
+</a>
+<a href="ajuda.html">
+❓ Ajuda
+</a>
+
+
+<a href="sac.html">
+🎧 SAC
+</a>
+
+</nav>
+
+
+
+
+<div class="sidebar-footer">
+
+
+<button onclick="logout()">
+
+🚪 Sair
+
+</button>
+
+
+</div>
+
+
+</aside>
+
+
+
+
+
+<!-- CONTEÚDO -->
+
+
+<main class="content">
+
+
+
+<header class="top-header">
+
+
+<div>
+
+
+<h1>
+
+📦 Produtos
+
+</h1>
+
+
+<p>
+
+Cadastro e controle de produtos
+
+</p>
+
+
+</div>
+
+
+</header>
+
+
+<!-- CONTROLE DE PRODUTOS -->
+
+
+<section class="produto-toolbar">
+
+
+<button 
+class="btn-primary"
+onclick="abrirModalProduto()">
+
+➕ Novo Produto
+
+</button>
+
+
+
+
+<div class="pesquisa">
+
+
+<input
+
+type="text"
+
+id="pesquisaProduto"
+
+placeholder="🔍 Pesquisar produto">
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+<!-- TABELA -->
+
+
+<section class="table-box">
+
+
+<h2>
+
+Produtos cadastrados
+
+</h2>
+
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+
+Código
+
+</th>
+
+
+<th>
+
+Produto
+
+</th>
+
+
+<th>
+
+Categoria
+
+</th>
+
+
+<th>
+
+Unidade
+
+</th>
+
+
+<th>
+
+Validade
+
+</th>
+
+
+<th>
+
+Setor
+
+</th>
+
+
+<th>
+
+Status
+
+</th>
+
+
+<th>
+
+Ações
+
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+<tbody id="listaProdutos">
+
+
+<tr>
+
+
+<td colspan="8">
+
+Nenhum produto cadastrado
+
+</td>
+
+
+</tr>
+
+
+</tbody>
+
+
+
+</table>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- MODAL CADASTRO -->
+
+
+<div id="modalProduto" class="modal">
+
+
+
+<div class="modal-content">
+
+
+
+
+
+<div class="modal-header">
+
+
+<h2>
+
+Novo Produto
+
+</h2>
+
+
+
+<button onclick="fecharModalProduto()">
+
+✖
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+<form id="produtoForm">
+
+    <div class="campo">
+
+<label for="categoriaProduto">
+Categoria
+</label>
+
+<select id="categoriaProduto">
+
+<option value="">
+Selecione a categoria
+</option>
+
+<option value="SECO">
+SECO
+</option>
+
+<option value="RESFRIADO / PISTA FRIA">
+RESFRIADO / PISTA FRIA
+</option>
+
+<option value="CONGELADO">
+CONGELADO
+</option>
+
+<option value="BEBIDA">
+BEBIDA
+</option>
+
+<option value="EMBALAGEM">
+EMBALAGEM
+</option>
+
+<option value="MOLHO">
+MOLHO
+</option>
+
+<option value="SOBREMESA">
+SOBREMESA
+</option>
+
+<option value="COMPLEMENTO">
+COMPLEMENTO
+</option>
+
+<option value="DESCARTÁVEL">
+DESCARTÁVEL
+</option>
+
+<option value="LIMPEZA">
+LIMPEZA
+</option>
+
+<option value="OUTROS">
+OUTROS
+</option>
+
+</select>
+</div>
+
+<div class="campo">
+
+<label for="codigoProduto">
+Código do Produto
+</label>
+
+<input
+type="text"
+id="codigoProduto"
+placeholder="Ex: SAL001"
+>
+
+</div>
+
+
+
+<div class="form-grid">
+
+
+<div class="input-group">
+
+<label>
+Nome do Produto
+</label>
+
+<input
+type="text"
+id="nomeProduto"
+placeholder="Digite o nome do produto"
+required>
+
+</div>
+
+
+
+<div class="input-group">
+
+<label>
+Temperatura
+</label>
+
+<select id="temperaturaProduto">
+
+<option value="AMBIENTE">
+Ambiente
+</option>
+
+<option value="Refrigerado 0°C a 5°C">
+Refrigerado 0°C a 5°C
+</option>
+
+<option value="Congelado -18°C">
+Congelado -18°C
+</option>
+
+</select>
+
+</div>
+
+
+<div class="input-group">
+
+<label>
+Validade (dias)
+</label>
+
+<input 
+type="number"
+id="validadeProduto"
+value="1">
+
+</div>
+
+
+<div class="input-group">
+
+<label>
+Unidade
+</label>
+
+<select id="unidadeProduto">
+
+<option value="KG">
+KG
+</option>
+
+<option value="UN">
+UN
+</option>
+
+<option value="L">
+L
+</option>
+
+</select>
+
+</div>
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+
+Validade Fechado (dias)
+
+</label>
+
+
+<input
+
+type="number"
+
+id="validadeFechado"
+
+value="1">
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+
+Validade Após Aberto (dias)
+
+</label>
+
+
+<input
+
+type="number"
+
+id="validadeAberto"
+
+value="1">
+
+
+</div>
+
+<div class="input-group">
+
+
+<label>
+
+Temperatura Armazenamento
+
+</label>
+
+
+<select id="temperaturaArmazenamento">
+
+<option>
+
+Refrigerado 0°C a 5°C
+
+</option>
+
+
+<option>
+
+Congelado -18°C
+
+</option>
+
+
+<option>
+
+Ambiente
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+
+Setor
+
+</label>
+
+
+<select id="setorProduto">
+
+
+<option>
+
+Cozinha
+
+</option>
+
+
+<option>
+
+Sushi
+
+</option>
+
+
+<option>
+
+Estoque
+
+</option>
+
+
+<option>
+
+Expedição
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+
+Estoque Mínimo
+
+</label>
+
+
+<input
+
+type="number"
+
+id="estoqueMinimoProduto"
+
+value="1">
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+
+Status
+
+</label>
+
+
+<select id="statusProduto">
+
+
+<option value="ativo">
+
+Ativo
+
+</option>
+
+
+<option value="inativo">
+
+Inativo
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group campo-completo">
+
+
+<label>
+
+Observação
+
+</label>
+
+
+<textarea
+
+id="observacaoProduto"
+
+rows="3">
+
+</textarea>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="modal-footer">
+
+
+
+<button
+
+type="button"
+
+class="btn-secondary"
+
+onclick="fecharModalProduto()">
+
+
+Cancelar
+
+
+</button>
+
+
+
+
+
+
+<button
+
+type="submit"
+
+class="btn-primary">
+
+
+💾 Salvar Produto
+
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+</form>
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- FIREBASE -->
+
+
+<script type="module" src="js/firebase.js"></script>
+
+
+
+
+<!-- SISTEMA -->
+
+
+<script type="module" src="js/app.js"></script>
+
+
+
+
+<!-- PRODUTOS -->
+
+
+<script type="module" src="js/produtos.js"></script>
+
+
+
+
+<script type="module" src="js/auth.js"></script>
+
+
+
+
+
+</body>
+
+
+</html>

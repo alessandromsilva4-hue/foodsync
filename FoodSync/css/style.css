@@ -1,0 +1,699 @@
+/* ==========================================
+   FOODSYNCH v2 - DESIGN SYSTEM
+========================================== */
+
+
+:root {
+
+    --primary: #16a34a;
+    --primary-dark: #052e16;
+
+    --secondary: #22c55e;
+
+    --background: #f8fafc;
+
+    --surface: #ffffff;
+
+    --text: #1f2937;
+
+    --text-light: #64748b;
+
+    --border: #e2e8f0;
+
+    --danger: #dc2626;
+
+    --warning: #f59e0b;
+
+    --success: #16a34a;
+
+    --radius: 12px;
+
+    --shadow:
+    0 4px 15px rgba(0,0,0,0.08);
+
+}
+
+
+
+/* ==========================================
+   RESET
+========================================== */
+
+
+* {
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+}
+
+
+body {
+
+    font-family:
+
+    "Inter",
+    Arial,
+    sans-serif;
+
+    background:
+
+    var(--background);
+
+    color:
+
+    var(--text);
+
+}
+
+
+
+
+a {
+
+    text-decoration:none;
+
+    color:inherit;
+
+}
+
+
+
+button,
+input,
+select,
+textarea {
+
+    font-family:inherit;
+
+}
+
+
+
+
+/* ==========================================
+   LAYOUT PRINCIPAL
+========================================== */
+
+
+.layout {
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+
+
+
+/* ==========================================
+   CONTEÚDO
+========================================== */
+
+
+.content {
+
+    flex:1;
+
+    padding:30px;
+
+    margin-left:250px;
+
+}
+
+
+
+/* ==========================================
+   HEADER
+========================================== */
+
+
+.top-header {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:30px;
+
+}
+
+
+
+.top-header h1 {
+
+    font-size:28px;
+
+    font-weight:700;
+
+}
+
+
+
+.top-header p {
+
+    color:
+
+    var(--text-light);
+
+    margin-top:5px;
+
+}
+
+
+
+/* ==========================================
+   CARDS
+========================================== */
+
+
+.cards {
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+}
+
+
+
+.card {
+
+    background:
+
+    var(--surface);
+
+    padding:25px;
+
+    border-radius:
+
+    var(--radius);
+
+    box-shadow:
+
+    var(--shadow);
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+
+
+.card strong {
+
+    font-size:32px;
+
+}
+
+
+
+.card-icon {
+
+    font-size:40px;
+
+}
+
+
+
+
+
+/* ==========================================
+   CAIXAS
+========================================== */
+
+
+.dashboard-box,
+.form-box,
+.table-box {
+
+
+    background:
+
+    var(--surface);
+
+
+    padding:25px;
+
+
+    border-radius:
+
+    var(--radius);
+
+
+    margin-top:25px;
+
+
+    box-shadow:
+
+    var(--shadow);
+
+
+}
+
+
+
+/* ==========================================
+   BOTÕES
+========================================== */
+
+
+button {
+
+
+    background:
+
+    var(--primary);
+
+
+    color:white;
+
+
+    border:none;
+
+
+    padding:
+
+    12px 22px;
+
+
+    border-radius:
+
+    8px;
+
+
+    cursor:pointer;
+
+
+    font-weight:600;
+
+
+    transition:.2s;
+
+
+}
+
+
+
+button:hover {
+
+
+    background:
+
+    var(--primary-dark);
+
+
+}
+
+
+
+/* ==========================================
+   INPUTS
+========================================== */
+
+
+input,
+select,
+textarea {
+
+
+    width:100%;
+
+
+    padding:12px;
+
+
+    border:
+
+    1px solid var(--border);
+
+
+    border-radius:8px;
+
+
+    outline:none;
+
+
+}
+
+
+
+input:focus,
+select:focus,
+textarea:focus {
+
+
+    border-color:
+
+    var(--primary);
+
+
+}
+
+
+
+
+
+/* ==========================================
+   TABELAS
+========================================== */
+
+
+table {
+
+
+    width:100%;
+
+
+    border-collapse:collapse;
+
+
+}
+
+
+
+th {
+
+
+    background:#f1f5f9;
+
+
+    text-align:left;
+
+
+    padding:14px;
+
+
+}
+
+
+
+td {
+
+
+    padding:14px;
+
+
+    border-bottom:
+
+    1px solid var(--border);
+
+
+}
+
+
+
+
+/* ==========================================
+   RESPONSIVO
+========================================== */
+
+
+@media(max-width:900px){
+
+
+.content {
+
+    margin-left:0;
+
+    padding:15px;
+
+}
+
+
+.cards {
+
+    grid-template-columns:1fr;
+
+}
+
+
+}
+/* =======================================
+   FOODSYNC - MODAL SAC ADMIN
+======================================= */
+
+.modal-sac{
+
+    display:none;
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.5);
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:9999;
+
+}
+
+
+.modal-content{
+
+    background:white;
+
+    width:500px;
+
+    max-width:90%;
+
+    padding:25px;
+
+    border-radius:12px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+
+}
+
+
+
+.modal-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+
+
+.modal-header h2{
+
+    margin:0;
+
+}
+
+
+
+.modal-header button{
+
+    border:none;
+
+    background:none;
+
+    font-size:20px;
+
+    cursor:pointer;
+
+}
+
+
+
+.campo{
+
+    margin-top:15px;
+
+}
+
+
+
+.campo label{
+
+    display:block;
+
+    font-weight:bold;
+
+    margin-bottom:5px;
+
+}
+
+
+
+.campo textarea,
+.campo select{
+
+    width:100%;
+
+    padding:10px;
+
+    border-radius:8px;
+
+    border:1px solid #ccc;
+
+}
+
+
+
+.btn-primary{
+
+    margin-top:20px;
+
+    padding:12px 20px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+
+
+#dadosChamado{
+
+    background:#f5f5f5;
+
+    padding:15px;
+
+    border-radius:8px;
+
+    margin-bottom:15px;
+
+}
+
+
+
+#dadosChamado p{
+
+    margin:8px 0;
+
+}
+/* ===================================================
+MODAL USUÁRIOS
+=================================================== */
+
+.modal-usuario{
+
+display:none;
+
+position:fixed;
+
+left:0;
+top:0;
+
+width:100%;
+height:100%;
+
+background:rgba(0,0,0,.55);
+
+justify-content:center;
+
+align-items:center;
+
+z-index:9999;
+
+}
+
+.usuario-modal{
+
+width:700px;
+
+max-width:95%;
+
+background:#fff;
+
+padding:30px;
+
+border-radius:14px;
+
+box-shadow:0 10px 40px rgba(0,0,0,.25);
+
+animation:modal .25s;
+
+}
+
+.modal-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:20px;
+
+}
+
+.modal-header h2{
+
+margin:0;
+
+}
+
+.btn-fechar{
+
+background:none;
+
+border:none;
+
+font-size:24px;
+
+cursor:pointer;
+
+}
+
+.modal-footer{
+
+display:flex;
+
+justify-content:flex-end;
+
+gap:10px;
+
+margin-top:25px;
+
+}
+
+@keyframes modal{
+
+from{
+
+transform:scale(.9);
+
+opacity:0;
+
+}
+
+to{
+
+transform:scale(1);
+
+opacity:1;
+
+}
+
+}
