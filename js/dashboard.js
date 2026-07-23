@@ -22,51 +22,91 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 function converterData(data){
 
-    if(!data)
+    if(!data){
         return null;
+    }
 
 
     if(typeof data?.toDate === "function"){
+
         return data.toDate();
+
     }
+
 
 
     if(typeof data === "string"){
 
-        const partes = data.split("-");
+
+        // Remove hora
+        // 2026-07-23T13:33
+
+        const somenteData =
+        data.substring(0,10);
+
+
+        const partes =
+        somenteData.split("-");
+
 
 
         if(partes.length === 3){
 
-            return new Date(
+            const novaData =
+            new Date(
                 partes[0],
                 partes[1]-1,
                 partes[2]
             );
+
+
+            return isNaN(novaData)
+            ? null
+            : novaData;
 
         }
 
     }
 
 
-    return new Date(data);
+
+    const resultado =
+    new Date(data);
+
+
+
+    return isNaN(resultado)
+    ? null
+    : resultado;
+
 
 }
+
+
 
 
 
 function formatarData(data){
 
-    const d = converterData(data);
+
+    const d =
+    converterData(data);
 
 
-    if(!d || isNaN(d))
-        return "-";
+
+    if(!d){
+
+        return "Não informado";
+
+    }
+
 
 
     return d.toLocaleDateString("pt-BR");
 
+
 }
+
 
 
 
@@ -77,15 +117,23 @@ function formatarData(data){
 
 function diasRestantes(data){
 
+
     const validade =
     converterData(data);
 
 
-    if(!validade)
+
+    if(!validade){
+
         return 999;
 
+    }
 
-    const hoje = new Date();
+
+
+    const hoje =
+    new Date();
+
 
 
     hoje.setHours(0,0,0,0);
@@ -93,17 +141,19 @@ function diasRestantes(data){
     validade.setHours(0,0,0,0);
 
 
+
     return Math.floor(
-        (validade-hoje)
+
+        (validade - hoje)
+
         /
+
         (1000*60*60*24)
+
     );
 
+
 }
-
-
-
-
 // =======================================
 // CARDS
 // =======================================
@@ -120,16 +170,19 @@ collection(db,"produtos")
 );
 
 
+
 const producoes =
 await getDocs(
 collection(db,"producoes")
 );
 
 
+
 const etiquetas =
 await getDocs(
 collection(db,"etiquetas")
 );
+
 
 
 const usuarios =
@@ -139,16 +192,20 @@ collection(db,"usuarios")
 
 
 
+
 document.getElementById("totalProdutos").innerText =
 produtos.size;
+
 
 
 document.getElementById("totalProducoes").innerText =
 producoes.size;
 
 
+
 document.getElementById("totalEtiquetas").innerText =
 etiquetas.size;
+
 
 
 document.getElementById("totalUsuarios").innerText =
@@ -156,16 +213,21 @@ usuarios.size;
 
 
 
-let vencendo=0;
 
-let vencidos=0;
+
+let vencendo = 0;
+
+let vencidos = 0;
+
 
 
 
 etiquetas.forEach(doc=>{
 
 
-const e = doc.data();
+const e =
+doc.data();
+
 
 
 const dias =
@@ -173,37 +235,69 @@ diasRestantes(e.validade);
 
 
 
+
 if(dias < 0){
+
 
     vencidos++;
 
+
 }
 
-else if(dias <=3){
+else if(dias <= 30){
+
 
     vencendo++;
 
+
 }
+
 
 
 });
 
 
 
-document.getElementById("produtosVencendo").innerText =
+
+
+const campoVencendo =
+document.getElementById(
+"produtosVencendo"
+);
+
+
+
+if(campoVencendo){
+
+campoVencendo.innerText =
 vencendo;
 
+}
 
-document.getElementById("produtosVencidos").innerText =
+
+
+const campoVencidos =
+document.getElementById(
+"produtosVencidos"
+);
+
+
+
+if(campoVencidos){
+
+campoVencidos.innerText =
 vencidos;
+
+}
 
 
 
 }
 catch(error){
 
+
 console.error(
-"Erro cards",
+"Erro cards:",
 error
 );
 
@@ -216,10 +310,11 @@ error
 
 
 
+
+
 // =======================================
 // ESTOQUE BAIXO
 // =======================================
-
 
 async function carregarEstoqueBaixo(){
 
@@ -233,6 +328,7 @@ document.getElementById(
 );
 
 
+
 const tabela =
 document.getElementById(
 "listaEstoqueBaixo"
@@ -240,8 +336,11 @@ document.getElementById(
 
 
 
-if(!card && !tabela)
+if(!card && !tabela){
+
 return;
+
+}
 
 
 
@@ -250,43 +349,70 @@ await getDocs(
 collection(db,"estoque")
 );
 
-console.log("TOTAL ESTOQUE:", snapshot.size);
+
 
 let baixos=[];
 
 
-snapshot.forEach(doc => {
 
-    const item = doc.data();
+snapshot.forEach(doc=>{
 
-    console.log(item);
 
-    console.log(
-        item.produto,
-        item.quantidade,
-        item.minimo
-    );
+const item =
+doc.data();
 
-    const quantidade = Number(item.quantidade || 0);
 
-    const minimo = Number(item.minimo || 0);
 
-    if (quantidade <= minimo) {
 
-        baixos.push({
-            produto: item.produto,
-            quantidade,
-            minimo,
-            unidade: item.unidade || "UN"
-        });
+const quantidade =
+Number(item.quantidade || 0);
 
-    }
+
+
+const minimo =
+Number(item.minimo || 0);
+
+
+
+
+
+// Ignora produtos sem estoque mínimo configurado
+
+if(
+minimo > 0 &&
+quantidade <= minimo
+){
+
+
+baixos.push({
+
+
+produto:
+item.produto || "-",
+
+
+quantidade,
+
+
+minimo,
+
+
+unidade:
+item.unidade || "UN"
+
+
+});
+
+
+}
+
+
 
 });
 
 
 
-// CARD
+
 
 
 if(card){
@@ -299,7 +425,7 @@ baixos.length;
 
 
 
-// TABELA
+
 
 
 if(tabela){
@@ -309,10 +435,11 @@ tabela.innerHTML="";
 
 
 
-if(baixos.length===0){
+
+if(baixos.length === 0){
 
 
-tabela.innerHTML=`
+tabela.innerHTML = `
 
 <tr>
 
@@ -326,10 +453,12 @@ tabela.innerHTML=`
 
 `;
 
+
 return;
 
-
 }
+
+
 
 
 
@@ -373,7 +502,9 @@ ${item.unidade}
 `;
 
 
+
 });
+
 
 
 }
@@ -390,11 +521,13 @@ error
 );
 
 
-}
-
-
 
 }
+
+
+
+}
+
 
 
 
@@ -414,8 +547,11 @@ document.getElementById(
 
 
 
-if(!tabela)
+if(!tabela){
+
 return;
+
+}
 
 
 
@@ -436,19 +572,37 @@ let lista=[];
 
 snapshot.forEach(doc=>{
 
+
 lista.push(doc.data());
+
 
 });
 
 
 
-lista.sort((a,b)=>
 
-converterData(b.dataProducao)
--
+lista.sort((a,b)=>{
+
+
+const dataA =
 converterData(a.dataProducao)
+|| new Date(0);
 
-);
+
+
+const dataB =
+converterData(b.dataProducao)
+|| new Date(0);
+
+
+
+return dataB - dataA;
+
+
+});
+
+
+
 
 
 
@@ -456,19 +610,23 @@ lista.slice(0,5)
 .forEach(p=>{
 
 
-tabela.innerHTML +=`
+
+tabela.innerHTML += `
 
 <tr>
 
+
 <td>
-${p.produto}
+${p.produto || "-"}
 </td>
 
 
+
 <td>
-${p.quantidade}
+${p.quantidade || 0}
 ${p.unidade || ""}
 </td>
+
 
 
 <td>
@@ -476,9 +634,11 @@ ${formatarData(p.dataProducao)}
 </td>
 
 
+
 <td>
 ${p.status || "Finalizado"}
 </td>
+
 
 
 </tr>
@@ -486,10 +646,15 @@ ${p.status || "Finalizado"}
 `;
 
 
+
 });
 
 
+
 }
+
+
+
 
 
 
@@ -507,8 +672,12 @@ document.getElementById(
 );
 
 
-if(!tabela)
+
+if(!tabela){
+
 return;
+
+}
 
 
 
@@ -527,10 +696,13 @@ let lista=[];
 
 
 
+
 snapshot.forEach(doc=>{
 
 
-const e=doc.data();
+const e =
+doc.data();
+
 
 
 const dias =
@@ -538,20 +710,39 @@ diasRestantes(e.validade);
 
 
 
-if(dias<=7 && dias>=0){
+
+if(
+dias <= 30 &&
+dias >= 0
+){
+
 
 
 lista.push({
 
-produto:e.produto,
 
-lote:e.codigoEtiqueta,
+produto:
+e.produto || "-",
 
-validade:e.validade,
+
+
+lote:
+e.lote ||
+e.codigo ||
+"-",
+
+
+
+validade:
+e.validade,
+
+
 
 dias
 
+
 });
+
 
 
 }
@@ -562,14 +753,21 @@ dias
 
 
 
-lista.sort((a,b)=>a.dias-b.dias);
+
+
+lista.sort(
+(a,b)=>
+a.dias-b.dias
+);
 
 
 
-if(lista.length===0){
 
 
-tabela.innerHTML=`
+if(lista.length === 0){
+
+
+tabela.innerHTML = `
 
 <tr>
 
@@ -585,29 +783,70 @@ Nenhum vencimento próximo
 
 return;
 
-
 }
+
+
 
 
 
 lista.forEach(v=>{
 
 
-tabela.innerHTML +=`
+let situacao = "";
+
+
+
+if(v.dias <= 3){
+
+
+situacao =
+`🔴 ${v.dias} dia(s)`;
+
+
+}
+
+else{
+
+
+situacao =
+`🟢 ${v.dias} dia(s)`;
+
+}
+
+
+tabela.innerHTML += `
 
 <tr>
 
-<td>${v.produto}</td>
 
-<td>${v.lote}</td>
+<td>
+${v.produto}
+</td>
 
-<td>${formatarData(v.validade)}</td>
 
-<td>${v.dias} dia(s)</td>
+
+<td>
+${v.lote}
+</td>
+
+
+
+<td>
+${formatarData(v.validade)}
+</td>
+
+
+
+<td>
+${situacao}
+</td>
+
+
 
 </tr>
 
 `;
+
 
 
 });
@@ -619,10 +858,11 @@ tabela.innerHTML +=`
 
 
 
+
+
 // =======================================
 // INICIAR DASHBOARD
 // =======================================
-
 
 async function carregarDashboard(){
 
@@ -637,6 +877,7 @@ await carregarProducoesRecentes();
 
 
 await carregarVencimentos();
+
 
 
 }
