@@ -227,20 +227,25 @@ function formatarData(data){
 // BUSCAR ÚLTIMA PRODUÇÃO
 // =======================================
 
-async function buscarUltimaProducao(nomeProduto) {
+async function buscarUltimaProducao(produtoId) {
 
     const consulta = query(
         collection(db, "producoes"),
-        where("produto", "==", nomeProduto),
+       where("produtoId","==",produtoId),
         orderBy("dataProducao", "desc"),
         limit(1)
     );
 
+
     const snapshot = await getDocs(consulta);
 
-    if (snapshot.empty) {
+
+    if(snapshot.empty){
+
         return null;
+
     }
+
 
     return snapshot.docs[0].data();
 
@@ -276,8 +281,8 @@ console.log("Produto selecionado:", produtoSelecionado);
 
         }
 
-        const producao = await buscarUltimaProducao(nomeProduto);
-
+     const producao = await buscarUltimaProducao(produtoSelecionado.id);
+console.log("ÚLTIMA PRODUÇÃO USADA NA ETIQUETA:", producao);
 
 if (!producao) {
 
@@ -441,34 +446,46 @@ new QRCode(qrDiv, {
 
 try {
 
-    await addDoc(
-        collection(db, "etiquetas"),
-        {
-            codigo: codigoEtiqueta,
 
-            produto: producao.produto,
+console.log("ETIQUETA QUE SERÁ SALVA:", {
 
-            quantidade: producao.quantidade,
+    codigo: codigoEtiqueta,
 
-            unidade: producao.unidade || "UN",
+    dataProducaoOriginal: producao.dataProducao,
 
-            dataProducao: producao.dataProducao,
+    dataProducaoFormatada: producaoFormatada
 
-           validade: validade.toISOString().split("T")[0],
+});
 
-categoria: produtoSelecionado?.categoria || "",
 
-usuario: producao.responsavel || "Alessandro",
+await addDoc(
+    collection(db, "etiquetas"),
+    {
+        codigo: codigoEtiqueta,
 
-temperatura: produtoSelecionado?.temperatura || "AMBIENTE",
+        produto: producao.produto,
 
-lote: codigoEtiqueta,
+        quantidade: producao.quantidade,
 
-observacao: "",
+        unidade: producao.unidade || "UN",
 
-            criadoEm: serverTimestamp()
-        }
-    );
+       dataProducao: producao.dataProducao || producaoFormatada,
+
+        validade: validade.toISOString().split("T")[0],
+
+        categoria: produtoSelecionado?.categoria || "",
+
+        usuario: producao.responsavel || "Alessandro",
+
+        temperatura: produtoSelecionado?.temperatura || "AMBIENTE",
+
+        lote: codigoEtiqueta,
+
+        observacao: "",
+
+        criadoEm: serverTimestamp()
+    }
+);
 
       console.log("Etiqueta salva.");
 

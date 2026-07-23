@@ -1,5 +1,5 @@
 /* =====================================
-   FOODSYNCH - ETIQUETA CONSULTA
+   FOODSYNCH - CONSULTA ETIQUETA
 ===================================== */
 
 
@@ -18,7 +18,16 @@ body {
 }
 
 
-/* CARD DA ETIQUETA */
+/* CONTAINER */
+
+#resultadoEtiqueta {
+
+    width:350px;
+
+}
+
+
+/* ETIQUETA */
 
 .etiqueta {
 
@@ -30,7 +39,9 @@ body {
 
     padding:20px;
 
-    box-shadow:0 4px 12px rgba(0,0,0,.15);
+    box-sizing:border-box;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.15);
 
     text-align:center;
 
@@ -38,56 +49,61 @@ body {
 
 
 
-/* STATUS */
+/* CABEÇALHO */
 
-.status {
+.cabecalho-etiqueta {
+
+    text-align:center;
+
+}
+
+
+.cabecalho-etiqueta h2 {
+
+    margin:0;
+
+    color:#16a34a;
+
+    font-size:24px;
+
+}
+
+
+.cabecalho-etiqueta span {
+
+    font-size:12px;
+
+    color:#555;
+
+}
+
+
+
+/* LINHA */
+
+.linha {
+
+    border-top:1px dashed #999;
+
+    margin:12px 0;
+
+}
+
+
+
+/* PRODUTO */
+
+.produto-destaque {
+
+    font-size:24px;
 
     font-weight:bold;
 
-    padding:10px;
-
-    border-radius:8px;
-
-    margin-bottom:15px;
-
-}
-
-
-.valido {
-
-    background:#dcfce7;
-
-    color:#166534;
-
-}
-
-
-.alerta {
-
-    background:#fef9c3;
-
-    color:#854d0e;
-
-}
-
-
-.vencido {
-
-    background:#fee2e2;
-
-    color:#991b1b;
-
-}
-
-
-
-/* TITULO */
-
-.etiqueta h2 {
-
-    margin:10px 0;
-
     color:#052e16;
+
+    text-transform:uppercase;
+
+    margin:15px 0;
 
 }
 
@@ -99,7 +115,7 @@ body {
 
     text-align:left;
 
-    padding:8px 0;
+    padding:7px 0;
 
     border-bottom:1px solid #e5e7eb;
 
@@ -116,493 +132,55 @@ body {
 
 
 
-/* QR CODE */
-
-#qrcodeConsulta {
-
-    margin:20px auto;
-
-    display:flex;
-
-    justify-content:center;
-
-}
-
-
-
-/* BOTÃO */
-
-.btn-imprimir {
-
-    background:#16a34a;
-
-    color:white;
-
-    border:none;
-
-    padding:12px 20px;
-
-    border-radius:8px;
-
-    cursor:pointer;
-
-    font-size:15px;
-
-}
-
-
-
-.btn-imprimir:hover {
-
-    background:#15803d;
-
-}
-
-
-
-/* =====================================
-   IMPRESSÃO
-===================================== */
-
-
-@media print {
-
-
-body {
-
-    background:white;
-
-    padding:0;
-
-}
-
-
-
-.etiqueta {
-
-    width:80mm;
-
-    box-shadow:none;
-
-    border-radius:0;
-
-    padding:10px;
-
-}
-
-
-
-.btn-imprimir {
-
-    display:none;
-
-}
-
-
-
-.status {
-
-    border:1px solid #000;
-
-}
-
-
-
-.campo {
-
-    font-size:12px;
-
-}
-
-
-
-#qrcodeConsulta img {
-
-    width:90px !important;
-
-    height:90px !important;
-
-}
-
-
-
-footer {
-
-    display:none;
-
-}
-
-
-
-}
-/* CABEÇALHO */
-
-.cabecalho-etiqueta {
-
-    text-align:center;
-
-    margin-bottom:15px;
-
-}
-
-
-.logo-foodsync {
-
-    width:70px;
-
-    height:70px;
-
-    object-fit:contain;
-
-}
-
-
-.cabecalho-etiqueta h1 {
-
-    margin:5px 0;
-
-    color:#16a34a;
-
-    font-size:24px;
-
-}
-
-
-.cabecalho-etiqueta p {
-
-    margin:0;
-
-    font-size:13px;
-
-    color:#555;
-
-}
-
-
-
-/* CÓDIGO DA ETIQUETA */
-
-.codigo-etiqueta {
-
-    background:#f0fdf4;
-
-    border:1px dashed #16a34a;
-
-    padding:10px;
-
-    margin:15px 0;
-
-    border-radius:8px;
-
-    font-size:16px;
-
-}
-
-
-.codigo-etiqueta strong {
-
-    display:block;
-
-    font-size:20px;
-
-    color:#052e16;
-
-}
-.produto-destaque {
-
-    font-size:28px;
-
-    font-weight:bold;
-
-    color:#052e16;
-
-    text-align:center;
-
-    margin:15px 0;
-
-    text-transform:uppercase;
-
-}
-/* =====================================
-   VALIDADE EM DESTAQUE
-===================================== */
-
+/* VALIDADE */
 
 .validade-destaque {
 
     background:#f0fdf4;
 
-    border:3px solid #16a34a;
+    border:2px solid #16a34a;
 
-    border-radius:12px;
+    border-radius:10px;
 
-    padding:15px;
+    padding:12px;
 
     margin:15px 0;
 
-    text-align:center;
-
 }
-
 
 
 .validade-destaque span {
 
     display:block;
 
-    font-size:14px;
+    font-size:12px;
 
     font-weight:bold;
 
     color:#166534;
 
-    letter-spacing:2px;
-
 }
-
 
 
 .validade-destaque strong {
 
     display:block;
 
-    font-size:32px;
+    font-size:30px;
 
     color:#052e16;
 
-    margin-top:5px;
-
-}
-/* =====================================
-   IMPRESSÃO ETIQUETA FOODSYNCH
-===================================== */
-
-@media print {
-
-
-    @page {
-
-        size: 80mm auto;
-
-        margin:0;
-
-    }
-
-
-    body {
-
-        background:white;
-
-        padding:0;
-
-        margin:0;
-
-    }
-
-
-    body * {
-
-        visibility:hidden;
-
-    }
-
-
-    #resultadoEtiqueta,
-    #resultadoEtiqueta * {
-
-        visibility:visible;
-
-    }
-
-
-    #resultadoEtiqueta {
-
-        position:absolute;
-
-        top:0;
-
-        left:0;
-
-        width:80mm;
-
-        min-height:70mm;
-
-        background:white;
-
-        padding:5mm;
-
-        margin:0;
-
-        box-sizing:border-box;
-
-        border-radius:0;
-
-        box-shadow:none;
-
-        font-family:Arial, Helvetica, sans-serif;
-
-    }
-
-
-
-    /* ESCONDER ELEMENTOS DA TELA */
-
-    .logo,
-    .cabecalho-etiqueta,
-    footer,
-    .btn-imprimir,
-    button {
-
-        display:none !important;
-
-    }
-
-
-
-    /* CAMPOS */
-
-    .campo {
-
-        font-size:12px;
-
-        line-height:1.4;
-
-    }
-
-
-    .campo strong {
-
-        font-weight:bold;
-
-    }
-
-
-
-    /* STATUS */
-
-    .status {
-
-        border:1px solid #000;
-
-        padding:5px;
-
-        margin-top:8px;
-
-        text-align:center;
-
-        font-weight:bold;
-
-    }
-
-
-
-    /* LINHAS DE SEPARAÇÃO */
-
-    .linha {
-
-        border-top:1px dashed #000;
-
-        margin:8px 0;
-
-    }
-
-
-
-    /* QR CODE */
-
-    #qrcodeConsulta {
-
-        display:flex !important;
-
-        justify-content:center;
-
-        align-items:center;
-
-        margin-top:10px;
-
-    }
-
-
-    #qrcodeConsulta img {
-
-        width:90px !important;
-
-        height:90px !important;
-
-    }
-
-
-
-    /* CÓDIGO DA ETIQUETA */
-
-    .codigo-etiqueta {
-
-        text-align:center;
-
-        font-size:11px;
-
-        margin-top:5px;
-
-    }
-
-
-
-.etiqueta {
-
-    width:350px;
-
-    background:white;
-
-    border-radius:12px;
-
-    padding:20px;
-
-    box-shadow:0 4px 15px rgba(0,0,0,.15);
-
 }
 
 
-.cabecalho-etiqueta {
 
-    text-align:center;
-
-}
-
-
-.cabecalho-etiqueta h2 {
-
-    margin:0;
-
-    color:#16a34a;
-
-}
-
-
-.campo {
-
-    margin:8px 0;
-
-    font-size:14px;
-
-}
-
-
-.linha {
-
-    border-top:1px dashed #aaa;
-
-    margin:12px 0;
-
-}
-
+/* STATUS */
 
 .status {
 
-    padding:8px;
+    padding:10px;
 
-    text-align:center;
-
-    border-radius:6px;
+    border-radius:8px;
 
     font-weight:bold;
 
@@ -636,12 +214,230 @@ footer {
 }
 
 
+
+/* QR CODE */
+
+#qrcodeConsulta {
+
+    display:flex;
+
+    justify-content:center;
+
+    margin:15px 0;
+
+}
+
+
+
+#qrcodeConsulta img {
+
+    width:100px;
+
+    height:100px;
+
+}
+
+
+
+/* CÓDIGO */
+
 .codigo-etiqueta {
 
-    text-align:center;
+    background:#f0fdf4;
 
-    margin-top:8px;
+    border:1px dashed #16a34a;
 
-    font-size:12px;
+    border-radius:8px;
+
+    padding:8px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+}
+
+
+
+/* BOTÃO */
+
+.btn-imprimir {
+
+    margin-top:20px;
+
+    background:#16a34a;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 20px;
+
+    border-radius:8px;
+
+}
+
+
+
+/* =====================================
+   IMPRESSÃO ZEBRA 60X60
+===================================== */
+
+
+@media print {
+
+
+@page {
+
+    size:60mm 60mm;
+
+    margin:0;
+
+}
+
+
+body {
+
+    background:white;
+
+    padding:0;
+
+    margin:0;
+
+}
+
+
+
+body * {
+
+    visibility:hidden;
+
+}
+
+
+
+#resultadoEtiqueta,
+#resultadoEtiqueta * {
+
+    visibility:visible;
+
+}
+
+
+
+#resultadoEtiqueta {
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    width:60mm;
+
+}
+
+
+
+.etiqueta {
+
+    width:60mm;
+
+    min-height:60mm;
+
+    padding:3mm;
+
+    border-radius:0;
+
+    box-shadow:none;
+
+}
+
+
+
+.cabecalho-etiqueta h2 {
+
+    font-size:16px;
+
+}
+
+
+
+.cabecalho-etiqueta span {
+
+    font-size:8px;
+
+}
+
+
+
+.produto-destaque {
+
+    font-size:14px;
+
+}
+
+
+
+.campo {
+
+    font-size:9px;
+
+    padding:3px;
+
+}
+
+
+
+.validade-destaque {
+
+    padding:5px;
+
+}
+
+
+
+.validade-destaque strong {
+
+    font-size:18px;
+
+}
+
+
+
+#qrcodeConsulta img {
+
+    width:45px;
+
+    height:45px;
+
+}
+
+
+
+.status {
+
+    font-size:9px;
+
+    padding:4px;
+
+}
+
+
+
+.codigo-etiqueta {
+
+    font-size:8px;
+
+}
+
+
+
+.btn-imprimir {
+
+    display:none;
+
+}
+
 
 }
