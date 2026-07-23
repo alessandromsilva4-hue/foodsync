@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FoodSync - Etiquetas</title>
+
+<link rel="icon" href="img/favicon.png">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/formulario.css">
+<link rel="stylesheet" href="css/tabela.css">
+<link rel="stylesheet" href="css/etiquetas.css">
+
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo-area">
+            <img src="img/logo.png">
+        </div>
+
+        <nav class="menu">
+
+            <a href="dashboard.html">📊 Dashboard</a>
+            <a href="producao.html">🍱 Produção</a>
+            <a href="produtos.html">📦 Produtos</a>
+            <a href="etiquetas.html" class="active">🏷️ Etiquetas</a>
+            <a href="estoque.html">📋 Estoque</a>
+            <a href="relatorios.html">📈 Relatórios</a>
+            <a href="auditoria.html">
+
+<span>📝</span>
+
+Auditoria
+
+</a>
+
+            <a href="usuario.html">👤 Usuários</a>
+            <a href="configuracoes.html">⚙️ Configurações</a>
+            <a href="ajuda.html">
+            ❓ Ajuda
+            </a>
+
+
+            <a href="sac.html">
+              🎧 SAC
+             </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button onclick="logout()">🚪 Sair</button>
+        </div>
+
+    </aside>
+
+    <!-- CONTEÚDO -->
+
+    <main class="content">
+
+        <header class="top-header">
+
+            <div>
+
+                <h1>Etiquetas</h1>
+
+                <p>Gerenciamento de etiquetas de validade</p>
+
+            </div>
+
+        </header>
+
+        <!-- FORMULÁRIO -->
+
+        <section class="form-box">
+
+            <h2>Nova Etiqueta</h2>
+
+            <form id="etiquetaForm">
+
+                <div class="form-grid">
+
+                    <div class="input-group">
+
+                        <label>Produto</label>
+
+                        <select id="produtoEtiqueta" required>
+
+                            <option value="">Selecione o produto</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="input-group">
+
+                        <label>Data Produção</label>
+
+                        <input
+                            type="date"
+                            id="dataProducao"
+                            required>
+
+                    </div>
+
+                    <div class="input-group">
+
+                        <label>Quantidade</label>
+
+                        <input
+                            type="number"
+                            id="quantidadeProducao"
+                            value="1"
+                            min="1">
+
+                    </div>
+
+                </div>
+
+                <button type="submit">
+
+                    🏷️ Gerar Etiqueta
+
+                </button>
+
+            </form>
+
+        </section>
+
+        <!-- PRÉVIA -->
+
+        <section class="etiqueta-preview">
+
+            <h2>Pré-visualização</h2>
+
+            <div
+id="etiquetaGerada"
+class="etiqueta">
+
+
+    <div class="etiqueta-logo">
+        🥗 FOODSYNC
+    </div>
+
+
+    <h3 id="nomeEtiqueta">
+        PRODUTO
+    </h3>
+
+
+    <div id="categoriaEtiqueta">
+        RESFRIADO / PISTA FRIA
+    </div>
+
+
+    <div class="linha-etiqueta"></div>
+
+
+    <div class="datas-etiqueta">
+
+        <p>
+            <strong>MANIPULAÇÃO</strong>
+            <span id="dataEtiqueta">
+                --
+            </span>
+        </p>
+
+
+        <p>
+            <strong>VALIDADE</strong>
+            <span id="validadeEtiqueta">
+                --
+            </span>
+        </p>
+
+    </div>
+
+
+    <div class="linha-etiqueta"></div>
+
+
+    <div class="info-etiqueta">
+
+
+        <p>
+            <strong>TEMP:</strong>
+            <span id="temperaturaEtiqueta">
+                --
+            </span>
+        </p>
+
+
+        <p>
+            <strong>RESP:</strong>
+            <span id="responsavelEtiqueta">
+                --
+            </span>
+        </p>
+
+
+        <p>
+            <strong>QTD:</strong>
+            <span id="quantidadeEtiqueta">
+                --
+            </span>
+        </p>
+
+
+        <p>
+            <strong>LOTE:</strong>
+            <span id="loteEtiqueta">
+                --
+            </span>
+        </p>
+
+
+    </div>
+
+
+    <div id="qrcodeEtiqueta"></div>
+
+
+</div>
+
+            <button
+                type="button"
+                onclick="imprimirEtiqueta()">
+
+                🖨️ Imprimir
+
+            </button>
+
+        </section>
+
+        <!-- HISTÓRICO -->
+
+        <section class="table-box">
+
+            <h2>Histórico de Etiquetas</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Código</th>
+                        <th>Produto</th>
+                        <th>Quantidade</th>
+                        <th>Produção</th>
+                        <th>Validade</th>
+                        <th>Responsável</th>
+                        <th>Ações</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="listaEtiquetas">
+
+                    <tr>
+
+                        <td colspan="7">
+
+                            Nenhuma etiqueta gerada.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/app.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script type="module" src="js/etiquetas.js"></script>
+
+<script type="module" src="js/auth.js"></script>
+
+</body>
+
+</html>

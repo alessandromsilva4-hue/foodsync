@@ -1,0 +1,290 @@
+/* ==========================================
+   FOODSYNCH v2 - DASHBOARD
+========================================== */
+
+
+/* CARDS */
+
+.cards {
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(4,1fr);
+
+    gap:20px;
+
+}
+
+
+
+.card {
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:25px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+    box-shadow:
+    0 5px 20px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+    border-left:5px solid #16a34a;
+
+}
+
+
+
+.card:hover {
+
+    transform:translateY(-5px);
+
+}
+
+
+
+.card-icon {
+
+    width:60px;
+
+    height:60px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:#dcfce7;
+
+    border-radius:50%;
+
+    font-size:30px;
+
+}
+
+
+
+.card h3 {
+
+    font-size:14px;
+
+    color:#64748b;
+
+    margin-bottom:8px;
+
+}
+
+
+
+.card strong {
+
+    font-size:34px;
+
+    color:#052e16;
+
+}
+
+
+
+
+
+/* CORES DOS CARDS */
+
+
+.card:nth-child(2){
+
+    border-color:#2563eb;
+
+}
+
+
+.card:nth-child(2)
+.card-icon {
+
+    background:#dbeafe;
+
+}
+
+
+
+.card:nth-child(3){
+
+    border-color:#f59e0b;
+
+}
+
+
+.card:nth-child(3)
+.card-icon {
+
+    background:#fef3c7;
+
+}
+
+
+
+.card:nth-child(4){
+
+    border-color:#dc2626;
+
+}
+
+
+.card:nth-child(4)
+.card-icon {
+
+    background:#fee2e2;
+
+}
+
+
+
+
+
+/* TABELA */
+
+
+.dashboard-box h2 {
+
+    margin-bottom:20px;
+
+    font-size:20px;
+
+}
+
+
+
+.dashboard-box table {
+
+
+    overflow:hidden;
+
+    border-radius:12px;
+
+
+}
+
+
+
+.dashboard-box th {
+
+
+    background:#052e16;
+
+    color:white;
+
+}
+
+
+
+.dashboard-box tr:hover {
+
+
+    background:#f0fdf4;
+
+
+}
+
+
+
+/* ANIMAÇÃO */
+
+
+.card {
+
+
+    animation:
+
+    aparecer .4s ease;
+
+}
+
+
+
+@keyframes aparecer {
+
+
+from {
+
+
+    opacity:0;
+
+    transform:translateY(15px);
+
+
+}
+
+
+to {
+
+
+    opacity:1;
+
+
+}
+
+
+}
+
+
+
+
+
+/* RESPONSIVO */
+
+
+@media(max-width:1100px){
+
+
+.cards {
+
+
+grid-template-columns:
+
+repeat(2,1fr);
+
+
+}
+
+
+
+}
+
+
+@media(max-width:600px){
+
+
+.cards {
+
+
+grid-template-columns:1fr;
+
+
+}
+
+
+
+}
+
+/* =======================================
+   GRÁFICO DASHBOARD
+======================================= */
+
+.grafico-container {
+
+    position: relative;
+
+    height: 350px;
+
+    width: 100%;
+
+}

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>FoodSync - Usuários</title>
+
+
+<link rel="icon" href="img/favicon.png">
+
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/formulario.css">
+<link rel="stylesheet" href="css/tabela.css">
+
+
+</head>
+
+
+<body>
+
+
+<div class="layout">
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="logo-area">
+
+    <div class="logo">
+        🥗 FoodSync
+    </div>
+
+</div>
+
+
+<nav class="menu">
+
+        <a href="dashboard.html">
+            📊 Dashboard
+        </a>
+
+        <a href="produtos.html">
+            📦 Produtos
+        </a>
+
+        <a href="producao.html">
+            🏭 Produção
+        </a>
+
+        <a href="etiquetas.html">
+            🏷️ Etiquetas
+        </a>
+
+        <a href="estoque.html">
+            📋 Estoque
+        </a>
+
+        <a href="relatorios.html">
+    📈 Relatórios
+</a>
+
+
+<a href="auditoria.html">
+    📝 Auditoria
+</a>
+
+
+<a href="usuario.html" class="active">
+    👥 Usuários
+</a>
+
+        <a href="configuracoes.html">
+            ⚙️ Configurações
+        </a>
+
+    </nav>
+
+    <div class="sidebar-footer">
+<button onclick="logout()">
+🚪 Sair
+</button>
+</div>
+
+</aside>
+
+
+
+
+<!-- CONTEÚDO -->
+
+<main class="content">
+
+
+
+<header class="top-header">
+
+<div>
+
+<h1>
+👥 Usuários
+</h1>
+
+<p>
+Gerenciamento de usuários do FoodSync
+</p>
+
+</div>
+
+
+<button id="btnNovoUsuario" class="btn-primary">
++ Novo Usuário
+</button>
+
+
+</header>
+
+
+
+
+
+<!-- CARDS -->
+
+<section class="cards">
+
+
+<div class="card">
+
+<div class="card-icon">
+👥
+</div>
+
+<div>
+
+<h3>
+Total
+</h3>
+
+<strong id="cardTotal">
+0
+</strong>
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<div class="card-icon">
+👑
+</div>
+
+<div>
+
+<h3>
+Administradores
+</h3>
+
+<strong id="cardAdmins">
+0
+</strong>
+
+</div>
+
+</div>
+
+
+
+
+<div class="card">
+
+<div class="card-icon">
+👤
+</div>
+
+<div>
+
+<h3>
+Operadores
+</h3>
+
+<strong id="cardOperadores">
+0
+</strong>
+
+</div>
+
+</div>
+
+
+
+
+<div class="card">
+
+<div class="card-icon">
+✅
+</div>
+
+<div>
+
+<h3>
+Ativos
+</h3>
+
+<strong id="cardAtivos">
+0
+</strong>
+
+</div>
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+<!-- TABELA -->
+
+<section class="table-container">
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+Nome
+</th>
+
+<th>
+Email
+</th>
+
+<th>
+Perfil
+</th>
+
+<th>
+Status
+</th>
+
+<th>
+Ações
+</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody id="tabelaUsuarios">
+
+
+</tbody>
+
+
+</table>
+
+
+</section>
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- MODAL -->
+
+<div id="modalUsuario" class="modal-usuario">
+
+
+<div class="usuario-modal">
+
+<h2 id="tituloModal">
+Novo Usuário
+</h2>
+
+
+
+<form id="formUsuario">
+
+
+<label>
+Nome
+</label>
+
+<input 
+type="text"
+id="nomeUsuario"
+required>
+
+
+
+<label>
+Email
+</label>
+
+<input 
+type="email"
+id="emailUsuario"
+required>
+
+
+
+<label>
+Senha
+</label>
+
+<input 
+type="password"
+id="senhaUsuario"
+required>
+
+
+
+
+<label>
+Perfil
+</label>
+
+
+<select id="perfilUsuario">
+
+
+<option value="Administrador">
+Administrador
+</option>
+
+<option value="Operador">
+Operador
+</option>
+
+</select>
+
+
+<label>
+Status
+</label>
+
+<select id="statusUsuario">
+
+<option value="ativo">
+Ativo
+</option>
+
+<option value="inativo">
+Inativo
+</option>
+
+</select>
+
+
+
+
+
+
+
+<h3>
+Permissões
+</h3>
+
+
+<div class="permissoes">
+
+
+<label>
+<input type="checkbox" id="permDashboard">
+Dashboard
+</label>
+
+
+<label>
+<input type="checkbox" id="permProdutos">
+Produtos
+</label>
+
+
+<label>
+<input type="checkbox" id="permProducao">
+Produção
+</label>
+
+
+<label>
+<input type="checkbox" id="permEtiquetas">
+Etiquetas
+</label>
+
+
+<label>
+<input type="checkbox" id="permEstoque">
+Estoque
+</label>
+
+
+<label>
+<input type="checkbox" id="permRelatorios">
+Relatórios
+</label>
+
+
+<label>
+<input type="checkbox" id="permUsuarios">
+Usuários
+</label>
+
+
+<label>
+<input type="checkbox" id="permConfiguracoes">
+Configurações
+</label>
+
+
+</div>
+
+
+
+
+
+<div class="modal-buttons">
+
+
+<button 
+type="submit"
+class="btn-primary">
+
+Salvar
+
+</button>
+
+
+
+<button 
+type="button"
+id="btnCancelar"
+class="btn-secondary">
+
+Cancelar
+
+</button>
+
+
+</div>
+
+
+
+
+</form>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<script type="module" src="js/firebase.js"></script>
+
+<script type="module" src="js/app.js"></script>
+
+<script type="module" src="js/usuarios.js"></script>
+
+<script type="module" src="js/auth.js"></script>
+
+
+
+</body>
+
+</html>

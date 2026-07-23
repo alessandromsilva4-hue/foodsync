@@ -1,0 +1,89 @@
+/* =======================================
+   FOODSYNCH - PRODUÇÃO
+======================================= */
+
+
+.form-box{
+
+background:#fff;
+
+padding:25px;
+
+border-radius:12px;
+
+margin-bottom:20px;
+
+}
+
+
+.form-grid{
+
+display:grid;
+
+grid-template-columns:repeat(2,1fr);
+
+gap:20px;
+
+}
+
+
+.input-group{
+
+display:flex;
+
+flex-direction:column;
+
+gap:8px;
+
+}
+
+
+.input-group label{
+
+font-weight:600;
+
+}
+
+
+.input-group input,
+.input-group select{
+
+padding:10px;
+
+border:1px solid #ddd;
+
+border-radius:8px;
+
+}
+
+
+.table-box{
+
+background:#fff;
+
+padding:20px;
+
+border-radius:12px;
+
+}
+
+
+table{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+
+th,
+td{
+
+padding:12px;
+
+text-align:left;
+
+border-bottom:1px solid #eee;
+
+}

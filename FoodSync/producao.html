@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>FoodSync - Produção</title>
+
+
+<link rel="icon" href="img/favicon.png">
+
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet" href="css/sidebar.css">
+
+<link rel="stylesheet" href="css/producao.css">
+
+
+</head>
+
+
+<body>
+
+
+<div class="layout">
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+
+<div class="logo-area">
+
+<img src="img/logo.png" alt="FoodSync">
+
+</div>
+
+
+
+<nav class="menu">
+
+
+<a href="dashboard.html">
+
+<span>📊</span>
+
+Dashboard
+
+</a>
+
+
+<a href="producao.html" class="active">
+
+<span>🍱</span>
+
+Produção
+
+</a>
+
+
+<a href="produtos.html">
+
+<span>📦</span>
+
+Produtos
+
+</a>
+
+
+<a href="etiquetas.html">
+
+<span>🏷️</span>
+
+Etiquetas
+
+</a>
+
+
+<a href="estoque.html">
+
+<span>📋</span>
+
+Estoque
+
+</a>
+
+
+<a href="relatorios.html">
+
+<span>📈</span>
+
+Relatórios
+
+</a>
+
+<a href="auditoria.html">
+
+<span>📝</span>
+
+Auditoria
+
+</a>
+
+<a href="usuario.html">
+
+<span>👤</span>
+
+Usuários
+
+</a>
+
+
+<a href="configuracoes.html">
+
+<span>⚙️</span>
+
+Configurações
+
+</a>
+
+<a href="ajuda.html">
+❓ Ajuda
+</a>
+
+
+<a href="sac.html">
+🎧 SAC
+</a>
+
+</nav>
+
+
+
+<div class="sidebar-footer">
+
+
+<button onclick="logout()">
+
+🚪 Sair
+
+</button>
+
+
+</div>
+
+
+</aside>
+
+
+<!-- CONTEÚDO PRINCIPAL -->
+
+
+<main class="content">
+
+
+<header class="top-header">
+
+
+<div>
+
+<h1>
+
+🍱 Produção
+
+</h1>
+
+<p>
+
+<p>
+Controle de produção e validade
+</p>
+</p>
+
+
+</div>
+
+
+</header>
+
+
+<!-- ÁREA DE PRODUÇÃO -->
+
+<section class="form-box">
+
+
+<h2>
+Nova Produção
+</h2>
+
+
+
+<form id="producaoForm">
+
+
+<div class="form-grid">
+
+
+
+<div class="input-group">
+
+<label>
+Produto
+</label>
+
+
+<select id="produtoSelect">
+
+<option value="">
+Selecione o produto
+</option>
+
+</select>
+
+
+</div>
+
+
+
+<div class="input-group">
+
+<label>
+Quantidade
+</label>
+
+<input 
+type="number"
+id="quantidadeProducao"
+value="1">
+
+</div>
+
+
+<div class="input-group">
+
+<label>
+Unidade
+</label>
+
+<select id="unidadeProducao">
+
+<option value="UN">
+UN
+</option>
+
+<option value="KG">
+KG
+</option>
+
+<option value="G">
+G
+</option>
+
+<option value="L">
+L
+</option>
+
+<option value="ML">
+ML
+</option>
+
+</select>
+
+</div>
+
+
+
+<!-- NOVOS CAMPOS -->
+
+<div class="input-group">
+
+<label>
+Data Produção
+</label>
+
+<input 
+type="date"
+id="dataProducao">
+
+</div>
+
+
+<div class="input-group">
+
+<label>
+Validade
+</label>
+
+<input 
+type="date"
+id="validadeProducao"
+readonly>
+
+</div>
+
+
+<div class="input-group">
+
+<label>
+Temperatura
+</label>
+
+<input 
+type="text"
+id="temperaturaProducao"
+readonly>
+
+</div>
+
+
+<!-- RESPONSÁVEL -->
+
+<div class="input-group">
+
+<label>
+Responsável
+</label>
+
+<input
+type="text"
+id="responsavelProducao"
+value="admin">
+
+</div>
+
+
+
+
+<div class="input-group">
+
+<label>
+Status
+</label>
+
+
+<select id="statusProducao">
+
+
+<option value="Finalizado">
+Finalizado
+</option>
+
+
+<option value="Em produção">
+Em produção
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+</div>
+
+
+
+<button 
+type="submit"
+class="btn-primary">
+
+
+💾 Registrar Produção
+
+
+</button>
+
+
+
+</form>
+
+
+</section>
+
+
+
+
+<!-- LISTA DE PRODUÇÕES -->
+
+<section class="table-box">
+
+
+<h2>
+
+Produções realizadas
+
+</h2>
+
+
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+Produto
+</th>
+
+<th>
+Quantidade
+</th>
+
+<th>
+Data Produção
+</th>
+
+<th>
+Validade
+</th>
+
+<th>
+Status
+</th>
+
+<th>
+Ações
+</th>
+
+</tr>
+
+</thead>
+
+
+
+<tbody id="listaProducoes">
+
+
+<tr>
+
+<td colspan="6">
+
+Nenhuma produção registrada
+
+</td>
+
+</tr>
+
+
+</tbody>
+
+
+
+</table>
+
+
+</section>
+<!-- FIREBASE -->
+
+<script type="module" src="js/firebase.js"></script>
+
+
+<!-- SISTEMA -->
+
+<script type="module" src="js/app.js"></script>
+
+
+<!-- PRODUÇÃO -->
+
+<script type="module" src="js/producao.js"></script>
+
+
+<script type="module" src="js/auth.js"></script>
+
+
+
+</body>
+
+
+</html>

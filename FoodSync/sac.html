@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FoodSync - SAC</title>
+
+<link rel="icon" href="img/favicon.png">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/formulario.css">
+<link rel="stylesheet" href="css/tabela.css">
+
+</head>
+
+<body>
+
+<div class="layout">
+
+<aside class="sidebar">
+
+<div class="logo-area">
+
+<img src="img/logo.png" alt="FoodSync">
+
+</div>
+
+<nav class="menu">
+
+<a href="dashboard.html">
+📊 Dashboard
+</a>
+
+<a href="producao.html">
+🍱 Produção
+</a>
+
+<a href="produtos.html">
+📦 Produtos
+</a>
+
+<a href="etiquetas.html">
+🏷️ Etiquetas
+</a>
+
+<a href="estoque.html">
+📋 Estoque
+</a>
+
+<a href="relatorios.html">
+📈 Relatórios
+</a>
+
+<a href="auditoria.html">
+📝 Auditoria
+</a>
+
+<a href="usuario.html">
+👤 Usuários
+</a>
+
+<a href="configuracoes.html">
+⚙️ Configurações
+</a>
+
+<a href="ajuda.html">
+❓ Ajuda
+</a>
+
+<a href="sac.html" class="active">
+🎧 SAC
+</a>
+
+</nav>
+
+<div class="sidebar-footer">
+
+<button onclick="logout()">
+
+🚪 Sair
+
+</button>
+
+</div>
+
+</aside>
+
+<main class="content">
+
+<header class="top-header">
+
+<div>
+
+<h1>🎧 Central de Atendimento</h1>
+
+<p>
+Envie dúvidas, sugestões ou relate problemas encontrados no FoodSync.
+</p>
+
+</div>
+
+</header>
+
+<section class="form-box">
+
+<h2>📩 Novo Chamado</h2>
+
+<form id="formSac">
+
+<div class="form-grid">
+
+<div class="input-group">
+
+<label>Tipo</label>
+
+<select id="tipo">
+
+<option>Dúvida</option>
+
+<option>Problema Técnico</option>
+
+<option>Sugestão</option>
+
+<option>Reportar Erro</option>
+
+<option>Outro</option>
+
+</select>
+
+</div>
+
+<div class="input-group">
+
+<label>Prioridade</label>
+
+<select id="prioridade">
+
+<option>Baixa</option>
+
+<option>Média</option>
+
+<option>Alta</option>
+
+</select>
+
+</div>
+
+<div class="input-group">
+
+<label>Assunto</label>
+
+<input
+type="text"
+id="assunto"
+placeholder="Informe o assunto">
+
+</div>
+
+<div class="input-group">
+
+<label>Descrição</label>
+
+<textarea
+id="descricao"
+rows="6"
+placeholder="Descreva detalhadamente sua solicitação"></textarea>
+
+</div>
+
+</div>
+
+<button type="submit">
+
+📩 Enviar Solicitação
+
+</button>
+
+</form>
+
+</section>
+
+<section class="table-box">
+
+<h2>📋 Histórico de Chamados</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Data</th>
+
+<th>Tipo</th>
+
+<th>Assunto</th>
+
+<th>Prioridade</th>
+
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody id="listaChamados">
+
+<tr>
+
+<td colspan="5">
+
+Nenhum chamado encontrado.
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</section>
+
+<section class="table-box">
+
+<h2>❓ Perguntas Frequentes</h2>
+
+<ul>
+
+<li>Como cadastrar um produto?</li>
+
+<li>Como registrar uma produção?</li>
+
+<li>Como gerar etiquetas?</li>
+
+<li>Como imprimir etiquetas?</li>
+
+<li>Como registrar movimentações de estoque?</li>
+
+<li>Como consultar a auditoria?</li>
+
+<li>Como exportar relatórios?</li>
+
+<li>Como alterar as configurações do sistema?</li>
+
+</ul>
+
+</section>
+
+<section class="table-box">
+
+<h2>ℹ️ Informações do Sistema</h2>
+
+<p><strong>Sistema:</strong> FoodSync</p>
+
+<p><strong>Versão:</strong> 2.0</p>
+
+<p><strong>Status:</strong> 🟢 Online</p>
+
+<p><strong>Banco de Dados:</strong> Firebase Firestore</p>
+
+</section>
+
+</main>
+
+</div>
+
+<script type="module" src="js/auth.js"></script>
+
+<script type="module" src="js/sac.js"></script>
+
+</body>
+
+</html>

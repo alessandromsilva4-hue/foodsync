@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>FoodSync - Configurações</title>
+
+
+<link rel="icon" href="img/favicon.png">
+
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet" href="css/sidebar.css">
+
+<link rel="stylesheet" href="css/formulario.css">
+
+
+</head>
+
+
+
+<body>
+
+
+<div class="layout">
+
+
+
+<aside class="sidebar">
+
+
+<div class="logo-area">
+
+<img src="img/logo.png">
+
+</div>
+
+
+
+
+
+<nav class="menu">
+
+
+<a href="dashboard.html">
+📊 Dashboard
+</a>
+
+
+<a href="producao.html">
+🍱 Produção
+</a>
+
+
+<a href="produtos.html">
+📦 Produtos
+</a>
+
+
+<a href="etiquetas.html">
+🏷️ Etiquetas
+</a>
+
+
+<a href="estoque.html">
+📋 Estoque
+</a>
+
+
+<a href="relatorios.html">
+📈 Relatórios
+</a>
+<a href="auditoria.html">
+
+<span>📝</span>
+
+Auditoria
+
+</a>
+
+
+<a href="usuario.html">
+👤 Usuários
+</a>
+
+
+<a href="configuracoes.html" class="active">
+⚙️ Configurações
+</a>
+<a href="ajuda.html">
+❓ Ajuda
+</a>
+
+
+<a href="sac.html">
+🎧 SAC
+</a>
+
+</nav>
+
+
+
+
+<div class="sidebar-footer">
+
+
+<button onclick="logout()">
+
+🚪 Sair
+
+</button>
+
+
+</div>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+<main class="content">
+
+
+
+<header class="top-header">
+
+
+<div>
+
+
+<h1>
+Configurações
+</h1>
+
+
+<p>
+Configurações gerais do sistema
+</p>
+
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+
+
+<section class="form-box">
+
+
+<h2>
+Configurações Gerais
+</h2>
+
+
+
+
+<form id="configForm">
+
+
+
+
+
+<div class="form-grid">
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+Nome do Sistema
+</label>
+
+<input
+type="text"
+id="nomeSistema"
+value="FoodSync">
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+Tamanho da Etiqueta
+</label>
+
+
+<select id="tamanhoEtiqueta">
+
+<option>
+60x60 mm
+</option>
+
+<option>
+80x50 mm
+</option>
+
+<option>
+100x50 mm
+</option>
+
+<option>
+Personalizado
+</option>
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+Validade Padrão (dias)
+</label>
+
+
+<input
+
+type="number"
+
+id="validadePadrao"
+
+value="1">
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+Impressora
+</label>
+
+
+<input
+
+type="text"
+
+id="impressora"
+
+placeholder="Nome da impressora">
+
+
+</div>
+
+<div class="input-group">
+
+<label>
+QR Code
+</label>
+
+<select id="qrCode">
+
+<option value="sim">
+Ativado
+</option>
+
+<option value="nao">
+Desativado
+</option>
+
+</select>
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<button type="submit">
+
+Salvar Configurações
+
+</button>
+
+
+
+
+
+
+</form>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+
+
+<script type="module" src="js/firebase.js"></script>
+
+<script type="module" src="js/app.js"></script>
+
+<script type="module" src="js/auth.js"></script>
+
+
+<script type="module" src="js/configuracoes.js"></script>
+
+
+
+</body>
+
+</html>

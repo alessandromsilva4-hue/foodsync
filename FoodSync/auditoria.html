@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FoodSync - Auditoria</title>
+
+<link rel="icon" href="img/favicon.png">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/tabela.css">
+<link rel="stylesheet" href="css/auditoria.css">
+</head>
+
+
+<body>
+
+
+<div class="layout">
+
+
+<aside class="sidebar">
+
+
+<div class="logo-area">
+
+<img src="img/logo.png">
+
+</div>
+
+
+
+<nav class="menu">
+
+
+<a href="dashboard.html">
+📊 Dashboard
+</a>
+
+
+<a href="producao.html">
+🍱 Produção
+</a>
+
+
+<a href="produtos.html">
+📦 Produtos
+</a>
+
+
+<a href="etiquetas.html">
+🏷️ Etiquetas
+</a>
+
+
+<a href="estoque.html">
+📋 Estoque
+</a>
+
+
+<a href="relatorios.html">
+📈 Relatórios
+</a>
+
+
+<a href="auditoria.html" class="active">
+📝 Auditoria
+</a>
+
+
+<a href="usuario.html">
+👤 Usuários
+</a>
+
+
+<a href="configuracoes.html">
+⚙️ Configurações
+</a>
+
+
+<a href="ajuda.html">
+❓ Ajuda
+</a>
+
+
+<a href="sac.html">
+🎧 SAC
+</a>
+
+
+</nav>
+
+
+
+<div class="sidebar-footer">
+
+
+<button onclick="logout()">
+
+🚪 Sair
+
+</button>
+
+
+</div>
+
+
+</aside>
+
+
+
+
+<main class="content">
+
+
+
+<header class="top-header">
+
+
+<div>
+
+<h1>
+📝 Auditoria
+</h1>
+
+
+<p>
+Histórico de ações realizadas no FoodSync
+</p>
+
+
+</div>
+
+
+</header>
+
+
+
+<div class="acoes-relatorio">
+
+
+<button onclick="exportarExcel()">
+
+📊 Exportar Excel
+
+</button>
+
+
+<button onclick="imprimirAuditoria()">
+
+🖨️ Imprimir
+
+</button>
+
+
+</div>
+
+
+
+
+
+<section class="table-box">
+
+
+<h2>
+Histórico de ações
+</h2>
+
+
+<div class="filtros-auditoria">
+
+<select id="filtroModulo">
+
+<option value="">
+Todos os módulos
+</option>
+
+<option value="Produtos">
+Produtos
+</option>
+
+<option value="Produção">
+Produção
+</option>
+
+<option value="Etiquetas">
+Etiquetas
+</option>
+
+<option value="Estoque">
+Estoque
+</option>
+
+</select>
+
+
+<input 
+type="date" 
+id="filtroData"
+>
+
+
+<button onclick="filtrarAuditoria()">
+🔎 Filtrar
+</button>
+
+
+</div>
+
+
+
+<table id="tabelaAuditoria">
+
+
+<thead>
+
+<tr>
+
+<th>
+Data
+</th>
+
+
+<th>
+Usuário
+</th>
+
+
+<th>
+Módulo
+</th>
+
+
+<th>
+Ação
+</th>
+
+
+<th>
+Detalhes
+</th>
+
+
+<th>
+Status
+</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody id="listaAuditoria">
+
+
+<tr>
+
+<td colspan="6">
+
+Carregando...
+
+</td>
+
+
+</tr>
+
+
+</tbody>
+
+
+
+</table>
+
+
+</section>
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+
+
+<script type="module" src="js/auditoria.js"></script>
+
+<script type="module" src="js/auth.js"></script>
+
+
+</body>
+
+</html>
