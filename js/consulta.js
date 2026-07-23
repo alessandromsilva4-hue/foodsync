@@ -59,7 +59,47 @@ function formatarData(data){
     return "-";
 
 }
+// =======================================
+// CONVERTER DATA PARA CÁLCULO
+// =======================================
 
+function converterData(data){
+
+    if(!data){
+        return null;
+    }
+
+
+    if(typeof data.toDate === "function"){
+
+        return data.toDate();
+
+    }
+
+
+    if(typeof data === "string"){
+
+        const somenteData = data.substring(0,10);
+
+        const partes = somenteData.split("-");
+
+
+        if(partes.length === 3){
+
+            return new Date(
+                partes[0],
+                partes[1] - 1,
+                partes[2]
+            );
+
+        }
+
+    }
+
+
+    return new Date(data);
+
+}
 
 // =======================================
 // STATUS VALIDADE
