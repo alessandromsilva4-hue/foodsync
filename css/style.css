@@ -697,3 +697,39 @@ opacity:1;
 }
 
 }
+
+/* Base responsiva e acessível */
+html { -webkit-text-size-adjust: 100%; }
+body { min-width: 320px; overflow-x: hidden; }
+button, input, select, textarea { min-height: 44px; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #15803d; outline-offset: 3px; }
+.dashboard-box { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+@media (max-width: 900px) {
+    .content, .conteudo { padding: 24px; }
+    .top-header { gap: 16px; }
+    .top-header h1 { font-size: 24px; }
+    .card { padding: 20px; }
+    .modal-content, .usuario-modal { max-height: calc(100dvh - 48px); overflow-y: auto; }
+}
+
+@media (max-width: 640px) {
+    .content, .conteudo { margin-left: 0; padding: 16px 16px 96px; }
+    .top-header { align-items: flex-start; flex-direction: column; margin-bottom: 20px; }
+    .top-header h1 { font-size: 22px; }
+    .top-header p { line-height: 1.45; }
+    .dashboard-box, .form-box, .table-box { margin-top: 16px; padding: 16px; border-radius: 10px; }
+    .card { gap: 14px; padding: 16px; }
+    .card-icon { font-size: 30px; }
+    .card strong { font-size: 28px; }
+    .modal { align-items: flex-end; }
+    .modal-content, .usuario-modal { width: 100%; max-width: 100%; max-height: calc(100dvh - 16px); padding: 20px 16px; border-radius: 16px 16px 0 0; }
+    .modal-footer, .button-group { align-items: stretch; flex-direction: column; }
+    .modal-footer button, .button-group button { width: 100%; }
+    table { min-width: 600px; }
+    .grafico-container { height: 260px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}

@@ -242,3 +242,9 @@ table{
 }
 
 }
+
+@media (max-width: 640px) {
+    .conteudo { margin-left: 0; padding: 16px 16px 96px; }
+    .filtros input { max-width: none; }
+    .acoes { flex-wrap: wrap; }
+}

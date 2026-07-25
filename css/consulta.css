@@ -441,3 +441,10 @@ body * {
 
 
 }
+
+@media screen and (max-width: 400px) {
+    body { padding: 12px; }
+    #resultadoEtiqueta, .etiqueta { width: 100%; }
+    .etiqueta { padding: 16px; }
+    .produto-destaque { font-size: 20px; overflow-wrap: anywhere; }
+}
