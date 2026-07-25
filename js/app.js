@@ -35,31 +35,30 @@ onAuthStateChanged(auth,(user)=>{
         if(nomeUsuario){
 
 
-            const usuarioSalvo =
-            JSON.parse(
-                localStorage.getItem(
-                    "usuarioFoodSync"
-                )
-            );
+         const usuarioSalvo =
+JSON.parse(
+    localStorage.getItem(
+        "usuarioFoodSync"
+    )
+);
 
 
-
-            if(usuarioSalvo?.nome){
-
-
-                nomeUsuario.innerText =
-                usuarioSalvo.nome;
+if(usuarioSalvo?.nome){
 
 
-            }
-            else{
+    nomeUsuario.innerText =
+    "Bem-vindo, " + usuarioSalvo.nome + " 👋";
 
 
-                nomeUsuario.innerText =
-                user.email;
+}
+else{
 
 
-            }
+    nomeUsuario.innerText =
+    "Bem-vindo, usuário";
+
+
+}
 
 
         }

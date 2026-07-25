@@ -20,10 +20,11 @@ import {
     where,
     getDocs,
     addDoc,
-    serverTimestamp
+    serverTimestamp,
+    doc,
+    getDoc
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 
 
 console.log("AUTH.JS CARREGADO");
@@ -271,35 +272,25 @@ mensagem.innerHTML =
 // CARREGAR PERFIL FIRESTORE
 // =======================================
 
-
 async function carregarPerfil(user){
-
 
 try{
 
 
-const consulta =
-query(
-
-collection(db,"usuarios"),
-
-where(
-"email",
-"==",
-user.email
-)
-
+const referencia =
+doc(
+    db,
+    "usuarios",
+    user.uid
 );
 
 
-
 const resultado =
-await getDocs(consulta);
+await getDoc(referencia);
 
 
 
-
-if(resultado.empty){
+if(!resultado.exists()){
 
 
 console.warn(
@@ -314,23 +305,16 @@ return null;
 
 
 
-let perfil;
-
-
-
-resultado.forEach(doc=>{
-
-
 const dados =
-doc.data();
+resultado.data();
 
 
 
-perfil = {
+const perfil = {
 
 
 id:
-doc.id,
+resultado.id,
 
 
 nome:
@@ -338,7 +322,7 @@ dados.nome || "",
 
 
 email:
-dados.email,
+dados.email || user.email,
 
 
 perfil:
@@ -353,13 +337,7 @@ permissoes:
 dados.permissoes || {}
 
 
-
 };
-
-
-
-});
-
 
 
 
@@ -369,6 +347,13 @@ localStorage.setItem(
 
 JSON.stringify(perfil)
 
+);
+
+
+
+console.log(
+"PERFIL CARREGADO:",
+perfil
 );
 
 
@@ -393,16 +378,7 @@ return null;
 }
 
 
-
 }
-
-
-
-
-
-
-
-
 
 // =======================================
 // PÁGINAS PROTEGIDAS
@@ -445,7 +421,10 @@ const paginasProtegidas = {
 
 
 "sac.html":
-"sac"
+"sac",
+
+"sac-admin.html":
+"sacAdmin"
 
 
 };
@@ -468,7 +447,8 @@ auth,
 
 async(user)=>{
 
-
+console.log("UID ATUAL:", user.uid);
+console.log("EMAIL ATUAL:", user.email);
 
 const pagina =
 window.location.pathname
@@ -539,7 +519,7 @@ if(permissao){
 
 if(
 
-usuario.perfil.toLowerCase()
+(usuario.perfil || "").toLowerCase()
 !==
 "administrador"
 
@@ -699,11 +679,11 @@ const mapa = {
 "configuracoes.html":
 "configuracoes",
 
-
 "sac.html":
-"sac"
+"sac",
 
-
+"sac-admin.html":
+"sacAdmin"
 
 };
 
