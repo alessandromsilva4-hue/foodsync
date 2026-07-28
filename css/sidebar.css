@@ -70,6 +70,33 @@
 
     gap:8px;
 
+    /* Em telas mais baixas, apenas a lista de itens rola. */
+    flex:1;
+
+    min-height:0;
+
+    overflow-y:auto;
+
+    overscroll-behavior:contain;
+
+    padding-right:3px;
+
+}
+
+
+.menu::-webkit-scrollbar {
+
+    width:5px;
+
+}
+
+
+.menu::-webkit-scrollbar-thumb {
+
+    border-radius:10px;
+
+    background:rgba(255,255,255,.3);
+
 }
 
 
@@ -157,6 +184,9 @@
 
 
 .sidebar-footer {
+
+
+    flex:0 0 auto;
 
 
     padding-top:20px;
