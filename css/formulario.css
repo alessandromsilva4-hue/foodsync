@@ -260,5 +260,182 @@ table button {
 }
 
 
+.support-contact {
+
+    align-items:flex-start;
+
+    flex-direction:column;
+
+}
+
+
+.support-contact__actions {
+
+    width:100%;
+
+    flex-direction:column;
+
+}
+
+
+.support-contact__link {
+
+    width:100%;
+
+}
+
+
+
+}
+
+
+/* CONTATOS DO SAC */
+
+.support-contact {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:24px;
+
+    padding:26px;
+
+    margin-bottom:25px;
+
+    border-radius:15px;
+
+    color:#ffffff;
+
+    background:linear-gradient(120deg,#064e3b,#15803d);
+
+    box-shadow:0 8px 20px rgba(6,78,59,.18);
+
+}
+
+
+.support-contact__eyebrow {
+
+    margin:0 0 7px;
+
+    color:#bbf7d0;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    letter-spacing:.1em;
+
+    text-transform:uppercase;
+
+}
+
+
+.support-contact h2 {
+
+    margin:0;
+
+    font-size:21px;
+
+}
+
+
+.support-contact p:not(.support-contact__eyebrow) {
+
+    margin:7px 0 0;
+
+    color:#d1fae5;
+
+    font-size:14px;
+
+}
+
+
+.support-contact__actions {
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+
+.support-contact__link {
+
+    display:flex;
+
+    align-items:center;
+
+    gap:9px;
+
+    min-width:190px;
+
+    padding:11px 13px;
+
+    border:1px solid rgba(255,255,255,.3);
+
+    border-radius:10px;
+
+    background:rgba(255,255,255,.11);
+
+    color:#ffffff;
+
+    transition:.2s;
+
+}
+
+
+.support-contact__link:hover {
+
+    background:rgba(255,255,255,.2);
+
+    transform:translateY(-2px);
+
+}
+
+
+.support-contact__link > span {
+
+    display:grid;
+
+    width:28px;
+
+    height:28px;
+
+    place-items:center;
+
+    border-radius:50%;
+
+    background:#ffffff;
+
+    color:#15803d;
+
+    font-weight:700;
+
+}
+
+
+.support-contact__link small,
+.support-contact__link strong {
+
+    display:block;
+
+}
+
+
+.support-contact__link small {
+
+    color:#d1fae5;
+
+    font-size:10px;
+
+}
+
+
+.support-contact__link strong {
+
+    font-size:12px;
 
 }
