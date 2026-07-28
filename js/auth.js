@@ -447,8 +447,12 @@ auth,
 
 async(user)=>{
 
+if(user){
+
 console.log("UID ATUAL:", user.uid);
 console.log("EMAIL ATUAL:", user.email);
+
+}
 
 const pagina =
 window.location.pathname
