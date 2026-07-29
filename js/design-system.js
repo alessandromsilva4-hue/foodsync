@@ -10,13 +10,26 @@ const sidebarIcons = {
 
 const cardIcons = ["package-check", "calendar-clock", "badge-alert", "chart-no-axes-combined"];
 
+function themePreference() {
+    const preference = localStorage.getItem("lotrix-theme-preference");
+    return ["auto", "light", "dark"].includes(preference) ? preference : "auto";
+}
+
 function currentTheme() {
+    const preference = themePreference();
+    if (preference !== "auto") return preference;
     return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 function applyTheme(theme) {
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = theme;
+}
+
+function setThemePreference(preference = "auto") {
+    const validPreference = ["auto", "light", "dark"].includes(preference) ? preference : "auto";
+    localStorage.setItem("lotrix-theme-preference", validPreference);
+    applyTheme(currentTheme());
 }
 
 function installIconMarkup() {
@@ -64,6 +77,10 @@ function enableMicroInteractions() {
 }
 
 applyTheme(currentTheme());
-window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => applyTheme(matches ? "dark" : "light"));
+window.setLotrixThemePreference = setThemePreference;
+window.getLotrixThemePreference = themePreference;
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+    if (themePreference() === "auto") applyTheme(matches ? "dark" : "light");
+});
 enableMicroInteractions();
 if (document.querySelector(".sidebar") || document.querySelector(".card-icon")) loadLucide();

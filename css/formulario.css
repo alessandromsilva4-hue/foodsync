@@ -259,6 +259,14 @@ table button {
 
 }
 
+.input-help {
+    display:block;
+    margin-top:6px;
+    color:var(--text-light);
+    font-size:12px;
+    line-height:1.4;
+}
+
 
 .support-contact {
 

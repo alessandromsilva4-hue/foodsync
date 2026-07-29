@@ -114,6 +114,12 @@ document.getElementById(
 ).value =
 c.qrCode || "sim";
 
+document.getElementById(
+"temaSistema"
+).value =
+window.getLotrixThemePreference?.() ||
+c.temaSistema || "auto";
+
 
 }
 
@@ -186,6 +192,11 @@ document.getElementById(
 "qrCode"
 ).value,
 
+temaSistema:
+document.getElementById(
+"temaSistema"
+).value,
+
 atualizadoEm:
 serverTimestamp()
 
@@ -199,6 +210,10 @@ serverTimestamp()
 
 
 try{
+
+window.setLotrixThemePreference?.(
+configuracao.temaSistema
+);
 
 
 await setDoc(
@@ -275,6 +290,21 @@ document.addEventListener(
 
 
 carregarConfiguracoes();
+
+const seletorTema =
+document.getElementById("temaSistema");
+
+if(seletorTema){
+
+seletorTema.value =
+window.getLotrixThemePreference?.() || "auto";
+
+seletorTema.addEventListener(
+"change",
+()=> window.setLotrixThemePreference?.(seletorTema.value)
+);
+
+}
 
 
 }
