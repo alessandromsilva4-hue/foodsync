@@ -1,788 +1,86 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-<title>Lotrix - Dashboard</title>
-
-
-<link rel="icon" href="img/favicon.png">
-
-
-<link rel="stylesheet" href="css/style.css">
-
-<link rel="stylesheet" href="css/sidebar.css">
-
-<link rel="stylesheet" href="css/dashboard.css">
-
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotrix — Dashboard</title>
+    <link rel="icon" href="img/favicon.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 </head>
-
-
 <body>
-
-
 <div class="layout">
+    <aside class="sidebar">
+        <div class="logo-area"><img src="img/logo.jpg" alt="Lotrix"></div>
+        <nav class="menu" aria-label="Navegação principal">
+            <a href="dashboard.html" class="active"><span>Dashboard</span></a>
+            <a href="producao.html"><span>Produção</span></a>
+            <a href="produtos.html"><span>Produtos</span></a>
+            <a href="etiquetas.html"><span>Etiquetas</span></a>
+            <a href="estoque.html"><span>Estoque</span></a>
+            <a href="relatorios.html"><span>Relatórios</span></a>
+            <a href="auditoria.html"><span>Auditoria</span></a>
+            <a href="usuario.html"><span>Usuários</span></a>
+            <a href="configuracoes.html"><span>Configurações</span></a>
+            <a href="ajuda.html"><span>Ajuda</span></a>
+            <a href="sac.html"><span>SAC</span></a>
+        </nav>
+        <div class="sidebar-footer"><button type="button" onclick="logout()">Sair</button></div>
+    </aside>
 
+    <main class="content dashboard-page">
+        <header class="top-header dashboard-header">
+            <div>
+                <p class="header-kicker" id="dataAtual">Visão operacional</p>
+                <h1 id="saudacao">Bom dia 👋</h1>
+                <p>Veja o que precisa da sua atenção hoje.</p>
+            </div>
+            <div class="header-actions">
+                <a class="button button-secondary" href="producao.html">Nova produção</a>
+                <a class="button" href="etiquetas.html">Imprimir etiqueta</a>
+            </div>
+        </header>
 
+        <section class="metric-grid" aria-label="Resumo do dia">
+            <article class="metric-card is-loading"><span class="metric-icon success"><i data-lucide="chef-hat"></i></span><div><p>Produções hoje</p><strong id="producoesHoje">—</strong><small>Registros finalizados</small></div></article>
+            <article class="metric-card is-loading"><span class="metric-icon info"><i data-lucide="printer"></i></span><div><p>Etiquetas impressas</p><strong id="etiquetasHoje">—</strong><small>Emitidas hoje</small></div></article>
+            <article class="metric-card is-loading"><span class="metric-icon warning"><i data-lucide="calendar-clock"></i></span><div><p>Vencendo hoje</p><strong id="vencendoHoje">—</strong><small>Produtos para revisar</small></div></article>
+            <article class="metric-card is-loading"><span class="metric-icon danger"><i data-lucide="package-x"></i></span><div><p>Estoque crítico</p><strong id="estoqueCritico">—</strong><small>Abaixo do mínimo</small></div></article>
+        </section>
 
-<!-- SIDEBAR -->
-
-<aside class="sidebar">
-
-
-<div class="logo-area">
-
-<img src="img/logo.jpg" alt="Lotrix">
-
+        <section class="dashboard-grid">
+            <article class="dashboard-panel panel-wide">
+                <div class="panel-heading"><div><p class="panel-eyebrow">Acompanhamento</p><h2>Gráfico da semana</h2></div><span class="panel-badge">Últimos 7 dias</span></div>
+                <div class="chart-wrap"><canvas id="graficoProducao"></canvas></div>
+            </article>
+            <article class="dashboard-panel">
+                <div class="panel-heading"><div><p class="panel-eyebrow">Ranking</p><h2>Produtos mais produzidos</h2></div></div>
+                <ol class="rank-list" id="produtosMaisProduzidos"><li class="skeleton-row"></li><li class="skeleton-row"></li><li class="skeleton-row"></li></ol>
+            </article>
+            <article class="dashboard-panel">
+                <div class="panel-heading"><div><p class="panel-eyebrow">Atividade recente</p><h2>Últimas produções</h2></div><a href="producao.html">Ver todas</a></div>
+                <div class="activity-list" id="listaProducao"><div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div></div>
+            </article>
+            <article class="dashboard-panel">
+                <div class="panel-heading"><div><p class="panel-eyebrow">Impressões</p><h2>Últimas etiquetas</h2></div><a href="etiquetas.html">Ver todas</a></div>
+                <div class="activity-list" id="listaEtiquetas"><div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div></div>
+            </article>
+            <article class="dashboard-panel">
+                <div class="panel-heading"><div><p class="panel-eyebrow">Atenção</p><h2>Próximos do vencimento</h2></div><a href="etiquetas.html">Ver etiquetas</a></div>
+                <div class="attention-list" id="listaVencimentos"><div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div></div>
+            </article>
+            <article class="dashboard-panel">
+                <div class="panel-heading"><div><p class="panel-eyebrow">Reposição</p><h2>Estoque crítico</h2></div><a href="estoque.html">Abrir estoque</a></div>
+                <div class="attention-list" id="listaEstoqueBaixo"><div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div></div>
+            </article>
+        </section>
+    </main>
 </div>
-
-
-
-<nav class="menu">
-
-
-<a href="dashboard.html" class="active">
-
-<span>📊</span>
-
-Dashboard
-
-</a>
-
-
-
-<a href="producao.html">
-
-<span>🍱</span>
-
-Produção
-
-</a>
-
-
-
-<a href="produtos.html">
-
-<span>📦</span>
-
-Produtos
-
-</a>
-
-
-
-<a href="etiquetas.html">
-
-<span>🏷️</span>
-
-Etiquetas
-
-</a>
-
-
-
-<a href="estoque.html">
-
-<span>📋</span>
-
-Estoque
-
-</a>
-
-
-
-<a href="relatorios.html">
-
-<span>📈</span>
-
-Relatórios
-
-</a>
-
-
-
-<a href="auditoria.html">
-
-<span>📝</span>
-
-Auditoria
-
-</a>
-
-
-
-<a href="usuario.html">
-
-<span>👤</span>
-
-Usuários
-
-</a>
-
-
-
-<a href="configuracoes.html">
-
-<span>⚙️</span>
-
-Configurações
-
-</a>
-
-
-
-<a href="ajuda.html">
-
-❓ Ajuda
-
-</a>
-
-
-
-<a href="sac.html">
-
-🎧 SAC
-
-</a>
-
-
-
-<a href="sac-admin.html" id="menuSacAdmin">
-
-🎧 SAC Admin
-
-</a>
-
-
-
-</nav>
-
-
-
-<div class="sidebar-footer">
-
-
-<button onclick="logout()">
-
-🚪 Sair
-
-</button>
-
-
-</div>
-
-
-
-</aside>
-
-
-
-
-
-<!-- CONTEÚDO -->
-
-
-<main class="content">
-
-
-
-<header class="top-header">
-
-
-<div>
-
-
-<h1>
-
-Dashboard
-
-</h1>
-
-
-<p>
-
-Controle de produção, etiquetas e estoque
-
-</p>
-
-
-</div>
-
-
-
-<div class="user-info">
-
-
-<span id="usuarioNome">
-
-Usuário
-
-</span>
-
-
-</div>
-
-
-
-</header>
-
-
-
-
-
-<!-- CARDS -->
-
-
-<section class="cards">
-
-
-<div class="card card--interactive" role="button" tabindex="0" data-detalhe="produtos" aria-label="Ver lista de produtos">
-
-<div class="card-icon">
-📦
-</div>
-
-
-<div>
-
-<h3>
-Produtos
-</h3>
-
-
-<strong id="totalProdutos">
-0
-</strong>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="card card--interactive" role="button" tabindex="0" data-detalhe="producoes" aria-label="Ver lista de produções">
-
-
-<div class="card-icon">
-🍱
-</div>
-
-
-<div>
-
-<h3>
-Produções
-</h3>
-
-
-<strong id="totalProducoes">
-0
-</strong>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="card card--interactive" role="button" tabindex="0" data-detalhe="etiquetas" aria-label="Ver lista de etiquetas">
-
-
-<div class="card-icon">
-🏷️
-</div>
-
-
-<div>
-
-<h3>
-Etiquetas
-</h3>
-
-
-<strong id="totalEtiquetas">
-0
-</strong>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="card card--interactive" role="button" tabindex="0" data-detalhe="vencendo" aria-label="Ver etiquetas próximas do vencimento">
-
-
-<div class="card-icon">
-⚠️
-</div>
-
-
-<div>
-
-<h3>
-Vencendo
-</h3>
-
-
-<strong id="produtosVencendo">
-0
-</strong>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="card card--interactive" role="button" tabindex="0" data-detalhe="vencidos" aria-label="Ver etiquetas vencidas">
-
-
-<div class="card-icon">
-🔴
-</div>
-
-
-<div>
-
-<h3>
-Vencidos
-</h3>
-
-
-<strong id="produtosVencidos">
-0
-</strong>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="card card--interactive" role="button" tabindex="0" data-detalhe="estoque" aria-label="Ver itens com estoque baixo">
-
-
-<div class="card-icon">
-🛒
-</div>
-
-
-<div>
-
-<h3>
-Estoque Baixo
-</h3>
-
-
-<strong id="estoqueBaixo">
-0
-</strong>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="card card--interactive" role="button" tabindex="0" data-detalhe="usuarios" aria-label="Ver lista de usuários">
-
-
-<div class="card-icon">
-👤
-</div>
-
-
-<div>
-
-<h3>
-Usuários
-</h3>
-
-
-<strong id="totalUsuarios">
-0
-</strong>
-
-
-</div>
-
-
-</div>
-
-
-</section>
-<!-- ALERTA DE COMPRA -->
-
-<section class="dashboard-box">
-
-
-<h2>
-🛒 Alertas de Compra
-</h2>
-
-
-
-<table>
-
-
-<thead>
-
-<tr>
-
-<th>
-Produto
-</th>
-
-
-<th>
-Estoque Atual
-</th>
-
-
-<th>
-Estoque Mínimo
-</th>
-
-
-<th>
-Situação
-</th>
-
-
-</tr>
-
-</thead>
-
-
-
-<tbody id="listaEstoqueBaixo">
-
-
-<tr>
-
-<td colspan="4">
-
-🟢 Nenhum alerta de compra
-
-</td>
-
-</tr>
-
-
-</tbody>
-
-
-
-</table>
-
-
-</section>
-
-
-
-
-
-
-<!-- ÚLTIMAS PRODUÇÕES -->
-
-
-<section class="dashboard-box">
-
-
-<h2>
-
-Últimas Produções
-
-</h2>
-
-
-
-<table>
-
-
-<thead>
-
-
-<tr>
-
-
-<th>
-Produto
-</th>
-
-
-<th>
-Quantidade
-</th>
-
-
-<th>
-Data
-</th>
-
-
-<th>
-Status
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-
-<tbody id="listaProducao">
-
-
-<tr>
-
-
-<td colspan="4">
-
-Nenhuma produção registrada
-
-</td>
-
-
-</tr>
-
-
-</tbody>
-
-
-
-</table>
-
-
-</section>
-
-
-
-
-
-
-
-<!-- PRÓXIMOS VENCIMENTOS -->
-
-
-<section class="dashboard-box">
-
-
-<h2>
-
-⚠️ Próximos Vencimentos
-
-</h2>
-
-
-
-
-<table>
-
-
-
-<thead>
-
-
-<tr>
-
-
-<th>
-Produto
-</th>
-
-
-<th>
-Lote
-</th>
-
-
-<th>
-Validade
-</th>
-
-
-<th>
-Dias Restantes
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-
-<tbody id="listaVencimentos">
-
-
-<tr>
-
-
-<td colspan="4">
-
-Nenhum vencimento próximo
-
-</td>
-
-
-</tr>
-
-
-</tbody>
-
-
-
-</table>
-
-
-
-</section>
-<!-- GRÁFICO PRODUÇÃO POR DIA -->
-
-
-<section class="dashboard-box">
-
-
-<h2>
-
-📊 Produção por Dia
-
-</h2>
-
-
-
-<div class="grafico-container">
-
-
-<canvas id="graficoProducao"></canvas>
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-
-
-<!-- GRÁFICO VALIDADE -->
-
-
-<section class="dashboard-box">
-
-
-<h2>
-
-⚠️ Etiquetas por Validade
-
-</h2>
-
-
-
-<div class="grafico-container">
-
-
-<canvas id="graficoValidade"></canvas>
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-</main>
-
-
-</div>
-
-
-
-
-
-<!-- CHART.JS -->
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-
-
-
-<!-- FIREBASE -->
-
 <script type="module" src="js/firebase.js"></script>
-
-
-
-
-
-<!-- AUTENTICAÇÃO -->
-
 <script type="module" src="js/auth.js"></script>
-
-
-
-
-
-<!-- SISTEMA -->
-
 <script type="module" src="js/app.js"></script>
-
-
-
-
-
-<!-- DASHBOARD -->
-
 <script type="module" src="js/dashboard.js"></script>
-
-
-
-
 </body>
-
-
 </html>

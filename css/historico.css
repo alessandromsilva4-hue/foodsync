@@ -243,6 +243,13 @@ table{
 
 }
 
+/* Design system */
+.conteudo { background:var(--background); padding:32px 40px 48px; }
+.conteudo h1 { color:var(--text); letter-spacing:-.035em; }
+.card { border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); }
+.filtros input { border-color:var(--border-strong); border-radius:10px; }
+.filtros input:focus { border-color:var(--primary); box-shadow:0 0 0 4px rgba(21,128,61,.12); outline:none; }
+
 @media (max-width: 640px) {
     .conteudo { margin-left: 0; padding: 16px 16px 96px; }
     .filtros input { max-width: none; }

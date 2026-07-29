@@ -424,6 +424,13 @@ table button {
 
 }
 
+/* Campos e contêineres compartilhados */
+.form-box { border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); }
+.input-group input, .input-group select, .input-group textarea { padding:10px 12px; border-color:var(--border-strong); border-radius:10px; }
+.input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color:var(--primary); box-shadow:0 0 0 4px rgba(21,128,61,.12); }
+.form-box button { border-radius:10px; background:var(--primary); }
+.form-box button:hover { background:var(--primary-hover); opacity:1; }
+
 
 .support-contact__link small {
 

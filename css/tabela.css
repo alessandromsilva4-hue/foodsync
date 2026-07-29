@@ -210,3 +210,10 @@ table button:hover {
 
 
 }
+
+.table-box { border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); }
+.table-box thead { background:var(--surface-subtle); }
+.table-box th { color:#475467; font-size:12px; letter-spacing:.02em; text-transform:uppercase; }
+.table-box td { border-bottom-color:var(--border); color:#475467; }
+.table-box tbody tr:hover { background:#f0fdf4; }
+.table-box table button { background:var(--primary); border-radius:8px; }
