@@ -11,32 +11,12 @@ const sidebarIcons = {
 const cardIcons = ["package-check", "calendar-clock", "badge-alert", "chart-no-axes-combined"];
 
 function currentTheme() {
-    return localStorage.getItem("lotrix-theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 function applyTheme(theme) {
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = theme;
-    localStorage.setItem("lotrix-theme", theme);
-    const toggle = document.querySelector(".theme-toggle");
-    if (toggle) {
-        const isDark = theme === "dark";
-        toggle.setAttribute("aria-pressed", String(isDark));
-        toggle.setAttribute("aria-label", isDark ? "Ativar tema claro" : "Ativar tema escuro");
-        toggle.innerHTML = `<i data-lucide="${isDark ? "sun" : "moon"}" aria-hidden="true"></i><span>${isDark ? "Tema claro" : "Tema escuro"}</span>`;
-        window.lucide?.createIcons();
-    }
-}
-
-function installThemeToggle() {
-    const footer = document.querySelector(".sidebar-footer");
-    if (!footer || footer.querySelector(".theme-toggle")) return;
-    const toggle = document.createElement("button");
-    toggle.type = "button";
-    toggle.className = "theme-toggle";
-    toggle.addEventListener("click", () => applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"));
-    footer.prepend(toggle);
-    applyTheme(document.documentElement.dataset.theme || currentTheme());
 }
 
 function installIconMarkup() {
@@ -54,7 +34,7 @@ function installIconMarkup() {
         if (icon) card.innerHTML = `<i data-lucide="${icon}" aria-hidden="true"></i>`;
     });
 
-    const logoutButton = document.querySelector(".sidebar-footer button");
+    const logoutButton = document.querySelector(".sidebar-footer button[onclick]");
     if (logoutButton) logoutButton.innerHTML = '<i data-lucide="log-out" aria-hidden="true"></i><span>Sair</span>';
     window.lucide?.createIcons();
 }
@@ -84,6 +64,6 @@ function enableMicroInteractions() {
 }
 
 applyTheme(currentTheme());
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => applyTheme(matches ? "dark" : "light"));
 enableMicroInteractions();
-installThemeToggle();
 if (document.querySelector(".sidebar") || document.querySelector(".card-icon")) loadLucide();
