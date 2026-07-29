@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "foodsync-43a7e"
+  },
+  "targets": {
+    "foodsync-43a7e": {
+      "hosting": {
+        "default": [
+          "foodsync-43a7e"
+        ],
+        "lotrix": [
+          "lotrix"
+        ]
+      }
+    }
   }
 }
