@@ -513,7 +513,7 @@ XLSX.writeFile(
 
 workbook,
 
-"relatorio-foodsync.xlsx"
+"relatorio-lotrix.xlsx"
 
 );
 
@@ -608,7 +608,7 @@ URL.createObjectURL(blob);
 
 
 link.download =
-"relatorio-foodsync.csv";
+"relatorio-lotrix.csv";
 
 
 

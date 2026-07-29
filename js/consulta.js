@@ -286,7 +286,7 @@ console.log(
 <div class="cabecalho-etiqueta">
 
 
-<h2>🥗 FoodSync</h2>
+<h2>🥗 Lotrix</h2>
 
 
 <span>

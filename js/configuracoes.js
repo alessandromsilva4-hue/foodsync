@@ -79,7 +79,7 @@ dados.data();
 document.getElementById(
 "nomeSistema"
 ).value =
-c.nomeSistema || "FoodSync";
+c.nomeSistema || "Lotrix";
 
 
 
