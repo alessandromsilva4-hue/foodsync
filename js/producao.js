@@ -31,6 +31,7 @@ document.getElementById("produtoSelect");
 const formulario =
 document.getElementById("producaoForm");
 
+let imprimirDepoisDeSalvar = false;
 
 let produtos = [];
 
@@ -865,7 +866,19 @@ serverTimestamp()
 alert(
 "Produção registrada com sucesso!"
 );
+if (imprimirDepoisDeSalvar) {
 
+    const qtd = Number(localStorage.getItem("qtdEtiquetas")) || 1;
+
+    window.open(
+        `etiqueta.html?codigo=${codigoEtiqueta}&qtd=${qtd}`,
+        "_blank"
+    );
+
+    localStorage.removeItem("qtdEtiquetas");
+
+    imprimirDepoisDeSalvar = false;
+}
 formulario.reset();
 
 preencherDataAtual();
@@ -1218,3 +1231,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+// =======================================
+// SALVAR E IMPRIMIR
+// =======================================
+
+document.getElementById("btnSalvarImprimir").addEventListener("click", () => {
+
+    imprimirDepoisDeSalvar = true;
+
+    const qtdEtiquetas = Number(
+        document.getElementById("qtdEtiquetas").value
+    ) || 1;
+
+    localStorage.setItem("qtdEtiquetas", qtdEtiquetas);
+
+    formulario.requestSubmit();
+
+});

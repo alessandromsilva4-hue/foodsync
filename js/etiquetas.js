@@ -604,222 +604,84 @@ window.reimprimirEtiqueta = async function(id){
 
 window.imprimirEtiqueta = function () {
 
+    const qtd =
+        Number(new URLSearchParams(window.location.search).get("qtd")) || 1;
 
     const conteudo =
-    document.getElementById("etiquetaGerada").outerHTML;
+        document.getElementById("etiquetaGerada").outerHTML;
 
+    let etiquetas = "";
 
+    for (let i = 0; i < qtd; i++) {
+        etiquetas += conteudo;
+    }
 
-    const janela =
-    window.open(
+    const janela = window.open(
         "",
         "_blank",
-        "width=227,height=227"
+        "width=800,height=600"
     );
 
-
-
     janela.document.write(`
-
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 
 <head>
 
 <meta charset="UTF-8">
 
-
 <style>
 
-
 @page{
-
     size:60mm 60mm;
-
     margin:0;
-
 }
 
-
-
-html,
 body{
-
-    width:60mm;
-
-    height:60mm;
-
     margin:0;
-
     padding:0;
-
-    overflow:hidden;
-
     font-family:Arial,Helvetica,sans-serif;
-
 }
-
-
 
 .etiqueta{
-
-
     width:60mm;
-
     height:60mm;
-
-
     box-sizing:border-box;
-
-
-    padding:2mm;
-
-
-    overflow:hidden;
-
-
+    page-break-after:always;
 }
 
-
-
-.etiqueta-logo{
-
-
-    text-align:center;
-
-    font-size:12px;
-
-    font-weight:bold;
-
-    border-bottom:1px solid #000;
-
-    padding-bottom:1mm;
-
+.etiqueta:last-child{
+    page-break-after:auto;
 }
-
-
-
-#nomeEtiqueta{
-
-
-    font-size:16px;
-
-    font-weight:bold;
-
-    text-align:center;
-
-    margin:1mm 0;
-
-}
-
-
-
-.etiqueta p{
-
-
-    font-size:10px;
-
-    margin:0.5mm 0;
-
-}
-
-
-
-#qrcodeEtiqueta{
-
-
-    display:flex;
-
-    justify-content:center;
-
-    margin-top:2mm;
-
-}
-
-
-
-#qrcodeEtiqueta img,
-#qrcodeEtiqueta canvas{
-
-
-    width:15mm!important;
-
-    height:15mm!important;
-
-
-}
-
-
-
-@media print{
-
-
-    html,
-    body{
-
-
-        width:60mm;
-
-        height:60mm;
-
-        overflow:hidden;
-
-    }
-
-
-}
-
-
 
 </style>
 
-
 </head>
-
 
 <body>
 
-
-${conteudo}
-
-
+${etiquetas}
 
 <script>
 
+window.onload = () => {
 
-window.onload=function(){
-
-
-    setTimeout(()=>{
-
+    setTimeout(() => {
 
         window.print();
 
-
     },300);
-
 
 }
 
-
-
 </script>
-
-
 
 </body>
 
-
 </html>
-
 `);
 
-
-
     janela.document.close();
-
-
 
 };
 // =======================================
