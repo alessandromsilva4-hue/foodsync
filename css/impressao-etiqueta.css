@@ -1,0 +1,135 @@
+@page {
+    size: 60mm 60mm;
+    margin: 0;
+}
+
+html,
+body {
+    width: 60mm;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+.etiqueta {
+    position: relative;
+    width: 60mm;
+    height: 60mm;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #fff;
+    break-after: page;
+    break-inside: avoid;
+    page-break-after: always;
+    page-break-inside: avoid;
+}
+
+.etiqueta:last-child {
+    break-after: auto;
+    page-break-after: auto;
+}
+
+.etiqueta-logo {
+    position: absolute;
+    top: 1.5mm;
+    right: 2mm;
+    left: 2mm;
+    margin: 0;
+    padding-bottom: .4mm;
+    border-bottom: .25mm solid #000;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+}
+
+#nomeEtiqueta {
+    position: absolute;
+    top: 6.5mm;
+    right: 2mm;
+    left: 2mm;
+    margin: 0;
+    overflow: hidden;
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1.05;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#categoriaEtiqueta {
+    position: absolute;
+    top: 11.5mm;
+    right: 2mm;
+    left: 2mm;
+    font-size: 9px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.linha-etiqueta {
+    position: absolute;
+    top: 15mm;
+    right: 2mm;
+    left: 2mm;
+    margin: 0;
+    border-top: .25mm solid #000;
+}
+
+.datas-etiqueta + .linha-etiqueta {
+    top: 25.5mm;
+}
+
+.datas-etiqueta,
+.info-etiqueta {
+    position: absolute;
+    right: 2mm;
+    left: 2mm;
+}
+
+.datas-etiqueta {
+    top: 17mm;
+}
+
+.info-etiqueta {
+    top: 27mm;
+}
+
+.datas-etiqueta p,
+.info-etiqueta p {
+    margin: .45mm 0;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1.05;
+}
+
+.datas-etiqueta strong,
+.info-etiqueta strong {
+    display: inline-block;
+    min-width: 17mm;
+}
+
+#qrcodeEtiqueta {
+    position: absolute;
+    right: 2mm;
+    bottom: 1.5mm;
+    left: 2mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 15mm;
+}
+
+#qrcodeEtiqueta img,
+#qrcodeEtiqueta canvas {
+    display: block;
+    width: 15mm !important;
+    height: 15mm !important;
+}

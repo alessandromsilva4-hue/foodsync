@@ -630,6 +630,8 @@ window.imprimirEtiqueta = function () {
 
 <meta charset="UTF-8">
 
+<link rel="stylesheet" href="${new URL("css/impressao-etiqueta.css", window.location.href).href}">
+
 <style>
 
 @page{
@@ -637,21 +639,138 @@ window.imprimirEtiqueta = function () {
     margin:0;
 }
 
+html{
+    width:60mm;
+    height:60mm;
+}
+
 body{
     margin:0;
     padding:0;
     font-family:Arial,Helvetica,sans-serif;
+    width:60mm;
+}
+
+*, *::before, *::after{
+    box-sizing:border-box;
 }
 
 .etiqueta{
+    position:relative;
     width:60mm;
     height:60mm;
     box-sizing:border-box;
+    padding:1.5mm 2mm;
+    overflow:hidden;
+    background:#fff;
     page-break-after:always;
+    break-after:page;
+    page-break-inside:avoid;
+    break-inside:avoid;
 }
 
 .etiqueta:last-child{
     page-break-after:auto;
+    break-after:auto;
+}
+
+.etiqueta-logo{
+    position:absolute;
+    top:1.5mm;
+    left:2mm;
+    right:2mm;
+    margin:0;
+    padding-bottom:.4mm;
+    border-bottom:.25mm solid #000;
+    font-size:11px;
+    font-weight:700;
+    text-align:center;
+}
+
+#nomeEtiqueta{
+    position:absolute;
+    top:6.5mm;
+    left:2mm;
+    right:2mm;
+    margin:0;
+    font-size:13px;
+    font-weight:900;
+    line-height:1.05;
+    text-align:center;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+#categoriaEtiqueta{
+    position:absolute;
+    top:11.5mm;
+    left:2mm;
+    right:2mm;
+    font-size:9px;
+    font-weight:700;
+    text-align:center;
+}
+
+.linha-etiqueta{
+    position:absolute;
+    top:15mm;
+    left:2mm;
+    right:2mm;
+    margin:0;
+    border-top:.25mm solid #000;
+}
+
+.datas-etiqueta + .linha-etiqueta{
+    top:25.5mm;
+}
+
+.datas-etiqueta,
+.info-etiqueta{
+    position:absolute;
+    left:2mm;
+    right:2mm;
+}
+
+.datas-etiqueta{
+    top:17mm;
+}
+
+.info-etiqueta{
+    top:27mm;
+}
+
+.datas-etiqueta p,
+.info-etiqueta p{
+    margin:.45mm 0;
+    font-size:9px;
+    font-weight:700;
+    line-height:1.05;
+}
+
+.datas-etiqueta strong,
+.info-etiqueta strong{
+    display:inline-block;
+    min-width:17mm;
+}
+
+#qrcodeEtiqueta{
+    position:absolute;
+    right:2mm;
+    bottom:1.5mm;
+    left:2mm;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:15mm;
+    margin:0;
+}
+
+#qrcodeEtiqueta img,
+#qrcodeEtiqueta canvas{
+    display:block;
+    width:15mm !important;
+    height:15mm !important;
 }
 
 </style>

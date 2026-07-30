@@ -88,7 +88,7 @@ c.nomeSistema || "Lotrix";
 document.getElementById(
 "tamanhoEtiqueta"
 ).value =
-c.tamanhoEtiqueta || "80x50 mm";
+c.tamanhoEtiqueta || "60x60 mm";
 
 
 
