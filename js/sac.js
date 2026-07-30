@@ -61,6 +61,88 @@ document.getElementById("listaChamados");
 
 let usuarioAtual = null;
 
+// =======================================
+// ASSISTENTE DO SAC
+// =======================================
+
+const formAssistente = document.getElementById("formAssistenteSac");
+const campoMensagemAssistente = document.getElementById("mensagemAssistente");
+const mensagensAssistente = document.getElementById("mensagensAssistente");
+
+function normalizarTexto(texto) {
+    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
+function respostaAssistente(pergunta) {
+    const texto = normalizarTexto(pergunta);
+
+    if (texto.includes("etiqueta") || texto.includes("imprimir")) {
+        return "Para gerar uma etiqueta, abra Etiquetas, selecione o produto, informe a data de produção e a quantidade. Depois, clique em Gerar Etiqueta e em Imprimir. A validade é calculada conforme o cadastro do produto.";
+    }
+    if (texto.includes("producao") || texto.includes("produzir")) {
+        return "Abra Produção, escolha o produto e preencha quantidade, data/hora e responsável. Confira a validade sugerida e finalize o registro. Em seguida, você pode emitir as etiquetas da produção.";
+    }
+    if (texto.includes("produto") || texto.includes("cadastrar")) {
+        return "Em Produtos, clique para cadastrar um item e informe nome, categoria, unidade, temperatura de conservação e validade em dias. Esses dados são usados no controle e nas etiquetas.";
+    }
+    if (texto.includes("estoque") || texto.includes("entrada") || texto.includes("saida")) {
+        return "No módulo Estoque, registre entradas e saídas do item. Mantenha a quantidade atualizada para que o sistema destaque itens com estoque baixo.";
+    }
+    if (texto.includes("relatorio") || texto.includes("auditoria")) {
+        return "Use Relatórios para acompanhar os dados consolidados e Auditoria para consultar as ações registradas no sistema.";
+    }
+    if (texto.includes("senha") || texto.includes("login") || texto.includes("acesso")) {
+        return "Para questões de acesso, confirme o e-mail e tente redefinir sua senha na tela de login. Se o problema continuar, abra um chamado para a equipe verificar seu usuário.";
+    }
+    return "Ainda não encontrei uma orientação específica. Posso ajudar com produtos, produção, etiquetas, estoque, relatórios ou acesso. Se preferir, clique em “Abrir chamado” abaixo e eu preparo a solicitação.";
+}
+
+function adicionarMensagemAssistente(texto, tipo) {
+    if (!mensagensAssistente) return;
+    const mensagem = document.createElement("div");
+    mensagem.className = `assistant-sac__message assistant-sac__message--${tipo}`;
+    mensagem.textContent = texto;
+    mensagensAssistente.appendChild(mensagem);
+    mensagensAssistente.scrollTop = mensagensAssistente.scrollHeight;
+}
+
+function abrirChamadoAssistente(pergunta) {
+    const assunto = document.getElementById("assunto");
+    const descricao = document.getElementById("descricao");
+    if (assunto && !assunto.value) assunto.value = "Solicitação de suporte";
+    if (descricao && !descricao.value) descricao.value = pergunta;
+    document.getElementById("formSac")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function enviarMensagemAssistente(pergunta) {
+    const mensagem = pergunta.trim();
+    if (!mensagem) return;
+    adicionarMensagemAssistente(mensagem, "user");
+    adicionarMensagemAssistente(respostaAssistente(mensagem), "bot");
+
+    if (!normalizarTexto(mensagem).match(/etiqueta|imprimir|producao|produzir|produto|cadastrar|estoque|entrada|saida|relatorio|auditoria|senha|login|acesso/)) {
+        const botao = document.createElement("button");
+        botao.type = "button";
+        botao.className = "assistant-sac__open-ticket";
+        botao.textContent = "Abrir chamado";
+        botao.addEventListener("click", () => abrirChamadoAssistente(mensagem));
+        mensagensAssistente.appendChild(botao);
+    }
+}
+
+if (formAssistente) {
+    formAssistente.addEventListener("submit", (event) => {
+        event.preventDefault();
+        enviarMensagemAssistente(campoMensagemAssistente.value);
+        campoMensagemAssistente.value = "";
+        campoMensagemAssistente.focus();
+    });
+
+    document.querySelectorAll("[data-pergunta]").forEach((botao) => {
+        botao.addEventListener("click", () => enviarMensagemAssistente(botao.dataset.pergunta));
+    });
+}
+
 
 
 

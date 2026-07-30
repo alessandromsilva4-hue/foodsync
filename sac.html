@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="css/sidebar.css">
 <link rel="stylesheet" href="css/formulario.css">
 <link rel="stylesheet" href="css/tabela.css">
+<link rel="stylesheet" href="css/sac.css">
 
 </head>
 
@@ -137,6 +138,35 @@ Envie dúvidas, sugestões ou relate problemas encontrados no Lotrix.
 </a>
 
 </div>
+
+</section>
+
+<section class="assistant-sac" aria-labelledby="assistente-sac-titulo">
+
+<div class="assistant-sac__header">
+<div>
+<p class="assistant-sac__eyebrow">Atendimento imediato</p>
+<h2 id="assistente-sac-titulo">Assistente Lotrix</h2>
+</div>
+<span class="assistant-sac__status"><i></i> Online</span>
+</div>
+
+<div class="assistant-sac__messages" id="mensagensAssistente" aria-live="polite">
+<div class="assistant-sac__message assistant-sac__message--bot">Olá! Posso ajudar com produtos, produção, etiquetas, estoque e relatórios. O que você precisa?</div>
+</div>
+
+<div class="assistant-sac__suggestions" aria-label="Sugestões de perguntas">
+<button type="button" data-pergunta="Como gerar uma etiqueta?">Gerar etiqueta</button>
+<button type="button" data-pergunta="Como registrar uma produção?">Registrar produção</button>
+<button type="button" data-pergunta="Como cadastrar um produto?">Cadastrar produto</button>
+<button type="button" data-pergunta="Preciso de ajuda com estoque">Ajuda com estoque</button>
+</div>
+
+<form class="assistant-sac__form" id="formAssistenteSac">
+<label class="sr-only" for="mensagemAssistente">Mensagem para o assistente</label>
+<input id="mensagemAssistente" type="text" maxlength="500" placeholder="Escreva sua dúvida..." autocomplete="off" required>
+<button type="submit">Enviar</button>
+</form>
 
 </section>
 
