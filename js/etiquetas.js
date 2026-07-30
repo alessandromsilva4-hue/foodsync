@@ -692,7 +692,7 @@ body{
 
 #nomeEtiqueta{
     position:absolute;
-    top:2.5mm;
+    top:6mm;
     left:2mm;
     right:2mm;
     margin:0;
@@ -717,7 +717,7 @@ body{
 
 .linha-etiqueta{
     position:absolute;
-    top:15.5mm;
+    top:17.5mm;
     left:2mm;
     right:2mm;
     margin:0;
@@ -725,7 +725,7 @@ body{
 }
 
 .datas-etiqueta + .linha-etiqueta{
-    top:29mm;
+    top:30.5mm;
 }
 
 .datas-etiqueta,
@@ -736,11 +736,11 @@ body{
 }
 
 .datas-etiqueta{
-    top:18mm;
+    top:20mm;
 }
 
 .info-etiqueta{
-    top:31.5mm;
+    top:33mm;
 }
 
 .datas-etiqueta p,
@@ -760,26 +760,26 @@ body{
 #qrcodeEtiqueta{
     position:absolute;
     right:2mm;
-    bottom:2mm;
+    bottom:1.5mm;
     left:auto;
     display:flex;
     align-items:center;
     justify-content:center;
-    width:18mm;
-    height:18mm;
+    width:16mm;
+    height:16mm;
     margin:0;
 }
 
 #qrcodeEtiqueta img,
 #qrcodeEtiqueta canvas{
     display:block;
-    width:18mm !important;
-    height:18mm !important;
+    width:16mm !important;
+    height:16mm !important;
 }
 
 .temperatura-destaque{
     position:absolute;
-    top:10.5mm;
+    top:13mm;
     right:2mm;
     left:2mm;
     margin:0;
@@ -804,6 +804,20 @@ body{
 .info-etiqueta p:nth-child(3){
     margin-top:1.5mm;
     font-size:8px;
+}
+
+.etiqueta-logo{
+    position:absolute;
+    top:1.5mm;
+    right:2mm;
+    left:2mm;
+    margin:0;
+    padding-bottom:.5mm;
+    border-bottom:.25mm solid #000;
+    font-size:10px;
+    font-weight:900;
+    text-align:center;
+    letter-spacing:.3mm;
 }
 
 </style>
