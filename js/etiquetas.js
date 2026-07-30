@@ -218,6 +218,12 @@ function formatarData(data){
     if(!data)
         return "-";
 
+    // Datas no formato YYYY-MM-DD devem ser interpretadas como data local.
+    // new Date("YYYY-MM-DD") usa UTC e pode exibir o dia anterior no Brasil.
+    if (typeof data === "string" && /^\d{4}-\d{2}-\d{2}$/.test(data)) {
+        const [ano, mes, dia] = data.split("-");
+        return `${dia}/${mes}/${ano}`;
+    }
 
     return new Date(data)
     .toLocaleDateString("pt-BR");
@@ -306,9 +312,16 @@ const produtoDados = produtos.find(
 // ================================
 
 
-const dataProducao = new Date(
-    producao.dataProducao
-);
+const dataSelecionada = document.getElementById("dataProducao").value;
+
+if (!dataSelecionada) {
+    alert("Informe a data de produção.");
+    return;
+}
+
+// Cria a data no horário local para preservar exatamente o dia escolhido.
+const [ano, mes, dia] = dataSelecionada.split("-").map(Number);
+const dataProducao = new Date(ano, mes - 1, dia);
 
 
 let validade;
@@ -472,7 +485,7 @@ await addDoc(
 
         unidade: producao.unidade || "UN",
 
-       dataProducao: producao.dataProducao || producaoFormatada,
+       dataProducao: dataSelecionada,
 
         validade: validade.toISOString().split("T")[0],
 
