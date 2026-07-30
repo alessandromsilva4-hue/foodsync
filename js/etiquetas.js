@@ -350,8 +350,11 @@ document.getElementById("nomeEtiqueta").innerText =
 
 
 
-document.getElementById("categoriaEtiqueta").innerText =
-produtoSelecionado?.categoria || "--";
+const categoriaEtiqueta = document.getElementById("categoriaEtiqueta");
+
+if (categoriaEtiqueta) {
+    categoriaEtiqueta.innerText = produtoSelecionado?.categoria || "--";
+}
 
 
 document.getElementById("temperaturaEtiqueta").innerText =
@@ -584,7 +587,7 @@ window.reimprimirEtiqueta = async function(id){
             document.getElementById(
                 "responsavelEtiqueta"
             ).innerText =
-            "RESP: " + dados.usuario;
+            dados.usuario || "--";
 
 
 
@@ -689,11 +692,11 @@ body{
 
 #nomeEtiqueta{
     position:absolute;
-    top:6.5mm;
+    top:2.5mm;
     left:2mm;
     right:2mm;
     margin:0;
-    font-size:13px;
+    font-size:16px;
     font-weight:900;
     line-height:1.05;
     text-align:center;
@@ -714,7 +717,7 @@ body{
 
 .linha-etiqueta{
     position:absolute;
-    top:15mm;
+    top:15.5mm;
     left:2mm;
     right:2mm;
     margin:0;
@@ -722,7 +725,7 @@ body{
 }
 
 .datas-etiqueta + .linha-etiqueta{
-    top:25.5mm;
+    top:29mm;
 }
 
 .datas-etiqueta,
@@ -733,17 +736,17 @@ body{
 }
 
 .datas-etiqueta{
-    top:17mm;
+    top:18mm;
 }
 
 .info-etiqueta{
-    top:27mm;
+    top:31.5mm;
 }
 
 .datas-etiqueta p,
 .info-etiqueta p{
-    margin:.45mm 0;
-    font-size:9px;
+    margin:.7mm 0;
+    font-size:10px;
     font-weight:700;
     line-height:1.05;
 }
@@ -757,20 +760,50 @@ body{
 #qrcodeEtiqueta{
     position:absolute;
     right:2mm;
-    bottom:1.5mm;
-    left:2mm;
+    bottom:2mm;
+    left:auto;
     display:flex;
     align-items:center;
     justify-content:center;
-    height:15mm;
+    width:18mm;
+    height:18mm;
     margin:0;
 }
 
 #qrcodeEtiqueta img,
 #qrcodeEtiqueta canvas{
     display:block;
-    width:15mm !important;
-    height:15mm !important;
+    width:18mm !important;
+    height:18mm !important;
+}
+
+.temperatura-destaque{
+    position:absolute;
+    top:10.5mm;
+    right:2mm;
+    left:2mm;
+    margin:0;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.2mm;
+}
+
+.datas-etiqueta p{
+    display:flex;
+    justify-content:space-between;
+}
+
+.datas-etiqueta span{
+    text-align:right;
+}
+
+.info-etiqueta p:nth-child(2){
+    display:none;
+}
+
+.info-etiqueta p:nth-child(3){
+    margin-top:1.5mm;
+    font-size:8px;
 }
 
 </style>
