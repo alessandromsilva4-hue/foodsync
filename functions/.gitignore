@@ -1,3 +1,9 @@
 node_modules/
 *.local
 .env
+# Firebase Admin
+serviceAccountKey.json
+FoodSync-AI/serviceAccountKey.json
+
+# Ambiente
+.env
