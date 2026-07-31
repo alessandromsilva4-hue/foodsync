@@ -67,3 +67,6 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+# Firebase Admin private key
+FoodSync-AI/serviceAccountKey.json
