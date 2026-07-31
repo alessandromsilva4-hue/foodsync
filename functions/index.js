@@ -1,32 +1,61 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+// =======================================
+// FOODSYNC - AI FUNCTION
+// =======================================
+
+require("dotenv").config();
+
+const OpenAI = require("openai");
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const {setGlobalOptions} = require("firebase-functions");
-const {onRequest} = require("firebase-functions/https");
+const {onRequest} = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
 
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
+setGlobalOptions({
+  maxInstances: 10,
+});
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+// =======================================
+// FOODSYNC AI - TESTE OPENAI
+// =======================================
+
+exports.foodsyncAI = onRequest(async (req, res) => {
+  try {
+    logger.info("FoodSync AI chamada");
+
+    const mensagem = req.body.mensagem || "Olá";
+
+    const resposta = await client.chat.completions.create({
+      model: "gpt-4.1-mini",
+      messages: [
+        {
+          role: "system",
+          content:
+            "Você é a inteligência artificial do sistema FoodSync. " +
+            "Ajude com produção, estoque, validade e operação de restaurante.",
+        },
+        {
+          role: "user",
+          content: mensagem,
+        },
+      ],
+    });
+
+    res.json({
+      sucesso: true,
+      mensagemRecebida: mensagem,
+      resposta: resposta.choices[0].message.content,
+    });
+  } catch (error) {
+    logger.error("Erro FoodSync AI:", error);
+
+    res.status(500).json({
+      sucesso: false,
+      erro: error.message,
+    });
+  }
+});
