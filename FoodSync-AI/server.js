@@ -63,10 +63,18 @@ async function buscarDadosFoodSync() {
       ...doc.data()
     })),
 
-    estoque: estoque.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })),
+    estoque: estoque.docs.map(doc => {
+  const data = doc.data();
+
+  return {
+    id: doc.id,
+    produto: data.produto,
+    quantidade: data.quantidade,
+    unidade: data.unidade,
+    minimo: data.minimo,
+    maximo: data.maximo
+  };
+}),
 
     producoes: producoes.docs.map(doc => ({
       id: doc.id,
@@ -103,7 +111,17 @@ Utilize SOMENTE os dados reais abaixo para responder.
 
 Dados do sistema:
 
-${JSON.stringify(dadosFoodSync, null, 2)}
+ESTOQUE ATUAL:
+${JSON.stringify(dadosFoodSync.estoque, null, 2)}
+
+PRODUTOS:
+${JSON.stringify(dadosFoodSync.produtos, null, 2)}
+
+PRODUÇÕES:
+${JSON.stringify(dadosFoodSync.producoes, null, 2)}
+
+MOVIMENTAÇÕES:
+${JSON.stringify(dadosFoodSync.movimentacoes, null, 2)}
 
 Você pode responder perguntas sobre:
 
@@ -115,14 +133,25 @@ Você pode responder perguntas sobre:
 - Operação da cozinha
 - Controle de alimentos
 
+Para perguntas de estoque:
+- Use obrigatoriamente os dados da seção "estoque".
+- O campo quantidade representa o estoque atual.
+- Mostre produto, quantidade e unidade.
+- Compare com mínimo e máximo quando solicitado.
+
 Regras:
 
 - Nunca invente informações.
 - Sempre responda diretamente a pergunta do usuário.
-- Se não houver dados, diga: "Não encontrei registros de estoque no sistema."
+- Se uma coleção estiver vazia, informe que não existem registros naquela categoria.
+- Nunca diga que não existe estoque se houver produtos dentro da seção estoque.
 - Nunca responda apenas com cumprimentos quando o usuário fizer uma pergunta operacional.
 - Responda sempre em português.
 - Seja objetivo e organizado.
+IMPORTANTE:
+Quando o usuário perguntar sobre estoque, utilize somente a seção ESTOQUE ATUAL.
+O campo "quantidade" representa a quantidade disponível.
+Se existir qualquer registro em ESTOQUE ATUAL, nunca diga que não existem registros.
 
 Pergunta do usuário:
 
@@ -175,7 +204,7 @@ app.get("/", (req, res) => {
 
   res.json({
     sucesso: true,
-    sistema: "FoodSync AI",
+    sistema: "Lotrix AI",
     ia: "Groq",
     modelo: "llama-3.3-70b-versatile",
     status: "online"
@@ -192,7 +221,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
 
   console.log("==================================");
-  console.log(" FoodSync AI iniciado");
+  console.log(" Lotrix AI iniciado");
   console.log("==================================");
   console.log(` Porta: ${PORT}`);
   console.log(" IA: Groq");

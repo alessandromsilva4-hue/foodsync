@@ -23,65 +23,107 @@
     <!-- SIDEBAR -->
     <aside class="sidebar">
 
-        <div class="logo-area">
-            <img src="img/logo.jpg" alt="Lotrix">
+    <div class="logo-area">
+        <img src="img/logo.jpg" alt="Lotrix">
+        <h2>LOTRIX</h2>
+        <small>Food Safety Platform</small>
+    </div>
+
+    <nav class="menu">
+
+        <div class="menu-section">
+            <span class="menu-title">GERAL</span>
+
+            <a href="dashboard.html" class="active">
+                <span>🏠</span>
+                <span class="nav-label">Dashboard</span>
+            </a>
         </div>
 
-        <nav class="menu">
+        <div class="menu-section">
+            <span class="menu-title">OPERAÇÃO</span>
 
-            <a href="dashboard.html">
-                <span>📊</span> Dashboard
-            </a>
-
-            <a href="producao.html" class="active">
-                <span>🍱</span> Produção
+            <a href="producao.html">
+                <span>⚙️</span>
+                <span class="nav-label">Produção</span>
             </a>
 
             <a href="produtos.html">
-                <span>📦</span> Produtos
+                <span>📦</span>
+                <span class="nav-label">Produtos</span>
             </a>
 
             <a href="etiquetas.html">
-                <span>🏷️</span> Etiquetas
+                <span>🏷️</span>
+                <span class="nav-label">Etiquetas</span>
             </a>
 
             <a href="estoque.html">
-                <span>📋</span> Estoque
+                <span>📚</span>
+                <span class="nav-label">Estoque</span>
             </a>
+        </div>
+
+        <div class="menu-section">
+            <span class="menu-title">GESTÃO</span>
 
             <a href="relatorios.html">
-                <span>📈</span> Relatórios
+                <span>📈</span>
+                <span class="nav-label">Relatórios</span>
             </a>
 
             <a href="auditoria.html">
-                <span>📝</span> Auditoria
+                <span>📝</span>
+                <span class="nav-label">Auditoria</span>
             </a>
 
             <a href="usuario.html">
-                <span>👤</span> Usuários
+                <span>👥</span>
+                <span class="nav-label">Usuários</span>
             </a>
+        </div>
+
+        <div class="menu-section">
+            <span class="menu-title">SISTEMA</span>
 
             <a href="configuracoes.html">
-                <span>⚙️</span> Configurações
+                <span>⚙️</span>
+                <span class="nav-label">Configurações</span>
             </a>
 
             <a href="ajuda.html">
-                ❓ Ajuda
+                <span>❓</span>
+                <span class="nav-label">Ajuda</span>
             </a>
 
             <a href="sac.html">
-                🎧 SAC
+                <span>🎧</span>
+                <span class="nav-label">SAC</span>
             </a>
-
-        </nav>
-
-        <div class="sidebar-footer">
-            <button onclick="logout()">
-                🚪 Sair
-            </button>
         </div>
 
-    </aside>
+    </nav>
+
+    <div class="sidebar-footer">
+
+        <div class="user-card">
+
+            <div class="avatar">👤</div>
+
+            <div>
+                <strong>Lotrix</strong>
+                <small>Administrador</small>
+            </div>
+
+        </div>
+
+        <button onclick="logout()">
+            🚪 Sair
+        </button>
+
+    </div>
+
+</aside>
 
     <!-- CONTEÚDO -->
     <main class="content">

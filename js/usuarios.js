@@ -1,8 +1,8 @@
 // =======================================
-// FOODSYNC - USUÁRIOS V4
+// FOODSYNC / LOTRIX - USUÁRIOS V5
 // =======================================
 
-console.log("USUARIOS.JS V4 CARREGADO");
+console.log("USUARIOS.JS V5 CARREGADO");
 
 
 import { db, auth } from "./firebase.js";
@@ -51,27 +51,32 @@ const btnCancelar =
 document.getElementById("btnCancelar");
 
 
-const fecharModal =
-document.getElementById("fecharModal");
+const btnFecharModal =
+document.getElementById("btnFecharModal");
 
 
 const formUsuario =
 document.getElementById("formUsuario");
 
 
-// CAMPOS FORMULÁRIO
+
+// CAMPOS
 
 const nomeUsuario =
 document.getElementById("nomeUsuario");
 
+
 const emailUsuario =
 document.getElementById("emailUsuario");
+
 
 const senhaUsuario =
 document.getElementById("senhaUsuario");
 
+
 const perfilUsuario =
 document.getElementById("perfilUsuario");
+
 
 const statusUsuario =
 document.getElementById("statusUsuario");
@@ -84,52 +89,47 @@ let usuarioEditando=null;
 
 
 
+
+
 // =======================================
-// PERMISSÕES
+// PERMISSÕES DOS CHECKBOX
 // =======================================
 
-function definirPermissoes(perfil){
-
-
-perfil =
-perfil.toLowerCase();
-
-
-
-if(perfil==="administrador"){
-
-return {
-
-dashboard:true,
-produtos:true,
-producao:true,
-etiquetas:true,
-estoque:true,
-movimentacoes:true,
-relatorios:true,
-auditoria:true,
-usuarios:true,
-configuracoes:true,
-sac:true
-
-};
-
-}
+function pegarPermissoes(){
 
 
 return {
 
-dashboard:true,
-produtos:true,
-producao:true,
-etiquetas:true,
-estoque:true,
-movimentacoes:true,
-relatorios:false,
-auditoria:false,
-usuarios:false,
-configuracoes:false,
-sac:true
+dashboard:
+document.getElementById("permDashboard")?.checked || false,
+
+
+produtos:
+document.getElementById("permProdutos")?.checked || false,
+
+
+producao:
+document.getElementById("permProducao")?.checked || false,
+
+
+etiquetas:
+document.getElementById("permEtiquetas")?.checked || false,
+
+
+estoque:
+document.getElementById("permEstoque")?.checked || false,
+
+
+relatorios:
+document.getElementById("permRelatorios")?.checked || false,
+
+
+usuarios:
+document.getElementById("permUsuarios")?.checked || false,
+
+
+configuracoes:
+document.getElementById("permConfiguracoes")?.checked || false
 
 };
 
@@ -163,6 +163,7 @@ collection(db,"usuarios")
 usuarios=[];
 
 
+
 snap.forEach(item=>{
 
 
@@ -184,14 +185,15 @@ mostrarUsuarios(usuarios);
 atualizarCards();
 
 
+
 }
+
 
 catch(error){
 
-console.error(
-"Erro carregando usuários:",
-error
-);
+
+console.error(error);
+
 
 mostrarToast(
 "Erro ao carregar usuários",
@@ -234,8 +236,7 @@ document.getElementById("cardOperadores");
 
 
 if(total)
-total.innerText =
-usuarios.length;
+total.innerText = usuarios.length;
 
 
 
@@ -246,10 +247,10 @@ ativos.innerText =
 usuarios.filter(u=>
 
 (u.status || "")
-.toLowerCase()
-==="ativo"
+.toLowerCase()==="ativo"
 
 ).length;
+
 
 
 
@@ -260,10 +261,10 @@ admins.innerText =
 usuarios.filter(u=>
 
 (u.perfil || "")
-.toLowerCase()
-==="administrador"
+.toLowerCase()==="administrador"
 
 ).length;
+
 
 
 
@@ -274,11 +275,9 @@ operadores.innerText =
 usuarios.filter(u=>
 
 (u.perfil || "")
-.toLowerCase()
-==="operador"
+.toLowerCase()==="operador"
 
 ).length;
-
 
 
 }
@@ -289,7 +288,7 @@ usuarios.filter(u=>
 
 
 // =======================================
-// TABELA
+// MOSTRAR TABELA
 // =======================================
 
 function mostrarUsuarios(lista){
@@ -317,26 +316,42 @@ tabelaUsuarios.innerHTML += `
 
 <td>${u.perfil || "-"}</td>
 
-<td>${u.status || "-"}</td>
+<td>
+
+<span class="status ${u.status}">
+
+${u.status || "-"}
+
+</span>
+
+</td>
 
 
 <td>
 
+
 <button onclick="editarUsuario('${u.id}')">
+
 ✏️
+
 </button>
 
 
+
 <button onclick="excluirUsuario('${u.id}')">
+
 🗑️
+
 </button>
 
 
 </td>
 
+
 </tr>
 
 `;
+
 
 });
 
@@ -347,10 +362,10 @@ tabelaUsuarios.innerHTML += `
 
 
 
+// =======================================
+// ABRIR MODAL NOVO
+// =======================================
 
-// =======================================
-// MODAL
-// =======================================
 
 btnNovoUsuario?.addEventListener(
 "click",
@@ -363,45 +378,101 @@ usuarioEditando=null;
 formUsuario.reset();
 
 
+emailUsuario.disabled=false;
+
+
+senhaUsuario.required=true;
+
+
 
 document.getElementById(
 "tituloModal"
-).innerText="👤 Novo Usuário";
+).innerHTML =
+"👤 Novo Usuário";
 
 
 
 modalUsuario.style.display="flex";
 
 
-});
+}
+
+);
 
 
-function fechar(){
+
+
+
+function fecharModal(){
+
 
 modalUsuario.style.display="none";
+
 
 }
 
 
 
+
+
 btnCancelar?.addEventListener(
 "click",
-fechar
+fecharModal
 );
 
 
-fecharModal?.addEventListener(
+
+btnFecharModal?.addEventListener(
 "click",
-fechar
+fecharModal
 );
+// =======================================
+// MARCAR PERMISSÕES AO EDITAR
+// =======================================
 
+function carregarPermissoes(permissoes = {}){
+
+
+document.getElementById("permDashboard").checked =
+permissoes.dashboard || false;
+
+
+document.getElementById("permProdutos").checked =
+permissoes.produtos || false;
+
+
+document.getElementById("permProducao").checked =
+permissoes.producao || false;
+
+
+document.getElementById("permEtiquetas").checked =
+permissoes.etiquetas || false;
+
+
+document.getElementById("permEstoque").checked =
+permissoes.estoque || false;
+
+
+document.getElementById("permRelatorios").checked =
+permissoes.relatorios || false;
+
+
+document.getElementById("permUsuarios").checked =
+permissoes.usuarios || false;
+
+
+document.getElementById("permConfiguracoes").checked =
+permissoes.configuracoes || false;
+
+
+}
 
 
 
 
 
 // =======================================
-// SALVAR
+// SALVAR USUÁRIO
 // =======================================
 
 formUsuario?.addEventListener(
@@ -430,17 +501,37 @@ senhaUsuario.value;
 
 
 const perfil =
-perfilUsuario.value;
+perfilUsuario.value.toLowerCase();
 
 
 const status =
-statusUsuario.value;
+statusUsuario.value.toLowerCase();
+
+
+
+const permissoes =
+pegarPermissoes();
 
 
 
 
+
+// NOVO USUÁRIO
 
 if(!usuarioEditando){
+
+
+if(!senha){
+
+mostrarToast(
+"Informe uma senha",
+"erro"
+);
+
+return;
+
+}
+
 
 
 const credencial =
@@ -477,17 +568,14 @@ nome,
 
 email,
 
-perfil:
-perfil.toLowerCase(),
+
+perfil,
 
 
-status:
-status.toLowerCase(),
+status,
 
 
-permissoes:
-
-definirPermissoes(perfil),
+permissoes,
 
 
 criadoEm:
@@ -501,13 +589,16 @@ serverTimestamp()
 
 
 mostrarToast(
-"Usuário criado!"
+"Usuário criado com sucesso!"
 );
-
 
 
 }
 
+
+
+
+// EDITAR
 
 else{
 
@@ -526,17 +617,13 @@ usuarioEditando
 nome,
 
 
-perfil:
-perfil.toLowerCase(),
+perfil,
 
 
-status:
-status.toLowerCase(),
+status,
 
 
-permissoes:
-
-definirPermissoes(perfil),
+permissoes,
 
 
 atualizadoEm:
@@ -548,6 +635,7 @@ serverTimestamp()
 );
 
 
+
 mostrarToast(
 "Usuário atualizado!"
 );
@@ -557,10 +645,14 @@ mostrarToast(
 
 
 
-fechar();
+
+fecharModal();
 
 
 formUsuario.reset();
+
+
+usuarioEditando=null;
 
 
 carregarUsuarios();
@@ -569,10 +661,15 @@ carregarUsuarios();
 
 }
 
+
 catch(error){
 
 
-console.error(error);
+console.error(
+"Erro:",
+error
+);
+
 
 
 mostrarToast(
@@ -581,11 +678,13 @@ mostrarToast(
 );
 
 
+
 }
 
 
+}
 
-});
+);
 
 
 
@@ -594,19 +693,22 @@ mostrarToast(
 
 
 // =======================================
-// EDITAR
+// EDITAR USUÁRIO
 // =======================================
 
 window.editarUsuario=function(id){
 
 
-const u =
+
+const usuario =
+
 usuarios.find(
-x=>x.id===id
+u=>u.id===id
 );
 
 
-if(!u)
+
+if(!usuario)
 return;
 
 
@@ -617,30 +719,52 @@ usuarioEditando=id;
 
 document.getElementById(
 "tituloModal"
-).innerText="✏️ Editar Usuário";
+).innerHTML =
+"✏️ Editar Usuário";
 
 
 
 nomeUsuario.value =
-u.nome || "";
+usuario.nome || "";
+
 
 
 emailUsuario.value =
-u.email || "";
+usuario.email || "";
 
-
-perfilUsuario.value =
-u.perfil || "operador";
-
-
-statusUsuario.value =
-u.status || "ativo";
 
 
 senhaUsuario.value="";
 
 
+// senha não é alterada na edição
+
+senhaUsuario.required=false;
+
+
+
+emailUsuario.disabled=true;
+
+
+
+perfilUsuario.value =
+usuario.perfil || "operador";
+
+
+
+statusUsuario.value =
+usuario.status || "ativo";
+
+
+
+carregarPermissoes(
+usuario.permissoes
+);
+
+
+
 modalUsuario.style.display="flex";
+
 
 
 };
@@ -652,17 +776,28 @@ modalUsuario.style.display="flex";
 
 
 // =======================================
-// EXCLUIR
+// EXCLUIR USUÁRIO
 // =======================================
 
-window.excluirUsuario=async function(id){
+window.excluirUsuario =
+async function(id){
 
 
-if(!confirm(
-"Deseja excluir este usuário?"
-))
+
+const confirmar =
+
+confirm(
+"Deseja realmente excluir este usuário?"
+);
+
+
+
+if(!confirmar)
 return;
 
+
+
+try{
 
 
 await deleteDoc(
@@ -671,6 +806,7 @@ doc(
 db,
 "usuarios",
 id
+
 )
 
 );
@@ -686,7 +822,27 @@ mostrarToast(
 carregarUsuarios();
 
 
+
+}
+
+
+catch(error){
+
+
+console.error(error);
+
+
+mostrarToast(
+"Erro ao excluir usuário",
+"erro"
+);
+
+
+}
+
+
 };
+
 
 
 
@@ -697,10 +853,10 @@ carregarUsuarios();
 // PESQUISA
 // =======================================
 
-document.getElementById(
-"pesquisaUsuario"
-)
+document
+.getElementById("pesquisaUsuario")
 ?.addEventListener(
+
 "input",
 
 (e)=>{
@@ -711,22 +867,33 @@ e.target.value.toLowerCase();
 
 
 
-mostrarUsuarios(
+const filtrados =
 
-usuarios.filter(u=>
+usuarios.filter(u=>{
 
-(u.nome||"")
+
+return (
+
+(u.nome || "")
 .toLowerCase()
 .includes(texto)
 
 
 ||
 
-(u.email||"")
+
+(u.email || "")
 .toLowerCase()
 .includes(texto)
 
-)
+
+||
+
+
+(u.perfil || "")
+.toLowerCase()
+.includes(texto)
+
 
 );
 
@@ -735,12 +902,24 @@ usuarios.filter(u=>
 
 
 
+mostrarUsuarios(
+filtrados
+);
+
+
+}
+
+);
+
+
+
+
 
 
 
 
 // =======================================
-// INICIO
+// INICIAR
 // =======================================
 
 carregarUsuarios();

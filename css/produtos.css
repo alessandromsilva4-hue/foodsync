@@ -1,5 +1,5 @@
 /* ==========================================
-   FOODSYNCH v2 - PRODUTOS
+   LOTRIX v2 - PRODUTOS
 ========================================== */
 
 
@@ -28,7 +28,6 @@
 }
 
 
-
 .pesquisa input {
 
     height:45px;
@@ -37,31 +36,28 @@
 
 
 
-/* BOTÕES */
+/* ==========================================
+   BOTÕES
+========================================== */
+
 
 .btn-primary {
 
-
-    background:#16a34a;
-
+    background:var(--primary);
 
     color:white;
 
-
     border:none;
-
 
     padding:12px 22px;
 
-
     border-radius:10px;
-
 
     cursor:pointer;
 
-
     font-weight:600;
 
+    transition:.2s;
 
 }
 
@@ -69,35 +65,35 @@
 
 .btn-primary:hover {
 
+    background:var(--primary-hover);
 
-    background:#052e16;
-
+    transform:translateY(-2px);
 
 }
-
 
 
 
 .btn-secondary {
 
+    background:var(--surface-subtle);
 
-    background:#e2e8f0;
+    color:var(--text);
 
-
-    color:#1f2937;
-
-
-    border:none;
-
+    border:1px solid var(--border);
 
     padding:12px 22px;
 
-
     border-radius:10px;
-
 
     cursor:pointer;
 
+}
+
+
+
+.btn-secondary:hover {
+
+    background:var(--border);
 
 }
 
@@ -105,44 +101,26 @@
 
 
 
-
-/* MODAL */
+/* ==========================================
+   MODAL
+========================================== */
 
 
 .modal {
 
-
     display:none;
-
 
     position:fixed;
 
+    inset:0;
 
-    top:0;
-
-
-    left:0;
-
-
-    width:100%;
-
-
-    height:100%;
-
-
-    background:
-
-    rgba(0,0,0,.45);
-
+    background:rgba(15,23,42,.55);
 
     justify-content:center;
 
-
     align-items:center;
 
-
     z-index:2000;
-
 
 }
 
@@ -150,59 +128,51 @@
 
 .modal.active {
 
-
     display:flex;
 
-
 }
-
-
 
 
 
 .modal-content {
 
+    background:var(--surface);
 
-    background:white;
-
+    color:var(--text);
 
     width:800px;
 
-
     max-width:95%;
-
 
     border-radius:18px;
 
-
     padding:25px;
 
+    border:1px solid var(--border);
 
-    box-shadow:
-
-    0 10px 30px rgba(0,0,0,.2);
-
+    box-shadow:var(--shadow);
 
 }
 
 
 
-
-
 .modal-header {
-
 
     display:flex;
 
-
     justify-content:space-between;
-
 
     align-items:center;
 
-
     margin-bottom:20px;
 
+}
+
+
+
+.modal-header h2 {
+
+    color:var(--text);
 
 }
 
@@ -210,40 +180,34 @@
 
 .modal-header button {
 
+    background:transparent;
 
-    background:none;
-
-
-    color:#64748b;
-
+    color:var(--text-light);
 
     font-size:22px;
 
-
     padding:5px;
 
+    box-shadow:none;
 
 }
 
 
 
 
-/* FORMULÁRIO */
+
+/* ==========================================
+   FORMULÁRIO
+========================================== */
 
 
 .form-grid {
 
-
     display:grid;
 
-
-    grid-template-columns:
-
-    repeat(2,1fr);
-
+    grid-template-columns:repeat(2,1fr);
 
     gap:20px;
-
 
 }
 
@@ -251,15 +215,11 @@
 
 .input-group {
 
-
     display:flex;
-
 
     flex-direction:column;
 
-
     gap:7px;
-
 
 }
 
@@ -267,12 +227,11 @@
 
 .input-group label {
 
-
     font-weight:600;
-
 
     font-size:14px;
 
+    color:var(--text);
 
 }
 
@@ -280,11 +239,7 @@
 
 .campo-completo {
 
-
-    grid-column:
-
-    1 / -1;
-
+    grid-column:1/-1;
 
 }
 
@@ -292,75 +247,45 @@
 
 
 
-/* FOOTER MODAL */
+/* ==========================================
+   FOOTER MODAL
+========================================== */
 
 
 .modal-footer {
 
-
     margin-top:25px;
-
 
     display:flex;
 
-
     justify-content:flex-end;
-
 
     gap:15px;
 
-
 }
 
 
 
 
 
-/* TABELA */
-
-
-.table-box table {
-
-
-    background:white;
-
-
-}
-
-
-
-.table-box tbody tr:hover {
-
-
-    background:#f0fdf4;
-
-
-}
-
-
-
-
-
-/* STATUS */
+/* ==========================================
+   STATUS
+========================================== */
 
 
 .status-ativo {
 
-
-    background:#dcfce7;
-
+    background:#DCFCE7;
 
     color:#166534;
 
-
     padding:5px 12px;
-
 
     border-radius:20px;
 
-
     font-size:13px;
 
+    font-weight:600;
 
 }
 
@@ -368,21 +293,17 @@
 
 .status-inativo {
 
+    background:#FEE2E2;
 
-    background:#fee2e2;
-
-
-    color:#991b1b;
-
+    color:#991B1B;
 
     padding:5px 12px;
 
-
     border-radius:20px;
-
 
     font-size:13px;
 
+    font-weight:600;
 
 }
 
@@ -390,18 +311,24 @@
 
 
 
-
-/* AÇÕES */
+/* ==========================================
+   AÇÕES
+========================================== */
 
 
 .btn-editar {
 
-
-    background:#2563eb;
-
+    background:#2563EB;
 
     padding:8px 12px;
 
+}
+
+
+
+.btn-editar:hover {
+
+    background:#1D4ED8;
 
 }
 
@@ -409,12 +336,17 @@
 
 .btn-excluir {
 
-
-    background:#dc2626;
-
+    background:#DC2626;
 
     padding:8px 12px;
 
+}
+
+
+
+.btn-excluir:hover {
+
+    background:#B91C1C;
 
 }
 
@@ -422,39 +354,98 @@
 
 
 
-/* RESPONSIVO */
+/* ==========================================
+   DARK MODE
+========================================== */
+
+
+[data-theme="dark"] .modal-content {
+
+    background:#111827;
+
+    border-color:#334155;
+
+}
+
+
+
+[data-theme="dark"] .modal-header button {
+
+    color:#CBD5E1;
+
+}
+
+
+
+[data-theme="dark"] .status-ativo {
+
+    background:#064E3B;
+
+    color:#6EE7B7;
+
+}
+
+
+
+[data-theme="dark"] .status-inativo {
+
+    background:#450A0A;
+
+    color:#FCA5A5;
+
+}
+
+
+
+[data-theme="dark"] .produto-toolbar {
+
+    color:var(--text);
+
+}
+
+
+
+[data-theme="dark"] .pesquisa input {
+
+    background:#0F172A;
+
+    color:white;
+
+    border-color:#475569;
+
+}
+
+
+
+
+
+/* ==========================================
+   RESPONSIVO
+========================================== */
 
 
 @media(max-width:700px){
 
 
-.produto-toolbar {
+    .produto-toolbar {
+
+        flex-direction:column;
+
+    }
 
 
-    flex-direction:column;
+    .pesquisa {
+
+        width:100%;
+
+    }
 
 
-}
+    .form-grid {
 
+        grid-template-columns:1fr;
 
-
-.pesquisa {
-
-
-    width:100%;
-
-
-}
-
-
-
-.form-grid {
-
-
-    grid-template-columns:1fr;
-
-
-}
+    }
 
 
 }

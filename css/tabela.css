@@ -1,43 +1,37 @@
 /* =======================================
-   FOODSYNCH - TABELAS
+   LOTRIX - TABELAS
 ======================================= */
-
 
 
 .table-box {
 
-
-    background:#ffffff;
-
+    background:var(--surface);
 
     padding:25px;
 
+    border-radius:16px;
 
-    border-radius:15px;
+    border:1px solid var(--border);
 
-
-    box-shadow:0 4px 12px rgba(0,0,0,0.08);
-
+    box-shadow:var(--shadow);
 
     overflow-x:auto;
 
-
 }
-
 
 
 
 .table-box h2 {
 
-
     margin-top:0;
-
 
     margin-bottom:20px;
 
+    color:var(--text);
+
+    font-size:18px;
 
 }
-
 
 
 
@@ -45,15 +39,13 @@
 
 table {
 
-
     width:100%;
-
 
     border-collapse:collapse;
 
-
     min-width:650px;
 
+    background:var(--surface);
 
 }
 
@@ -63,9 +55,7 @@ table {
 
 thead {
 
-
-    background:#f5f5f5;
-
+    background:var(--surface-subtle);
 
 }
 
@@ -75,21 +65,19 @@ thead {
 
 th {
 
-
     text-align:left;
-
 
     padding:14px;
 
-
-    font-size:14px;
-
+    font-size:12px;
 
     font-weight:700;
 
+    color:var(--text-light);
 
-    color:#333;
+    text-transform:uppercase;
 
+    letter-spacing:.03em;
 
 }
 
@@ -99,15 +87,23 @@ th {
 
 td {
 
-
     padding:14px;
 
-
-    border-bottom:1px solid #eee;
-
+    border-bottom:1px solid var(--border);
 
     font-size:14px;
 
+    color:var(--text);
+
+}
+
+
+
+
+
+tbody tr {
+
+    transition:.2s;
 
 }
 
@@ -117,13 +113,9 @@ td {
 
 tbody tr:hover {
 
-
-    background:#fafafa;
-
+    background:rgba(37,99,235,.08);
 
 }
-
-
 
 
 
@@ -134,26 +126,19 @@ tbody tr:hover {
 
 .status-ok {
 
-
-    color:#198754;
-
+    color:#22c55e;
 
     font-weight:600;
 
-
 }
-
 
 
 
 .status-alerta {
 
-
-    color:#dc3545;
-
+    color:#ef4444;
 
     font-weight:600;
-
 
 }
 
@@ -161,34 +146,117 @@ tbody tr:hover {
 
 
 
-
-
-/* BOTÕES */
+/* BOTÕES DA TABELA */
 
 
 table button {
 
-
-    background:#111;
-
+    background:var(--primary);
 
     color:white;
 
+    border:none;
+
+    padding:8px 12px;
+
+    border-radius:8px;
+
+    cursor:pointer;
 
 }
-
 
 
 
 table button:hover {
 
-
-    opacity:.8;
-
+    background:var(--primary-hover);
 
 }
 
 
+
+
+
+/* =======================================
+   DARK MODE
+======================================= */
+
+
+[data-theme="dark"] .table-box {
+
+    background:#111827;
+
+    border-color:#334155;
+
+}
+
+
+
+[data-theme="dark"] table {
+
+    background:#111827;
+
+}
+
+
+
+[data-theme="dark"] thead {
+
+    background:#1E293B;
+
+}
+
+
+
+[data-theme="dark"] th {
+
+    color:#93C5FD;
+
+}
+
+
+
+[data-theme="dark"] td {
+
+    color:#E5E7EB;
+
+    border-bottom-color:#334155;
+
+}
+
+
+
+[data-theme="dark"] tbody tr {
+
+    background:#111827;
+
+}
+
+
+
+[data-theme="dark"] tbody tr:hover {
+
+    background:#172554;
+
+}
+
+
+
+
+
+[data-theme="dark"] table button {
+
+    background:#2563EB;
+
+}
+
+
+
+[data-theme="dark"] table button:hover {
+
+    background:#1D4ED8;
+
+}
 
 
 
@@ -200,20 +268,11 @@ table button:hover {
 @media(max-width:700px){
 
 
-.table-box {
+    .table-box {
 
+        padding:15px;
 
-    padding:15px;
+    }
 
 
 }
-
-
-}
-
-.table-box { border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); }
-.table-box thead { background:var(--surface-subtle); }
-.table-box th { color:#475467; font-size:12px; letter-spacing:.02em; text-transform:uppercase; }
-.table-box td { border-bottom-color:var(--border); color:#475467; }
-.table-box tbody tr:hover { background:#f0fdf4; }
-.table-box table button { background:var(--primary); border-radius:8px; }
