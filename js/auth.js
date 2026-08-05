@@ -380,7 +380,43 @@ return null;
 
 
 }
+// =======================================
+// ATUALIZAR USUÁRIO NA SIDEBAR
+// =======================================
 
+function atualizarUsuarioTela(usuario){
+
+    const nome =
+    document.getElementById("nomeUsuarioLogado");
+
+
+    const perfil =
+    document.getElementById("perfilUsuarioLogado");
+
+
+    if(nome){
+        nome.innerText =
+        usuario.nome || "Usuário";
+    }
+
+
+    if(perfil){
+
+        let textoPerfil =
+        usuario.perfil || "";
+
+        textoPerfil =
+        textoPerfil.charAt(0).toUpperCase()
+        +
+        textoPerfil.slice(1);
+
+
+        perfil.innerText =
+        textoPerfil;
+
+    }
+
+}
 // =======================================
 // PÁGINAS PROTEGIDAS
 // =======================================
@@ -471,47 +507,44 @@ const usuario =
 await carregarPerfil(user);
 
 
-
 if(usuario){
 
 
-if(
-!sessionStorage.getItem(
-"loginAuditoriaRegistrado"
-)
-){
-
-
-sessionStorage.setItem(
-"loginAuditoriaRegistrado",
-"true"
-);
-
-
-await registrarAuditoria(
-
-"Sistema",
-
-"LOGIN",
-
-"Usuário realizou login no sistema"
-
-);
-
-
-}
+    atualizarUsuarioTela(usuario);
 
 
 
+    if(
+    !sessionStorage.getItem(
+    "loginAuditoriaRegistrado"
+    )
+    ){
+
+
+        sessionStorage.setItem(
+        "loginAuditoriaRegistrado",
+        "true"
+        );
+
+
+        await registrarAuditoria(
+
+            "Sistema",
+
+            "LOGIN",
+
+            "Usuário realizou login no sistema"
+
+        );
+
+
+    }
 
 
 
 
-
-
-const permissao =
-paginasProtegidas[pagina];
-
+    const permissao =
+    paginasProtegidas[pagina];
 
 
 
