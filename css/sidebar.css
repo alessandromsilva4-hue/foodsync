@@ -501,6 +501,20 @@
     font-size:12px;
 }
 
+/* Mantém a identificação textual sem exibir a imagem ao lado da marca. */
+.logo-area{
+    display:block;
+    text-align:center;
+}
+
+.logo-area img{
+    display:none;
+}
+
+.logo-area h2{
+    margin:0;
+}
+
 .menu-section{
     margin-top:18px;
 }

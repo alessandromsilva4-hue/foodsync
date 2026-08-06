@@ -374,10 +374,14 @@ document.getElementById("temperaturaEtiqueta").innerText =
 produtoSelecionado?.temperatura || "--";
 
 
-document.getElementById("quantidadeEtiqueta").innerText =
-(producao.quantidade || 1) 
-+ " "
-+ (produtoSelecionado?.unidade || "UN");
+const quantidadeEtiqueta = document.getElementById("quantidadeEtiqueta");
+
+if(quantidadeEtiqueta){
+    quantidadeEtiqueta.innerText =
+    (producao.quantidade || 1)
+    + " "
+    + (produtoSelecionado?.unidade || "UN");
+}
 
 
 
@@ -429,10 +433,12 @@ producao.responsavel || "Não informado";
 
 // QUANTIDADE
 
-document.getElementById("quantidadeEtiqueta").innerText =
-(producao.quantidade || 1)
-+ " "
-+ (produtoSelecionado?.unidade || "UN");
+if(quantidadeEtiqueta){
+    quantidadeEtiqueta.innerText =
+    (producao.quantidade || 1)
+    + " "
+    + (produtoSelecionado?.unidade || "UN");
+}
 
 
 
@@ -612,7 +618,7 @@ window.reimprimirEtiqueta = async function(id){
             document.getElementById(
                 "responsavelEtiqueta"
             ).innerText =
-            dados.usuario || "--";
+            dados.responsavel || dados.usuario || "Não informado";
 
 
 
