@@ -36,43 +36,79 @@ body {
     page-break-after: auto;
 }
 
-#nomeEtiqueta {
+.empresa-etiqueta {
     position: absolute;
-    top: 2.5mm;
+    top: 2mm;
     right: 2mm;
     left: 2mm;
+    text-align: center;
+}
+
+.empresa-etiqueta h2 {
     margin: 0;
-    overflow: hidden;
-    font-size: 16px;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.empresa-etiqueta span {
+    display: block;
+    margin-top: .5mm;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: .7mm;
+}
+
+#nomeEtiqueta {
+    position: absolute;
+    top: 12mm;
+    right: 2mm;
+    left: 2mm;
+
+    margin: 0;
+
+    font-size: 12px;
     font-weight: 900;
     line-height: 1.05;
+
     text-align: center;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+
+    overflow: hidden;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .temperatura-destaque {
     position: absolute;
-    top: 10.5mm;
+    top: 22.5mm;
     right: 2mm;
     left: 2mm;
+
     margin: 0;
-    font-size: 10px;
+
+    font-size: 9px;
     font-weight: 700;
     letter-spacing: .2mm;
+    text-align: center;
 }
 
 .linha-etiqueta {
     position: absolute;
-    top: 15.5mm;
+    top: 10.5mm;
     right: 2mm;
     left: 2mm;
     margin: 0;
     border-top: .25mm solid #000;
 }
 
+.temperatura-destaque + .linha-etiqueta {
+    top: 27.5mm;
+}
+
 .datas-etiqueta + .linha-etiqueta {
-    top: 29mm;
+    top: 42.5mm;
 }
 
 .datas-etiqueta,
@@ -83,17 +119,18 @@ body {
 }
 
 .datas-etiqueta {
-    top: 18mm;
+    top: 29mm;
 }
 
 .info-etiqueta {
-    top: 31.5mm;
+    top: 44mm;
+    right: 19mm;
 }
 
 .datas-etiqueta p,
 .info-etiqueta p {
-    margin: .7mm 0;
-    font-size: 10px;
+    margin: 1mm 0;
+    font-size: 9px;
     font-weight: 700;
     line-height: 1.05;
 }
@@ -105,6 +142,11 @@ body {
 }
 
 .datas-etiqueta p {
+    display: flex;
+    justify-content: space-between;
+}
+
+.info-etiqueta p {
     display: flex;
     justify-content: space-between;
 }
@@ -126,17 +168,18 @@ body {
     position: absolute;
     right: 2mm;
     bottom: 2mm;
-    left: auto;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 18mm;
-    height: 18mm;
+
+    width: 13mm;
+    height: 13mm;
 }
 
 #qrcodeEtiqueta img,
 #qrcodeEtiqueta canvas {
     display: block;
-    width: 18mm !important;
-    height: 18mm !important;
+    width: 13mm !important;
+    height: 13mm !important;
 }
