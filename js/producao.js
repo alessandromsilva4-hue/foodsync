@@ -163,28 +163,48 @@ produtoSelect.addEventListener(
 
 ()=>{
 
-
 const produto =
 produtoSelecionado();
-
 
 
 if(!produto)
 return;
 
 
+// Resumo do produto
+
+document.getElementById(
+"infoValidade"
+).innerText =
+(produto.validadeDias || 0) + " dias";
+
+
+document.getElementById(
+"infoTemperatura"
+).innerText =
+produto.temperatura || "-";
+
+
+// Campos automáticos
 
 document.getElementById(
 "temperaturaProducao"
 ).value =
+produto.temperatura || "-";
 
-produto.temperatura || "";
 
-document.getElementById("unidadeProducao").value =
-produto.unidade || "";
+document.getElementById(
+"unidadeProducao"
+).value =
+produto.unidade || "UN";
 
-document.getElementById("responsavelProducao").value =
+
+document.getElementById(
+"responsavelProducao"
+).value =
 usuarioAtual()?.nome || "Sistema";
+
+
 
 const data =
 document.getElementById(
@@ -203,7 +223,6 @@ produto.validadeDias
 );
 
 }
-
 
 
 });
