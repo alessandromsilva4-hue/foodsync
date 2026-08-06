@@ -343,9 +343,9 @@ console.log("CHECK CAMPOS");
 console.log("codigo:", document.getElementById("codigoProduto"));
 console.log("nome:", document.getElementById("nomeProduto"));
 console.log("categoria:", document.getElementById("categoriaProduto"));
+console.log("grupo:", document.getElementById("grupoProduto"));
 console.log("unidade:", document.getElementById("unidadeProduto"));
 console.log("validade:", document.getElementById("validadeProduto"));
-console.log("aberto:", document.getElementById("validadeAberto"));
 console.log("temperatura:", document.getElementById("temperaturaProduto"));
 console.log("setor:", document.getElementById("setorProduto"));
 console.log("estoque:", document.getElementById("estoqueMinimoProduto"));
@@ -367,6 +367,10 @@ categoria:
 document.getElementById("categoriaProduto").value,
 
 
+grupo:
+document.getElementById("grupoProduto").value,
+
+
 unidade:
 document.getElementById("unidadeProduto").value,
 
@@ -374,12 +378,6 @@ document.getElementById("unidadeProduto").value,
 validadeDias:
 Number(
 document.getElementById("validadeProduto").value
-),
-
-
-validadeAberto:
-Number(
-document.getElementById("validadeAberto").value
 ),
 
 
@@ -536,7 +534,10 @@ document.getElementById(
 ).value =
 produto.categoria || "";
 
-
+document.getElementById(
+"grupoProduto"
+).value =
+produto.grupo || "";
 
 document.getElementById(
 "unidadeProduto"
@@ -549,13 +550,6 @@ document.getElementById(
 "validadeProduto"
 ).value =
 produto.validadeDias || 1;
-
-
-
-document.getElementById(
-"validadeAberto"
-).value =
-produto.validadeAberto || 1;
 
 
 
