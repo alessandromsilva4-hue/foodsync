@@ -458,9 +458,9 @@ if (qrDiv) {
 
     qrDiv.innerHTML = "";
 
-  const linkConsulta =
-"https://alessandromsilva4-hue.github.io/foodsync/consulta.html?codigo="
-+ codigoEtiqueta;
+  const paginaConsulta = new URL("consulta.html", window.location.href);
+  paginaConsulta.searchParams.set("codigo", codigoEtiqueta);
+  const linkConsulta = paginaConsulta.href;
 
 
     console.log("Link QR:", linkConsulta);

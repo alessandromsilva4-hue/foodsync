@@ -7,7 +7,7 @@ body {
 
     font-family: Arial, Helvetica, sans-serif;
 
-    background:#f3f4f6;
+    background:#eef4ff;
 
     display:flex;
 
@@ -62,7 +62,7 @@ body {
 
     margin:0;
 
-    color:#16a34a;
+    color:#1d4ed8;
 
     font-size:24px;
 
@@ -99,7 +99,7 @@ body {
 
     font-weight:bold;
 
-    color:#052e16;
+    color:#172554;
 
     text-transform:uppercase;
 
@@ -126,7 +126,7 @@ body {
 
 .campo strong {
 
-    color:#166534;
+    color:#1e40af;
 
 }
 
@@ -136,9 +136,9 @@ body {
 
 .validade-destaque {
 
-    background:#f0fdf4;
+    background:#eff6ff;
 
-    border:2px solid #16a34a;
+    border:2px solid #2563eb;
 
     border-radius:10px;
 
@@ -157,7 +157,7 @@ body {
 
     font-weight:bold;
 
-    color:#166534;
+    color:#1e40af;
 
 }
 
@@ -168,7 +168,7 @@ body {
 
     font-size:30px;
 
-    color:#052e16;
+    color:#172554;
 
 }
 
@@ -243,9 +243,9 @@ body {
 
 .codigo-etiqueta {
 
-    background:#f0fdf4;
+    background:#eff6ff;
 
-    border:1px dashed #16a34a;
+    border:1px dashed #2563eb;
 
     border-radius:8px;
 
@@ -265,7 +265,7 @@ body {
 
     margin-top:20px;
 
-    background:#16a34a;
+    background:#1d4ed8;
 
     color:white;
 
