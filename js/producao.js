@@ -199,10 +199,11 @@ document.getElementById(
 produto.unidade || "UN";
 
 
+responsavel:
+
 document.getElementById(
 "responsavelProducao"
-).value =
-usuarioAtual()?.nome || "Sistema";
+).value || "Não informado";
 
 
 
@@ -427,9 +428,6 @@ document.getElementById(
 "responsavelProducao"
 ).value
 
-||
-
-usuario?.nome
 
 ||
 

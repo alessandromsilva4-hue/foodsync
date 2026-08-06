@@ -168,7 +168,7 @@ async function carregarHistoricoEtiquetas(){
 
 
             <td>
-            ${etiqueta.usuario}
+            ${etiqueta.responsavel}
             </td>
 
 
@@ -395,21 +395,33 @@ validadeFormatada;
 
 // TEMPERATURA DO PRODUTO
 
-document.getElementById("temperaturaEtiqueta").innerText =
+let temperaturaEtiqueta = 
 produtoSelecionado?.temperatura || "AMBIENTE";
+
+
+if(temperaturaEtiqueta.includes("Refrigerado")){
+    temperaturaEtiqueta = "🧊 RESFRIADO";
+}
+
+else if(temperaturaEtiqueta.includes("Congelado")){
+    temperaturaEtiqueta = "❄️ CONGELADO";
+}
+
+else{
+    temperaturaEtiqueta = "🌡️ AMBIENTE";
+}
+
+
+document.getElementById("temperaturaEtiqueta").innerText =
+temperaturaEtiqueta;
 
 
 
 
 // RESPONSÁVEL
-
 document.getElementById("responsavelEtiqueta").innerText =
 
-producao.responsavel ||
-
-producao.usuario ||
-
-"Alessandro";
+producao.responsavel || "Não informado";
 
 
 
@@ -491,7 +503,7 @@ await addDoc(
 
         categoria: produtoSelecionado?.categoria || "",
 
-        usuario: producao.responsavel || "Alessandro",
+       responsavel: producao.responsavel || "Não informado",
 
         temperatura: produtoSelecionado?.temperatura || "AMBIENTE",
 
