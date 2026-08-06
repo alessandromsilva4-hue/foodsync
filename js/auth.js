@@ -10,7 +10,10 @@ import { auth, db } from "./firebase.js";
 import {
     signInWithEmailAndPassword,
     onAuthStateChanged,
-    signOut
+    signOut,
+    createUserWithEmailAndPassword,
+    sendPasswordResetEmail,
+    deleteUser
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
@@ -23,7 +26,8 @@ import {
     addDoc,
     serverTimestamp,
     doc,
-    getDoc
+    getDoc,
+    setDoc
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -178,6 +182,18 @@ const perfilLogin = await carregarPerfil(
     auth.currentUser
 );
 
+if(perfilLogin?.status?.toLowerCase() === "pendente"){
+
+    await signOut(auth);
+
+    mensagem.style.color="#b45309";
+    mensagem.textContent =
+    "Cadastro recebido. Aguarde a liberação da equipe.";
+
+    return;
+
+}
+
 
 // grava auditoria do login
 
@@ -267,6 +283,147 @@ mensagem.innerHTML =
 
 
 
+
+
+// =======================================
+// SENHA: MOSTRAR, CADASTRAR E REDEFINIR
+// =======================================
+
+document.querySelectorAll("[data-password-toggle]").forEach((botao)=>{
+
+    botao.addEventListener("click", ()=>{
+
+        const campo = document.getElementById(botao.dataset.passwordToggle);
+
+        if(!campo){
+            return;
+        }
+
+        const mostrar = campo.type === "password";
+
+        campo.type = mostrar ? "text" : "password";
+        botao.setAttribute("aria-pressed", String(mostrar));
+        botao.setAttribute(
+            "aria-label",
+            mostrar ? "Ocultar senha" : "Mostrar senha"
+        );
+    });
+
+});
+
+
+const cadastroForm = document.getElementById("cadastroForm");
+const mostrarCadastro = document.getElementById("mostrarCadastro");
+const voltarLogin = document.getElementById("voltarLogin");
+const alterarSenha = document.getElementById("alterarSenha");
+
+function exibirCadastro(exibir){
+
+    loginForm.hidden = exibir;
+    cadastroForm.hidden = !exibir;
+
+}
+
+mostrarCadastro?.addEventListener("click", ()=> exibirCadastro(true));
+voltarLogin?.addEventListener("click", ()=> exibirCadastro(false));
+
+alterarSenha?.addEventListener("click", async()=>{
+
+    const email = document.getElementById("email").value.trim();
+    const mensagem = document.getElementById("mensagemLogin");
+
+    if(!email){
+        mensagem.style.color="#dc2626";
+        mensagem.textContent = "Informe seu e-mail para alterar a senha.";
+        document.getElementById("email").focus();
+        return;
+    }
+
+    try{
+
+        await sendPasswordResetEmail(auth, email);
+        mensagem.style.color="#16a34a";
+        mensagem.textContent =
+        "Enviamos um link para alterar sua senha.";
+
+    }
+    catch(error){
+
+        console.error("Erro ao solicitar alteração de senha:", error);
+        mensagem.style.color="#dc2626";
+        mensagem.textContent =
+        "Não foi possível enviar o link. Confira o e-mail informado.";
+
+    }
+
+});
+
+cadastroForm?.addEventListener("submit", async(evento)=>{
+
+    evento.preventDefault();
+
+    const nome = document.getElementById("nomeCadastro").value.trim();
+    const email = document.getElementById("emailCadastro").value.trim();
+    const senha = document.getElementById("senhaCadastro").value;
+    const confirmarSenha =
+    document.getElementById("confirmarSenhaCadastro").value;
+    const mensagem = document.getElementById("mensagemCadastro");
+
+    if(senha !== confirmarSenha){
+        mensagem.style.color="#dc2626";
+        mensagem.textContent = "As senhas precisam ser iguais.";
+        return;
+    }
+
+    let credencial;
+    let perfilCriado = false;
+
+    try{
+
+        credencial = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            senha
+        );
+
+        await setDoc(doc(db, "usuarios", credencial.user.uid), {
+            nome,
+            email,
+            perfil: "colaborador",
+            status: "pendente",
+            permissoes: {},
+            criadoEm: serverTimestamp()
+        });
+
+        perfilCriado = true;
+
+        await signOut(auth);
+
+        mensagem.style.color="#16a34a";
+        mensagem.textContent =
+        "Cadastro solicitado. Aguarde a liberação da equipe.";
+        cadastroForm.reset();
+
+    }
+    catch(error){
+
+        console.error("Erro no cadastro:", error);
+
+        if(credencial?.user && !perfilCriado){
+            await deleteUser(credencial.user).catch((erroLimpeza)=>{
+                console.error("Erro ao cancelar cadastro incompleto:", erroLimpeza);
+            });
+        }
+
+        mensagem.style.color="#dc2626";
+
+        mensagem.textContent = error.code === "auth/email-already-in-use"
+            ? "Este e-mail já possui cadastro."
+            : "Não foi possível concluir o cadastro. Tente novamente.";
+
+    }
+
+});
 
 
 // =======================================
