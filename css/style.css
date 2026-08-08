@@ -2,7 +2,7 @@
 
 
 /* ==========================================
-   FOODSYNCH / LOTRIX DESIGN SYSTEM 2026
+LOTRIX DESIGN SYSTEM 2026
 ========================================== */
 
 
@@ -38,6 +38,7 @@
 
     --radius-sm:10px;
 
+
     --shadow:
 
     0 10px 25px rgba(15,23,42,.08);
@@ -46,12 +47,16 @@
 
 
 
+
+
 /* ==========================================
 RESET
 ========================================== */
 
 
-*{
+*,
+*::before,
+*::after{
 
     margin:0;
 
@@ -62,21 +67,32 @@ RESET
 }
 
 
+
 html{
 
-    -webkit-text-size-adjust:100%;
+    width:100%;
+
+    min-height:100%;
 
     scroll-behavior:smooth;
+
+    -webkit-text-size-adjust:100%;
 
 }
 
 
 
+
 body{
+
+    width:100%;
 
     min-width:320px;
 
+    min-height:100vh;
+
     overflow-x:hidden;
+
 
     font-family:
 
@@ -132,33 +148,82 @@ button{
 
 
 
+
+
+
 /* ==========================================
-LAYOUT
+LAYOUT PRINCIPAL
+CORREÇÃO SIDEBAR + DASHBOARD
 ========================================== */
+
 
 
 .layout{
 
     display:flex;
 
+    width:100%;
+
     min-height:100vh;
+
+    position:relative;
 
 }
 
+
+
+
+
+/*
+A sidebar é fixa.
+O conteúdo precisa respeitar os 250px.
+*/
 
 
 .content{
 
     flex:1;
 
+    width:
+
+    calc(100% - 250px);
+
+
     margin-left:250px;
+
+
+    min-height:100vh;
 
 
     padding:
 
     32px 40px 50px;
 
+
+    box-sizing:border-box;
+
+
+    position:relative;
+
+
+    top:0;
+
 }
+
+
+
+
+
+.dashboard-page{
+
+    position:relative;
+
+    top:0;
+
+}
+
+
+
 
 
 
@@ -186,14 +251,12 @@ button,
     gap:8px;
 
 
-
     min-height:44px;
 
 
     padding:
 
     11px 18px;
-
 
 
     border:none;
@@ -204,15 +267,12 @@ button,
     var(--radius-sm);
 
 
-
     background:
 
     var(--primary);
 
 
-
     color:white;
-
 
 
     font-size:14px;
@@ -221,9 +281,7 @@ button,
     font-weight:600;
 
 
-
     transition:.25s;
-
 
 
     box-shadow:
@@ -235,6 +293,7 @@ button,
 
 
 
+
 button:hover,
 .button:hover,
 .btn-primary:hover{
@@ -243,7 +302,6 @@ button:hover,
     background:
 
     var(--primary-hover);
-
 
 
     transform:
@@ -274,6 +332,8 @@ button:disabled{
 
 
 
+
+
 /* BOTÃO SECUNDÁRIO */
 
 
@@ -288,14 +348,13 @@ button:disabled{
     var(--primary);
 
 
-
     border:
 
     1px solid #BFDBFE;
 
 
-
     box-shadow:none;
+
 
 }
 
@@ -310,6 +369,7 @@ button:disabled{
 
 
 
+
 /* BOTÃO PERIGO */
 
 
@@ -320,6 +380,7 @@ button:disabled{
 
     var(--danger);
 
+
 }
 
 
@@ -329,10 +390,8 @@ button:disabled{
 
     background:#B91C1C;
 
+
 }
-
-
-
 /* ==========================================
 INPUTS
 ========================================== */
@@ -346,9 +405,7 @@ textarea{
     width:100%;
 
 
-
     min-height:44px;
-
 
 
     padding:
@@ -356,11 +413,9 @@ textarea{
     10px 12px;
 
 
-
     border:
 
     1px solid var(--border-strong);
-
 
 
     border-radius:
@@ -368,11 +423,9 @@ textarea{
     var(--radius-sm);
 
 
-
     background:
 
     var(--surface);
-
 
 
     color:
@@ -392,11 +445,9 @@ textarea:focus{
     outline:none;
 
 
-
     border-color:
 
     var(--primary);
-
 
 
     box-shadow:
@@ -435,8 +486,15 @@ label{
 
 
 }
+
+
+
+
+
+
+
 /* ==========================================
-   BOXES PADRÃO
+BOXES PADRÃO
 ========================================== */
 
 
@@ -484,6 +542,7 @@ label{
 
 
 
+
 .form-box h2,
 .table-box h2,
 .dashboard-box h2{
@@ -510,8 +569,13 @@ label{
 
 
 
+
+
+
+
+
 /* ==========================================
-   CARDS GERAIS
+CARDS
 ========================================== */
 
 
@@ -567,8 +631,13 @@ label{
 
 
 
+
+
+
+
+
 /* ==========================================
-   TABELAS
+TABELAS
 ========================================== */
 
 
@@ -641,9 +710,7 @@ th{
 
 
 
-    color:
-
-    #475569;
+    color:#475569;
 
 
 }
@@ -659,9 +726,7 @@ td{
 
 
 
-    color:
-
-    #475569;
+    color:#475569;
 
 
 
@@ -696,8 +761,13 @@ tbody tr:hover{
 
 
 
+
+
+
+
+
 /* ==========================================
-   BADGES / STATUS
+BADGES
 ========================================== */
 
 
@@ -792,8 +862,13 @@ tbody tr:hover{
 
 
 
+
+
+
+
+
 /* ==========================================
-   MODAIS
+MODAIS
 ========================================== */
 
 
@@ -830,6 +905,7 @@ tbody tr:hover{
 
 
 }
+
 
 
 
@@ -876,8 +952,13 @@ tbody tr:hover{
 
 
 
+
+
+
+
+
 /* ==========================================
-   ANIMAÇÕES
+ANIMAÇÕES
 ========================================== */
 
 
@@ -898,6 +979,7 @@ tbody tr:hover{
     }
 
 
+
     to{
 
 
@@ -916,6 +998,7 @@ tbody tr:hover{
 
 
 
+
 .animar{
 
 
@@ -928,8 +1011,13 @@ tbody tr:hover{
 
 
 
+
+
+
+
+
 /* ==========================================
-   SCROLL
+SCROLL
 ========================================== */
 
 
@@ -984,11 +1072,8 @@ tbody tr:hover{
 
 
 }
-
-
-
 /* ==========================================
-   RESPONSIVIDADE
+RESPONSIVIDADE
 ========================================== */
 
 
@@ -1003,15 +1088,26 @@ tbody tr:hover{
         230px;
 
 
+        width:
+
+        calc(100% - 230px);
+
+
+
         padding:
 
         25px;
+
 
 
     }
 
 
 }
+
+
+
+
 
 
 
@@ -1026,15 +1122,28 @@ tbody tr:hover{
         80px;
 
 
+
+        width:
+
+        calc(100% - 80px);
+
+
+
         padding:
 
         24px;
 
 
+
     }
 
 
+
 }
+
+
+
+
 
 
 
@@ -1049,12 +1158,21 @@ tbody tr:hover{
         0;
 
 
+
+        width:
+
+        100%;
+
+
+
         padding:
 
         16px 16px 90px;
 
 
+
     }
+
 
 
 
@@ -1068,12 +1186,14 @@ tbody tr:hover{
         18px;
 
 
+
         border-radius:
 
         12px;
 
 
     }
+
 
 
 
@@ -1084,6 +1204,7 @@ tbody tr:hover{
         width:
 
         100%;
+
 
 
         max-width:
@@ -1107,7 +1228,9 @@ tbody tr:hover{
         16px 16px 0 0;
 
 
+
     }
+
 
 
 
@@ -1124,8 +1247,17 @@ tbody tr:hover{
 
 
 }
+
+
+
+
+
+
+
+
+
 /* ==========================================
-   DARK MODE LOTRIX AZUL ROYAL
+DARK MODE LOTRIX
 ========================================== */
 
 
@@ -1160,9 +1292,6 @@ tbody tr:hover{
     --primary-hover:#3B82F6;
 
 
-    --primary-dark:#1D4ED8;
-
-
 
     --shadow:
 
@@ -1173,7 +1302,7 @@ tbody tr:hover{
 
 
 
-/* BODY DARK */
+
 
 
 [data-theme="dark"] body{
@@ -1193,7 +1322,6 @@ tbody tr:hover{
 
 
 
-/* BOXES DARK */
 
 
 [data-theme="dark"] .card,
@@ -1225,112 +1353,13 @@ tbody tr:hover{
 
 
 
-/* INPUT DARK */
 
 
-[data-theme="dark"] input,
-[data-theme="dark"] select,
-[data-theme="dark"] textarea{
-
-
-    background:
-
-    #0F172A;
-
-
-    color:
-
-    #F8FAFC;
-
-
-    border-color:
-
-    #475569;
-
-
-}
-
-
-
-[data-theme="dark"] input:focus,
-[data-theme="dark"] select:focus,
-[data-theme="dark"] textarea:focus{
-
-
-    border-color:
-
-    #2563EB;
-
-
-
-    box-shadow:
-
-    0 0 0 4px rgba(37,99,235,.25);
-
-
-}
-
-
-
-/* TABELAS DARK */
-
-
-[data-theme="dark"] thead{
-
-
-    background:
-
-    #1E293B;
-
-
-}
-
-
-
-[data-theme="dark"] th{
-
-
-    color:
-
-    #BFDBFE;
-
-
-}
-
-
-
-[data-theme="dark"] td{
-
-
-    color:
-
-    #CBD5E1;
-
-
-
-    border-color:
-
-    #334155;
-
-
-}
-
-
-
-[data-theme="dark"] tbody tr:hover{
-
-
-    background:
-
-    #172554;
-
-
-}
 
 
 
 /* ==========================================
-   IA LOTRIX
+IA LOTRIX
 ========================================== */
 
 
@@ -1374,6 +1403,8 @@ tbody tr:hover{
 
 
 
+
+
 .ia-box h2{
 
 
@@ -1398,6 +1429,8 @@ tbody tr:hover{
 
 
 
+
+
 .ia-box p{
 
 
@@ -1410,6 +1443,8 @@ tbody tr:hover{
 
 
 
+
+
 #mensagemIA{
 
 
@@ -1419,6 +1454,8 @@ tbody tr:hover{
 
 
 }
+
+
 
 
 
@@ -1464,15 +1501,19 @@ tbody tr:hover{
 
 
 
-.pergunta-rapida,
+
+
+
 .ia-botoes,
-.ia-acoes{
+.ia-acoes,
+.pergunta-rapida{
 
 
     display:flex;
 
 
     flex-wrap:wrap;
+
 
 
     gap:
@@ -1487,6 +1528,8 @@ tbody tr:hover{
 
 
 }
+
+
 
 
 
@@ -1519,11 +1562,8 @@ tbody tr:hover{
     10px 15px;
 
 
-
-    transition:.2s;
-
-
 }
+
 
 
 
@@ -1546,7 +1586,11 @@ tbody tr:hover{
 
 
 
-/* RESPOSTA IA NOVA */
+
+
+
+
+/* RESPOSTA IA */
 
 
 .ia-resposta{
@@ -1593,191 +1637,16 @@ tbody tr:hover{
     var(--shadow);
 
 
-
-    animation:
-
-    fadeIA .25s ease;
-
-
 }
 
 
 
-.ia-titulo{
 
-
-    color:
-
-    var(--primary);
-
-
-
-    font-size:
-
-    18px;
-
-
-
-    font-weight:
-
-    700;
-
-
-
-    margin-bottom:
-
-    12px;
-
-
-}
-
-
-
-.ia-texto{
-
-
-    color:
-
-    var(--text);
-
-
-
-    line-height:
-
-    1.7;
-
-
-
-    white-space:
-
-    pre-wrap;
-
-
-}
-
-
-
-@keyframes fadeIA{
-
-
-    from{
-
-
-        opacity:0;
-
-
-        transform:
-
-        translateY(10px);
-
-
-    }
-
-
-    to{
-
-
-        opacity:1;
-
-
-        transform:
-
-        translateY(0);
-
-
-    }
-
-
-}
-
-
-
-/* IA DARK */
-
-
-[data-theme="dark"] .ia-box{
-
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #172554,
-        #111827
-    );
-
-
-
-    border-color:
-
-    #2563EB;
-
-
-}
-
-
-
-[data-theme="dark"] .ia-box h2,
-[data-theme="dark"] .ia-titulo{
-
-
-    color:
-
-    #60A5FA;
-
-
-}
-
-
-
-[data-theme="dark"] #respostaIA{
-
-
-    background:
-
-    #0F172A;
-
-
-    color:white;
-
-
-}
 
 
 
 /* ==========================================
-   ACESSIBILIDADE
-========================================== */
-
-
-@media(prefers-reduced-motion:reduce){
-
-
-    *,
-    *::before,
-    *::after{
-
-
-        animation-duration:
-
-        .01ms !important;
-
-
-
-        transition-duration:
-
-        .01ms !important;
-
-
-    }
-
-
-}
-
-
-
-/* ==========================================
-   UTILITÁRIOS
+UTILITÁRIOS
 ========================================== */
 
 
@@ -1859,11 +1728,43 @@ tbody tr:hover{
 
 .center{
 
-
     align-items:center;
-
 
     justify-content:center;
 
+}
+
+
+
+
+
+
+
+
+/* ==========================================
+CORREÇÃO FINAL DASHBOARD
+EVITA DESLOCAMENTO VERTICAL
+========================================== */
+
+
+.layout,
+.sidebar,
+.content{
+
+
+    transform:none !important;
+
 
 }
+
+
+.dashboard-page{
+
+
+    top:
+
+    0 !important;
+
+
+}
+

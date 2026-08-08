@@ -14,13 +14,6 @@
 }
 
 
-/* HEADER */
-
-.dashboard-header{
-
-    align-items:flex-end;
-
-}
 
 
 .header-kicker,
@@ -443,7 +436,18 @@
 
 .chart-wrap{
 
-    height:260px;
+    height:300px;
+
+    position:relative;
+
+}
+
+
+.chart-wrap canvas{
+
+    width:100% !important;
+
+    height:100% !important;
 
 }
 /* ==========================================
@@ -1033,6 +1037,9 @@
    DARK MODE LOTRIX DASHBOARD
 ========================================== */
 
+
+/* PAINÉIS E CARDS */
+
 [data-theme="dark"] .dashboard-panel,
 [data-theme="dark"] .metric-card{
 
@@ -1059,7 +1066,10 @@
 }
 
 
-/* Ícones */
+/* ==========================================
+   ÍCONES
+========================================== */
+
 
 [data-theme="dark"] .metric-icon.success{
 
@@ -1098,7 +1108,10 @@
 
 
 
-/* Atividades */
+/* ==========================================
+   ATIVIDADES
+========================================== */
+
 
 [data-theme="dark"] .activity-item,
 [data-theme="dark"] .attention-item{
@@ -1134,7 +1147,10 @@
 
 
 
-/* Ranking */
+/* ==========================================
+   RANKING
+========================================== */
+
 
 [data-theme="dark"] .rank-number{
 
@@ -1160,9 +1176,13 @@
 
 
 
-/* IA */
+/* ==========================================
+   LOTRIX AI
+========================================== */
 
-[data-theme="dark"] .ia-resposta{
+
+[data-theme="dark"] .ia-resposta,
+[data-theme="dark"] #respostaIA{
 
     background:#111827;
 
@@ -1191,6 +1211,13 @@
 }
 
 
+[data-theme="dark"] #mensagemIA::placeholder{
+
+    color:#94A3B8;
+
+}
+
+
 [data-theme="dark"] #mensagemIA:focus{
 
     border-color:#60A5FA;
@@ -1202,6 +1229,65 @@
 }
 
 
+
+/* BOTÕES IA */
+
+[data-theme="dark"] .ia-acoes button,
+[data-theme="dark"] .ia-botoes button{
+
+    background:#2563EB;
+
+    color:white;
+
+}
+
+
+[data-theme="dark"] .ia-acoes button:hover,
+[data-theme="dark"] .ia-botoes button:hover{
+
+    background:#1D4ED8;
+
+}
+
+
+
+/* ==========================================
+   GRÁFICO
+========================================== */
+
+
+[data-theme="dark"] .chart-wrap{
+
+    background:#111827;
+
+    border-radius:12px;
+
+}
+
+
+
+/* ==========================================
+   SKELETON LOADING
+========================================== */
+
+
+[data-theme="dark"] .skeleton-row,
+[data-theme="dark"] .metric-card.is-loading strong,
+[data-theme="dark"] .metric-card.is-loading p,
+[data-theme="dark"] .metric-card.is-loading small{
+
+    background:
+
+    linear-gradient(
+        90deg,
+        #1E293B 25%,
+        #334155 50%,
+        #1E293B 75%
+    );
+
+    background-size:200% 100%;
+
+}
 
 /* ==========================================
    TABLET
@@ -1582,3 +1668,5 @@ svg{
     pointer-events:none;
 
 }
+
+

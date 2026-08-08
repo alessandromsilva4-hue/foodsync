@@ -1,27 +1,27 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
+    <title>Lotrix — Estoque</title>
 
-<title>Lotrix - Estoque</title>
+    <link rel="icon"
+          href="img/favicon.png">
 
+    <link rel="stylesheet"
+          href="css/style.css">
 
-<link rel="icon" href="img/favicon.png">
+    <link rel="stylesheet"
+          href="css/sidebar.css">
 
-
-<link rel="stylesheet" href="css/style.css">
-
-<link rel="stylesheet" href="css/sidebar.css">
-
-<link rel="stylesheet" href="css/formulario.css">
-
-<link rel="stylesheet" href="css/tabela.css">
-
+    <link rel="stylesheet"
+          href="css/estoque.css">
 
 </head>
 
@@ -32,575 +32,799 @@
 <div class="layout">
 
 
+    <!-- ==========================================
+         SIDEBAR
+    =========================================== -->
 
-<aside class="sidebar">
+    <aside class="sidebar">
 
-    <div class="logo-area">
-        <img src="img/logo.jpg" alt="Lotrix">
-        <h2>LOTRIX</h2>
-        <small>Food Safety Platform</small>
-    </div>
 
-    <nav class="menu">
+        <div class="logo-area">
 
-        <div class="menu-section">
-            <span class="menu-title">GERAL</span>
+            <img
+                src="img/logo.jpg"
+                alt="Lotrix">
 
-            <a href="dashboard.html" class="active">
-                <span>🏠</span>
-                <span class="nav-label">Dashboard</span>
-            </a>
+            <h2>LOTRIX</h2>
+
+            <small>
+                Food Safety Platform
+            </small>
+
         </div>
 
-        <div class="menu-section">
-            <span class="menu-title">OPERAÇÃO</span>
 
-            <a href="producao.html">
-                <span>⚙️</span>
-                <span class="nav-label">Produção</span>
-            </a>
+        <nav class="menu">
 
-            <a href="produtos.html">
-                <span>📦</span>
-                <span class="nav-label">Produtos</span>
-            </a>
 
-            <a href="etiquetas.html">
-                <span>🏷️</span>
-                <span class="nav-label">Etiquetas</span>
-            </a>
+            <div class="menu-section">
 
-            <a href="estoque.html">
-                <span>📚</span>
-                <span class="nav-label">Estoque</span>
-            </a>
+                <span class="menu-title">
+                    GERAL
+                </span>
+
+
+                <a href="dashboard.html">
+
+                    <span>🏠</span>
+
+                    <span class="nav-label">
+                        Dashboard
+                    </span>
+
+                </a>
+
+            </div>
+
+
+
+            <div class="menu-section">
+
+                <span class="menu-title">
+                    OPERAÇÃO
+                </span>
+
+
+                <a href="producao.html">
+
+                    <span>⚙️</span>
+
+                    <span class="nav-label">
+                        Produção
+                    </span>
+
+                </a>
+
+
+                <a href="produtos.html">
+
+                    <span>📦</span>
+
+                    <span class="nav-label">
+                        Produtos
+                    </span>
+
+                </a>
+
+
+                <a href="etiquetas.html">
+
+                    <span>🏷️</span>
+
+                    <span class="nav-label">
+                        Etiquetas
+                    </span>
+
+                </a>
+
+
+                <a href="estoque.html"
+                   class="active">
+
+                    <span>📚</span>
+
+                    <span class="nav-label">
+                        Estoque
+                    </span>
+
+                </a>
+
+            </div>
+
+
+
+            <div class="menu-section">
+
+                <span class="menu-title">
+                    GESTÃO
+                </span>
+
+
+                <a href="relatorios.html">
+
+                    <span>📈</span>
+
+                    <span class="nav-label">
+                        Relatórios
+                    </span>
+
+                </a>
+
+
+                <a href="auditoria.html">
+
+                    <span>📝</span>
+
+                    <span class="nav-label">
+                        Auditoria
+                    </span>
+
+                </a>
+
+
+                <a href="usuario.html">
+
+                    <span>👥</span>
+
+                    <span class="nav-label">
+                        Usuários
+                    </span>
+
+                </a>
+
+            </div>
+
+
+
+            <div class="menu-section">
+
+                <span class="menu-title">
+                    SISTEMA
+                </span>
+
+
+                <a href="configuracoes.html">
+
+                    <span>⚙️</span>
+
+                    <span class="nav-label">
+                        Configurações
+                    </span>
+
+                </a>
+
+
+                <a href="ajuda.html">
+
+                    <span>❓</span>
+
+                    <span class="nav-label">
+                        Ajuda
+                    </span>
+
+                </a>
+
+
+                <a href="sac.html">
+
+                    <span>🎧</span>
+
+                    <span class="nav-label">
+                        SAC
+                    </span>
+
+                </a>
+
+            </div>
+
+
+        </nav>
+
+
+        <!-- USUÁRIO -->
+
+        <div class="sidebar-user">
+
+            <div class="avatar">
+                👤
+            </div>
+
+
+            <div>
+
+                <strong id="nomeUsuarioLogado">
+                    Usuário
+                </strong>
+
+
+                <small id="perfilUsuarioLogado">
+                    Carregando...
+                </small>
+
+            </div>
+
         </div>
 
-        <div class="menu-section">
-            <span class="menu-title">GESTÃO</span>
 
-            <a href="relatorios.html">
-                <span>📈</span>
-                <span class="nav-label">Relatórios</span>
-            </a>
+    </aside>
 
-            <a href="auditoria.html">
-                <span>📝</span>
-                <span class="nav-label">Auditoria</span>
-            </a>
 
-            <a href="usuario.html">
-                <span>👥</span>
-                <span class="nav-label">Usuários</span>
-            </a>
+
+    <!-- ==========================================
+         CONTEÚDO
+    =========================================== -->
+
+    <main class="content">
+
+
+        <div class="estoque-page">
+
+
+            <!-- CABEÇALHO -->
+
+            <header class="dashboard-header">
+
+
+                <div>
+
+                    <span class="header-kicker">
+                        OPERAÇÃO
+                    </span>
+
+
+                    <h1>
+                        Controle de Estoque
+                    </h1>
+
+
+                    <p>
+                        Gerencie os produtos, quantidades
+                        e movimentações do estoque.
+                    </p>
+
+                </div>
+
+
+            </header>
+
+
+
+            <!-- ==========================================
+                 CADASTRO DE ESTOQUE
+            =========================================== -->
+
+            <section class="dashboard-panel">
+
+
+                <div class="panel-heading">
+
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            ESTOQUE
+                        </span>
+
+
+                        <h2>
+                            Cadastrar estoque
+                        </h2>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <form
+                    id="estoqueForm">
+
+
+                    <!-- PRODUTO -->
+
+                    <div class="campo">
+
+                        <label for="produtoEstoque">
+                            Produto
+                        </label>
+
+
+                        <select
+                            id="produtoEstoque"
+                            required>
+
+                            <option value="">
+                                Selecione um produto
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- QUANTIDADE -->
+
+                    <div class="campo">
+
+                        <label for="quantidadeEstoque">
+                            Quantidade atual
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="quantidadeEstoque"
+                            value="0"
+                            min="0"
+                            step="0.01"
+                            required>
+
+                    </div>
+
+
+
+                    <!-- MÍNIMO -->
+
+                    <div class="campo">
+
+                        <label for="estoqueMinimo">
+                            Estoque mínimo
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="estoqueMinimo"
+                            value="0"
+                            min="0"
+                            step="0.01">
+
+                    </div>
+
+
+
+                    <!-- MÁXIMO -->
+
+                    <div class="campo">
+
+                        <label for="estoqueMaximo">
+                            Estoque máximo
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="estoqueMaximo"
+                            value="0"
+                            min="0"
+                            step="0.01">
+
+                    </div>
+
+
+
+                    <button
+                        type="submit">
+
+                        💾
+                        Salvar Estoque
+
+                    </button>
+
+
+                </form>
+
+
+            </section>
+
+
+
+            <!-- ==========================================
+                 ESTOQUE ATUAL
+            =========================================== -->
+
+            <section class="dashboard-panel">
+
+
+                <div class="panel-heading">
+
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            INVENTÁRIO
+                        </span>
+
+
+                        <h2>
+                            Estoque atual
+                        </h2>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div
+                    style="
+                        width:100%;
+                        overflow-x:auto;
+                    ">
+
+
+                    <table
+                        style="
+                            width:100%;
+                            border-collapse:collapse;
+                        ">
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Produto
+                                </th>
+
+                                <th>
+                                    Quantidade
+                                </th>
+
+                                <th>
+                                    Unidade
+                                </th>
+
+                                <th>
+                                    Mínimo
+                                </th>
+
+                                <th>
+                                    Máximo
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Ação
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="listaEstoque">
+
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    style="
+                                        padding:30px;
+                                        text-align:center;
+                                    ">
+
+                                    Carregando estoque...
+
+                                </td>
+
+                            </tr>
+
+
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- ==========================================
+                 MOVIMENTAÇÃO
+            =========================================== -->
+
+            <section class="dashboard-panel">
+
+
+                <div class="panel-heading">
+
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            MOVIMENTAÇÃO
+                        </span>
+
+
+                        <h2>
+                            Registrar movimentação
+                        </h2>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <form
+                    id="movimentacaoForm">
+
+
+                    <!-- PRODUTO -->
+
+                    <div class="campo">
+
+                        <label
+                            for="produtoMovimentacao">
+
+                            Produto
+
+                        </label>
+
+
+                        <select
+                            id="produtoMovimentacao"
+                            required>
+
+                            <option value="">
+                                Selecione um produto
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- TIPO -->
+
+                    <div class="campo">
+
+                        <label
+                            for="tipoMovimentacao">
+
+                            Tipo
+
+                        </label>
+
+
+                        <select
+                            id="tipoMovimentacao"
+                            required>
+
+                            <option value="ENTRADA">
+                                Entrada
+                            </option>
+
+                            <option value="SAIDA">
+                                Saída
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- QUANTIDADE -->
+
+                    <div class="campo">
+
+                        <label
+                            for="quantidadeMovimentacao">
+
+                            Quantidade
+
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="quantidadeMovimentacao"
+                            value="1"
+                            min="1"
+                            step="0.01"
+                            required>
+
+                    </div>
+
+
+
+                    <!-- MOTIVO -->
+
+                    <div class="campo">
+
+                        <label
+                            for="motivoMovimentacao">
+
+                            Motivo
+
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="motivoMovimentacao"
+                            placeholder="Ex: Compra, Produção, Perda">
+
+                    </div>
+
+
+
+                    <button
+                        type="submit">
+
+                        ↕️
+                        Registrar Movimentação
+
+                    </button>
+
+
+                </form>
+
+
+            </section>
+
+
+
+            <!-- ==========================================
+                 HISTÓRICO DE MOVIMENTAÇÕES
+            =========================================== -->
+
+            <section class="dashboard-panel">
+
+
+                <div class="panel-heading">
+
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            HISTÓRICO
+                        </span>
+
+
+                        <h2>
+                            Movimentações recentes
+                        </h2>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div
+                    style="
+                        width:100%;
+                        overflow-x:auto;
+                    ">
+
+
+                    <table
+                        style="
+                            width:100%;
+                            border-collapse:collapse;
+                        ">
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Produto
+                                </th>
+
+                                <th>
+                                    Tipo
+                                </th>
+
+                                <th>
+                                    Quantidade
+                                </th>
+
+                                <th>
+                                    Motivo
+                                </th>
+
+                                <th>
+                                    Data
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="listaMovimentacoes">
+
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    style="
+                                        padding:30px;
+                                        text-align:center;
+                                    ">
+
+                                    Carregando movimentações...
+
+                                </td>
+
+                            </tr>
+
+
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+
+
+            </section>
+
+
         </div>
 
-        <div class="menu-section">
-            <span class="menu-title">SISTEMA</span>
 
-            <a href="configuracoes.html">
-                <span>⚙️</span>
-                <span class="nav-label">Configurações</span>
-            </a>
-
-            <a href="ajuda.html">
-                <span>❓</span>
-                <span class="nav-label">Ajuda</span>
-            </a>
-
-            <a href="sac.html">
-                <span>🎧</span>
-                <span class="nav-label">SAC</span>
-            </a>
-        </div>
-
-    </nav>
-
-   <div class="user-card">
-
-    <div class="avatar">
-        👤
-    </div>
-
-    <div>
-        <strong id="nomeUsuarioLogado">
-            Usuário
-        </strong>
-
-        <small id="perfilUsuarioLogado">
-            Carregando...
-        </small>
-    </div>
-
-</div>
-        <button onclick="logout()">
-            🚪 Sair
-        </button>
-
-    </div>
-
-</aside>
-
-
-
-
-
-
-<main class="content">
-
-
-
-<header class="top-header">
-
-
-<div>
-
-
-<h1>
-Estoque
-</h1>
-
-
-<p>
-Controle de estoque mínimo e máximo
-</p>
-
-
-</div>
-
-
-</header>
-
-
-
-
-
-
-
-<section class="form-box">
-
-
-<h2>
-Cadastro de Estoque
-</h2>
-
-
-
-
-<form id="estoqueForm">
-
-
-
-<div class="form-grid">
-
-
-
-
-
-<div class="input-group">
-
-<label>
-Produto
-</label>
-
-
-<select id="produtoEstoque">
-
-
-<option>
-Carregando produtos...
-</option>
-
-
-</select>
+    </main>
 
 
 </div>
 
 
 
+<!-- ==========================================
+     JAVASCRIPT
+=========================================== -->
 
 
+<script
+    type="module"
+    src="js/firebase.js">
+</script>
 
-<div class="input-group">
 
+<script
+    type="module"
+    src="js/auth.js">
+</script>
 
-<label>
-Estoque Atual
-</label>
 
+<script
+    type="module"
+    src="js/estoque.js">
+</script>
 
-<input
 
-type="number"
-
-id="quantidadeEstoque"
-
-value="0"
-
-required>
-
-
-</div>
-
-
-
-
-
-
-<div class="input-group">
-
-
-<label>
-Estoque Mínimo
-</label>
-
-
-<input
-
-type="number"
-
-id="estoqueMinimo"
-
-value="0">
-
-
-</div>
-
-
-
-
-
-
-<div class="input-group">
-
-
-<label>
-Estoque Máximo
-</label>
-
-
-<input
-
-type="number"
-
-id="estoqueMaximo"
-
-value="0">
-
-
-</div>
-
-
-
-
-
-</div>
-
-
-
-
-
-
-<button type="submit">
-
-Salvar Estoque
-
-</button>
-
-
-
-
-</form>
-
-
-
-</section>
-
-
-
-
-<section class="form-box">
-
-<h2>
-Movimentação de Estoque
-</h2>
-
-
-<form id="movimentacaoForm">
-
-
-<div class="form-grid">
-
-
-<div class="input-group">
-
-<label>
-Produto
-</label>
-
-
-<select id="produtoMovimentacao">
-
-<option>
-Selecione o produto
-</option>
-
-</select>
-
-</div>
-
-
-
-
-<div class="input-group">
-
-<label>
-Tipo
-</label>
-
-
-<select id="tipoMovimentacao">
-
-<option value="ENTRADA">
-📥 Entrada
-</option>
-
-
-<option value="SAIDA">
-📤 Saída
-</option>
-
-
-</select>
-
-</div>
-
-
-
-
-
-<div class="input-group">
-
-<label>
-Quantidade
-</label>
-
-
-<input
-
-type="number"
-
-id="quantidadeMovimentacao"
-
-value="1"
-
-min="1">
-
-</div>
-
-
-
-
-
-<div class="input-group">
-
-<label>
-Motivo
-</label>
-
-
-<input
-
-type="text"
-
-id="motivoMovimentacao"
-
-placeholder="Ex: Compra, Produção, Perda">
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-<button type="submit">
-
-Registrar Movimentação
-
-</button>
-
-
-
-</form>
-
-
-</section>
-
-
-
-<section class="table-box">
-
-
-<h2>
-Controle de Estoque
-</h2>
-
-
-
-
-<table>
-
-
-<thead>
-
-
-<tr>
-
-<th>Produto</th>
-<th>Atual</th>
-<th>Unidade</th>
-<th>Mínimo</th>
-<th>Máximo</th>
-<th>Situação</th>
-<th>Ação</th>
-
-</tr>
-
-
-</thead>
-
-
-
-
-<tbody id="listaEstoque">
-
-
-<tr>
-
-
-<td colspan="7">
-
-Nenhum estoque cadastrado
-
-</td>
-
-
-</tr>
-
-
-</tbody>
-
-
-
-
-</table>
-
-
-
-
-</section>
-
-
-
-
-
-
-
-
-<section class="table-box">
-
-
-<h2>
-Histórico de Movimentações
-</h2>
-
-
-
-
-<table>
-
-
-<thead>
-
-
-<tr>
-
-
-<th>Produto</th>
-<th>Tipo</th>
-<th>Quantidade</th>
-<th>Motivo</th>
-<th>Usuário</th>
-<th>Data</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-
-<tbody id="listaMovimentacoes">
-
-
-<tr>
-
-
-<td colspan="6">
-
-Nenhuma movimentação
-
-</td>
-
-
-</tr>
-
-
-</tbody>
-
-
-
-
-</table>
-
-
-
-
-</section>
-
-
-
-
-
-
-
-</main>
-
-
-</div>
-
-
-
-
-
-
-<script type="module" src="js/firebase.js"></script>
-
-<script type="module" src="js/app.js"></script>
-
-<script type="module" src="js/estoque.js"></script>
-
-<script type="module" src="js/auth.js"></script>
-
+<script
+    type="module"
+    src="js/app.js">
+</script>
 
 
 </body>
 
 </html>
+```
