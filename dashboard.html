@@ -729,101 +729,104 @@
 
 
         <!-- ========================= -->
-        <!-- ASSISTENTE IA -->
-        <!-- ========================= -->
+<!-- ASSISTENTE IA -->
+<!-- ========================= -->
 
-        <article class="dashboard-panel panel-wide ia-panel">
+<article class="dashboard-panel panel-wide ia-panel">
+
+    <div class="panel-heading">
+
+        <div>
+
+            <p class="panel-eyebrow">
+                Inteligência operacional
+            </p>
+
+            <h2>
+                Assistente IA
+            </h2>
+
+        </div>
+
+        <span class="panel-badge">
+            ● Online
+        </span>
+
+    </div>
 
 
-            <div class="panel-heading">
+    <div class="ia-container">
 
 
-                <div>
+        <!-- MENSAGENS -->
 
-                    <p class="panel-eyebrow">
-                        Inteligência operacional
-                    </p>
-
-
-                    <h2>
-                        Assistente IA
-                    </h2>
+        <div
+            class="ia-messages"
+            id="iaMensagens">
 
 
+            <div class="ia-message ia-message-bot">
+
+
+                <div class="ia-avatar">
+                    🤖
                 </div>
 
 
-                <span class="panel-badge">
-                    ● Online
-                </span>
+                <div class="ia-bubble">
+
+                    <strong>
+                        Olá, Alessandro! 👋
+                    </strong>
 
 
-            </div>
+                    <p>
+                        Sou a IA da Lotrix.
+                        Posso ajudar você com estoque,
+                        produções, etiquetas e informações
+                        operacionais.
+                    </p>
 
 
+                    <!-- PERGUNTAS RÁPIDAS -->
 
-            <div class="ia-container">
-
-
-                <div
-                    class="ia-messages"
-                    id="iaMensagens">
+                    <div class="ia-suggestions">
 
 
-                    <div class="ia-message ia-message-bot">
+                        <button
+                            type="button"
+                            onclick="perguntaRapida('Qual o estoque atual dos produtos?')">
+
+                            📦 Consultar estoque
+
+                        </button>
 
 
-                        <div class="ia-avatar">
-                            🤖
-                        </div>
+                        <button
+                            type="button"
+                            onclick="perguntaRapida('Quais produtos estão próximos do vencimento?')">
+
+                            ⚠️ Ver vencimentos
+
+                        </button>
 
 
-                        <div class="ia-bubble">
+                        <button
+                            type="button"
+                            onclick="perguntaRapida('Quais foram as últimas produções?')">
 
-                            <strong>
-                                Olá, Alessandro! 👋
-                            </strong>
+                            ⚙️ Últimas produções
 
-                            <p>
-                                Sou a IA da Lotrix.
-                                Posso ajudar você com estoque,
-                                produções, etiquetas e informações
-                                operacionais.
-                            </p>
-
-                            <div class="ia-suggestions">
+                        </button>
 
 
-                                <button
-                                    type="button"
-                                    onclick="perguntarIA('Qual o estoque atual dos produtos?')">
+                        <button
+                            type="button"
+                            onclick="perguntaRapida('Faça um resumo da operação.')">
 
-                                    📦 Consultar estoque
+                            📊 Resumo
 
-                                </button>
-
-
-                                <button
-                                    type="button"
-                                    onclick="perguntarIA('Quais produtos estão próximos do vencimento?')">
-
-                                    ⚠️ Ver vencimentos
-
-                                </button>
-
-
-                                <button
-                                    type="button"
-                                    onclick="perguntarIA('Quais foram as últimas produções?')">
-
-                                    ⚙️ Últimas produções
-
-                                </button>
-
-
-                            </div>
-
-                        </div>
+                        </button>
 
 
                     </div>
@@ -832,38 +835,53 @@
                 </div>
 
 
-
-                <form
-                    id="iaForm"
-                    class="ia-form">
-
-
-                    <input
-                        type="text"
-                        id="iaInput"
-                        placeholder="Pergunte algo para a IA..."
-                        autocomplete="off"
-                    >
-
-
-                    <button
-                        type="submit"
-                        id="iaEnviar">
-
-                        <i data-lucide="send"></i>
-
-                        Enviar
-
-                    </button>
-
-
-                </form>
-
-
             </div>
 
 
-        </article>
+        </div>
+
+
+
+        <!-- RESPOSTA -->
+
+        <div id="respostaIA"></div>
+
+
+
+        <!-- CAMPO DA IA -->
+
+        <form
+            id="iaForm"
+            class="ia-form"
+            onsubmit="event.preventDefault(); perguntarIA();">
+
+
+            <input
+                type="text"
+                id="mensagemIA"
+                placeholder="Pergunte algo para a IA..."
+                autocomplete="off"
+            >
+
+
+            <button
+                type="submit"
+                id="iaEnviar">
+
+                <i data-lucide="send"></i>
+
+                Enviar
+
+            </button>
+
+
+        </form>
+
+
+    </div>
+
+
+</article>
 
 
     </section>
@@ -885,13 +903,15 @@
     }
 </script>
 
+<!-- AUTENTICAÇÃO / USUÁRIO -->
+<script type="module" src="js/auth.js"></script>
 
+<!-- DASHBOARD -->
 <script type="module" src="js/dashboard.js"></script>
 
+<!-- INTELIGÊNCIA ARTIFICIAL -->
 <script src="js/ia.js"></script>
 
-
 </body>
-
 </html>
 ```

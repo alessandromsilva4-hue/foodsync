@@ -1,397 +1,725 @@
 /* ==========================================
-   ENGENHO - ETIQUETAS
-   Zebra ZD220 - 60x60mm
+   LOTRIX — ETIQUETAS
+   Tela + Impressão Zebra ZD220
+   Etiqueta: 60 x 60 mm
 ========================================== */
-
-
-@page {
-
-    size:60mm 60mm;
-
-    margin:0;
-
-}
-
-
-
-html,
-body {
-
-    width:60mm;
-    height:60mm;
-
-    margin:0;
-    padding:0;
-
-    font-family:Arial, Helvetica, sans-serif;
-
-}
-
 
 
 /* ==========================================
-   ETIQUETA
+   CONFIGURAÇÃO GERAL DA TELA
 ========================================== */
 
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+
+/* ==========================================
+   PÁGINA DE ETIQUETAS
+========================================== */
+
+.etiquetas-page {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-bottom: 40px;
+}
+
+
+/* ==========================================
+   CABEÇALHO
+========================================== */
+
+.etiquetas-page .dashboard-header {
+    width: 100%;
+    margin-bottom: 28px;
+}
+
+
+/* ==========================================
+   ÁREA PRINCIPAL
+========================================== */
+
+.etiquetas-grid {
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(360px, 1fr)
+        minmax(300px, 420px);
+
+    gap: 24px;
+
+    align-items: start;
+}
+
+
+/* ==========================================
+   PAINÉIS
+========================================== */
+
+.etiquetas-page .dashboard-panel {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+}
+
+
+/* ==========================================
+   FORMULÁRIO
+========================================== */
+
+.etiquetas-form {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+
+    width: 100%;
+}
+
+
+.etiquetas-form .campo {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+    min-width: 0;
+}
+
+
+.etiquetas-form .campo-full {
+
+    grid-column: 1 / -1;
+}
+
+
+.etiquetas-form label {
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    color: #475569;
+}
+
+
+.etiquetas-form input,
+.etiquetas-form select {
+
+    width: 100%;
+
+    min-height: 44px;
+
+    padding: 10px 12px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #0f172a;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+
+.etiquetas-form input:focus,
+.etiquetas-form select:focus {
+
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, .12);
+}
+
+
+/* ==========================================
+   BOTÕES
+========================================== */
+
+.etiquetas-form button {
+
+    grid-column: 1 / -1;
+
+    min-height: 44px;
+
+    border: 0;
+
+    border-radius: 9px;
+
+    padding: 11px 18px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform .15s ease,
+        opacity .15s ease,
+        box-shadow .15s ease;
+}
+
+
+.etiquetas-form button:hover {
+
+    opacity: .94;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 18px
+        rgba(37, 99, 235, .18);
+}
+
+
+/* ==========================================
+   PRÉ-VISUALIZAÇÃO
+========================================== */
+
+.etiqueta-preview {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: flex-start;
+
+    width: 100%;
+}
+
+
+.etiqueta-preview-area {
+
+    width: 100%;
+
+    min-height: 380px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+
+    border-radius: 12px;
+
+    background:
+        #f1f5f9;
+
+    border: 1px dashed #cbd5e1;
+
+    overflow: auto;
+}
+
+
+/* ==========================================
+   ETIQUETA NA PRÉ-VISUALIZAÇÃO
+========================================== */
 
 .etiqueta {
 
-    width:60mm;
-    height:60mm;
+    width: 60mm;
 
-    box-sizing:border-box;
+    height: 60mm;
 
-    padding:2mm;
+    min-width: 60mm;
 
-    display:flex;
+    min-height: 60mm;
 
-    flex-direction:column;
+    box-sizing: border-box;
 
-    align-items:center;
+    padding: 2mm;
 
-    overflow:hidden;
+    display: flex;
 
-    background:white;
+    flex-direction: column;
 
-    color:#000;
+    align-items: center;
 
+    overflow: hidden;
+
+    background: white;
+
+    color: #000;
+
+    border: 1px solid #cbd5e1;
+
+    box-shadow:
+        0 8px 24px
+        rgba(15, 23, 42, .16);
+
+    transform-origin: center center;
 }
-
 
 
 /* ==========================================
    EMPRESA
 ========================================== */
 
-
 .empresa-etiqueta {
 
-    text-align:center;
+    text-align: center;
 
-    width:100%;
+    width: 100%;
 
-    margin-bottom:1mm;
-
+    margin-bottom: 1mm;
 }
-
 
 
 .empresa-etiqueta h2 {
 
+    font-size: 16px;
 
-    font-size:16px;
+    font-weight: 900;
 
-    font-weight:900;
+    margin: 0;
 
-    margin:0;
-
-    line-height:1;
-
+    line-height: 1;
 }
-
 
 
 .empresa-etiqueta span {
 
+    font-size: 9px;
 
-    font-size:9px;
+    font-weight: bold;
 
-    font-weight:bold;
-
-    letter-spacing:1px;
-
+    letter-spacing: 1px;
 }
 
 
-
-/* LINHA */
-
+/* ==========================================
+   LINHA
+========================================== */
 
 .linha-etiqueta {
 
+    width: 100%;
 
-    width:100%;
+    border-bottom: 1px solid #000;
 
-    border-bottom:1px solid #000;
-
-    margin:1mm 0;
-
+    margin: 1mm 0;
 }
 
 
-
-/* PRODUTO */
-
+/* ==========================================
+   PRODUTO
+========================================== */
 
 #nomeEtiqueta {
 
+    font-size: 18px;
 
-    font-size:18px;
+    font-weight: 900;
 
-    font-weight:900;
+    text-align: center;
 
-    text-align:center;
+    margin: 1mm 0;
 
-    margin:1mm 0;
+    text-transform: uppercase;
 
-    text-transform:uppercase;
+    max-width: 100%;
 
+    overflow: hidden;
 }
 
 
-
-/* TEMPERATURA */
-
+/* ==========================================
+   TEMPERATURA
+========================================== */
 
 .temperatura-destaque {
 
+    text-align: center;
 
-    text-align:center;
-
-    font-size:9px;
-
+    font-size: 9px;
 }
-
 
 
 .temperatura-destaque strong {
 
+    display: block;
 
-    display:block;
-
-    font-size:9px;
-
+    font-size: 9px;
 }
-
 
 
 #temperaturaEtiqueta {
 
+    font-size: 10px;
 
-    font-size:10px;
-
-    font-weight:bold;
-
+    font-weight: bold;
 }
 
 
-
-/* DATAS */
-
+/* ==========================================
+   DATAS
+========================================== */
 
 .datas-etiqueta {
 
+    width: 100%;
 
-    width:100%;
-
-    text-align:center;
-
+    text-align: center;
 }
-
 
 
 .datas-etiqueta p {
 
-
-    margin:1mm 0;
-
+    margin: 1mm 0;
 }
-
 
 
 .datas-etiqueta strong {
 
+    display: block;
 
-    display:block;
-
-    font-size:9px;
-
+    font-size: 9px;
 }
-
 
 
 .datas-etiqueta span {
 
+    font-size: 10px;
 
-    font-size:10px;
-
-    font-weight:bold;
-
+    font-weight: bold;
 }
 
 
-
-/* RESPONSÁVEL / LOTE */
-
+/* ==========================================
+   RESPONSÁVEL / LOTE
+========================================== */
 
 .info-etiqueta {
 
+    width: 100%;
 
-    width:100%;
-
-    text-align:center;
-
+    text-align: center;
 }
-
 
 
 .info-etiqueta p {
 
-
-    margin:1mm 0;
-
+    margin: 1mm 0;
 }
-
 
 
 .info-etiqueta strong {
 
+    display: block;
 
-    display:block;
-
-    font-size:9px;
-
+    font-size: 9px;
 }
-
 
 
 .info-etiqueta span {
 
+    font-size: 10px;
 
-    font-size:10px;
-
-    font-weight:bold;
-
+    font-weight: bold;
 }
 
 
-
-/* QR CODE */
-
+/* ==========================================
+   QR CODE
+========================================== */
 
 #qrcodeEtiqueta {
 
+    margin-top: auto;
 
-    margin-top:auto;
+    height: 14mm;
 
-    height:14mm;
+    display: flex;
 
-    display:flex;
+    justify-content: center;
 
-    justify-content:center;
-
-    align-items:center;
-
+    align-items: center;
 }
-
 
 
 #qrcodeEtiqueta img,
 #qrcodeEtiqueta canvas {
 
+    width: 13mm !important;
 
-    width:13mm !important;
+    height: 13mm !important;
+}
 
-    height:13mm !important;
+
+/* ==========================================
+   BOTÃO IMPRIMIR
+========================================== */
+
+.etiqueta-preview button {
+
+    margin-top: 16px;
+
+    min-height: 42px;
+
+    padding: 10px 20px;
+
+    border: 0;
+
+    border-radius: 9px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+/* ==========================================
+   HISTÓRICO
+========================================== */
+
+.etiquetas-historico {
+
+    width: 100%;
+
+    margin-top: 24px;
+}
+
+
+.etiquetas-historico .table-wrap {
+
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+.etiquetas-historico table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 700px;
+}
+
+
+.etiquetas-historico th,
+.etiquetas-historico td {
+
+    padding: 13px 14px;
+
+    text-align: left;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    white-space: nowrap;
+}
+
+
+.etiquetas-historico th {
+
+    font-size: 12px;
+
+    text-transform: uppercase;
+
+    letter-spacing: .04em;
+
+    color: #64748b;
+
+    font-weight: 700;
+
+    background: #f8fafc;
+}
+
+
+.etiquetas-historico td {
+
+    font-size: 13px;
+
+    color: #334155;
+}
+
+
+/* ==========================================
+   RESPONSIVIDADE
+========================================== */
+
+@media (max-width: 1000px) {
+
+    .etiquetas-grid {
+
+        grid-template-columns: 1fr;
+    }
 
 }
 
 
+@media (max-width: 700px) {
+
+    .etiquetas-form {
+
+        grid-template-columns: 1fr;
+    }
+
+    .etiquetas-form .campo-full {
+
+        grid-column: auto;
+    }
+
+    .etiqueta-preview-area {
+
+        min-height: 350px;
+
+        padding: 12px;
+    }
+
+}
+
 
 /* ==========================================
-   IMPRESSÃO
+   IMPRESSÃO — ZEBRA ZD220
 ========================================== */
-
 
 @media print {
 
-
     @page {
 
-        size:60mm 60mm;
+        size: 60mm 60mm;
 
-        margin:0;
-
+        margin: 0;
     }
-
 
 
     html,
     body {
 
+        width: 60mm;
 
-        width:60mm;
+        height: 60mm;
 
-        height:60mm;
+        margin: 0;
 
-        margin:0;
+        padding: 0;
 
-        padding:0;
-
+        background: white;
     }
-
 
 
     body * {
 
-
-        visibility:hidden;
-
+        visibility: hidden;
     }
-
 
 
     #etiquetaGerada,
     #etiquetaGerada * {
 
-
-        visibility:visible;
-
+        visibility: visible;
     }
-
 
 
     #etiquetaGerada {
 
+        position: absolute;
 
-        position:absolute;
+        left: 0;
 
-        left:0;
+        top: 0;
 
-        top:0;
+        width: 60mm;
 
-        width:60mm;
+        height: 60mm;
 
-        height:60mm;
+        padding: 2mm;
 
-        padding:2mm;
+        margin: 0;
 
-        margin:0;
+        box-sizing: border-box;
 
-        box-sizing:border-box;
+        border: none;
 
+        box-shadow: none;
+
+        background: white;
     }
-
 
 
     .etiqueta-preview button {
 
-
-        display:none;
-
+        display: none !important;
     }
 
+
+    .etiqueta {
+
+        width: 60mm;
+
+        height: 60mm;
+
+        min-width: 60mm;
+
+        min-height: 60mm;
+
+        padding: 2mm;
+
+        border: none;
+
+        box-shadow: none;
+
+        transform: none;
+    }
 
 
     * {
 
-        page-break-after:avoid !important;
+        page-break-after: avoid !important;
 
-        page-break-before:avoid !important;
+        page-break-before: avoid !important;
 
-        page-break-inside:avoid !important;
-
+        page-break-inside: avoid !important;
     }
-
-
 }

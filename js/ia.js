@@ -1,84 +1,176 @@
-async function perguntarIA() {
+// ==========================================
+// LOTRIX AI
+// ==========================================
 
-    const mensagem =
-        document.getElementById("mensagemIA").value.trim();
+console.log("IA.JS CARREGADO");
 
-    const resposta =
-        document.getElementById("respostaIA");
+
+// ==========================================
+// PERGUNTAR À IA
+// ==========================================
+
+async function perguntarIA(texto = null) {
+
+    const campo = document.getElementById("mensagemIA");
+    const resposta = document.getElementById("respostaIA");
+
+    if (!campo) {
+
+        console.error(
+            "Campo #mensagemIA não encontrado no HTML."
+        );
+
+        return;
+    }
+
+    if (!resposta) {
+
+        console.error(
+            "Elemento #respostaIA não encontrado no HTML."
+        );
+
+        return;
+    }
+
+
+    // Se veio uma pergunta rápida
+    // coloca ela no campo
+
+    if (texto) {
+        campo.value = texto;
+    }
+
+
+    const mensagem = campo.value.trim();
+
 
     if (!mensagem) {
 
         resposta.innerHTML = `
+            <div class="ia-resposta">
+
+                <div class="ia-titulo">
+                    🤖 Lotrix AI
+                </div>
+
+                <div class="ia-texto">
+                    Digite uma pergunta para continuar.
+                </div>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    // ==========================================
+    // CARREGANDO
+    // ==========================================
+
+    resposta.innerHTML = `
         <div class="ia-resposta">
+
             <div class="ia-titulo">
                 🤖 Lotrix AI
             </div>
 
             <div class="ia-texto">
-                Digite uma pergunta para continuar.
+                ⏳ Analisando informações...
             </div>
+
         </div>
-        `;
-
-        return;
-
-    }
-
-    resposta.innerHTML = `
-    <div class="ia-resposta">
-        <div class="ia-titulo">
-            🤖 Lotrix AI
-        </div>
-
-        <div class="ia-texto">
-            ⏳ Analisando informações...
-        </div>
-    </div>
     `;
 
+
     try {
+
+        console.log(
+            "Pergunta enviada para Lotrix AI:",
+            mensagem
+        );
+
 
         const retorno = await fetch(
             "https://foodsync-ai.onrender.com/ia",
             {
                 method: "POST",
+
                 headers: {
                     "Content-Type": "application/json"
                 },
+
                 body: JSON.stringify({
                     mensagem: mensagem
                 })
             }
         );
 
+
+        if (!retorno.ok) {
+
+            throw new Error(
+                `Erro HTTP ${retorno.status}`
+            );
+
+        }
+
+
         const dados = await retorno.json();
 
-        resposta.innerHTML = `
-        <div class="ia-resposta">
-            <div class="ia-titulo">
-                🤖 Lotrix AI
-            </div>
 
-            <div class="ia-texto">
-                ${(dados.resposta || "Sem resposta da IA.").replace(/\n/g, "<br>")}
+        console.log(
+            "Resposta da Lotrix AI:",
+            dados
+        );
+
+
+        const textoResposta =
+            dados.resposta ||
+            dados.message ||
+            "Sem resposta da IA.";
+
+
+        resposta.innerHTML = `
+            <div class="ia-resposta">
+
+                <div class="ia-titulo">
+                    🤖 Lotrix AI
+                </div>
+
+                <div class="ia-texto">
+                    ${textoResposta.replace(/\n/g, "<br>")}
+                </div>
+
             </div>
-        </div>
         `;
+
+
+        // Limpa o campo depois de enviar
+
+        campo.value = "";
+
 
     } catch (erro) {
 
-        console.error(erro);
+        console.error(
+            "Erro ao conectar com a Lotrix AI:",
+            erro
+        );
+
 
         resposta.innerHTML = `
-        <div class="ia-resposta">
-            <div class="ia-titulo">
-                🤖 Lotrix AI
-            </div>
+            <div class="ia-resposta">
 
-            <div class="ia-texto">
-                ❌ Não foi possível conectar à Lotrix AI.
+                <div class="ia-titulo">
+                    🤖 Lotrix AI
+                </div>
+
+                <div class="ia-texto">
+                    ❌ Não foi possível conectar à Lotrix AI.
+                </div>
+
             </div>
-        </div>
         `;
 
     }
@@ -87,18 +179,21 @@ async function perguntarIA() {
 
 
 
-async function perguntaRapida(texto){
+// ==========================================
+// PERGUNTAS RÁPIDAS
+// ==========================================
 
-    const campo = document.getElementById("mensagemIA");
+async function perguntaRapida(texto) {
 
-    campo.value = texto;
-
-    await perguntarIA();
+    await perguntarIA(texto);
 
 }
 
 
 
-// deixa disponível para os botões HTML
-window.perguntaRapida = perguntaRapida;
+// ==========================================
+// DISPONÍVEL PARA O HTML
+// ==========================================
+
 window.perguntarIA = perguntarIA;
+window.perguntaRapida = perguntaRapida;
