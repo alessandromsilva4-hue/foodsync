@@ -470,30 +470,26 @@ resultado.data();
 
 const perfil = {
 
-
 id:
 resultado.id,
-
 
 nome:
 dados.nome || "",
 
-
 email:
 dados.email || user.email,
-
 
 perfil:
 (dados.perfil || "").trim(),
 
-
 status:
 dados.status,
 
+idEmpresa:
+dados.idEmpresa || "",
 
 permissoes:
 dados.permissoes || {}
-
 
 };
 
