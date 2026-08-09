@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Migração de Produtos</title>
+</head>
+
+<body>
+
+    <h2>Migração de produtos</h2>
+
+    <p id="status">Iniciando...</p>
+
+    <script type="module">
+
+        import "./migrar-produtos.js";
+
+        document.getElementById("status").textContent =
+            "Migração executada. Verifique o Console (F12).";
+
+    </script>
+
+</body>
+</html>
