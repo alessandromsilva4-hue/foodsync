@@ -46,10 +46,6 @@ if (!idEmpresa) {
         "ERRO: Usuário não possui idEmpresa."
     );
 
-    mostrarToast(
-        "Usuário sem empresa vinculada.",
-        "erro"
-    );
 }
 
 
@@ -112,7 +108,7 @@ window.fecharModalProduto = function () {
 
 // =======================================
 // CARREGAR PRODUTOS
-// SOMENTE DA EMPRESA LOGADA
+// EMPRESA LOGADA + COMPARTILHADOS
 // =======================================
 
 async function carregarProdutos() {
@@ -158,18 +154,34 @@ async function carregarProdutos() {
 
 
             // =======================================
-            // FILTRO POR EMPRESA
+            // EMPRESAS DO PRODUTO
+            // =======================================
+
+            const empresas =
+                Array.isArray(dados.empresas)
+                    ? dados.empresas
+                    : (
+                        dados.idEmpresa
+                            ? [dados.idEmpresa]
+                            : []
+                    );
+
+
+            // =======================================
+            // VERIFICAR SE PERTENCE À EMPRESA
             // =======================================
 
             if (
-                dados.idEmpresa === idEmpresa
+                empresas.includes(idEmpresa)
             ) {
 
                 produtos.push({
 
                     id: docSnap.id,
 
-                    ...dados
+                    ...dados,
+
+                    empresas: empresas
 
                 });
 
@@ -366,7 +378,10 @@ if (formulario) {
             }
 
 
-            console.log("CHECK CAMPOS");
+            console.log(
+                "SALVANDO PRODUTO PARA EMPRESA:",
+                idEmpresa
+            );
 
 
             const dados = {
@@ -444,13 +459,6 @@ if (formulario) {
                         .trim(),
 
 
-                // =======================================
-                // EMPRESA DO PRODUTO
-                // =======================================
-
-                idEmpresa: idEmpresa,
-
-
                 atualizadoEm:
                     serverTimestamp()
 
@@ -460,14 +468,10 @@ if (formulario) {
             try {
 
                 // =======================================
-                // EDITAR
+                // EDITAR PRODUTO
                 // =======================================
 
                 if (produtoEditando) {
-
-
-                    // Verifica se o produto pertence
-                    // à empresa atual
 
                     const produto =
                         produtos.find(
@@ -475,24 +479,34 @@ if (formulario) {
                         );
 
 
-                    if (
-                        !produto ||
-                        produto.idEmpresa !== idEmpresa
-                    ) {
-
-                        console.error(
-                            "Tentativa de editar produto de outra empresa."
-                        );
-
+                    if (!produto) {
 
                         mostrarToast(
-                            "Produto não pertence à empresa atual.",
+                            "Produto não encontrado.",
                             "erro"
                         );
 
-
                         return;
                     }
+
+
+                    const empresas =
+                        Array.isArray(produto.empresas)
+                            ? [...produto.empresas]
+                            : [idEmpresa];
+
+
+                    // Garante que a empresa atual
+                    // continue vinculada
+
+                    if (!empresas.includes(idEmpresa)) {
+
+                        empresas.push(idEmpresa);
+
+                    }
+
+
+                    dados.empresas = empresas;
 
 
                     await updateDoc(
@@ -512,14 +526,18 @@ if (formulario) {
                         "Produto atualizado com sucesso!"
                     );
 
-
                 }
+
 
                 // =======================================
                 // NOVO PRODUTO
                 // =======================================
 
                 else {
+
+                    dados.empresas = [
+                        idEmpresa
+                    ];
 
 
                     dados.criadoEm =
@@ -535,6 +553,12 @@ if (formulario) {
 
                         dados
 
+                    );
+
+
+                    console.log(
+                        "NOVO PRODUTO VINCULADO À EMPRESA:",
+                        idEmpresa
                     );
 
 
@@ -580,9 +604,7 @@ if (formulario) {
 
 window.editarProduto = function (id) {
 
-
     const produto =
-
         produtos.find(
             p => p.id === id
         );
@@ -603,8 +625,14 @@ window.editarProduto = function (id) {
     // GARANTIR EMPRESA CORRETA
     // =======================================
 
+    const empresas =
+        Array.isArray(produto.empresas)
+            ? produto.empresas
+            : [];
+
+
     if (
-        produto.idEmpresa !== idEmpresa
+        !empresas.includes(idEmpresa)
     ) {
 
         mostrarToast(
@@ -696,7 +724,6 @@ window.editarProduto = function (id) {
 
 window.excluirProduto = async function (id) {
 
-
     if (
         !confirm(
             "Deseja excluir este produto?"
@@ -706,10 +733,6 @@ window.excluirProduto = async function (id) {
         return;
     }
 
-
-    // =======================================
-    // VERIFICAR PRODUTO
-    // =======================================
 
     const produto =
         produtos.find(
@@ -728,12 +751,14 @@ window.excluirProduto = async function (id) {
     }
 
 
-    // =======================================
-    // GARANTIR EMPRESA CORRETA
-    // =======================================
+    const empresas =
+        Array.isArray(produto.empresas)
+            ? [...produto.empresas]
+            : [];
+
 
     if (
-        produto.idEmpresa !== idEmpresa
+        !empresas.includes(idEmpresa)
     ) {
 
         mostrarToast(
@@ -747,21 +772,69 @@ window.excluirProduto = async function (id) {
 
     try {
 
+        // =======================================
+        // PRODUTO COMPARTILHADO
+        // =======================================
 
-        await deleteDoc(
+        if (empresas.length > 1) {
 
-            doc(
-                db,
-                "produtos",
-                id
-            )
-
-        );
+            const novasEmpresas =
+                empresas.filter(
+                    empresa =>
+                        empresa !== idEmpresa
+                );
 
 
-        mostrarToast(
-            "Produto excluído com sucesso!"
-        );
+            await updateDoc(
+
+                doc(
+                    db,
+                    "produtos",
+                    id
+                ),
+
+                {
+
+                    empresas:
+                        novasEmpresas,
+
+                    atualizadoEm:
+                        serverTimestamp()
+
+                }
+
+            );
+
+
+            mostrarToast(
+                "Produto removido da empresa atual."
+            );
+
+        }
+
+
+        // =======================================
+        // PRODUTO EXCLUSIVO
+        // =======================================
+
+        else {
+
+            await deleteDoc(
+
+                doc(
+                    db,
+                    "produtos",
+                    id
+                )
+
+            );
+
+
+            mostrarToast(
+                "Produto excluído com sucesso!"
+            );
+
+        }
 
 
         await carregarProdutos();
@@ -797,7 +870,6 @@ if (pesquisa) {
         "input",
 
         () => {
-
 
             const texto =
 
