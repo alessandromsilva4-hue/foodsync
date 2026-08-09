@@ -1,52 +1,70 @@
 console.log("PRODUTOS.JS CARREGADO");
 
-
-
 // =======================================
-// FOODSYNCH v2
-// PRODUTOS - FIRESTORE
+// LOTRIX
+// PRODUTOS - FIRESTORE - MULTIEMPRESA
 // =======================================
-
 
 import { db } from "./firebase.js";
 
 import {
     mostrarToast
-}
-from "./utils.js";
+} from "./utils.js";
 
 import {
+    collection,
+    addDoc,
+    getDocs,
+    doc,
+    deleteDoc,
+    updateDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-collection,
-addDoc,
-getDocs,
-doc,
-deleteDoc,
-updateDoc,
-serverTimestamp
 
+// =======================================
+// USUÁRIO / EMPRESA LOGADA
+// =======================================
+
+const usuarioLogado = JSON.parse(
+    localStorage.getItem("usuarioFoodSync")
+);
+
+const idEmpresa = usuarioLogado?.idEmpresa;
+
+console.log("USUÁRIO LOGADO:", usuarioLogado);
+console.log("EMPRESA DO USUÁRIO:", idEmpresa);
+
+
+// =======================================
+// VALIDAR EMPRESA
+// =======================================
+
+if (!idEmpresa) {
+
+    console.error(
+        "ERRO: Usuário não possui idEmpresa."
+    );
+
+    mostrarToast(
+        "Usuário sem empresa vinculada.",
+        "erro"
+    );
 }
 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-
-
-
-
+// =======================================
 // ELEMENTOS
-
+// =======================================
 
 const formulario =
-document.getElementById("produtoForm");
-
+    document.getElementById("produtoForm");
 
 const tabela =
-document.getElementById("listaProdutos");
-
+    document.getElementById("listaProdutos");
 
 const pesquisa =
-document.getElementById("pesquisaProduto");
-
+    document.getElementById("pesquisaProduto");
 
 
 let produtos = [];
@@ -54,658 +72,774 @@ let produtos = [];
 let produtoEditando = null;
 
 
-
-
-
 // =======================================
 // ABRIR MODAL
 // =======================================
 
+window.abrirModalProduto = function () {
 
-window.abrirModalProduto = function(){
+    const modal =
+        document.getElementById("modalProduto");
 
-
-const modal =
-document.getElementById("modalProduto");
-
-
-modal.classList.add("active");
-
+    if (modal) {
+        modal.classList.add("active");
+    }
 
 };
-
-
-
-
 
 
 // =======================================
 // FECHAR MODAL
 // =======================================
 
+window.fecharModalProduto = function () {
 
-window.fecharModalProduto = function(){
+    const modal =
+        document.getElementById("modalProduto");
 
+    if (modal) {
+        modal.classList.remove("active");
+    }
 
-const modal =
-document.getElementById("modalProduto");
+    produtoEditando = null;
 
-
-modal.classList.remove("active");
-
-
-produtoEditando=null;
-
-
-if(formulario){
-
-formulario.reset();
-
-}
-
+    if (formulario) {
+        formulario.reset();
+    }
 
 };
 
 
-
-
-
-
-
 // =======================================
 // CARREGAR PRODUTOS
+// SOMENTE DA EMPRESA LOGADA
 // =======================================
 
+async function carregarProdutos() {
 
-async function carregarProdutos(){
+    if (!idEmpresa) {
 
+        console.error(
+            "Não foi possível carregar produtos: idEmpresa não encontrado."
+        );
 
-try{
+        mostrarProdutos([]);
 
-
-const snapshot =
-await getDocs(
-collection(db,"produtos")
-);
-
-
-console.log("TOTAL PRODUTOS FIREBASE:", snapshot.size);
+        return;
+    }
 
 
+    try {
 
-produtos=[];
-
-
-
-snapshot.forEach(doc=>{
-
-
-const dados = doc.data();
+        const snapshot =
+            await getDocs(
+                collection(db, "produtos")
+            );
 
 
-console.log("PRODUTO ENCONTRADO:", dados);
+        console.log(
+            "TOTAL PRODUTOS FIREBASE:",
+            snapshot.size
+        );
 
 
-
-produtos.push({
-
-id: doc.id,
-
-...dados
-
-});
+        produtos = [];
 
 
-});
+        snapshot.forEach((docSnap) => {
+
+            const dados = docSnap.data();
 
 
-
-console.log("LISTA FINAL:", produtos);
-
-
-
-mostrarProdutos(produtos);
+            console.log(
+                "PRODUTO ENCONTRADO:",
+                dados
+            );
 
 
+            // =======================================
+            // FILTRO POR EMPRESA
+            // =======================================
+
+            if (
+                dados.idEmpresa === idEmpresa
+            ) {
+
+                produtos.push({
+
+                    id: docSnap.id,
+
+                    ...dados
+
+                });
+
+            }
+
+        });
+
+
+        console.log(
+            "PRODUTOS DA EMPRESA:",
+            produtos
+        );
+
+
+        mostrarProdutos(produtos);
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "Erro carregar produtos:",
+            error
+        );
+
+
+        mostrarToast(
+            "Erro ao carregar produtos.",
+            "erro"
+        );
+
+    }
 
 }
-
-catch(error){
-
-
-console.error(
-
-"Erro carregar produtos:",
-
-error
-
-);
-
-
-}
-
-
-}
-
-
-
-
-
 
 
 // =======================================
 // MOSTRAR NA TABELA
 // =======================================
 
-function mostrarProdutos(lista){
+function mostrarProdutos(lista) {
 
-   console.log(
-    "DADOS PARA TABELA:",
-    lista,
-    "Quantidade:",
-    lista ? lista.length : "sem lista"
-);
+    console.log(
+        "DADOS PARA TABELA:",
+        lista,
+        "Quantidade:",
+        lista ? lista.length : "sem lista"
+    );
 
-    const tabela = document.getElementById("listaProdutos");
 
-    if(!tabela){
-        console.error("Tabela listaProdutos não encontrada.");
+    const tabela =
+        document.getElementById("listaProdutos");
+
+
+    if (!tabela) {
+
+        console.error(
+            "Tabela listaProdutos não encontrada."
+        );
+
         return;
     }
 
+
     tabela.innerHTML = "";
 
-    if(lista.length === 0){
+
+    if (!lista || lista.length === 0) {
 
         tabela.innerHTML = `
-        <tr>
-            <td colspan="8">
-                Nenhum produto cadastrado
-            </td>
-        </tr>
+
+            <tr>
+
+                <td colspan="8">
+
+                    Nenhum produto cadastrado
+
+                </td>
+
+            </tr>
+
         `;
 
         return;
     }
 
 
-lista.forEach(p=>{
+    lista.forEach((p) => {
+
+        const status =
+
+            p.status === "ativo"
+
+                ?
+
+                `<span class="status-ativo">
+                    Ativo
+                </span>`
+
+                :
+
+                `<span class="status-inativo">
+                    Inativo
+                </span>`;
 
 
-const status =
+        tabela.innerHTML += `
 
-p.status === "ativo"
+            <tr>
 
-?
+                <td>
+                    ${p.codigo || ""}
+                </td>
 
-`<span class="status-ativo">
-Ativo
-</span>`
+                <td>
+                    ${p.nome || ""}
+                </td>
 
-:
+                <td>
+                    ${p.categoria || ""}
+                </td>
 
-`<span class="status-inativo">
-Inativo
-</span>`;
+                <td>
+                    ${p.grupo || ""}
+                </td>
 
+                <td>
+                    ${p.unidade || ""}
+                </td>
 
-tabela.innerHTML += `
+                <td>
+                    ${p.validadeDias || 0}
+                </td>
 
-<tr>
+                <td>
+                    ${status}
+                </td>
 
-<td>
-${p.codigo || "-"}
-</td>
+                <td>
 
-<td>
-${p.nome || "-"}
-</td>
-
-<td>
-${p.categoria || "-"}
-</td>
-
-<td>
-${p.unidade || "-"}
-</td>
-
-<td>
-${p.validadeDias || 0} dias
-</td>
-
-<td>
-${p.setor || "-"}
-</td>
-
-<td>
-${status}
-</td>
-
-<td>
-
-<button
-class="btn-editar"
-onclick="editarProduto('${p.id}')">
-
-✏️
-
-</button>
+                    <button
+                        type="button"
+                        onclick="editarProduto('${p.id}')"
+                    >
+                        ✏️
+                    </button>
 
 
-<button
-class="btn-excluir"
-onclick="excluirProduto('${p.id}')">
+                    <button
+                        type="button"
+                        onclick="excluirProduto('${p.id}')"
+                    >
+                        🗑️
+                    </button>
 
-🗑️
+                </td>
 
-</button>
+            </tr>
 
-</td>
+        `;
 
-</tr>
-
-`;
-
-});
-
-
+    });
 
 }
-
-
-
-
-
-
-
 
 
 // =======================================
 // SALVAR PRODUTO
 // =======================================
 
+if (formulario) {
 
-if(formulario){
+    formulario.addEventListener(
 
+        "submit",
 
+        async (e) => {
 
-formulario.addEventListener(
+            e.preventDefault();
 
-"submit",
 
-async(e)=>{
+            // =======================================
+            // VERIFICAR EMPRESA
+            // =======================================
 
+            if (!idEmpresa) {
 
-e.preventDefault();
+                mostrarToast(
+                    "Usuário sem empresa vinculada.",
+                    "erro"
+                );
 
-console.log("CHECK CAMPOS");
+                return;
+            }
 
-console.log("codigo:", document.getElementById("codigoProduto"));
-console.log("nome:", document.getElementById("nomeProduto"));
-console.log("categoria:", document.getElementById("categoriaProduto"));
-console.log("grupo:", document.getElementById("grupoProduto"));
-console.log("unidade:", document.getElementById("unidadeProduto"));
-console.log("validade:", document.getElementById("validadeProduto"));
-console.log("temperatura:", document.getElementById("temperaturaProduto"));
-console.log("setor:", document.getElementById("setorProduto"));
-console.log("estoque:", document.getElementById("estoqueMinimoProduto"));
-console.log("status:", document.getElementById("statusProduto"));
-console.log("observacao:", document.getElementById("observacaoProduto"));
 
+            console.log("CHECK CAMPOS");
 
-const dados = {
 
-codigo:
-document.getElementById("codigoProduto").value.trim(),
+            const dados = {
 
+                codigo:
+                    document
+                        .getElementById("codigoProduto")
+                        .value
+                        .trim(),
 
-nome:
-document.getElementById("nomeProduto").value.trim(),
 
+                nome:
+                    document
+                        .getElementById("nomeProduto")
+                        .value
+                        .trim(),
 
-categoria:
-document.getElementById("categoriaProduto").value,
 
+                categoria:
+                    document
+                        .getElementById("categoriaProduto")
+                        .value,
 
-grupo:
-document.getElementById("grupoProduto").value,
 
+                grupo:
+                    document
+                        .getElementById("grupoProduto")
+                        .value,
 
-unidade:
-document.getElementById("unidadeProduto").value,
 
+                unidade:
+                    document
+                        .getElementById("unidadeProduto")
+                        .value,
 
-validadeDias:
-Number(
-document.getElementById("validadeProduto").value
-),
 
+                validadeDias:
+                    Number(
+                        document
+                            .getElementById("validadeProduto")
+                            .value
+                    ),
 
-temperatura:
-document.getElementById("temperaturaProduto").value,
 
+                temperatura:
+                    document
+                        .getElementById("temperaturaProduto")
+                        .value,
 
-setor:
-document.getElementById("setorProduto").value,
 
+                setor:
+                    document
+                        .getElementById("setorProduto")
+                        .value,
 
-estoqueMinimo:
-Number(
-document.getElementById("estoqueMinimoProduto").value
-),
 
+                estoqueMinimo:
+                    Number(
+                        document
+                            .getElementById("estoqueMinimoProduto")
+                            .value
+                    ),
 
-status:
-document.getElementById("statusProduto").value,
 
+                status:
+                    document
+                        .getElementById("statusProduto")
+                        .value,
 
-observacao:
-document.getElementById("observacaoProduto").value.trim(),
 
+                observacao:
+                    document
+                        .getElementById("observacaoProduto")
+                        .value
+                        .trim(),
 
-atualizadoEm:
-serverTimestamp()
 
-};
+                // =======================================
+                // EMPRESA DO PRODUTO
+                // =======================================
 
+                idEmpresa: idEmpresa,
 
 
+                atualizadoEm:
+                    serverTimestamp()
 
+            };
 
-try {
 
+            try {
 
-    if(produtoEditando){
+                // =======================================
+                // EDITAR
+                // =======================================
 
+                if (produtoEditando) {
 
-        await updateDoc(
 
-            doc(
-                db,
-                "produtos",
-                produtoEditando
-            ),
+                    // Verifica se o produto pertence
+                    // à empresa atual
 
-            dados
+                    const produto =
+                        produtos.find(
+                            p => p.id === produtoEditando
+                        );
 
-        );
 
+                    if (
+                        !produto ||
+                        produto.idEmpresa !== idEmpresa
+                    ) {
 
-       mostrarToast(
-"Produto atualizado com sucesso!"
-);
+                        console.error(
+                            "Tentativa de editar produto de outra empresa."
+                        );
 
 
-    }else{
+                        mostrarToast(
+                            "Produto não pertence à empresa atual.",
+                            "erro"
+                        );
 
 
-        dados.criadoEm =
-        serverTimestamp();
+                        return;
+                    }
 
 
-        await addDoc(
-            collection(db,"produtos"),
-            dados
-        );
+                    await updateDoc(
 
+                        doc(
+                            db,
+                            "produtos",
+                            produtoEditando
+                        ),
 
-        mostrarToast(
-"Produto cadastrado com sucesso!"
-);
+                        dados
 
+                    );
 
-    }
 
+                    mostrarToast(
+                        "Produto atualizado com sucesso!"
+                    );
 
-    fecharModalProduto();
 
-    carregarProdutos();
+                }
 
+                // =======================================
+                // NOVO PRODUTO
+                // =======================================
 
-}
-catch(error){
+                else {
 
 
-    console.error(
-        "Erro salvar produto:",
-        error
+                    dados.criadoEm =
+                        serverTimestamp();
+
+
+                    await addDoc(
+
+                        collection(
+                            db,
+                            "produtos"
+                        ),
+
+                        dados
+
+                    );
+
+
+                    mostrarToast(
+                        "Produto cadastrado com sucesso!"
+                    );
+
+                }
+
+
+                fecharModalProduto();
+
+
+                await carregarProdutos();
+
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Erro salvar produto:",
+                    error
+                );
+
+
+                mostrarToast(
+                    "Erro ao salvar produto.",
+                    "erro"
+                );
+
+            }
+
+        }
+
     );
 
-mostrarToast(
-"Erro ao salvar produto.",
-"erro"
-);
-
 }
-
-
-}); 
-
-
-}
-
 
 
 // =======================================
 // EDITAR PRODUTO
 // =======================================
 
-
-window.editarProduto = function(id){
-
+window.editarProduto = function (id) {
 
 
-const produto =
+    const produto =
 
-produtos.find(
-
-p=>p.id===id
-
-);
+        produtos.find(
+            p => p.id === id
+        );
 
 
+    if (!produto) {
 
-if(!produto)
-return;
+        mostrarToast(
+            "Produto não encontrado.",
+            "erro"
+        );
 
-
-
-produtoEditando=id;
-
-
-
-
-document.getElementById(
-"codigoProduto"
-).value =
-produto.codigo || "";
+        return;
+    }
 
 
+    // =======================================
+    // GARANTIR EMPRESA CORRETA
+    // =======================================
 
-document.getElementById(
-"nomeProduto"
-).value =
-produto.nome || "";
+    if (
+        produto.idEmpresa !== idEmpresa
+    ) {
 
+        mostrarToast(
+            "Produto não pertence à empresa atual.",
+            "erro"
+        );
 
-
-document.getElementById(
-"categoriaProduto"
-).value =
-produto.categoria || "";
-
-document.getElementById(
-"grupoProduto"
-).value =
-produto.grupo || "";
-
-document.getElementById(
-"unidadeProduto"
-).value =
-produto.unidade || "";
+        return;
+    }
 
 
-
-document.getElementById(
-"validadeProduto"
-).value =
-produto.validadeDias || 1;
+    produtoEditando = id;
 
 
-
-document.getElementById(
-"temperaturaProduto"
-).value =
-produto.temperatura || "";
-
+    document.getElementById(
+        "codigoProduto"
+    ).value =
+        produto.codigo || "";
 
 
-document.getElementById(
-"setorProduto"
-).value =
-produto.setor || "";
+    document.getElementById(
+        "nomeProduto"
+    ).value =
+        produto.nome || "";
 
 
-
-document.getElementById(
-"estoqueMinimoProduto"
-).value =
-produto.estoqueMinimo || 1;
-
+    document.getElementById(
+        "categoriaProduto"
+    ).value =
+        produto.categoria || "";
 
 
-document.getElementById(
-"statusProduto"
-).value =
-produto.status || "ativo";
+    document.getElementById(
+        "grupoProduto"
+    ).value =
+        produto.grupo || "";
 
 
-
-document.getElementById(
-"observacaoProduto"
-).value =
-produto.observacao || "";
-
+    document.getElementById(
+        "unidadeProduto"
+    ).value =
+        produto.unidade || "";
 
 
-abrirModalProduto();
+    document.getElementById(
+        "validadeProduto"
+    ).value =
+        produto.validadeDias || 1;
 
+
+    document.getElementById(
+        "temperaturaProduto"
+    ).value =
+        produto.temperatura || "";
+
+
+    document.getElementById(
+        "setorProduto"
+    ).value =
+        produto.setor || "";
+
+
+    document.getElementById(
+        "estoqueMinimoProduto"
+    ).value =
+        produto.estoqueMinimo || 1;
+
+
+    document.getElementById(
+        "statusProduto"
+    ).value =
+        produto.status || "ativo";
+
+
+    document.getElementById(
+        "observacaoProduto"
+    ).value =
+        produto.observacao || "";
+
+
+    abrirModalProduto();
 
 };
-
-
-
-
-
-
 
 
 // =======================================
 // EXCLUIR PRODUTO
 // =======================================
 
-
-window.excluirProduto = async function(id){
-
+window.excluirProduto = async function (id) {
 
 
-if(!confirm(
+    if (
+        !confirm(
+            "Deseja excluir este produto?"
+        )
+    ) {
 
-"Deseja excluir este produto?"
-
-))
-
-return;
-
-
-
-await deleteDoc(
-
-doc(
-db,
-"produtos",
-id
-
-)
-
-);
+        return;
+    }
 
 
+    // =======================================
+    // VERIFICAR PRODUTO
+    // =======================================
 
-mostrarToast(
-"Produto excluído com sucesso!"
-);
+    const produto =
+        produtos.find(
+            p => p.id === id
+        );
 
-carregarProdutos();
 
+    if (!produto) {
+
+        mostrarToast(
+            "Produto não encontrado.",
+            "erro"
+        );
+
+        return;
+    }
+
+
+    // =======================================
+    // GARANTIR EMPRESA CORRETA
+    // =======================================
+
+    if (
+        produto.idEmpresa !== idEmpresa
+    ) {
+
+        mostrarToast(
+            "Produto não pertence à empresa atual.",
+            "erro"
+        );
+
+        return;
+    }
+
+
+    try {
+
+
+        await deleteDoc(
+
+            doc(
+                db,
+                "produtos",
+                id
+            )
+
+        );
+
+
+        mostrarToast(
+            "Produto excluído com sucesso!"
+        );
+
+
+        await carregarProdutos();
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "Erro excluir produto:",
+            error
+        );
+
+
+        mostrarToast(
+            "Erro ao excluir produto.",
+            "erro"
+        );
+
+    }
 
 };
-
-
-
-
-
-
-
 
 
 // =======================================
 // PESQUISA
 // =======================================
 
-if(pesquisa){
+if (pesquisa) {
 
-pesquisa.addEventListener(
-"input",
-()=>{
+    pesquisa.addEventListener(
 
+        "input",
 
-const texto =
-pesquisa.value
-.trim()
-.toLowerCase();
+        () => {
 
 
+            const texto =
 
-if(texto === ""){
+                pesquisa.value
+                    .trim()
+                    .toLowerCase();
 
-    mostrarProdutos(produtos);
 
-    return;
+            if (texto === "") {
+
+                mostrarProdutos(produtos);
+
+                return;
+            }
+
+
+            const resultado =
+
+                produtos.filter(
+                    p => {
+
+                        return (
+
+                            p.nome &&
+
+                            p.nome
+                                .toLowerCase()
+                                .includes(texto)
+
+                        );
+
+                    }
+                );
+
+
+            mostrarProdutos(resultado);
+
+        }
+
+    );
 
 }
-
-
-
-const resultado =
-produtos.filter(p=>{
-
-return (
-p.nome &&
-p.nome
-.toLowerCase()
-.includes(texto)
-);
-
-});
-
-
-
-mostrarProdutos(resultado);
-
-
-
-});
-
-
-}
-
-
-
-
-
-
-
 
 
 // =======================================
@@ -714,15 +848,12 @@ mostrarProdutos(resultado);
 
 document.addEventListener(
 
-"DOMContentLoaded",
+    "DOMContentLoaded",
 
-()=>{
+    () => {
 
+        carregarProdutos();
 
-carregarProdutos();
-
-
-
-}
+    }
 
 );
