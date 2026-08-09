@@ -1,0 +1,64 @@
+/* =======================================
+   FOODSYNC - TOAST
+======================================= */
+
+.toast-container{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.toast{
+
+    min-width:280px;
+
+    margin-bottom:12px;
+
+    padding:15px 20px;
+
+    border-radius:10px;
+
+    color:#fff;
+
+    font-weight:600;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.2);
+
+    animation: aparecer .3s ease;
+
+}
+
+.toast.sucesso{
+    background:#16a34a;
+}
+
+.toast.erro{
+    background:#dc2626;
+}
+
+.toast.aviso{
+    background:#d97706;
+}
+
+.toast.info{
+    background:#2563eb;
+}
+
+@keyframes aparecer{
+
+from{
+
+opacity:0;
+transform:translateX(100%);
+
+}
+
+to{
+
+opacity:1;
+transform:translateX(0);
+
+}
+
+}

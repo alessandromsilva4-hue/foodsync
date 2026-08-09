@@ -1,0 +1,655 @@
+/* =========================================================
+   LOTRIX / FOODSYNC - SIDEBAR
+   Layout lateral responsivo
+   ========================================================= */
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 20px 14px;
+
+    background: linear-gradient(
+        180deg,
+        #2563EB 0%,
+        #1D4ED8 100%
+    );
+
+    color: white;
+
+    border-right: 1px solid rgba(255,255,255,.18);
+
+    box-shadow: 5px 0 25px rgba(15,23,42,.18);
+
+    z-index: 99999;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.logo-area {
+    display: block;
+    width: 100%;
+
+    text-align: center;
+
+    padding: 10px 0 25px;
+
+    flex-shrink: 0;
+}
+
+.logo-area img {
+    display: none;
+}
+
+.logo-area h2 {
+    margin: 0;
+
+    color: white;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+.logo-area small {
+    display: block;
+
+    margin-top: 4px;
+
+    color: rgba(255,255,255,.65);
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   MENU
+   ========================================================= */
+
+.sidebar .menu {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+
+    min-height: 0;
+
+    gap: 4px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   SEÇÕES
+   ========================================================= */
+
+.sidebar .menu-section {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 14px;
+
+    box-sizing: border-box;
+}
+
+.sidebar .menu-section:first-child {
+    margin-top: 0;
+}
+
+
+/* =========================================================
+   TÍTULOS DAS SEÇÕES
+   ========================================================= */
+
+.sidebar .menu-title {
+    display: block;
+
+    margin: 0 0 6px;
+
+    padding: 0 14px;
+
+    color: rgba(255,255,255,.55);
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: .12em;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+
+.sidebar .menu a {
+    width: 100%;
+
+    min-height: 44px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 10px 12px;
+
+    margin: 0;
+
+    border-radius: 10px;
+
+    color: #DBEAFE;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    text-decoration: none;
+
+    box-sizing: border-box;
+
+    transition: .2s ease;
+
+    flex-shrink: 0;
+}
+
+
+/* Ícone */
+.sidebar .menu a span:first-child {
+    width: 22px;
+    min-width: 22px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+
+    text-align: center;
+}
+
+
+/* Texto */
+.sidebar .menu a .nav-label {
+    display: block;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* Hover */
+.sidebar .menu a:hover {
+    background: rgba(255,255,255,.15);
+
+    color: white;
+
+    transform: translateX(2px);
+}
+
+
+/* Item ativo */
+.sidebar .menu a.active {
+    background: rgba(255,255,255,.25);
+
+    color: white;
+
+    font-weight: 700;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.25),
+        0 6px 15px rgba(0,0,0,.10);
+}
+
+
+/* =========================================================
+   RODAPÉ
+   ========================================================= */
+
+.sidebar-footer {
+    width: 100%;
+
+    flex-shrink: 0;
+
+    padding-top: 15px;
+
+    border-top: 1px solid rgba(255,255,255,.18);
+
+    box-sizing: border-box;
+}
+
+.sidebar-footer button {
+    width: 100%;
+
+    min-height: 44px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 10px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,.12);
+
+    color: white;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    transition: .2s ease;
+}
+
+.sidebar-footer button:hover {
+    background: #DC2626;
+}
+
+
+/* =========================================================
+   USUÁRIO
+   ========================================================= */
+
+.sidebar .sidebar-user {
+    width: 100%;
+
+    flex-shrink: 0;
+
+    box-sizing: border-box;
+}
+
+.user-card {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px;
+
+    margin-bottom: 10px;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,.08);
+
+    box-sizing: border-box;
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+
+    min-width: 38px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.12);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   TABLET
+   Até 900px:
+   sidebar compacta somente com ícones
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .sidebar {
+        width: 80px;
+
+        padding: 15px 8px;
+
+        left: 0;
+        top: 0;
+        bottom: 0;
+
+        height: 100vh;
+
+        position: fixed;
+
+        flex-direction: column;
+
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .logo-area {
+        padding: 8px 0 18px;
+
+        margin: 0;
+    }
+
+    .logo-area h2 {
+        font-size: 15px;
+    }
+
+    .logo-area small {
+        display: none;
+    }
+
+    .sidebar .menu {
+        width: 100%;
+
+        flex-direction: column;
+
+        gap: 4px;
+
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .sidebar .menu-section {
+        width: 100%;
+
+        margin-top: 6px;
+    }
+
+    .sidebar .menu-title {
+        display: none;
+    }
+
+    .sidebar .menu a {
+        width: 100%;
+
+        min-height: 48px;
+
+        padding: 8px 4px;
+
+        margin: 0;
+
+        justify-content: center;
+
+        gap: 0;
+
+        border-radius: 10px;
+    }
+
+    .sidebar .menu a .nav-label {
+        display: none;
+    }
+
+    .sidebar .menu a span:first-child {
+        width: 100%;
+
+        min-width: 0;
+
+        font-size: 22px;
+    }
+
+    .sidebar-footer {
+        padding-top: 10px;
+    }
+
+    .sidebar-footer button {
+        min-height: 42px;
+
+        padding: 8px;
+
+        font-size: 0;
+    }
+
+    .sidebar-footer button span {
+        font-size: 20px;
+    }
+
+    .sidebar .sidebar-user {
+        display: none;
+    }
+}
+
+
+/* =========================================================
+   CELULAR
+   Mantém sidebar lateral compacta
+   ========================================================= */
+
+@media (max-width: 640px) {
+
+    .sidebar {
+        width: 70px;
+
+        padding: 12px 6px;
+    }
+
+    .sidebar .menu a {
+        min-height: 46px;
+
+        padding: 7px 3px;
+    }
+
+    .sidebar .menu a span:first-child {
+        font-size: 21px;
+    }
+
+    .logo-area {
+        padding-bottom: 14px;
+    }
+
+    .logo-area h2 {
+        font-size: 13px;
+    }
+}
+
+
+/* =========================================================
+   MODO ESCURO
+   ========================================================= */
+
+[data-theme="dark"] .sidebar {
+    background: linear-gradient(
+        180deg,
+        #172554,
+        #1E3A8A
+    );
+}
+
+[data-theme="dark"] .sidebar .menu a {
+    color: #BFDBFE;
+}
+
+[data-theme="dark"] .sidebar .menu a.active {
+    background: rgba(96,165,250,.25);
+}
+
+
+/* =========================================================
+   SEGURANÇA CONTRA MENU INFERIOR
+   ========================================================= */
+
+.sidebar,
+.sidebar .menu,
+.sidebar .menu-section,
+.sidebar .menu a {
+    box-sizing: border-box;
+}
+
+.sidebar .menu {
+    position: static;
+}
+
+.sidebar .menu a {
+    position: relative;
+    bottom: auto;
+}
+/* =========================================================
+   CORREÇÃO FINAL - CONTEÚDO AO LADO DA SIDEBAR
+   ========================================================= */
+
+/* Tela normal */
+.content {
+    margin-left: 250px !important;
+    width: calc(100% - 250px) !important;
+}
+
+
+/* Tablet / vertical */
+@media (max-width: 900px) {
+
+    .content {
+        margin-left: 80px !important;
+        width: calc(100% - 80px) !important;
+        padding: 24px !important;
+    }
+
+}
+
+
+/* Celular / tela muito pequena */
+@media (max-width: 640px) {
+
+    .sidebar {
+        width: 70px !important;
+    }
+
+    .content {
+        margin-left: 70px !important;
+        width: calc(100% - 70px) !important;
+        padding: 16px !important;
+    }
+
+}
+
+
+/* Tablet em modo vertical */
+@media (orientation: portrait) and (min-width: 641px) and (max-width: 900px) {
+
+    .sidebar {
+        width: 80px !important;
+        left: 0 !important;
+        right: auto !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        height: 100vh !important;
+
+        position: fixed !important;
+
+        flex-direction: column !important;
+    }
+
+    .content {
+        margin-left: 80px !important;
+        width: calc(100% - 80px) !important;
+    }
+
+}
+
+
+/* Nunca deixar a sidebar virar menu inferior */
+.sidebar {
+    position: fixed !important;
+    left: 0 !important;
+    right: auto !important;
+    top: 0 !important;
+    bottom: 0 !important;
+
+    flex-direction: column !important;
+}
+/* =========================================================
+   CORREÇÃO FINAL — LAYOUT FOODSYNC / LOTRIX
+   Sidebar fixa sem empurrar o conteúdo para baixo
+   ========================================================= */
+
+.layout {
+    display: block !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    position: relative !important;
+}
+
+.sidebar {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    bottom: auto !important;
+}
+
+.content {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+/* =========================================================
+   CORREÇÃO DEFINITIVA DO LAYOUT
+   Sidebar fixa + conteúdo ao lado
+   ========================================================= */
+
+.layout {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+}
+
+.sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: auto !important;
+    width: 250px !important;
+    height: 100vh !important;
+    z-index: 1000 !important;
+}
+
+.content {
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    margin-left: 250px !important;
+    margin-top: 0 !important;
+    width: calc(100% - 250px) !important;
+    min-height: 100vh !important;
+    box-sizing: border-box !important;
+}

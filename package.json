@@ -1,0 +1,27 @@
+{
+  "name": "foodsync",
+  "version": "1.0.0",
+  "description": "Sistema de etiquetas de validade para alimentos",
+  "main": "index.js",
+  "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
+    "openai": "^7.3.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alessandromsilva4-hue/foodsync.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/alessandromsilva4-hue/foodsync/issues"
+  },
+  "homepage": "https://github.com/alessandromsilva4-hue/foodsync#readme"
+}

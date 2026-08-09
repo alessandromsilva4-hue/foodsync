@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>Lotrix - Configurações</title>
+
+
+<link rel="icon" href="img/favicon.png">
+
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet" href="css/sidebar.css">
+
+<link rel="stylesheet" href="css/formulario.css">
+
+
+</head>
+
+
+
+<body>
+
+
+<div class="layout">
+
+
+
+<aside class="sidebar">
+
+    <div class="logo-area">
+        <img src="img/logo.png" alt="Lotrix">
+        <h2>LOTRIX</h2>
+        <small>Food Safety Platform</small>
+    </div>
+
+    <nav class="menu">
+
+        <div class="menu-section">
+            <span class="menu-title">GERAL</span>
+
+            <a href="dashboard.html" class="active">
+                <span>🏠</span>
+                <span class="nav-label">Dashboard</span>
+            </a>
+        </div>
+
+        <div class="menu-section">
+            <span class="menu-title">OPERAÇÃO</span>
+
+            <a href="producao.html">
+                <span>⚙️</span>
+                <span class="nav-label">Produção</span>
+            </a>
+
+            <a href="produtos.html">
+                <span>📦</span>
+                <span class="nav-label">Produtos</span>
+            </a>
+
+            <a href="etiquetas.html">
+                <span>🏷️</span>
+                <span class="nav-label">Etiquetas</span>
+            </a>
+
+            <a href="estoque.html">
+                <span>📚</span>
+                <span class="nav-label">Estoque</span>
+            </a>
+        </div>
+
+        <div class="menu-section">
+            <span class="menu-title">GESTÃO</span>
+
+            <a href="relatorios.html">
+                <span>📈</span>
+                <span class="nav-label">Relatórios</span>
+            </a>
+
+            <a href="auditoria.html">
+                <span>📝</span>
+                <span class="nav-label">Auditoria</span>
+            </a>
+
+            <a href="usuario.html">
+                <span>👥</span>
+                <span class="nav-label">Usuários</span>
+            </a>
+        </div>
+
+        <div class="menu-section">
+            <span class="menu-title">SISTEMA</span>
+
+            <a href="configuracoes.html">
+                <span>⚙️</span>
+                <span class="nav-label">Configurações</span>
+            </a>
+
+            <a href="ajuda.html">
+                <span>❓</span>
+                <span class="nav-label">Ajuda</span>
+            </a>
+
+            <a href="sac.html">
+                <span>🎧</span>
+                <span class="nav-label">SAC</span>
+            </a>
+        </div>
+
+    </nav>
+
+    <div class="sidebar-footer">
+
+ <div class="user-card">
+
+    <div class="avatar">
+        👤
+    </div>
+
+    <div>
+        <strong id="nomeUsuarioLogado">
+            Usuário
+        </strong>
+
+        <small id="perfilUsuarioLogado">
+            Carregando...
+        </small>
+    </div>
+
+</div>
+
+        <button onclick="logout()">
+            🚪 Sair
+        </button>
+
+    </div>
+
+</aside>
+
+
+
+
+
+
+
+
+<main class="content">
+
+
+
+<header class="top-header">
+
+
+<div>
+
+
+<h1>
+Configurações
+</h1>
+
+
+<p>
+Configurações gerais do sistema
+</p>
+
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+
+
+<section class="form-box">
+
+
+<h2>
+Configurações Gerais
+</h2>
+
+
+
+
+<form id="configForm">
+
+
+
+
+
+<div class="form-grid">
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+Nome do Sistema
+</label>
+
+<input
+type="text"
+id="nomeSistema"
+value="Lotrix">
+
+
+</div>
+
+<div class="input-group">
+
+<label for="temaSistema">
+Tema da interface
+</label>
+
+<select id="temaSistema" aria-describedby="ajudaTema">
+
+<option value="auto">
+Automático (seguir dispositivo)
+</option>
+
+<option value="light">
+Modo claro
+</option>
+
+<option value="dark">
+Modo escuro
+</option>
+
+</select>
+
+<small id="ajudaTema" class="input-help">Você pode deixar o Lotrix acompanhar o tema do seu dispositivo ou definir uma preferência.</small>
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+Tamanho da Etiqueta
+</label>
+
+
+<select id="tamanhoEtiqueta">
+
+<option>
+60x60 mm
+</option>
+
+<option>
+80x50 mm
+</option>
+
+<option>
+100x50 mm
+</option>
+
+<option>
+Personalizado
+</option>
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+Validade Padrão (dias)
+</label>
+
+
+<input
+
+type="number"
+
+id="validadePadrao"
+
+value="1">
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+Impressora
+</label>
+
+
+<input
+
+type="text"
+
+id="impressora"
+
+placeholder="Nome da impressora">
+
+
+</div>
+
+<div class="input-group">
+
+<label>
+QR Code
+</label>
+
+<select id="qrCode">
+
+<option value="sim">
+Ativado
+</option>
+
+<option value="nao">
+Desativado
+</option>
+
+</select>
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<button type="submit">
+
+Salvar Configurações
+
+</button>
+
+
+
+
+
+
+</form>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+
+
+<script type="module" src="js/firebase.js"></script>
+
+<script type="module" src="js/app.js"></script>
+
+<script type="module" src="js/auth.js"></script>
+
+
+<script type="module" src="js/configuracoes.js"></script>
+
+
+
+</body>
+
+</html>
+

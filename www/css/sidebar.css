@@ -1,0 +1,805 @@
+/* =========================================================
+   FOODSYNC - SIDEBAR LATERAL
+   DESKTOP + TABLET + CELULAR
+   ========================================================= */
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+html,
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-height: 100% !important;
+}
+
+
+/* =========================================================
+   SIDEBAR DESKTOP
+   ========================================================= */
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+
+    position: fixed !important;
+    left: 0 !important;
+    right: auto !important;
+    top: 0 !important;
+    bottom: auto !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    box-sizing: border-box;
+
+    z-index: 99999;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    float: none !important;
+    transform: none !important;
+}
+
+
+/* =========================================================
+   MENU
+   ========================================================= */
+
+.sidebar .menu {
+    width: 100%;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    position: static !important;
+
+    box-sizing: border-box;
+
+    flex-wrap: nowrap !important;
+}
+
+
+.sidebar .menu-section {
+    width: 100%;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    position: static !important;
+
+    box-sizing: border-box;
+
+    margin-top: 14px;
+
+    flex-wrap: nowrap !important;
+}
+
+
+.sidebar .menu-section:first-child {
+    margin-top: 0;
+}
+
+
+.sidebar .menu-title {
+    display: block;
+
+    width: 100%;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+
+.sidebar .menu a {
+    width: 100%;
+    min-width: 100%;
+    min-height: 48px;
+
+    display: flex !important;
+    flex-direction: row !important;
+
+    align-items: center !important;
+
+    position: relative !important;
+
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+
+    float: none !important;
+
+    box-sizing: border-box;
+
+    transform: none !important;
+}
+
+
+/* =========================================================
+   ÍCONE
+   ========================================================= */
+
+.sidebar .menu a span:first-child {
+    width: 22px;
+    min-width: 22px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   TEXTO
+   ========================================================= */
+
+.sidebar .menu a .nav-label {
+    display: block;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.sidebar-footer {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    margin-top: auto;
+
+    padding-top: 15px;
+}
+
+
+/* =========================================================
+   USUÁRIO
+   ========================================================= */
+
+.sidebar .sidebar-user {
+    width: 100%;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   CONTEÚDO
+   ========================================================= */
+
+.layout {
+    width: 100%;
+    min-height: 100vh;
+
+    display: block !important;
+
+    position: relative;
+}
+
+
+.content {
+    margin-left: 250px !important;
+
+    width: calc(100% - 250px) !important;
+
+    box-sizing: border-box;
+
+    position: relative !important;
+
+    left: auto !important;
+    right: auto !important;
+    top: 0 !important;
+    bottom: auto !important;
+}
+
+
+/* =========================================================
+   TABLET
+   641px até 900px
+   ========================================================= */
+
+@media (min-width: 641px) and (max-width: 900px) {
+
+    /* SIDEBAR */
+
+    .sidebar {
+        width: 80px !important;
+        height: 100vh !important;
+        min-height: 100vh !important;
+
+        position: fixed !important;
+
+        left: 0 !important;
+        right: auto !important;
+        top: 0 !important;
+        bottom: auto !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+    }
+
+
+    /* LOGO */
+
+    .sidebar .logo-area {
+        width: 80px !important;
+
+        min-width: 80px !important;
+
+        padding: 12px 4px !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        box-sizing: border-box !important;
+
+        overflow: hidden !important;
+    }
+
+
+    .sidebar .logo-area img {
+        width: 42px !important;
+        height: 42px !important;
+
+        object-fit: contain !important;
+
+        margin: 0 auto !important;
+    }
+
+
+    .sidebar .logo-area h2 {
+        display: none !important;
+    }
+
+
+    .sidebar .logo-area small {
+        display: none !important;
+    }
+
+
+    /* MENU */
+
+    .sidebar .menu {
+        width: 80px !important;
+
+        display: flex !important;
+
+        flex-direction: column !important;
+
+        flex-wrap: nowrap !important;
+    }
+
+
+    .sidebar .menu-section {
+        width: 80px !important;
+
+        display: flex !important;
+
+        flex-direction: column !important;
+
+        flex-wrap: nowrap !important;
+
+        margin-top: 5px !important;
+    }
+
+
+    .sidebar .menu-title {
+        display: none !important;
+    }
+
+
+    /* LINKS */
+
+    .sidebar .menu a {
+        width: 80px !important;
+        min-width: 80px !important;
+
+        height: 50px !important;
+        min-height: 50px !important;
+
+        padding: 0 !important;
+
+        display: flex !important;
+
+        flex-direction: row !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        box-sizing: border-box !important;
+
+        overflow: hidden !important;
+    }
+
+
+    /* ÍCONE */
+
+    .sidebar .menu a span:first-child {
+        width: 100% !important;
+        min-width: 100% !important;
+
+        flex-shrink: 0 !important;
+
+        text-align: center !important;
+
+        font-size: 21px !important;
+    }
+
+
+    /* TEXTO */
+
+    .sidebar .menu a .nav-label {
+        display: none !important;
+    }
+
+
+    /* FOOTER */
+
+    .sidebar-footer {
+        width: 80px !important;
+
+        padding: 8px 0 !important;
+
+        margin-top: auto !important;
+
+        box-sizing: border-box !important;
+    }
+
+
+    /* USUÁRIO */
+
+    .sidebar .sidebar-user {
+        display: none !important;
+    }
+
+
+    /* BOTÃO SAIR */
+
+    .sidebar-footer button {
+        width: 80px !important;
+
+        min-width: 80px !important;
+
+        padding: 10px 0 !important;
+
+        display: flex !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+
+    .sidebar-footer button span {
+        font-size: 20px !important;
+    }
+
+
+    /* CONTEÚDO */
+
+    .content {
+        margin-left: 80px !important;
+
+        width: calc(100% - 80px) !important;
+
+        box-sizing: border-box !important;
+    }
+}
+
+
+/* =========================================================
+   CELULAR
+   até 640px
+   ========================================================= */
+
+@media (max-width: 640px) {
+
+    .sidebar {
+        width: 70px !important;
+        height: 100vh !important;
+        min-height: 100vh !important;
+
+        position: fixed !important;
+
+        left: 0 !important;
+        right: auto !important;
+        top: 0 !important;
+        bottom: auto !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+    }
+
+
+    /* LOGO */
+
+    .sidebar .logo-area {
+        width: 70px !important;
+
+        padding: 10px 3px !important;
+
+        display: flex !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        box-sizing: border-box !important;
+
+        overflow: hidden !important;
+    }
+
+
+    .sidebar .logo-area img {
+        width: 38px !important;
+        height: 38px !important;
+
+        object-fit: contain !important;
+    }
+
+
+    .sidebar .logo-area h2,
+    .sidebar .logo-area small {
+        display: none !important;
+    }
+
+
+    /* MENU */
+
+    .sidebar .menu {
+        width: 70px !important;
+
+        display: flex !important;
+
+        flex-direction: column !important;
+
+        flex-wrap: nowrap !important;
+    }
+
+
+    .sidebar .menu-section {
+        width: 70px !important;
+
+        display: flex !important;
+
+        flex-direction: column !important;
+
+        flex-wrap: nowrap !important;
+    }
+
+
+    .sidebar .menu-title {
+        display: none !important;
+    }
+
+
+    .sidebar .menu a {
+        width: 70px !important;
+        min-width: 70px !important;
+
+        min-height: 46px !important;
+
+        padding: 0 !important;
+
+        display: flex !important;
+
+        flex-direction: row !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        box-sizing: border-box !important;
+    }
+
+
+    .sidebar .menu a span:first-child {
+        width: 100% !important;
+
+        min-width: 100% !important;
+
+        text-align: center !important;
+
+        font-size: 21px !important;
+    }
+
+
+    .sidebar .menu a .nav-label {
+        display: none !important;
+    }
+
+
+    /* USUÁRIO */
+
+    .sidebar .sidebar-user {
+        display: none !important;
+    }
+
+
+    /* FOOTER */
+
+    .sidebar-footer {
+        width: 70px !important;
+
+        margin-top: auto !important;
+
+        padding: 8px 0 !important;
+    }
+
+
+    .sidebar-footer button {
+        width: 70px !important;
+
+        padding: 10px 0 !important;
+
+        display: flex !important;
+
+        align-items: center !important;
+
+        justify-content: center !important;
+    }
+
+
+    /* CONTEÚDO */
+
+    .content {
+        margin-left: 70px !important;
+
+        width: calc(100% - 70px) !important;
+
+        padding: 16px !important;
+
+        box-sizing: border-box !important;
+    }
+}
+
+
+/* =========================================================
+   GARANTIA
+   SIDEBAR NUNCA VIRA MENU INFERIOR
+   ========================================================= */
+
+.sidebar {
+    position: fixed !important;
+
+    left: 0 !important;
+    right: auto !important;
+
+    top: 0 !important;
+    bottom: auto !important;
+
+    float: none !important;
+
+    transform: none !important;
+}
+
+
+.sidebar,
+.sidebar .menu,
+.sidebar .menu-section {
+    flex-direction: column !important;
+}
+/* =========================================================
+   TABLET VERTICAL   SIDEBAR LOTRIX
+   Mant m o menu completo em 250px
+   ========================================================= */
+
+@media (min-width: 641px) and (max-width: 900px) {
+
+    .sidebar {
+        width: 250px !important;
+        min-width: 250px !important;
+    }
+
+    .sidebar .logo-area {
+        width: 100% !important;
+        min-width: 0 !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        padding: 12px 14px !important;
+    }
+
+    .sidebar .logo-area h2,
+    .sidebar .logo-area small {
+        display: block !important;
+    }
+
+    .sidebar .menu {
+        width: 100% !important;
+    }
+
+    .sidebar .menu-section {
+        width: 100% !important;
+    }
+
+    .sidebar-footer {
+        width: 100% !important;
+        padding: 12px 14px !important;
+        box-sizing: border-box !important;
+    }
+
+    .sidebar .sidebar-user {
+        display: flex !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        min-width: 0 !important;
+    }
+
+    .sidebar-footer button {
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .content {
+        margin-left: 250px !important;
+        width: calc(100% - 250px) !important;
+    }
+}
+
+
+/* =========================================================
+   CORRE  O FINAL   LAYOUT LOTRIX
+   ========================================================= */
+
+.layout {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    position: relative !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.layout > .sidebar {
+    flex: 0 0 250px !important;
+}
+
+.layout > .content {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    margin-left: 250px !important;
+    width: calc(100% - 250px) !important;
+    box-sizing: border-box !important;
+}
+
+@media (max-width: 900px) and (min-width: 641px) {
+    .layout {
+        display: flex !important;
+        flex-direction: row !important;
+    }
+
+    .layout > .sidebar {
+        flex: 0 0 250px !important;
+        width: 250px !important;
+    }
+
+    .layout > .content {
+        flex: 1 1 auto !important;
+        margin-left: 0 !important;
+        width: auto !important;
+        min-width: 0 !important;
+    }
+}
+/* =========================================================
+   LOTRIX — CORREÇÃO DEFINITIVA DO LAYOUT
+   SIDEBAR + CONTEÚDO LADO A LADO
+   ========================================================= */
+
+html,
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-height: 100% !important;
+}
+
+body {
+    overflow-x: hidden !important;
+}
+
+.layout {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+
+    width: 100% !important;
+    min-height: 100vh !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    position: relative !important;
+    box-sizing: border-box !important;
+}
+
+/* MENU LATERAL */
+.layout > .sidebar {
+    position: fixed !important;
+
+    left: 0 !important;
+    top: 0 !important;
+
+    width: 250px !important;
+    height: 100vh !important;
+
+    margin: 0 !important;
+
+    flex: none !important;
+
+    z-index: 1000 !important;
+
+    box-sizing: border-box !important;
+}
+
+/* CONTEÚDO */
+.layout > .content {
+    position: relative !important;
+
+    display: block !important;
+
+    margin-left: 250px !important;
+    margin-top: 0 !important;
+
+    width: calc(100% - 250px) !important;
+    min-width: 0 !important;
+
+    padding: 25px !important;
+
+    box-sizing: border-box !important;
+
+    flex: none !important;
+
+    transform: none !important;
+}
+
+/* TABLET VERTICAL */
+@media (min-width: 641px) and (max-width: 900px) {
+
+    .layout {
+        display: block !important;
+        position: relative !important;
+        width: 100% !important;
+        min-height: 100vh !important;
+    }
+
+    .layout > .sidebar {
+        position: fixed !important;
+
+        left: 0 !important;
+        top: 0 !important;
+
+        width: 250px !important;
+        height: 100vh !important;
+    }
+
+    .layout > .content {
+        position: relative !important;
+
+        margin-left: 250px !important;
+        margin-top: 0 !important;
+
+        width: calc(100% - 250px) !important;
+
+        padding: 25px !important;
+
+        box-sizing: border-box !important;
+    }
+}

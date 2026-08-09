@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Lotrix — Dashboard</title>
+
+    <link rel="icon" href="img/favicon.png">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+
+<body>
+
+
+<!-- ========================= -->
+<!-- SIDEBAR -->
+<!-- ========================= -->
+
+<aside class="sidebar">
+
+
+    <div class="logo-area">
+
+        <img src="img/logo.png" alt="Lotrix">
+
+        <h2>
+            LOTRIX
+        </h2>
+
+        <small>
+            Food Safety Platform
+        </small>
+
+    </div>
+
+
+    <nav class="menu">
+
+
+        <!-- GERAL -->
+
+        <div class="menu-section">
+
+            <span class="menu-title">
+                GERAL
+            </span>
+
+
+            <a href="dashboard.html" class="active">
+
+                <span>🏠</span>
+
+                <span class="nav-label">
+                    Dashboard
+                </span>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- OPERAÇÃO -->
+
+        <div class="menu-section">
+
+            <span class="menu-title">
+                OPERAÇÃO
+            </span>
+
+
+            <a href="producao.html">
+
+                <span>⚙️</span>
+
+                <span class="nav-label">
+                    Produção
+                </span>
+
+            </a>
+
+
+            <a href="produtos.html">
+
+                <span>📦</span>
+
+                <span class="nav-label">
+                    Produtos
+                </span>
+
+            </a>
+
+
+            <a href="etiquetas.html">
+
+                <span>🏷️</span>
+
+                <span class="nav-label">
+                    Etiquetas
+                </span>
+
+            </a>
+
+
+            <a href="estoque.html">
+
+                <span>📚</span>
+
+                <span class="nav-label">
+                    Estoque
+                </span>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- GESTÃO -->
+
+        <div class="menu-section">
+
+            <span class="menu-title">
+                GESTÃO
+            </span>
+
+
+            <a href="relatorios.html">
+
+                <span>📈</span>
+
+                <span class="nav-label">
+                    Relatórios
+                </span>
+
+            </a>
+
+
+            <a href="auditoria.html">
+
+                <span>📝</span>
+
+                <span class="nav-label">
+                    Auditoria
+                </span>
+
+            </a>
+
+
+            <a href="usuario.html">
+
+                <span>👥</span>
+
+                <span class="nav-label">
+                    Usuários
+                </span>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- SISTEMA -->
+
+        <div class="menu-section">
+
+            <span class="menu-title">
+                SISTEMA
+            </span>
+
+
+            <a href="configuracoes.html">
+
+                <span>⚙️</span>
+
+                <span class="nav-label">
+                    Configurações
+                </span>
+
+            </a>
+
+
+            <a href="ajuda.html">
+
+                <span>❓</span>
+
+                <span class="nav-label">
+                    Ajuda
+                </span>
+
+            </a>
+
+
+            <a href="sac.html">
+
+                <span>🎧</span>
+
+                <span class="nav-label">
+                    SAC
+                </span>
+
+            </a>
+
+        </div>
+
+
+    </nav>
+
+
+
+    <!-- USUÁRIO -->
+
+    <div class="sidebar-footer">
+
+
+        <div class="user-card">
+
+
+            <div class="avatar">
+                👤
+            </div>
+
+
+            <div>
+
+                <strong id="nomeUsuarioLogado">
+                    Usuário
+                </strong>
+
+
+                <small id="perfilUsuarioLogado">
+                    Carregando...
+                </small>
+
+            </div>
+
+
+        </div>
+
+
+        <button onclick="logout()">
+
+            🚪 Sair
+
+        </button>
+
+
+    </div>
+
+
+</aside>
+
+
+
+<!-- ========================= -->
+<!-- CONTEÚDO -->
+<!-- ========================= -->
+
+<main class="content dashboard-page">
+
+
+    <!-- ========================= -->
+    <!-- HEADER -->
+    <!-- ========================= -->
+
+    <header class="top-header dashboard-header">
+
+
+        <div>
+
+
+            <p class="header-kicker" id="dataAtual">
+
+                Visão operacional
+
+            </p>
+
+
+            <h1 id="saudacao">
+
+                Bom dia 👋
+
+            </h1>
+
+
+            <p>
+
+                Veja o que precisa da sua atenção hoje.
+
+            </p>
+
+
+        </div>
+
+
+
+        <div class="header-actions">
+
+
+            <a
+                class="button button-secondary"
+                href="producao.html">
+
+                Nova produção
+
+            </a>
+
+
+            <a
+                class="button"
+                href="etiquetas.html">
+
+                Imprimir etiqueta
+
+            </a>
+
+
+        </div>
+
+
+    </header>
+
+
+
+    <!-- ========================= -->
+    <!-- INDICADORES -->
+    <!-- ========================= -->
+
+    <section class="metric-grid">
+
+
+        <article class="metric-card">
+
+
+            <span class="metric-icon success">
+
+                <i data-lucide="chef-hat"></i>
+
+            </span>
+
+
+            <div>
+
+                <p>
+                    Produções hoje
+                </p>
+
+                <strong id="producoesHoje">
+                    —
+                </strong>
+
+                <small>
+                    Registros finalizados
+                </small>
+
+            </div>
+
+
+        </article>
+
+
+
+        <article class="metric-card">
+
+
+            <span class="metric-icon info">
+
+                <i data-lucide="printer"></i>
+
+            </span>
+
+
+            <div>
+
+                <p>
+                    Etiquetas impressas
+                </p>
+
+                <strong id="etiquetasHoje">
+                    —
+                </strong>
+
+                <small>
+                    Emitidas hoje
+                </small>
+
+            </div>
+
+
+        </article>
+
+
+
+        <article class="metric-card">
+
+
+            <span class="metric-icon warning">
+
+                <i data-lucide="calendar-clock"></i>
+
+            </span>
+
+
+            <div>
+
+                <p>
+                    Vencendo hoje
+                </p>
+
+                <strong id="vencendoHoje">
+                    —
+                </strong>
+
+                <small>
+                    Produtos para revisar
+                </small>
+
+            </div>
+
+
+        </article>
+
+
+
+        <article class="metric-card">
+
+
+            <span class="metric-icon danger">
+
+                <i data-lucide="package-x"></i>
+
+            </span>
+
+
+            <div>
+
+                <p>
+                    Estoque crítico
+                </p>
+
+                <strong id="estoqueCritico">
+                    —
+                </strong>
+
+                <small>
+                    Abaixo do mínimo
+                </small>
+
+            </div>
+
+
+        </article>
+
+
+    </section>
+
+
+
+    <!-- ========================= -->
+    <!-- DASHBOARD GRID -->
+    <!-- ========================= -->
+
+    <section class="dashboard-grid">
+
+
+        <!-- GRÁFICO -->
+
+        <article class="dashboard-panel panel-wide">
+
+
+            <div class="panel-heading">
+
+
+                <div>
+
+                    <p class="panel-eyebrow">
+                        Acompanhamento
+                    </p>
+
+                    <h2>
+                        Gráfico da semana
+                    </h2>
+
+                </div>
+
+
+                <span class="panel-badge">
+                    Últimos 7 dias
+                </span>
+
+
+            </div>
+
+
+            <div class="chart-wrap">
+
+                <canvas id="graficoProducao"></canvas>
+
+            </div>
+
+
+        </article>
+
+
+
+        <!-- RANKING -->
+
+        <article class="dashboard-panel">
+
+
+            <div class="panel-heading">
+
+
+                <div>
+
+                    <p class="panel-eyebrow">
+                        Ranking
+                    </p>
+
+                    <h2>
+                        Produtos mais produzidos
+                    </h2>
+
+                </div>
+
+
+            </div>
+
+
+            <ol
+                class="rank-list"
+                id="produtosMaisProduzidos">
+
+                <li class="skeleton-row"></li>
+                <li class="skeleton-row"></li>
+                <li class="skeleton-row"></li>
+
+            </ol>
+
+
+        </article>
+
+
+
+        <!-- PRODUÇÕES -->
+
+        <article class="dashboard-panel">
+
+
+            <div class="panel-heading">
+
+
+                <div>
+
+                    <p class="panel-eyebrow">
+                        Atividade recente
+                    </p>
+
+                    <h2>
+                        Últimas produções
+                    </h2>
+
+                </div>
+
+
+                <a href="producao.html">
+                    Ver todas
+                </a>
+
+
+            </div>
+
+
+            <div
+                class="activity-list"
+                id="listaProducao">
+
+                <div class="skeleton-row"></div>
+                <div class="skeleton-row"></div>
+                <div class="skeleton-row"></div>
+
+            </div>
+
+
+        </article>
+
+
+
+        <!-- ETIQUETAS -->
+
+        <article class="dashboard-panel">
+
+
+            <div class="panel-heading">
+
+
+                <div>
+
+                    <p class="panel-eyebrow">
+                        Impressões
+                    </p>
+
+                    <h2>
+                        Últimas etiquetas
+                    </h2>
+
+                </div>
+
+
+                <a href="etiquetas.html">
+                    Ver todas
+                </a>
+
+
+            </div>
+
+
+            <div
+                class="activity-list"
+                id="listaEtiquetas">
+
+                <div class="skeleton-row"></div>
+                <div class="skeleton-row"></div>
+                <div class="skeleton-row"></div>
+
+            </div>
+
+
+        </article>
+
+
+
+        <!-- VENCIMENTOS -->
+
+        <article class="dashboard-panel">
+
+
+            <div class="panel-heading">
+
+
+                <div>
+
+                    <p class="panel-eyebrow">
+                        Atenção
+                    </p>
+
+                    <h2>
+                        Próximos do vencimento
+                    </h2>
+
+                </div>
+
+
+                <a href="etiquetas.html">
+                    Ver etiquetas
+                </a>
+
+
+            </div>
+
+
+            <div
+                class="attention-list"
+                id="listaVencimentos">
+
+                <div class="skeleton-row"></div>
+                <div class="skeleton-row"></div>
+                <div class="skeleton-row"></div>
+
+            </div>
+
+
+        </article>
+
+
+
+        <!-- ESTOQUE -->
+
+        <article class="dashboard-panel">
+
+
+            <div class="panel-heading">
+
+
+                <div>
+
+                    <p class="panel-eyebrow">
+                        Reposição
+                    </p>
+
+                    <h2>
+                        Estoque crítico
+                    </h2>
+
+                </div>
+
+
+                <a href="estoque.html">
+                    Abrir estoque
+                </a>
+
+
+            </div>
+
+
+            <div
+                class="attention-list"
+                id="listaEstoqueBaixo">
+
+                <div class="skeleton-row"></div>
+                <div class="skeleton-row"></div>
+                <div class="skeleton-row"></div>
+
+            </div>
+
+
+        </article>
+
+
+
+        <!-- ========================= -->
+<!-- ASSISTENTE IA -->
+<!-- ========================= -->
+
+<article class="dashboard-panel panel-wide ia-panel">
+
+    <div class="panel-heading">
+
+        <div>
+
+            <p class="panel-eyebrow">
+                Inteligência operacional
+            </p>
+
+            <h2>
+                Assistente IA
+            </h2>
+
+        </div>
+
+        <span class="panel-badge">
+            ● Online
+        </span>
+
+    </div>
+
+
+    <div class="ia-container">
+
+
+        <!-- MENSAGENS -->
+
+        <div
+            class="ia-messages"
+            id="iaMensagens">
+
+
+            <div class="ia-message ia-message-bot">
+
+
+                <div class="ia-avatar">
+                    🤖
+                </div>
+
+
+                <div class="ia-bubble">
+
+                    <strong>
+                        Olá, Alessandro! 👋
+                    </strong>
+
+
+                    <p>
+                        Sou a IA da Lotrix.
+                        Posso ajudar você com estoque,
+                        produções, etiquetas e informações
+                        operacionais.
+                    </p>
+
+
+                    <!-- PERGUNTAS RÁPIDAS -->
+
+                    <div class="ia-suggestions">
+
+
+                        <button
+                            type="button"
+                            onclick="perguntaRapida('Qual o estoque atual dos produtos?')">
+
+                            📦 Consultar estoque
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            onclick="perguntaRapida('Quais produtos estão próximos do vencimento?')">
+
+                            ⚠️ Ver vencimentos
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            onclick="perguntaRapida('Quais foram as últimas produções?')">
+
+                            ⚙️ Últimas produções
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            onclick="perguntaRapida('Faça um resumo da operação.')">
+
+                            📊 Resumo
+
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- RESPOSTA -->
+
+        <div id="respostaIA"></div>
+
+
+
+        <!-- CAMPO DA IA -->
+
+        <form
+            id="iaForm"
+            class="ia-form"
+            onsubmit="event.preventDefault(); perguntarIA();">
+
+
+            <input
+                type="text"
+                id="mensagemIA"
+                placeholder="Pergunte algo para a IA..."
+                autocomplete="off"
+            >
+
+
+            <button
+                type="submit"
+                id="iaEnviar">
+
+                <i data-lucide="send"></i>
+
+                Enviar
+
+            </button>
+
+
+        </form>
+
+
+    </div>
+
+
+</article>
+
+
+    </section>
+
+
+</main>
+
+
+
+<!-- ========================= -->
+<!-- SCRIPTS -->
+<!-- ========================= -->
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+</script>
+
+<!-- AUTENTICAÇÃO / USUÁRIO -->
+<script type="module" src="js/auth.js"></script>
+
+<!-- DASHBOARD -->
+<script type="module" src="js/dashboard.js"></script>
+
+<!-- INTELIGÊNCIA ARTIFICIAL -->
+<script src="js/ia.js"></script>
+
+</body>
+</html>
+
+
