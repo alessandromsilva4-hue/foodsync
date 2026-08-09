@@ -578,3 +578,28 @@
     border-radius:12px;
     font-weight:600;
 }
+/* =======================================
+   BOTÃO SAIR - SIDEBAR
+======================================= */
+
+.btn-logout {
+    margin-left: auto;
+    border: none;
+    background: transparent;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 6px;
+}
+
+.btn-logout:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+.btn-logout span {
+    font-size: 13px;
+}

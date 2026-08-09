@@ -1015,3 +1015,40 @@ error
 
 
 };
+// =======================================
+// BOTÃO SAIR
+// =======================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const btnLogout =
+        document.getElementById("btnLogout");
+
+    if (!btnLogout) {
+
+        console.log(
+            "BOTÃO SAIR NÃO ENCONTRADO NESTA PÁGINA"
+        );
+
+        return;
+
+    }
+
+    btnLogout.addEventListener(
+        "click",
+        async () => {
+
+            console.log(
+                "BOTÃO SAIR CLICADO"
+            );
+
+            await window.logout();
+
+        }
+    );
+
+    console.log(
+        "BOTÃO SAIR CONFIGURADO"
+    );
+
+});
