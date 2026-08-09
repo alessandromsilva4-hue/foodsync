@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <title>Migração de Produtos</title>
@@ -11,14 +12,13 @@
 
     <p id="status">Iniciando...</p>
 
-   <script type="module">
+    <script type="module">
+        import "./js/migrar-produtos.js";
 
-    import "./js/migrar-produtos.js";
-
-    document.getElementById("status").textContent =
-        "Migração executada. Verifique o Console (F12).";
-
-</script>
+        document.getElementById("status").textContent =
+            "Migração executada. Verifique o Console (F12).";
+    </script>
 
 </body>
+
 </html>
