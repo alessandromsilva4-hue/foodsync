@@ -1,0 +1,311 @@
+rules_version = '2';
+
+service cloud.firestore {
+
+  match /databases/{database}/documents {
+
+    // =====================================
+    // USUÁRIO LOGADO
+    // =====================================
+
+    function usuarioLogado() {
+      return request.auth != null;
+    }
+
+
+    // =====================================
+    // EMPRESA DO USUÁRIO
+    // =====================================
+
+    function idEmpresaUsuario() {
+
+      return get(
+        /databases/$(database)/documents/usuarios/$(request.auth.uid)
+      ).data.idEmpresa;
+
+    }
+
+
+    // =====================================
+    // USUÁRIO ATIVO
+    // =====================================
+
+    function usuarioAtivo() {
+
+      return usuarioLogado()
+        &&
+        get(
+          /databases/$(database)/documents/usuarios/$(request.auth.uid)
+        ).data.status == "ativo";
+
+    }
+
+// =====================================
+// PRODUTOS
+// =====================================
+
+match /produtos/{produtoId} {
+
+  allow read: if
+    usuarioAtivo()
+    &&
+    (
+      resource.data.idEmpresa == idEmpresaUsuario()
+      ||
+      (
+        resource.data.empresas is list
+        &&
+        idEmpresaUsuario() in resource.data.empresas
+      )
+    );
+
+
+  allow create: if
+    usuarioAtivo()
+    &&
+    (
+      request.resource.data.idEmpresa == idEmpresaUsuario()
+      ||
+      (
+        request.resource.data.empresas is list
+        &&
+        idEmpresaUsuario() in request.resource.data.empresas
+      )
+    );
+
+
+  allow update: if
+    usuarioAtivo()
+    &&
+    (
+      resource.data.idEmpresa == idEmpresaUsuario()
+      ||
+      (
+        resource.data.empresas is list
+        &&
+        idEmpresaUsuario() in resource.data.empresas
+      )
+    )
+    &&
+    (
+      request.resource.data.idEmpresa == idEmpresaUsuario()
+      ||
+      (
+        request.resource.data.empresas is list
+        &&
+        idEmpresaUsuario() in request.resource.data.empresas
+      )
+    );
+
+
+  allow delete: if
+    usuarioAtivo()
+    &&
+    (
+      resource.data.idEmpresa == idEmpresaUsuario()
+      ||
+      (
+        resource.data.empresas is list
+        &&
+        idEmpresaUsuario() in resource.data.empresas
+      )
+    );
+
+}
+
+
+    // =====================================
+    // ESTOQUE
+    // =====================================
+
+    match /estoque/{estoqueId} {
+
+      allow read: if
+        usuarioAtivo()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      allow create: if
+        usuarioAtivo()
+        &&
+        request.resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      allow update: if
+        usuarioAtivo()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario()
+        &&
+        request.resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      allow delete: if
+        usuarioAtivo()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario();
+
+    }
+
+
+    // =====================================
+    // PRODUÇÕES
+    // =====================================
+
+    match /producoes/{producaoId} {
+
+      allow read: if
+        usuarioAtivo()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      allow create: if
+        usuarioAtivo()
+        &&
+        request.resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      allow update: if
+        usuarioAtivo()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario()
+        &&
+        request.resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      allow delete: if
+        usuarioAtivo()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario();
+
+    }
+
+
+    // =====================================
+    // MOVIMENTAÇÕES
+    // =====================================
+
+    match /movimentacoes/{movimentacaoId} {
+
+      allow read: if
+        usuarioAtivo()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      allow create: if
+        usuarioAtivo()
+        &&
+        request.resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      allow update: if
+        usuarioAtivo()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario()
+        &&
+        request.resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      allow delete: if
+        usuarioAtivo()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario();
+
+    }
+
+
+    // =====================================
+    // ETIQUETAS
+    // =====================================
+
+    match /etiquetas/{etiquetaId} {
+
+      allow read: if
+        usuarioAtivo()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      allow create: if
+        usuarioAtivo()
+        &&
+        request.resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      allow update: if
+        usuarioAtivo()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario()
+        &&
+        request.resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      allow delete: if
+        usuarioAtivo()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario();
+
+    }
+
+
+    // =====================================
+    // AUDITORIA
+    // =====================================
+
+    match /auditoria/{auditoriaId} {
+
+      allow read: if
+        usuarioAtivo()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      allow create: if
+        usuarioAtivo()
+        &&
+        request.resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      allow update: if
+        usuarioAtivo()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      allow delete: if
+        usuarioAtivo()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario();
+
+    }
+
+
+    // =====================================
+    // USUÁRIOS
+    // =====================================
+
+    match /usuarios/{userId} {
+
+      allow read: if
+        usuarioLogado()
+        &&
+        request.auth.uid == userId;
+
+    }
+
+
+    // =====================================
+    // BLOQUEAR RESTANTE
+    // =====================================
+
+    match /{document=**} {
+
+      allow read, write: if false;
+
+    }
+
+  }
+
+}

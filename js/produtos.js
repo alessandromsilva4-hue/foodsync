@@ -1,8 +1,9 @@
-console.log("PRODUTOS.JS CARREGADO");
+console.log("PRODUTOS.JS V6 MULTIEMPRESA CARREGADO");
 
 // =======================================
-// LOTRIX
-// PRODUTOS - FIRESTORE - MULTIEMPRESA
+// LOTRIX V6
+// PRODUTOS - FIRESTORE
+// SEPARAÇÃO TOTAL POR EMPRESA
 // =======================================
 
 import { db } from "./firebase.js";
@@ -18,7 +19,9 @@ import {
     doc,
     deleteDoc,
     updateDoc,
-    serverTimestamp
+    serverTimestamp,
+    query,
+    where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
@@ -26,14 +29,63 @@ import {
 // USUÁRIO / EMPRESA LOGADA
 // =======================================
 
-const usuarioLogado = JSON.parse(
-    localStorage.getItem("usuarioFoodSync")
-);
+function obterUsuarioLogado() {
 
-const idEmpresa = usuarioLogado?.idEmpresa;
+    try {
 
-console.log("USUÁRIO LOGADO:", usuarioLogado);
-console.log("EMPRESA DO USUÁRIO:", idEmpresa);
+        const dados =
+            localStorage.getItem("usuarioFoodSync");
+
+        if (!dados) {
+            return null;
+        }
+
+        return JSON.parse(dados);
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao carregar usuário:",
+            error
+        );
+
+        return null;
+    }
+}
+
+
+// =======================================
+// EMPRESA ATUAL
+// =======================================
+
+function obterIdEmpresa() {
+
+    const usuario =
+        obterUsuarioLogado();
+
+    const idEmpresa =
+        usuario?.idEmpresa || "";
+
+    console.log(
+        "USUÁRIO LOGADO:",
+        usuario
+    );
+
+    console.log(
+        "EMPRESA ATUAL:",
+        idEmpresa
+    );
+
+    return idEmpresa;
+}
+
+
+// =======================================
+// ID DA EMPRESA
+// =======================================
+
+const idEmpresa =
+    obterIdEmpresa();
 
 
 // =======================================
@@ -43,7 +95,7 @@ console.log("EMPRESA DO USUÁRIO:", idEmpresa);
 if (!idEmpresa) {
 
     console.error(
-        "ERRO: Usuário não possui idEmpresa."
+        "ERRO: usuário não possui idEmpresa."
     );
 
 }
@@ -54,14 +106,19 @@ if (!idEmpresa) {
 // =======================================
 
 const formulario =
-    document.getElementById("produtoForm");
+    document.getElementById(
+        "produtoForm"
+    );
 
 const tabela =
-    document.getElementById("listaProdutos");
+    document.getElementById(
+        "listaProdutos"
+    );
 
 const pesquisa =
-    document.getElementById("pesquisaProduto");
-
+    document.getElementById(
+        "pesquisaProduto"
+    );
 
 let produtos = [];
 
@@ -75,12 +132,16 @@ let produtoEditando = null;
 window.abrirModalProduto = function () {
 
     const modal =
-        document.getElementById("modalProduto");
+        document.getElementById(
+            "modalProduto"
+        );
 
     if (modal) {
-        modal.classList.add("active");
-    }
 
+        modal.classList.add(
+            "active"
+        );
+    }
 };
 
 
@@ -91,24 +152,29 @@ window.abrirModalProduto = function () {
 window.fecharModalProduto = function () {
 
     const modal =
-        document.getElementById("modalProduto");
+        document.getElementById(
+            "modalProduto"
+        );
 
     if (modal) {
-        modal.classList.remove("active");
+
+        modal.classList.remove(
+            "active"
+        );
     }
 
     produtoEditando = null;
 
     if (formulario) {
+
         formulario.reset();
     }
-
 };
 
 
 // =======================================
 // CARREGAR PRODUTOS
-// EMPRESA LOGADA + COMPARTILHADOS
+// SOMENTE EMPRESA ATUAL
 // =======================================
 
 async function carregarProdutos() {
@@ -116,7 +182,7 @@ async function carregarProdutos() {
     if (!idEmpresa) {
 
         console.error(
-            "Não foi possível carregar produtos: idEmpresa não encontrado."
+            "Não foi possível carregar produtos: empresa não identificada."
         );
 
         mostrarProdutos([]);
@@ -127,14 +193,34 @@ async function carregarProdutos() {
 
     try {
 
+        console.log(
+            "CARREGANDO PRODUTOS DA EMPRESA:",
+            idEmpresa
+        );
+
+
+        const consulta =
+            query(
+                collection(
+                    db,
+                    "produtos"
+                ),
+                where(
+                    "idEmpresa",
+                    "==",
+                    idEmpresa
+                )
+            );
+
+
         const snapshot =
             await getDocs(
-                collection(db, "produtos")
+                consulta
             );
 
 
         console.log(
-            "TOTAL PRODUTOS FIREBASE:",
+            "PRODUTOS ENCONTRADOS PARA EMPRESA:",
             snapshot.size
         );
 
@@ -142,68 +228,41 @@ async function carregarProdutos() {
         produtos = [];
 
 
-        snapshot.forEach((docSnap) => {
+        snapshot.forEach(
+            (docSnap) => {
 
-            const dados = docSnap.data();
+                const dados =
+                    docSnap.data();
 
-
-            console.log(
-                "PRODUTO ENCONTRADO:",
-                dados
-            );
-
-
-            // =======================================
-            // EMPRESAS DO PRODUTO
-            // =======================================
-
-            const empresas =
-                Array.isArray(dados.empresas)
-                    ? dados.empresas
-                    : (
-                        dados.idEmpresa
-                            ? [dados.idEmpresa]
-                            : []
-                    );
-
-
-            // =======================================
-            // VERIFICAR SE PERTENCE À EMPRESA
-            // =======================================
-
-            if (
-                empresas.includes(idEmpresa)
-            ) {
 
                 produtos.push({
 
-                    id: docSnap.id,
+                    id:
+                        docSnap.id,
 
-                    ...dados,
-
-                    empresas: empresas
+                    ...dados
 
                 });
 
             }
-
-        });
+        );
 
 
         console.log(
-            "PRODUTOS DA EMPRESA:",
+            "PRODUTOS DA EMPRESA ATUAL:",
             produtos
         );
 
 
-        mostrarProdutos(produtos);
+        mostrarProdutos(
+            produtos
+        );
 
 
-    }
-    catch (error) {
+    } catch (error) {
 
         console.error(
-            "Erro carregar produtos:",
+            "Erro ao carregar produtos:",
             error
         );
 
@@ -212,9 +271,7 @@ async function carregarProdutos() {
             "Erro ao carregar produtos.",
             "erro"
         );
-
     }
-
 }
 
 
@@ -224,16 +281,10 @@ async function carregarProdutos() {
 
 function mostrarProdutos(lista) {
 
-    console.log(
-        "DADOS PARA TABELA:",
-        lista,
-        "Quantidade:",
-        lista ? lista.length : "sem lista"
-    );
-
-
     const tabela =
-        document.getElementById("listaProdutos");
+        document.getElementById(
+            "listaProdutos"
+        );
 
 
     if (!tabela) {
@@ -249,7 +300,10 @@ function mostrarProdutos(lista) {
     tabela.innerHTML = "";
 
 
-    if (!lista || lista.length === 0) {
+    if (
+        !lista ||
+        lista.length === 0
+    ) {
 
         tabela.innerHTML = `
 
@@ -269,82 +323,81 @@ function mostrarProdutos(lista) {
     }
 
 
-    lista.forEach((p) => {
+    lista.forEach(
+        (p) => {
 
-        const status =
+            const status =
 
-            p.status === "ativo"
+                p.status === "ativo"
 
-                ?
+                    ?
 
-                `<span class="status-ativo">
-                    Ativo
-                </span>`
+                    `<span class="status-ativo">
+                        Ativo
+                    </span>`
 
-                :
+                    :
 
-                `<span class="status-inativo">
-                    Inativo
-                </span>`;
-
-
-        tabela.innerHTML += `
-
-            <tr>
-
-                <td>
-                    ${p.codigo || ""}
-                </td>
-
-                <td>
-                    ${p.nome || ""}
-                </td>
-
-                <td>
-                    ${p.categoria || ""}
-                </td>
-
-                <td>
-                    ${p.grupo || ""}
-                </td>
-
-                <td>
-                    ${p.unidade || ""}
-                </td>
-
-                <td>
-                    ${p.validadeDias || 0}
-                </td>
-
-                <td>
-                    ${status}
-                </td>
-
-                <td>
-
-                    <button
-                        type="button"
-                        onclick="editarProduto('${p.id}')"
-                    >
-                        ✏️
-                    </button>
+                    `<span class="status-inativo">
+                        Inativo
+                    </span>`;
 
 
-                    <button
-                        type="button"
-                        onclick="excluirProduto('${p.id}')"
-                    >
-                        🗑️
-                    </button>
+            tabela.innerHTML += `
 
-                </td>
+                <tr>
 
-            </tr>
+                    <td>
+                        ${p.codigo || ""}
+                    </td>
 
-        `;
+                    <td>
+                        ${p.nome || ""}
+                    </td>
 
-    });
+                    <td>
+                        ${p.categoria || ""}
+                    </td>
 
+                    <td>
+                        ${p.grupo || ""}
+                    </td>
+
+                    <td>
+                        ${p.unidade || ""}
+                    </td>
+
+                    <td>
+                        ${p.validadeDias || 0}
+                    </td>
+
+                    <td>
+                        ${status}
+                    </td>
+
+                    <td>
+
+                        <button
+                            type="button"
+                            onclick="editarProduto('${p.id}')"
+                        >
+                            ✏️
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="excluirProduto('${p.id}')"
+                        >
+                            🗑️
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+        }
+    );
 }
 
 
@@ -362,10 +415,6 @@ if (formulario) {
 
             e.preventDefault();
 
-
-            // =======================================
-            // VERIFICAR EMPRESA
-            // =======================================
 
             if (!idEmpresa) {
 
@@ -386,80 +435,132 @@ if (formulario) {
 
             const dados = {
 
+                // =================================
+                // EMPRESA
+                // =================================
+
+                idEmpresa:
+
+
+                    idEmpresa,
+
+
+                // =================================
+                // DADOS DO PRODUTO
+                // =================================
+
                 codigo:
+
                     document
-                        .getElementById("codigoProduto")
+                        .getElementById(
+                            "codigoProduto"
+                        )
                         .value
                         .trim(),
 
 
                 nome:
+
                     document
-                        .getElementById("nomeProduto")
+                        .getElementById(
+                            "nomeProduto"
+                        )
                         .value
                         .trim(),
 
 
                 categoria:
+
                     document
-                        .getElementById("categoriaProduto")
+                        .getElementById(
+                            "categoriaProduto"
+                        )
                         .value,
 
 
                 grupo:
+
                     document
-                        .getElementById("grupoProduto")
+                        .getElementById(
+                            "grupoProduto"
+                        )
                         .value,
 
 
                 unidade:
+
                     document
-                        .getElementById("unidadeProduto")
+                        .getElementById(
+                            "unidadeProduto"
+                        )
                         .value,
 
 
                 validadeDias:
+
                     Number(
+
                         document
-                            .getElementById("validadeProduto")
+                            .getElementById(
+                                "validadeProduto"
+                            )
                             .value
+
                     ),
 
 
                 temperatura:
+
                     document
-                        .getElementById("temperaturaProduto")
+                        .getElementById(
+                            "temperaturaProduto"
+                        )
                         .value,
 
 
                 setor:
+
                     document
-                        .getElementById("setorProduto")
+                        .getElementById(
+                            "setorProduto"
+                        )
                         .value,
 
 
                 estoqueMinimo:
+
                     Number(
+
                         document
-                            .getElementById("estoqueMinimoProduto")
+                            .getElementById(
+                                "estoqueMinimoProduto"
+                            )
                             .value
+
                     ),
 
 
                 status:
+
                     document
-                        .getElementById("statusProduto")
+                        .getElementById(
+                            "statusProduto"
+                        )
                         .value,
 
 
                 observacao:
+
                     document
-                        .getElementById("observacaoProduto")
+                        .getElementById(
+                            "observacaoProduto"
+                        )
                         .value
                         .trim(),
 
 
                 atualizadoEm:
+
                     serverTimestamp()
 
             };
@@ -467,15 +568,17 @@ if (formulario) {
 
             try {
 
-                // =======================================
-                // EDITAR PRODUTO
-                // =======================================
+                // =================================
+                // EDITAR
+                // =================================
 
                 if (produtoEditando) {
 
                     const produto =
                         produtos.find(
-                            p => p.id === produtoEditando
+                            p =>
+                                p.id ===
+                                produtoEditando
                         );
 
 
@@ -490,23 +593,22 @@ if (formulario) {
                     }
 
 
-                    const empresas =
-                        Array.isArray(produto.empresas)
-                            ? [...produto.empresas]
-                            : [idEmpresa];
+                    // =================================
+                    // SEGURANÇA
+                    // =================================
 
+                    if (
+                        produto.idEmpresa !==
+                        idEmpresa
+                    ) {
 
-                    // Garante que a empresa atual
-                    // continue vinculada
+                        mostrarToast(
+                            "Este produto não pertence à empresa atual.",
+                            "erro"
+                        );
 
-                    if (!empresas.includes(idEmpresa)) {
-
-                        empresas.push(idEmpresa);
-
+                        return;
                     }
-
-
-                    dados.empresas = empresas;
 
 
                     await updateDoc(
@@ -529,16 +631,11 @@ if (formulario) {
                 }
 
 
-                // =======================================
+                // =================================
                 // NOVO PRODUTO
-                // =======================================
+                // =================================
 
                 else {
-
-                    dados.empresas = [
-                        idEmpresa
-                    ];
-
 
                     dados.criadoEm =
                         serverTimestamp();
@@ -557,7 +654,7 @@ if (formulario) {
 
 
                     console.log(
-                        "NOVO PRODUTO VINCULADO À EMPRESA:",
+                        "NOVO PRODUTO CRIADO PARA EMPRESA:",
                         idEmpresa
                     );
 
@@ -565,7 +662,6 @@ if (formulario) {
                     mostrarToast(
                         "Produto cadastrado com sucesso!"
                     );
-
                 }
 
 
@@ -575,11 +671,10 @@ if (formulario) {
                 await carregarProdutos();
 
 
-            }
-            catch (error) {
+            } catch (error) {
 
                 console.error(
-                    "Erro salvar produto:",
+                    "Erro ao salvar produto:",
                     error
                 );
 
@@ -588,13 +683,9 @@ if (formulario) {
                     "Erro ao salvar produto.",
                     "erro"
                 );
-
             }
-
         }
-
     );
-
 }
 
 
@@ -606,7 +697,8 @@ window.editarProduto = function (id) {
 
     const produto =
         produtos.find(
-            p => p.id === id
+            p =>
+                p.id === id
         );
 
 
@@ -622,17 +714,12 @@ window.editarProduto = function (id) {
 
 
     // =======================================
-    // GARANTIR EMPRESA CORRETA
+    // SEGURANÇA MULTIEMPRESA
     // =======================================
 
-    const empresas =
-        Array.isArray(produto.empresas)
-            ? produto.empresas
-            : [];
-
-
     if (
-        !empresas.includes(idEmpresa)
+        produto.idEmpresa !==
+        idEmpresa
     ) {
 
         mostrarToast(
@@ -644,7 +731,8 @@ window.editarProduto = function (id) {
     }
 
 
-    produtoEditando = id;
+    produtoEditando =
+        id;
 
 
     document.getElementById(
@@ -714,7 +802,6 @@ window.editarProduto = function (id) {
 
 
     abrirModalProduto();
-
 };
 
 
@@ -736,7 +823,8 @@ window.excluirProduto = async function (id) {
 
     const produto =
         produtos.find(
-            p => p.id === id
+            p =>
+                p.id === id
         );
 
 
@@ -751,18 +839,17 @@ window.excluirProduto = async function (id) {
     }
 
 
-    const empresas =
-        Array.isArray(produto.empresas)
-            ? [...produto.empresas]
-            : [];
-
+    // =======================================
+    // SEGURANÇA MULTIEMPRESA
+    // =======================================
 
     if (
-        !empresas.includes(idEmpresa)
+        produto.idEmpresa !==
+        idEmpresa
     ) {
 
         mostrarToast(
-            "Produto não pertence à empresa atual.",
+            "Este produto não pertence à empresa atual.",
             "erro"
         );
 
@@ -772,79 +859,29 @@ window.excluirProduto = async function (id) {
 
     try {
 
-        // =======================================
-        // PRODUTO COMPARTILHADO
-        // =======================================
+        await deleteDoc(
 
-        if (empresas.length > 1) {
+            doc(
+                db,
+                "produtos",
+                id
+            )
 
-            const novasEmpresas =
-                empresas.filter(
-                    empresa =>
-                        empresa !== idEmpresa
-                );
+        );
 
 
-            await updateDoc(
-
-                doc(
-                    db,
-                    "produtos",
-                    id
-                ),
-
-                {
-
-                    empresas:
-                        novasEmpresas,
-
-                    atualizadoEm:
-                        serverTimestamp()
-
-                }
-
-            );
-
-
-            mostrarToast(
-                "Produto removido da empresa atual."
-            );
-
-        }
-
-
-        // =======================================
-        // PRODUTO EXCLUSIVO
-        // =======================================
-
-        else {
-
-            await deleteDoc(
-
-                doc(
-                    db,
-                    "produtos",
-                    id
-                )
-
-            );
-
-
-            mostrarToast(
-                "Produto excluído com sucesso!"
-            );
-
-        }
+        mostrarToast(
+            "Produto excluído com sucesso!"
+        );
 
 
         await carregarProdutos();
 
 
-    }
-    catch (error) {
+    } catch (error) {
 
         console.error(
-            "Erro excluir produto:",
+            "Erro ao excluir produto:",
             error
         );
 
@@ -853,9 +890,7 @@ window.excluirProduto = async function (id) {
             "Erro ao excluir produto.",
             "erro"
         );
-
     }
-
 };
 
 
@@ -880,7 +915,9 @@ if (pesquisa) {
 
             if (texto === "") {
 
-                mostrarProdutos(produtos);
+                mostrarProdutos(
+                    produtos
+                );
 
                 return;
             }
@@ -893,11 +930,27 @@ if (pesquisa) {
 
                         return (
 
-                            p.nome &&
+                            (
+                                p.nome || ""
+                            )
+                            .toLowerCase()
+                            .includes(texto)
 
-                            p.nome
-                                .toLowerCase()
-                                .includes(texto)
+                            ||
+
+                            (
+                                p.codigo || ""
+                            )
+                            .toLowerCase()
+                            .includes(texto)
+
+                            ||
+
+                            (
+                                p.categoria || ""
+                            )
+                            .toLowerCase()
+                            .includes(texto)
 
                         );
 
@@ -905,12 +958,11 @@ if (pesquisa) {
                 );
 
 
-            mostrarProdutos(resultado);
-
+            mostrarProdutos(
+                resultado
+            );
         }
-
     );
-
 }
 
 
@@ -924,8 +976,26 @@ document.addEventListener(
 
     () => {
 
+        console.log(
+            "INICIANDO PRODUTOS V6..."
+        );
+
+
+        if (!idEmpresa) {
+
+            mostrarProdutos([]);
+
+            return;
+        }
+
+
         carregarProdutos();
 
     }
 
+);
+
+
+console.log(
+    "PRODUTOS.JS V6 PRONTO"
 );

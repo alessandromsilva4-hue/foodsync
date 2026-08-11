@@ -38,8 +38,251 @@ console.log("AUTH.JS CARREGADO");
 
 
 
+// =======================================
+// LOTRIX - EMPRESA ATIVA
+// ADMINISTRADOR PODE ALTERNAR ENTRE EMPRESAS
+// =======================================
 
+const EMPRESAS_LOTRIX = [
+    {
+        idEmpresa: "empresa1",
+        nome: "Izu",
+        nomeCompleto: "Izu Japanes"
+    },
+    {
+        idEmpresa: "empresa2",
+        nome: "Engenho",
+        nomeCompleto: "Engenho Restaurante"
+    }
+];
 
+// =======================================
+// OBTER EMPRESA ATIVA
+// =======================================
+
+function obterEmpresaAtiva() {
+
+    const empresaSalva =
+        localStorage.getItem("empresaAtivaLotrix");
+
+    if (
+        empresaSalva === "empresa1" ||
+        empresaSalva === "empresa2"
+    ) {
+        return empresaSalva;
+    }
+
+    // Primeira empresa como padrão
+    localStorage.setItem(
+        "empresaAtivaLotrix",
+        "empresa1"
+    );
+
+    return "empresa1";
+}
+
+// =======================================
+// DEFINIR EMPRESA ATIVA
+// =======================================
+
+window.definirEmpresaAtiva = function(idEmpresa) {
+
+    const usuario =
+        JSON.parse(
+            localStorage.getItem("usuarioFoodSync")
+        );
+
+    if (!usuario) {
+        alert("Usuário não encontrado.");
+        return;
+    }
+
+    // Somente administrador pode trocar empresa
+    if (
+        (usuario.perfil || "").toLowerCase() !==
+        "administrador"
+    ) {
+        alert(
+            "Somente administradores podem trocar de empresa."
+        );
+        return;
+    }
+
+    const empresa =
+        EMPRESAS_LOTRIX.find(
+            item =>
+                item.idEmpresa === idEmpresa
+        );
+
+    if (!empresa) {
+        alert("Empresa inválida.");
+        return;
+    }
+
+    localStorage.setItem(
+        "empresaAtivaLotrix",
+        empresa.idEmpresa
+    );
+
+    console.log(
+        "EMPRESA ATIVA ALTERADA:",
+        empresa
+    );
+
+    // Atualiza a página para carregar os dados
+    // somente da empresa selecionada
+    window.location.reload();
+};
+
+// =======================================
+// MOSTRAR EMPRESA ATIVA
+// =======================================
+
+function mostrarEmpresaAtiva(usuario) {
+
+    const existente =
+        document.getElementById(
+            "seletorEmpresaLotrix"
+        );
+
+    if (existente) {
+        existente.remove();
+    }
+
+    const logoArea =
+        document.querySelector(
+            ".logo-area"
+        );
+
+    if (!logoArea) {
+        console.warn(
+            "Logo area não encontrada."
+        );
+        return;
+    }
+
+    const empresaAtiva =
+        obterEmpresaAtiva();
+
+    const empresa =
+        EMPRESAS_LOTRIX.find(
+            item =>
+                item.idEmpresa ===
+                empresaAtiva
+        );
+
+    if (!empresa) {
+        return;
+    }
+
+    const container =
+        document.createElement("div");
+
+    container.id =
+        "seletorEmpresaLotrix";
+
+    container.style.margin =
+        "8px 15px 12px";
+
+    container.style.padding =
+        "8px";
+
+    container.style.borderRadius =
+        "8px";
+
+    container.style.background =
+        "rgba(255,255,255,0.08)";
+
+    if (
+        (usuario.perfil || "").toLowerCase() ===
+        "administrador"
+    ) {
+
+        container.innerHTML = `
+            <div style="
+                font-size:10px;
+                opacity:.65;
+                margin-bottom:4px;
+                letter-spacing:.5px;
+            ">
+                EMPRESA ATIVA
+            </div>
+
+            <select
+                id="empresaAtivaSelect"
+                style="
+                    width:100%;
+                    box-sizing:border-box;
+                    padding:7px 8px;
+                    border-radius:6px;
+                    border:none;
+                    outline:none;
+                    background:#fff;
+                    color:#111827;
+                    font-size:13px;
+                    cursor:pointer;
+                "
+            >
+                ${EMPRESAS_LOTRIX.map(item => `
+                    <option
+                        value="${item.idEmpresa}"
+                        ${
+                            item.idEmpresa ===
+                            empresaAtiva
+                                ? "selected"
+                                : ""
+                        }
+                    >
+                        ${item.nome}
+                    </option>
+                `).join("")}
+            </select>
+        `;
+
+        // Coloca DEPOIS do logo
+        logoArea.after(container);
+
+        const select =
+            document.getElementById(
+                "empresaAtivaSelect"
+            );
+
+        if (select) {
+
+            select.addEventListener(
+                "change",
+                function() {
+
+                    definirEmpresaAtiva(
+                        this.value
+                    );
+
+                }
+            );
+        }
+
+    } else {
+
+        container.innerHTML = `
+            <div style="
+                font-size:10px;
+                opacity:.65;
+                margin-bottom:3px;
+                letter-spacing:.5px;
+            ">
+                EMPRESA
+            </div>
+
+            <strong style="
+                font-size:13px;
+            ">
+                ${empresa.nome}
+            </strong>
+        `;
+
+        logoArea.after(container);
+    }
+}
 
 // =======================================
 // REGISTRAR AUDITORIA
@@ -486,7 +729,12 @@ status:
 dados.status,
 
 idEmpresa:
-dados.idEmpresa || "",
+(
+    (dados.perfil || "").toLowerCase() ===
+    "administrador"
+)
+    ? obterEmpresaAtiva()
+    : (dados.idEmpresa || ""),
 
 permissoes:
 dados.permissoes || {}
@@ -665,7 +913,7 @@ if(usuario){
 
     atualizarUsuarioTela(usuario);
 
-
+    mostrarEmpresaAtiva(usuario);
 
     if(
     !sessionStorage.getItem(
