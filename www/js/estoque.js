@@ -404,8 +404,8 @@ async function carregarProdutos() {
                     "produtos"
                 ),
                 where(
-                    "empresas",
-                    "array-contains",
+                    "idEmpresa",
+                    "==",
                     idEmpresa
                 )
             );

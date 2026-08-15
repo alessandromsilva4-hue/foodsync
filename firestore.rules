@@ -55,27 +55,27 @@ service cloud.firestore {
       allow read: if
         usuarioAtivo()
         &&
-        idEmpresaUsuario() in resource.data.empresas;
+        resource.data.idEmpresa == idEmpresaUsuario();
 
 
       allow create: if
         usuarioAtivo()
         &&
-        idEmpresaUsuario() in request.resource.data.empresas;
+        request.resource.data.idEmpresa == idEmpresaUsuario();
 
 
       allow update: if
         usuarioAtivo()
         &&
-        idEmpresaUsuario() in resource.data.empresas
+        resource.data.idEmpresa == idEmpresaUsuario()
         &&
-        idEmpresaUsuario() in request.resource.data.empresas;
+        request.resource.data.idEmpresa == idEmpresaUsuario();
 
 
       allow delete: if
         usuarioAtivo()
         &&
-        idEmpresaUsuario() in resource.data.empresas;
+        resource.data.idEmpresa == idEmpresaUsuario();
     }
 
 
