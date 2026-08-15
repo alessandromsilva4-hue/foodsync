@@ -1748,21 +1748,41 @@ async function loadDashboard() {
 
     const etiquetasHoje =
 
-        labels.filter(
+        labels
 
-            item =>
+            .filter(
 
-                isToday(
+                item =>
 
-                    item.criadoEm ||
+                    isToday(
 
-                    item.dataEtiqueta ||
+                        item.criadoEm ||
 
-                    item.dataProducao
+                        item.dataEtiqueta ||
 
-                )
+                        item.dataProducao
 
-        ).length;
+                    )
+
+            )
+
+            .reduce(
+
+                (total, item) => {
+
+                    const quantidade =
+                        Number(item.quantidade);
+
+                    return total +
+                        (Number.isFinite(quantidade) && quantidade > 0
+                            ? quantidade
+                            : 1);
+
+                },
+
+                0
+
+            );
 
 
     const vencendoHoje =
