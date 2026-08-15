@@ -7,12 +7,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-<title>Lotrix - Usuários</title>
-
+<title>Lotrix - Usu?rios</title>
 
 <link rel="icon" href="img/favicon.png">
-
 
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/dashboard.css">
@@ -20,334 +17,542 @@
 <link rel="stylesheet" href="css/formulario.css">
 <link rel="stylesheet" href="css/tabela.css">
 
-
 </head>
 
-
 <body>
-
 
 <div class="layout">
 
 
-<!-- SIDEBAR -->
+<!-- ==========================================
+     SIDEBAR
+========================================== -->
 
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
+
+
+    <!-- BOT?O FECHAR -->
+
+    <button
+        type="button"
+        class="sidebar-close"
+        id="sidebarClose"
+        aria-label="Fechar menu">
+
+        ?
+
+    </button>
+
+
+    <!-- LOGO -->
 
     <div class="logo-area">
-        <img src="img/logo.png" alt="Lotrix">
-        <h2>LOTRIX</h2>
-        <small>Food Safety Platform</small>
+
+        <img
+            src="img/logo.png"
+            alt="Lotrix">
+
+        <h2>
+            LOTRIX
+        </h2>
+
+        <small>
+            Food Safety Platform
+        </small>
+
     </div>
+
+
+    <!-- MENU -->
 
     <nav class="menu">
 
+
+        <!-- GERAL -->
+
         <div class="menu-section">
-            <span class="menu-title">GERAL</span>
+
+            <span class="menu-title">
+                GERAL
+            </span>
+
 
             <a href="dashboard.html">
-                <span>🏠</span>
-                <span class="nav-label">Dashboard</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Dashboard
+                </span>
+
             </a>
+
         </div>
 
+
+        <!-- OPERA??O -->
+
         <div class="menu-section">
-            <span class="menu-title">OPERAÇÃO</span>
+
+            <span class="menu-title">
+                OPERA??O
+            </span>
+
 
             <a href="producao.html">
-                <span>⚙️</span>
-                <span class="nav-label">Produção</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Produ??o
+                </span>
+
             </a>
+
 
             <a href="produtos.html">
-                <span>📦</span>
-                <span class="nav-label">Produtos</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Produtos
+                </span>
+
             </a>
+
 
             <a href="etiquetas.html">
-                <span>🏷️</span>
-                <span class="nav-label">Etiquetas</span>
+
+                <span>???</span>
+
+                <span class="nav-label">
+                    Etiquetas
+                </span>
+
             </a>
+
 
             <a href="estoque.html">
-                <span>📚</span>
-                <span class="nav-label">Estoque</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Estoque
+                </span>
+
             </a>
+
         </div>
 
+
+        <!-- GEST?O -->
+
         <div class="menu-section">
-            <span class="menu-title">GESTÃO</span>
+
+            <span class="menu-title">
+                GEST?O
+            </span>
+
 
             <a href="relatorios.html">
-                <span>📈</span>
-                <span class="nav-label">Relatórios</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Relat?rios
+                </span>
+
             </a>
+
 
             <a href="auditoria.html">
-                <span>📝</span>
-                <span class="nav-label">Auditoria</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Auditoria
+                </span>
+
             </a>
 
-            <a href="usuario.html" class="active">
-    <span>👥</span>
-    <span class="nav-label">Usuários</span>
-</a>
+
+            <!-- USU?RIOS ATIVO -->
+
+            <a
+                href="usuario.html"
+                class="active">
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Usu?rios
+                </span>
+
+            </a>
+
         </div>
 
+
+        <!-- SISTEMA -->
+
         <div class="menu-section">
-            <span class="menu-title">SISTEMA</span>
+
+            <span class="menu-title">
+                SISTEMA
+            </span>
+
 
             <a href="configuracoes.html">
-                <span>⚙️</span>
-                <span class="nav-label">Configurações</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Configura??es
+                </span>
+
             </a>
+
 
             <a href="ajuda.html">
-                <span>❓</span>
-                <span class="nav-label">Ajuda</span>
+
+                <span>?</span>
+
+                <span class="nav-label">
+                    Ajuda
+                </span>
+
             </a>
 
+
             <a href="sac.html">
-                <span>🎧</span>
-                <span class="nav-label">SAC</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    SAC
+                </span>
+
             </a>
+
         </div>
 
     </nav>
 
+
+    <!-- USU?RIO LOGADO -->
+
     <div class="sidebar-footer">
 
-    <div class="user-card">
 
-    <div class="avatar">
-        👤
-    </div>
+        <div class="user-card">
 
-    <div>
-        <strong id="nomeUsuarioLogado">
-            Usuário
-        </strong>
 
-        <small id="perfilUsuarioLogado">
-            Carregando...
-        </small>
-    </div>
+            <div class="avatar">
+                ??
+            </div>
 
-</div>
+
+            <div>
+
+                <strong id="nomeUsuarioLogado">
+                    Usu?rio
+                </strong>
+
+
+                <small id="perfilUsuarioLogado">
+                    Carregando...
+                </small>
+
+            </div>
+
+
+        </div>
+
 
         <button onclick="logout()">
-            🚪 Sair
+
+            ?? Sair
+
         </button>
+
 
     </div>
 
 </aside>
 
 
+<!-- ==========================================
+     FUNDO ESCURO
+========================================== -->
+
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay">
+</div>
 
 
-<!-- CONTEÚDO -->
+<!-- ==========================================
+     CONTE?DO
+========================================== -->
 
 <main class="content">
 
 
+    <!-- BOT?O MENU -->
 
-<header class="top-header">
+    <button
+        type="button"
+        class="menu-toggle"
+        id="menuToggle"
+        aria-label="Abrir menu"
+        aria-expanded="false">
 
-<div>
+        ?
 
-<p class="header-kicker">
-GESTÃO
-</p>
+    </button>
 
-<h1>
-Usuários
-</h1>
 
-<p>
-Gerencie os usuários e permissões do sistema.
-</p>
+    <!-- ==========================================
+         CABE?ALHO
+    =========================================== -->
 
-</div>
+    <header class="top-header">
 
 
-<button id="btnNovoUsuario" class="btn-primary">
-➕ Novo Usuário
-</button>
+        <div>
 
+            <p class="header-kicker">
+                GEST?O
+            </p>
 
-</header>
 
+            <h1>
+                ?? Usu?rios
+            </h1>
 
 
+            <p>
+                Gerencie os usu?rios e permiss?es do sistema.
+            </p>
 
+        </div>
 
-<!-- CARDS -->
 
-<section class="cards">
+        <button
+            id="btnNovoUsuario"
+            class="btn-primary">
 
+            ? Novo Usu?rio
 
-<div class="card">
+        </button>
 
-<div class="card-icon">
-👥
-</div>
 
-<div>
+    </header>
 
-<h3>
-Total
-</h3>
 
-<strong id="cardTotal">
-0
-</strong>
+    <!-- ==========================================
+         CARDS
+    =========================================== -->
 
-</div>
+    <section class="cards">
 
-</div>
 
+        <div class="card">
 
+            <div class="card-icon">
+                ??
+            </div>
 
-<div class="card">
+            <div>
 
-<div class="card-icon">
-👑
-</div>
+                <h3>
+                    Total
+                </h3>
 
-<div>
+                <strong id="cardTotal">
+                    0
+                </strong>
 
-<h3>
-Administradores
-</h3>
+            </div>
 
-<strong id="cardAdmins">
-0
-</strong>
+        </div>
 
-</div>
 
-</div>
+        <div class="card">
 
+            <div class="card-icon">
+                ??
+            </div>
 
+            <div>
 
+                <h3>
+                    Administradores
+                </h3>
 
-<div class="card">
+                <strong id="cardAdmins">
+                    0
+                </strong>
 
-<div class="card-icon">
-👤
-</div>
+            </div>
 
-<div>
+        </div>
 
-<h3>
-Operadores
-</h3>
 
-<strong id="cardOperadores">
-0
-</strong>
+        <div class="card">
 
-</div>
+            <div class="card-icon">
+                ??
+            </div>
 
-</div>
+            <div>
 
+                <h3>
+                    Operadores
+                </h3>
 
+                <strong id="cardOperadores">
+                    0
+                </strong>
 
+            </div>
 
-<div class="card">
+        </div>
 
-<div class="card-icon">
-✅
-</div>
 
-<div>
+        <div class="card">
 
-<h3>
-Ativos
-</h3>
+            <div class="card-icon">
+                ?
+            </div>
 
-<strong id="cardAtivos">
-0
-</strong>
+            <div>
 
-</div>
+                <h3>
+                    Ativos
+                </h3>
 
-</div>
+                <strong id="cardAtivos">
+                    0
+                </strong>
 
+            </div>
 
+        </div>
 
-</section>
 
+    </section>
 
 
+    <!-- ==========================================
+         TABELA
+    =========================================== -->
 
+    <section class="table-box">
 
 
+        <div
+            style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                gap:15px;
+                margin-bottom:20px;
+                flex-wrap:wrap;
+            ">
 
-<!-- TABELA -->
 
-<section class="table-box">
+            <h2>
+                Usu?rios cadastrados
+            </h2>
 
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
 
-        <h2>Usuários cadastrados</h2>
+            <input
+                id="pesquisaUsuario"
+                class="pesquisa-input"
+                type="text"
+                placeholder="?? Pesquisar usu?rio...">
 
- <input
-id="pesquisaUsuario"
-class="pesquisa-input"
-type="text"
-placeholder="🔍 Pesquisar usuário..."
->
+        </div>
 
-    </div>
 
-    <table>
+        <div
+            style="
+                width:100%;
+                overflow-x:auto;
+            ">
 
-        <thead>
 
-            <tr>
+            <table>
 
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Perfil</th>
-                <th>Status</th>
-                <th>Ações</th>
 
-            </tr>
+                <thead>
 
-        </thead>
+                    <tr>
 
-        <tbody id="tabelaUsuarios">
+                        <th>
+                            Nome
+                        </th>
 
-        </tbody>
+                        <th>
+                            Email
+                        </th>
 
-    </table>
+                        <th>
+                            Perfil
+                        </th>
 
-</section>
+                        <th>
+                            Status
+                        </th>
 
+                        <th>
+                            A??es
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="tabelaUsuarios">
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </section>
 
 
 </main>
 
-
 </div>
 
 
+<!-- ==========================================
+     MODAL USU?RIO
+========================================== -->
 
+<div
+    id="modalUsuario"
+    class="modal-usuario">
 
-
-<!-- MODAL -->
-
-<div id="modalUsuario" class="modal-usuario">
 
     <div class="usuario-modal">
 
 
+        <!-- CABE?ALHO -->
+
         <div class="modal-header">
 
+
             <h2 id="tituloModal">
-                👤 Novo Usuário
+                ?? Novo Usu?rio
             </h2>
 
 
@@ -356,7 +561,7 @@ placeholder="🔍 Pesquisar usuário..."
                 id="btnFecharModal"
                 class="modal-close">
 
-                ✕
+                ?
 
             </button>
 
@@ -364,44 +569,42 @@ placeholder="🔍 Pesquisar usuário..."
         </div>
 
 
+        <!-- FORMUL?RIO -->
 
         <form id="formUsuario">
 
 
-            <label>
+            <label for="nomeUsuario">
                 Nome
             </label>
 
-            <input 
+            <input
                 type="text"
                 id="nomeUsuario"
                 required>
 
 
-
-            <label>
+            <label for="emailUsuario">
                 Email
             </label>
 
-            <input 
+            <input
                 type="email"
                 id="emailUsuario"
                 required>
 
 
-
-            <label>
+            <label for="senhaUsuario">
                 Senha
             </label>
 
-            <input 
+            <input
                 type="password"
                 id="senhaUsuario"
                 required>
 
 
-
-            <label>
+            <label for="perfilUsuario">
                 Perfil
             </label>
 
@@ -419,8 +622,7 @@ placeholder="🔍 Pesquisar usuário..."
             </select>
 
 
-
-            <label>
+            <label for="statusUsuario">
                 Status
             </label>
 
@@ -438,67 +640,108 @@ placeholder="🔍 Pesquisar usuário..."
             </select>
 
 
+            <!-- PERMISS?ES -->
 
             <h3>
-                Permissões
+                Permiss?es
             </h3>
-
 
 
             <div class="permissoes">
 
 
                 <label>
-                    <input type="checkbox" id="permDashboard">
+
+                    <input
+                        type="checkbox"
+                        id="permDashboard">
+
                     Dashboard
+
                 </label>
 
 
                 <label>
-                    <input type="checkbox" id="permProdutos">
+
+                    <input
+                        type="checkbox"
+                        id="permProdutos">
+
                     Produtos
+
                 </label>
 
 
                 <label>
-                    <input type="checkbox" id="permProducao">
-                    Produção
+
+                    <input
+                        type="checkbox"
+                        id="permProducao">
+
+                    Produ??o
+
                 </label>
 
 
                 <label>
-                    <input type="checkbox" id="permEtiquetas">
+
+                    <input
+                        type="checkbox"
+                        id="permEtiquetas">
+
                     Etiquetas
+
                 </label>
 
 
                 <label>
-                    <input type="checkbox" id="permEstoque">
+
+                    <input
+                        type="checkbox"
+                        id="permEstoque">
+
                     Estoque
+
                 </label>
 
 
                 <label>
-                    <input type="checkbox" id="permRelatorios">
-                    Relatórios
+
+                    <input
+                        type="checkbox"
+                        id="permRelatorios">
+
+                    Relat?rios
+
                 </label>
 
 
                 <label>
-                    <input type="checkbox" id="permUsuarios">
-                    Usuários
+
+                    <input
+                        type="checkbox"
+                        id="permUsuarios">
+
+                    Usu?rios
+
                 </label>
 
 
                 <label>
-                    <input type="checkbox" id="permConfiguracoes">
-                    Configurações
+
+                    <input
+                        type="checkbox"
+                        id="permConfiguracoes">
+
+                    Configura??es
+
                 </label>
 
 
             </div>
 
 
+            <!-- BOT?ES -->
 
             <div class="modal-buttons">
 
@@ -513,12 +756,11 @@ placeholder="🔍 Pesquisar usuário..."
                 </button>
 
 
-
                 <button
                     type="submit"
                     class="btn-primary">
 
-                    💾 Salvar Usuário
+                    ?? Salvar Usu?rio
 
                 </button>
 
@@ -526,21 +768,178 @@ placeholder="🔍 Pesquisar usuário..."
             </div>
 
 
-
         </form>
 
 
     </div>
 
-
 </div>
-<script type="module" src="js/firebase.js"></script>
 
-<script type="module" src="js/app.js"></script>
 
-<script type="module" src="js/usuarios.js"></script>
+<!-- ==========================================
+     FIREBASE
+========================================== -->
 
-<script type="module" src="js/auth.js"></script>
+<script
+    type="module"
+    src="js/firebase.js">
+</script>
+
+
+<!-- ==========================================
+     APP
+========================================== -->
+
+<script
+    type="module"
+    src="js/app.js">
+</script>
+
+
+<!-- ==========================================
+     USU?RIOS
+========================================== -->
+
+<script
+    type="module"
+    src="js/usuarios.js">
+</script>
+
+
+<!-- ==========================================
+     AUTENTICA??O
+========================================== -->
+
+<script
+    type="module"
+    src="js/auth.js">
+</script>
+
+
+<!-- ==========================================
+     MENU LATERAL
+========================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    const menuToggle =
+        document.getElementById("menuToggle");
+
+    const sidebarClose =
+        document.getElementById("sidebarClose");
+
+    const sidebarOverlay =
+        document.getElementById("sidebarOverlay");
+
+
+    function abrirMenu() {
+
+        sidebar.classList.add("open");
+
+        sidebarOverlay.classList.add("active");
+
+        menuToggle.innerHTML = "?";
+
+        menuToggle.setAttribute(
+            "aria-expanded",
+            "true"
+        );
+
+        document.body.style.overflow = "hidden";
+
+    }
+
+
+    function fecharMenu() {
+
+        sidebar.classList.remove("open");
+
+        sidebarOverlay.classList.remove("active");
+
+        menuToggle.innerHTML = "?";
+
+        menuToggle.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+        document.body.style.overflow = "";
+
+    }
+
+
+    menuToggle.addEventListener(
+        "click",
+        function () {
+
+            if (
+                sidebar.classList.contains("open")
+            ) {
+
+                fecharMenu();
+
+            } else {
+
+                abrirMenu();
+
+            }
+
+        }
+    );
+
+
+    sidebarClose.addEventListener(
+        "click",
+        fecharMenu
+    );
+
+
+    sidebarOverlay.addEventListener(
+        "click",
+        fecharMenu
+    );
+
+
+    /* Fecha ao selecionar uma p?gina */
+
+    sidebar
+        .querySelectorAll(".menu a")
+        .forEach(function (link) {
+
+            link.addEventListener(
+                "click",
+                fecharMenu
+            );
+
+        });
+
+
+    /* ESC fecha o menu */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key === "Escape" &&
+                sidebar.classList.contains("open")
+            ) {
+
+                fecharMenu();
+
+            }
+
+        }
+    );
+
+});
+
+</script>
 
 
 </body>

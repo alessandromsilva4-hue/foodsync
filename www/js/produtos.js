@@ -80,11 +80,11 @@ function verificarEmpresa() {
     if (!idEmpresa) {
 
         console.error(
-            "PRODUTOS: usuário sem empresa."
+            "PRODUTOS: usu?rio sem empresa."
         );
 
         mostrarToast(
-            "Usuário não está vinculado a uma empresa.",
+            "Usu?rio n?o est? vinculado a uma empresa.",
             "erro"
         );
 
@@ -173,7 +173,7 @@ async function carregarProdutos() {
         );
 
         // Busca produtos onde a empresa
-        // está dentro do array empresas[]
+        // est? dentro do array empresas[]
         const consulta =
             query(
                 collection(
@@ -265,7 +265,7 @@ function mostrarProdutos(lista) {
     if (!tabela) {
 
         console.error(
-            "Tabela listaProdutos não encontrada."
+            "Tabela listaProdutos n?o encontrada."
         );
 
         return;
@@ -342,7 +342,7 @@ function mostrarProdutos(lista) {
                             onclick="editarProduto('${p.id}')"
                             title="Editar"
                         >
-                            ✏️
+                            ??
                         </button>
 
                         <button
@@ -350,7 +350,7 @@ function mostrarProdutos(lista) {
                             onclick="excluirProduto('${p.id}')"
                             title="Excluir"
                         >
-                            🗑️
+                            ???
                         </button>
 
                     </td>
@@ -543,7 +543,7 @@ if (formulario) {
             if (!produtoAtual) {
 
                 mostrarToast(
-                    "Produto não encontrado.",
+                    "Produto n?o encontrado.",
                     "erro"
                 );
 
@@ -552,7 +552,7 @@ if (formulario) {
 
 
             // ===================================
-            // SEGURANÇA MULTIEMPRESA
+            // SEGURAN?A MULTIEMPRESA
             // ===================================
 
             const empresasProduto =
@@ -576,7 +576,7 @@ if (formulario) {
                 );
 
                 mostrarToast(
-                    "Você não pode editar este produto.",
+                    "Voc? n?o pode editar este produto.",
                     "erro"
                 );
 
@@ -731,7 +731,7 @@ window.editarProduto =
         if (!produto) {
 
             mostrarToast(
-                "Produto não encontrado.",
+                "Produto n?o encontrado.",
                 "erro"
             );
 
@@ -761,7 +761,7 @@ window.editarProduto =
         ) {
 
             mostrarToast(
-                "Você não pode editar este produto.",
+                "Voc? n?o pode editar este produto.",
                 "erro"
             );
 
@@ -861,7 +861,7 @@ window.excluirProduto =
         if (!produto) {
 
             mostrarToast(
-                "Produto não encontrado.",
+                "Produto n?o encontrado.",
                 "erro"
             );
 
@@ -884,7 +884,7 @@ window.excluirProduto =
         ) {
 
             mostrarToast(
-                "Você não pode excluir este produto.",
+                "Voc? n?o pode excluir este produto.",
                 "erro"
             );
 
@@ -902,7 +902,7 @@ window.excluirProduto =
             );
 
             mostrarToast(
-                "Produto excluído com sucesso!"
+                "Produto exclu?do com sucesso!"
             );
 
             await carregarProdutos();

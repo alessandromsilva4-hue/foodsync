@@ -1,29 +1,168 @@
 // =======================================
 // LOTRIX - DASHBOARD
+// FIRESTORE + MULTIEMPRESA ISOLADO
+//
+// VERSÃO CORRIGIDA
+//
+// PRODUÇÃO:
+// SOMENTE EMPRESA ATUAL
+//
+// ETIQUETAS:
+// SOMENTE EMPRESA ATUAL
+//
+// ESTOQUE:
+// SOMENTE EMPRESA ATUAL
+//
+// NÃO MISTURA EMPRESAS
 // =======================================
 
 import { db } from "./firebase.js";
 
 import {
     collection,
-    getDocs
+    getDocs,
+    query,
+    where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-console.log("DASHBOARD.JS CARREGADO");
+console.log("=================================");
+console.log("LOTRIX DASHBOARD CARREGADO");
+console.log("FIRESTORE: MULTIEMPRESA ISOLADO");
+console.log("=================================");
 
 let productionChart = null;
+
+
+// =======================================
+// USUÁRIO ATUAL
+// =======================================
+
+function usuarioAtual() {
+
+    try {
+
+        const dados =
+            localStorage.getItem(
+                "usuarioFoodSync"
+            );
+
+        if (!dados) {
+
+            console.warn(
+                "usuarioFoodSync não encontrado."
+            );
+
+            return null;
+
+        }
+
+        const usuario =
+            JSON.parse(dados);
+
+        console.log(
+            "USUÁRIO ATUAL:",
+            usuario
+        );
+
+        return usuario;
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao carregar usuário:",
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+// =======================================
+// EMPRESA ATUAL
+// =======================================
+
+function empresaAtual() {
+
+    const usuario =
+        usuarioAtual();
+
+    if (!usuario) {
+
+        console.error(
+            "Usuário não encontrado."
+        );
+
+        return null;
+
+    }
+
+    const idEmpresa =
+        usuario.idEmpresa;
+
+    if (!idEmpresa) {
+
+        console.error(
+            "ID DA EMPRESA NÃO ENCONTRADO NO USUÁRIO:",
+            usuario
+        );
+
+        return null;
+
+    }
+
+    console.log(
+        "EMPRESA ATUAL:",
+        idEmpresa
+    );
+
+    return idEmpresa;
+
+}
+
+
+// =======================================
+// VERIFICAR EMPRESA
+// =======================================
+
+function verificarEmpresa() {
+
+    const idEmpresa =
+        empresaAtual();
+
+    if (!idEmpresa) {
+
+        console.error(
+            "Não foi possível identificar a empresa."
+        );
+
+        return false;
+
+    }
+
+    return true;
+
+}
 
 
 // =======================================
 // DATA
 // =======================================
 
-function startOfDay(date = new Date()) {
+function startOfDay(
+    date = new Date()
+) {
 
     return new Date(
+
         date.getFullYear(),
+
         date.getMonth(),
+
         date.getDate()
+
     );
 
 }
@@ -36,40 +175,80 @@ function startOfDay(date = new Date()) {
 function toDate(value) {
 
     if (!value) {
+
         return null;
+
     }
 
-    if (typeof value.toDate === "function") {
+
+    // Firestore Timestamp
+
+    if (
+        typeof value.toDate ===
+        "function"
+    ) {
 
         return value.toDate();
 
     }
 
-    if (typeof value === "string") {
 
-        const match = value.match(
-            /^(\d{4})-(\d{2})-(\d{2})/
+    // Firestore Timestamp serializado
+
+    if (
+        typeof value === "object" &&
+        value.seconds
+    ) {
+
+        return new Date(
+            Number(value.seconds) * 1000
         );
+
+    }
+
+
+    // String YYYY-MM-DD
+
+    if (
+        typeof value === "string"
+    ) {
+
+        const match =
+            value.match(
+                /^(\d{4})-(\d{2})-(\d{2})/
+            );
 
         if (match) {
 
             return new Date(
+
                 Number(match[1]),
+
                 Number(match[2]) - 1,
+
                 Number(match[3])
+
             );
 
         }
 
     }
 
-    const date = new Date(value);
 
-    if (Number.isNaN(date.getTime())) {
+    const date =
+        new Date(value);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
 
         return null;
 
     }
+
 
     return date;
 
@@ -82,15 +261,50 @@ function toDate(value) {
 
 function isToday(value) {
 
-    const date = toDate(value);
+    const date =
+        toDate(value);
 
     if (!date) {
+
         return false;
+
     }
 
     return (
+
         startOfDay(date).getTime() ===
+
         startOfDay().getTime()
+
+    );
+
+}
+
+
+// =======================================
+// VERIFICAR DATA ESPECÍFICA
+// =======================================
+
+function isTodayFor(
+    value,
+    target
+) {
+
+    const date =
+        toDate(value);
+
+    if (!date) {
+
+        return false;
+
+    }
+
+    return (
+
+        startOfDay(date).getTime() ===
+
+        startOfDay(target).getTime()
+
     );
 
 }
@@ -102,7 +316,8 @@ function isToday(value) {
 
 function dateText(value) {
 
-    const date = toDate(value);
+    const date =
+        toDate(value);
 
     if (!date) {
 
@@ -111,11 +326,17 @@ function dateText(value) {
     }
 
     return date.toLocaleDateString(
+
         "pt-BR",
+
         {
+
             day: "2-digit",
+
             month: "short"
+
         }
+
     );
 
 }
@@ -125,18 +346,26 @@ function dateText(value) {
 // ESCAPAR HTML
 // =======================================
 
-function escapeHtml(value = "") {
+function escapeHtml(
+    value = ""
+) {
 
     return String(value).replace(
+
         /[&<>'"]/g,
+
         char => {
 
             const map = {
 
                 "&": "&amp;",
+
                 "<": "&lt;",
+
                 ">": "&gt;",
+
                 "'": "&#39;",
+
                 '"': "&quot;"
 
             };
@@ -144,6 +373,7 @@ function escapeHtml(value = "") {
             return map[char];
 
         }
+
     );
 
 }
@@ -153,14 +383,18 @@ function escapeHtml(value = "") {
 // ALTERAR VALOR
 // =======================================
 
-function setValue(id, value) {
+function setValue(
+    id,
+    value
+) {
 
     const element =
         document.getElementById(id);
 
     if (element) {
 
-        element.textContent = value;
+        element.textContent =
+            value;
 
     }
 
@@ -174,14 +408,18 @@ function setValue(id, value) {
 function removeLoading() {
 
     document
-        .querySelectorAll(".is-loading")
-        .forEach(element => {
+        .querySelectorAll(
+            ".is-loading"
+        )
+        .forEach(
+            element => {
 
-            element.classList.remove(
-                "is-loading"
-            );
+                element.classList.remove(
+                    "is-loading"
+                );
 
-        });
+            }
+        );
 
 }
 
@@ -197,7 +435,9 @@ function renderEmpty(
 ) {
 
     if (!container) {
+
         return;
+
     }
 
     container.innerHTML = `
@@ -226,7 +466,8 @@ function renderEmpty(
 
 function daysUntil(value) {
 
-    const date = toDate(value);
+    const date =
+        toDate(value);
 
     if (!date) {
 
@@ -237,8 +478,11 @@ function daysUntil(value) {
     return Math.round(
 
         (
+
             startOfDay(date).getTime() -
+
             startOfDay().getTime()
+
         ) / 86400000
 
     );
@@ -260,8 +504,11 @@ function renderActivity(
         document.getElementById(id);
 
     if (!container) {
+
         return;
+
     }
+
 
     if (!items.length) {
 
@@ -270,11 +517,15 @@ function renderActivity(
             container,
 
             type === "produção"
+
                 ? "Nenhuma produção registrada."
+
                 : "Nenhuma etiqueta emitida.",
 
             type === "produção"
+
                 ? "chef-hat"
+
                 : "tag"
 
         );
@@ -287,31 +538,49 @@ function renderActivity(
     container.innerHTML =
 
         items
+
             .slice(0, 5)
+
             .map(item => {
 
                 const name =
+
                     item.produto ||
+
                     item.nomeProduto ||
+
                     "Produto sem nome";
 
 
                 const date =
+
                     type === "produção"
 
-                        ? item.dataProducao
+                        ? (
+
+                            item.dataProducao ||
+
+                            item.criadoEm
+
+                        )
 
                         : (
+
                             item.criadoEm ||
+
                             item.dataEtiqueta ||
+
                             item.dataProducao
+
                         );
 
 
                 let detail;
 
 
-                if (type === "produção") {
+                if (
+                    type === "produção"
+                ) {
 
                     detail = `
 
@@ -351,8 +620,11 @@ function renderActivity(
 
 
                 const icon =
+
                     type === "produção"
+
                         ? "chef-hat"
+
                         : "tag";
 
 
@@ -385,6 +657,7 @@ function renderActivity(
                 `;
 
             })
+
             .join("");
 
 }
@@ -394,7 +667,9 @@ function renderActivity(
 // VENCIMENTOS
 // =======================================
 
-function renderExpiring(items) {
+function renderExpiring(
+    items
+) {
 
     const container =
         document.getElementById(
@@ -402,7 +677,9 @@ function renderExpiring(items) {
         );
 
     if (!container) {
+
         return;
+
     }
 
 
@@ -426,14 +703,19 @@ function renderExpiring(items) {
     container.innerHTML =
 
         items
+
             .slice(0, 5)
+
             .map(item => {
 
                 const days =
-                    daysUntil(item.validade);
+                    daysUntil(
+                        item.validade
+                    );
 
 
                 let urgency;
+
 
                 if (days <= 0) {
 
@@ -453,17 +735,25 @@ function renderExpiring(items) {
                 let label;
 
 
-                if (days === 0) {
+                if (days < 0) {
 
-                    label = "Vence hoje";
+                    label =
+                        "Vencido";
+
+                } else if (days === 0) {
+
+                    label =
+                        "Vence hoje";
 
                 } else if (days === 1) {
 
-                    label = "Vence amanhã";
+                    label =
+                        "Vence amanhã";
 
                 } else {
 
-                    label = `${days} dias`;
+                    label =
+                        `${days} dias`;
 
                 }
 
@@ -478,6 +768,7 @@ function renderExpiring(items) {
 
                                 ${escapeHtml(
                                     item.produto ||
+                                    item.nomeProduto ||
                                     "Produto sem nome"
                                 )}
 
@@ -515,6 +806,7 @@ function renderExpiring(items) {
                 `;
 
             })
+
             .join("");
 
 }
@@ -524,7 +816,9 @@ function renderExpiring(items) {
 // ESTOQUE CRÍTICO
 // =======================================
 
-function renderStock(items) {
+function renderStock(
+    items
+) {
 
     const container =
         document.getElementById(
@@ -532,7 +826,9 @@ function renderStock(items) {
         );
 
     if (!container) {
+
         return;
+
     }
 
 
@@ -556,7 +852,9 @@ function renderStock(items) {
     container.innerHTML =
 
         items
+
             .slice(0, 5)
+
             .map(item => {
 
                 return `
@@ -569,6 +867,7 @@ function renderStock(items) {
 
                                 ${escapeHtml(
                                     item.produto ||
+                                    item.nomeProduto ||
                                     "Produto sem nome"
                                 )}
 
@@ -608,6 +907,7 @@ function renderStock(items) {
                 `;
 
             })
+
             .join("");
 
 }
@@ -627,7 +927,9 @@ function renderTopProducts(
         );
 
     if (!container) {
+
         return;
+
     }
 
 
@@ -637,19 +939,25 @@ function renderTopProducts(
             (acc, item) => {
 
                 const name =
+
                     item.produto ||
+
                     item.nomeProduto ||
+
                     "Produto sem nome";
 
 
                 const quantidade =
+
                     Number(
                         item.quantidade || 1
                     );
 
 
                 acc[name] =
+
                     (acc[name] || 0) +
+
                     quantidade;
 
 
@@ -663,6 +971,7 @@ function renderTopProducts(
 
 
     const ranking =
+
         Object.entries(counts)
 
             .sort(
@@ -697,16 +1006,21 @@ function renderTopProducts(
     container.innerHTML =
 
         ranking
+
             .map(
                 ([name, quantity], index) => {
 
                     const width =
+
                         Math.max(
+
                             12,
+
                             (
                                 quantity /
                                 largest
                             ) * 100
+
                         );
 
 
@@ -754,6 +1068,7 @@ function renderTopProducts(
 
                 }
             )
+
             .join("");
 
 }
@@ -787,11 +1102,14 @@ function renderChart(
         );
 
     if (!canvas) {
+
         return;
+
     }
 
 
     const labels = [];
+
     const values = [];
 
 
@@ -813,12 +1131,17 @@ function renderChart(
         labels.push(
 
             date
+
                 .toLocaleDateString(
+
                     "pt-BR",
+
                     {
                         weekday: "short"
                     }
+
                 )
+
                 .replace(".", "")
 
         );
@@ -827,11 +1150,18 @@ function renderChart(
         values.push(
 
             productions.filter(
+
                 item =>
+
                     isTodayFor(
-                        item.dataProducao,
+
+                        item.dataProducao ||
+                        item.criadoEm,
+
                         date
+
                     )
+
             ).length
 
         );
@@ -847,8 +1177,11 @@ function renderChart(
 
 
     productionChart =
+
         new Chart(
+
             canvas,
+
             {
 
                 type: "line",
@@ -901,7 +1234,9 @@ function renderChart(
                     plugins: {
 
                         legend: {
+
                             display: false
+
                         },
 
                         tooltip: {
@@ -923,11 +1258,15 @@ function renderChart(
                         x: {
 
                             grid: {
+
                                 display: false
+
                             },
 
                             border: {
+
                                 display: false
+
                             }
 
                         },
@@ -937,12 +1276,17 @@ function renderChart(
                             beginAtZero: true,
 
                             ticks: {
+
                                 precision: 0,
+
                                 stepSize: 1
+
                             },
 
                             border: {
+
                                 display: false
+
                             }
 
                         }
@@ -952,33 +1296,8 @@ function renderChart(
                 }
 
             }
+
         );
-
-}
-
-
-// =======================================
-// DATA DO GRÁFICO
-// =======================================
-
-function isTodayFor(
-    value,
-    target
-) {
-
-    const date =
-        toDate(value);
-
-    if (!date) {
-        return false;
-    }
-
-    return (
-
-        startOfDay(date).getTime() ===
-        startOfDay(target).getTime()
-
-    );
 
 }
 
@@ -1011,30 +1330,16 @@ function updateGreeting() {
     }
 
 
-    let user = {};
-
-
-    try {
-
-        user =
-            JSON.parse(
-                localStorage.getItem(
-                    "usuarioFoodSync"
-                ) || "{}"
-            );
-
-    } catch (error) {
-
-        console.warn(
-            "Não foi possível ler usuário."
-        );
-
-    }
+    const user =
+        usuarioAtual() || {};
 
 
     setValue(
+
         "saudacao",
+
         `${period}, ${user.nome || "gestor"} 👋`
+
     );
 
 
@@ -1047,14 +1352,134 @@ function updateGreeting() {
             "pt-BR",
 
             {
+
                 weekday: "long",
+
                 day: "numeric",
+
                 month: "long"
+
             }
 
         )
 
     );
+
+}
+
+
+// =======================================
+// CARREGAR COLEÇÃO
+//
+// MULTIEMPRESA
+// =======================================
+
+async function loadCollection(
+    collectionName,
+    idEmpresa
+) {
+
+    try {
+
+        console.log(
+            `📥 CARREGANDO ${collectionName}`
+        );
+
+        console.log(
+            "🏢 EMPRESA:",
+            idEmpresa
+        );
+
+
+        if (!idEmpresa) {
+
+            console.error(
+                "ID EMPRESA AUSENTE."
+            );
+
+            return [];
+
+        }
+
+
+        const consulta =
+
+            query(
+
+                collection(
+                    db,
+                    collectionName
+                ),
+
+                where(
+                    "idEmpresa",
+                    "==",
+                    idEmpresa
+                )
+
+            );
+
+
+        const snapshot =
+
+            await getDocs(
+                consulta
+            );
+
+
+        const data =
+
+            snapshot.docs.map(
+
+                document => ({
+
+                    id:
+                        document.id,
+
+                    ...document.data()
+
+                })
+
+            );
+
+
+        console.log(
+
+            `✅ ${collectionName.toUpperCase()} DA EMPRESA ${idEmpresa}:`,
+
+            data.length
+
+        );
+
+
+        return data;
+
+    } catch (error) {
+
+        console.error(
+
+            `❌ ERRO AO CARREGAR ${collectionName.toUpperCase()}:`,
+
+            error
+
+        );
+
+
+        console.error(
+            "Código do erro:",
+            error?.code
+        );
+
+
+        console.error(
+            "Mensagem:",
+            error?.message
+        );
+
+
+        return [];
+
+    }
 
 }
 
@@ -1066,341 +1491,593 @@ function updateGreeting() {
 async function loadDashboard() {
 
     console.log(
+        "================================="
+    );
+
+    console.log(
         "CARREGANDO DASHBOARD..."
+    );
+
+    console.log(
+        "================================="
+    );
+
+
+    // =================================
+    // EMPRESA
+    // =================================
+
+    const idEmpresa =
+        empresaAtual();
+
+
+    if (!idEmpresa) {
+
+        console.error(
+            "DASHBOARD BLOQUEADO: EMPRESA NÃO IDENTIFICADA."
+        );
+
+        setValue(
+            "producoesHoje",
+            "0"
+        );
+
+        setValue(
+            "etiquetasHoje",
+            "0"
+        );
+
+        setValue(
+            "vencendoHoje",
+            "0"
+        );
+
+        setValue(
+            "estoqueCritico",
+            "0"
+        );
+
+        removeLoading();
+
+        return;
+
+    }
+
+
+    console.log(
+        "================================="
+    );
+
+    console.log(
+        "DASHBOARD MULTIEMPRESA"
+    );
+
+    console.log(
+        "EMPRESA:",
+        idEmpresa
+    );
+
+    console.log(
+        "================================="
     );
 
 
     updateGreeting();
 
 
-    try {
+    let productions = [];
 
-        const [
+    let labels = [];
 
-            productionSnapshot,
-
-            labelSnapshot,
-
-            stockSnapshot
-
-        ] = await Promise.all([
-
-            getDocs(
-                collection(
-                    db,
-                    "producoes"
-                )
-            ),
-
-            getDocs(
-                collection(
-                    db,
-                    "etiquetas"
-                )
-            ),
-
-            getDocs(
-                collection(
-                    db,
-                    "estoque"
-                )
-            )
-
-        ]);
+    let stock = [];
 
 
-        const productions =
-            productionSnapshot.docs.map(
-                document =>
-                    document.data()
-            );
+    // =================================
+    // PRODUÇÕES
+    // =================================
 
+    productions =
 
-        const labels =
-            labelSnapshot.docs.map(
-                document =>
-                    document.data()
-            );
+        await loadCollection(
 
+            "producoes",
 
-        const stock =
-            stockSnapshot.docs.map(
-                document =>
-                    document.data()
-            );
+            idEmpresa
 
-
-        console.log(
-            "Produções:",
-            productions.length
         );
 
 
-        console.log(
-            "Etiquetas:",
-            labels.length
+    // =================================
+    // ETIQUETAS
+    // =================================
+
+    labels =
+
+        await loadCollection(
+
+            "etiquetas",
+
+            idEmpresa
+
         );
 
 
-        console.log(
-            "Estoque:",
-            stock.length
+    // =================================
+    // ESTOQUE
+    // =================================
+
+    stock =
+
+        await loadCollection(
+
+            "estoque",
+
+            idEmpresa
+
         );
 
 
-        // =================================
-        // ESTOQUE CRÍTICO
-        // =================================
+    // =================================
+    // RESUMO
+    // =================================
 
-        const criticalStock =
-            stock.filter(item => {
+    console.log(
+        "================================="
+    );
 
-                const quantidade =
-                    Number(
-                        item.quantidade || 0
-                    );
+    console.log(
+        "RESUMO DA EMPRESA:",
+        idEmpresa
+    );
 
-                const minimo =
-                    Number(
-                        item.minimo || 0
-                    );
+    console.log(
+        "TOTAL PRODUÇÕES:",
+        productions.length
+    );
 
-                return (
-                    minimo > 0 &&
-                    quantidade <= minimo
-                );
+    console.log(
+        "TOTAL ETIQUETAS:",
+        labels.length
+    );
 
-            });
+    console.log(
+        "TOTAL ESTOQUE:",
+        stock.length
+    );
+
+    console.log(
+        "================================="
+    );
 
 
-        // =================================
-        // VENCIMENTOS
-        // =================================
+    // =================================
+    // ESTOQUE CRÍTICO
+    // =================================
 
-        const expiring =
-            labels
+    const criticalStock =
 
-                .filter(item => {
+        stock.filter(item => {
 
-                    const days =
-                        daysUntil(
-                            item.validade
-                        );
+            const quantidade =
 
-                    return (
-                        days >= 0 &&
-                        days <= 30
-                    );
-
-                })
-
-                .sort(
-                    (a, b) =>
-                        daysUntil(a.validade) -
-                        daysUntil(b.validade)
+                Number(
+                    item.quantidade || 0
                 );
 
 
-        // =================================
-        // MÉTRICAS
-        // =================================
+            const minimo =
 
-        const producoesHoje =
-            productions.filter(
-                item =>
-                    isToday(
-                        item.dataProducao
-                    )
-            ).length;
+                Number(
+                    item.minimo || 0
+                );
 
 
-        const etiquetasHoje =
-            labels.filter(
-                item =>
-                    isToday(
-                        item.criadoEm ||
-                        item.dataEtiqueta ||
-                        item.dataProducao
-                    )
-            ).length;
+            return (
+
+                minimo > 0 &&
+
+                quantidade <= minimo
+
+            );
+
+        });
 
 
-        const vencendoHoje =
-            labels.filter(
-                item =>
+    // =================================
+    // VENCIMENTOS
+    // =================================
+
+    const expiring =
+
+        labels
+
+            .filter(item => {
+
+                const days =
+
                     daysUntil(
                         item.validade
-                    ) === 0
-            ).length;
+                    );
 
+
+                return (
+
+                    days >= 0 &&
+
+                    days <= 30
+
+                );
+
+            })
+
+            .sort(
+
+                (a, b) =>
+
+                    daysUntil(
+                        a.validade
+                    ) -
+
+                    daysUntil(
+                        b.validade
+                    )
+
+            );
+
+
+    // =================================
+    // MÉTRICAS
+    // =================================
+
+    const producoesHoje =
+
+        productions.filter(
+
+            item =>
+
+                isToday(
+
+                    item.dataProducao ||
+
+                    item.criadoEm
+
+                )
+
+        ).length;
+
+
+    const etiquetasHoje =
+
+        labels.filter(
+
+            item =>
+
+                isToday(
+
+                    item.criadoEm ||
+
+                    item.dataEtiqueta ||
+
+                    item.dataProducao
+
+                )
+
+        ).length;
+
+
+    const vencendoHoje =
+
+        labels.filter(
+
+            item =>
+
+                daysUntil(
+
+                    item.validade
+
+                ) === 0
+
+        ).length;
+
+
+    // =================================
+    // ATUALIZAR CARDS
+    // =================================
+
+    setValue(
+
+        "producoesHoje",
+
+        producoesHoje
+
+    );
+
+
+    setValue(
+
+        "etiquetasHoje",
+
+        etiquetasHoje
+
+    );
+
+
+    setValue(
+
+        "vencendoHoje",
+
+        vencendoHoje
+
+    );
+
+
+    setValue(
+
+        "estoqueCritico",
+
+        criticalStock.length
+
+    );
+
+
+    // =================================
+    // LISTA DE PRODUÇÕES
+    // =================================
+
+    renderActivity(
+
+        "listaProducao",
+
+        [...productions].sort(
+
+            (a, b) => {
+
+                const dateA =
+
+                    toDate(
+
+                        a.dataProducao ||
+
+                        a.criadoEm
+
+                    ) || 0;
+
+
+                const dateB =
+
+                    toDate(
+
+                        b.dataProducao ||
+
+                        b.criadoEm
+
+                    ) || 0;
+
+
+                return dateB - dateA;
+
+            }
+
+        ),
+
+        "produção"
+
+    );
+
+
+    // =================================
+    // LISTA DE ETIQUETAS
+    // =================================
+
+    renderActivity(
+
+        "listaEtiquetas",
+
+        [...labels].sort(
+
+            (a, b) => {
+
+                const dateA =
+
+                    toDate(
+
+                        a.criadoEm ||
+
+                        a.dataEtiqueta ||
+
+                        a.dataProducao
+
+                    ) || 0;
+
+
+                const dateB =
+
+                    toDate(
+
+                        b.criadoEm ||
+
+                        b.dataEtiqueta ||
+
+                        b.dataProducao
+
+                    ) || 0;
+
+
+                return dateB - dateA;
+
+            }
+
+        ),
+
+        "etiqueta"
+
+    );
+
+
+    // =================================
+    // VENCIMENTOS
+    // =================================
+
+    renderExpiring(
+        expiring
+    );
+
+
+    // =================================
+    // ESTOQUE
+    // =================================
+
+    renderStock(
+        criticalStock
+    );
+
+
+    // =================================
+    // RANKING
+    // =================================
+
+    renderTopProducts(
+        productions
+    );
+
+
+    // =================================
+    // GRÁFICO
+    // =================================
+
+    renderChart(
+        productions
+    );
+
+
+    // =================================
+    // ÍCONES
+    // =================================
+
+    if (
+
+        window.lucide &&
+
+        typeof window.lucide.createIcons ===
+        "function"
+
+    ) {
+
+        window.lucide.createIcons();
+
+    }
+
+
+    // =================================
+    // FINALIZAÇÃO
+    // =================================
+
+    removeLoading();
+
+
+    console.log(
+        "================================="
+    );
+
+    console.log(
+        "✅ DASHBOARD FINALIZADO"
+    );
+
+    console.log(
+        "EMPRESA:",
+        idEmpresa
+    );
+
+    console.log(
+        "PRODUÇÕES:",
+        productions.length
+    );
+
+    console.log(
+        "ETIQUETAS:",
+        labels.length
+    );
+
+    console.log(
+        "ESTOQUE:",
+        stock.length
+    );
+
+    console.log(
+        "================================="
+    );
+
+}
+
+
+// =======================================
+// INICIALIZAR DASHBOARD
+// =======================================
+
+async function initDashboard() {
+
+    console.log(
+        "================================="
+    );
+
+    console.log(
+        "INICIANDO LOTRIX DASHBOARD"
+    );
+
+    console.log(
+        "================================="
+    );
+
+
+    try {
 
         // =================================
-        // ATUALIZAR CARDS
+        // VERIFICAR EMPRESA
         // =================================
 
-        setValue(
-            "producoesHoje",
-            producoesHoje
-        );
+        if (
+            !verificarEmpresa()
+        ) {
+
+            removeLoading();
+
+            return;
+
+        }
 
 
-        setValue(
-            "etiquetasHoje",
-            etiquetasHoje
-        );
+        await loadDashboard();
 
 
-        setValue(
-            "vencendoHoje",
-            vencendoHoje
-        );
-
-
-        setValue(
-            "estoqueCritico",
-            criticalStock.length
-        );
-
-
-        // =================================
-        // LISTAS
-        // =================================
-
-        renderActivity(
-
-            "listaProducao",
-
-            [...productions].sort(
-                (a, b) => {
-
-                    const dateA =
-                        toDate(
-                            a.dataProducao
-                        ) || 0;
-
-                    const dateB =
-                        toDate(
-                            b.dataProducao
-                        ) || 0;
-
-                    return dateB - dateA;
-
-                }
-            ),
-
-            "produção"
-
-        );
-
-
-        renderActivity(
-
-            "listaEtiquetas",
-
-            [...labels].sort(
-                (a, b) => {
-
-                    const dateA =
-                        toDate(
-                            a.criadoEm ||
-                            a.dataProducao
-                        ) || 0;
-
-                    const dateB =
-                        toDate(
-                            b.criadoEm ||
-                            b.dataProducao
-                        ) || 0;
-
-                    return dateB - dateA;
-
-                }
-            ),
-
-            "etiqueta"
-
-        );
-
-
-        renderExpiring(
-            expiring
-        );
-
-
-        renderStock(
-            criticalStock
-        );
-
-
-        renderTopProducts(
-            productions
-        );
-
-
-        renderChart(
-            productions
+        console.log(
+            "✅ DASHBOARD CARREGADO COM SUCESSO"
         );
 
 
     } catch (error) {
 
         console.error(
-            "ERRO AO CARREGAR DASHBOARD:",
+            "❌ ERRO AO INICIAR DASHBOARD:",
             error
         );
 
 
-        setValue(
-            "producoesHoje",
-            "0"
-        );
-
-
-        setValue(
-            "etiquetasHoje",
-            "0"
-        );
-
-
-        setValue(
-            "vencendoHoje",
-            "0"
-        );
-
-
-        setValue(
-            "estoqueCritico",
-            "0"
-        );
-
-
-        document
-            .querySelectorAll(
-                ".activity-list, .attention-list, .rank-list"
-            )
-            .forEach(element => {
-
-                renderEmpty(
-
-                    element,
-
-                    "Não foi possível carregar estes dados.",
-
-                    "triangle-alert"
-
-                );
-
-            });
-
     } finally {
+
+        // =================================
+        // NUNCA DEIXAR LOADING PRESO
+        // =================================
 
         removeLoading();
 
 
         if (
+
             window.lucide &&
+
             typeof window.lucide.createIcons ===
             "function"
+
         ) {
 
             window.lucide.createIcons();
@@ -1413,10 +2090,26 @@ async function loadDashboard() {
 
 
 // =======================================
-// INICIALIZAÇÃO
+// INICIAR QUANDO HTML ESTIVER PRONTO
 // =======================================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    loadDashboard
-);
+if (
+
+    document.readyState ===
+    "loading"
+
+) {
+
+    document.addEventListener(
+
+        "DOMContentLoaded",
+
+        initDashboard
+
+    );
+
+} else {
+
+    initDashboard();
+
+}

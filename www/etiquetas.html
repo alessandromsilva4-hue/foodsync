@@ -20,361 +20,699 @@
 
 <body>
 
+<!-- =========================================================
+     BOT?O MENU
+========================================================= -->
+
+<button
+    class="menu-toggle"
+    id="menuToggle"
+    aria-label="Abrir menu"
+    type="button">
+
+    ?
+
+</button>
+
+
+<!-- =========================================================
+     FUNDO ESCURO
+========================================================= -->
+
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay">
+</div>
+
+
 <div class="layout">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside
+    class="sidebar"
+    id="sidebar">
+
+
+    <!-- BOT?O FECHAR -->
+
+    <button
+        class="sidebar-close"
+        id="sidebarClose"
+        aria-label="Fechar menu"
+        type="button">
+
+        ?
+
+    </button>
+
+
+    <!-- LOGO -->
 
     <div class="logo-area">
-        <img src="img/logo.png" alt="Lotrix">
-        <h2>LOTRIX</h2>
-        <small>Food Safety Platform</small>
+
+        <img
+            src="img/logo.png"
+            alt="Lotrix">
+
+        <h2>
+            LOTRIX
+        </h2>
+
+        <small>
+            Food Safety Platform
+        </small>
+
     </div>
+
+
+    <!-- MENU -->
 
     <nav class="menu">
 
-        <div class="menu-section">
-            <span class="menu-title">GERAL</span>
 
-            <a href="dashboard.html" class="active">
-                <span>🏠</span>
-                <span class="nav-label">Dashboard</span>
+        <!-- GERAL -->
+
+        <div class="menu-section">
+
+            <span class="menu-title">
+                GERAL
+            </span>
+
+            <a href="dashboard.html">
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Dashboard
+                </span>
+
             </a>
+
         </div>
 
+
+        <!-- OPERA??O -->
+
         <div class="menu-section">
-            <span class="menu-title">OPERAÇÃO</span>
+
+            <span class="menu-title">
+                OPERA??O
+            </span>
+
 
             <a href="producao.html">
-                <span>⚙️</span>
-                <span class="nav-label">Produção</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Produ??o
+                </span>
+
             </a>
+
 
             <a href="produtos.html">
-                <span>📦</span>
-                <span class="nav-label">Produtos</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Produtos
+                </span>
+
             </a>
 
-            <a href="etiquetas.html">
-                <span>🏷️</span>
-                <span class="nav-label">Etiquetas</span>
+
+            <a
+                href="etiquetas.html"
+                class="active">
+
+                <span>???</span>
+
+                <span class="nav-label">
+                    Etiquetas
+                </span>
+
             </a>
+
 
             <a href="estoque.html">
-                <span>📚</span>
-                <span class="nav-label">Estoque</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Estoque
+                </span>
+
             </a>
+
         </div>
 
+
+        <!-- GEST?O -->
+
         <div class="menu-section">
-            <span class="menu-title">GESTÃO</span>
+
+            <span class="menu-title">
+                GEST?O
+            </span>
+
 
             <a href="relatorios.html">
-                <span>📈</span>
-                <span class="nav-label">Relatórios</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Relat?rios
+                </span>
+
             </a>
+
 
             <a href="auditoria.html">
-                <span>📝</span>
-                <span class="nav-label">Auditoria</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Auditoria
+                </span>
+
             </a>
+
 
             <a href="usuario.html">
-                <span>👥</span>
-                <span class="nav-label">Usuários</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Usu?rios
+                </span>
+
             </a>
+
         </div>
+
+
+        <!-- SISTEMA -->
 
         <div class="menu-section">
-            <span class="menu-title">SISTEMA</span>
+
+            <span class="menu-title">
+                SISTEMA
+            </span>
+
 
             <a href="configuracoes.html">
-                <span>⚙️</span>
-                <span class="nav-label">Configurações</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Configura??es
+                </span>
+
             </a>
+
 
             <a href="ajuda.html">
-                <span>❓</span>
-                <span class="nav-label">Ajuda</span>
+
+                <span>?</span>
+
+                <span class="nav-label">
+                    Ajuda
+                </span>
+
             </a>
 
+
             <a href="sac.html">
-                <span>🎧</span>
-                <span class="nav-label">SAC</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    SAC
+                </span>
+
             </a>
+
         </div>
+
 
     </nav>
 
+
+    <!-- USU?RIO -->
+
     <div class="sidebar-footer">
 
- <div class="user-card">
+        <div class="user-card">
 
-    <div class="avatar">
-        👤
-    </div>
+            <div class="avatar">
+                ??
+            </div>
 
-    <div>
-        <strong id="nomeUsuarioLogado">
-            Usuário
-        </strong>
 
-        <small id="perfilUsuarioLogado">
-            Carregando...
-        </small>
-    </div>
+            <div>
 
-</div>
-        <button onclick="logout()">
-            🚪 Sair
+                <strong id="nomeUsuarioLogado">
+                    Usu?rio
+                </strong>
+
+
+                <small id="perfilUsuarioLogado">
+                    Carregando...
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            onclick="logout()">
+
+            ?? Sair
+
         </button>
 
     </div>
 
+
 </aside>
 
-    <!-- CONTEÚDO -->
 
-    <main class="content">
+<!-- =========================================================
+     CONTE?DO
+========================================================= -->
 
-        <header class="top-header">
+<main class="content">
 
-            <div>
 
-                <h1>Etiquetas</h1>
+    <!-- CABE?ALHO -->
 
-                <p>Gerenciamento de etiquetas de validade</p>
+    <header class="top-header">
 
-            </div>
+        <div>
 
-        </header>
+            <h1>
+                Etiquetas
+            </h1>
 
-        <!-- FORMULÁRIO -->
+            <p>
+                Gerenciamento de etiquetas de validade
+            </p>
 
-        <section class="form-box">
+        </div>
 
-            <h2>Nova Etiqueta</h2>
+    </header>
 
-            <form id="etiquetaForm">
 
-                <div class="form-grid">
+    <!-- =====================================================
+         FORMUL?RIO
+    ====================================================== -->
 
-                    <div class="input-group">
+    <section class="form-box">
 
-                        <label>Produto</label>
 
-                        <select id="produtoEtiqueta" required>
+        <h2>
+            Nova Etiqueta
+        </h2>
 
-                            <option value="">Selecione o produto</option>
 
-                        </select>
+        <form id="etiquetaForm">
 
-                    </div>
 
-                    <div class="input-group">
+            <div class="form-grid">
 
-                        <label>Data Produção</label>
 
-                        <input
-                            type="date"
-                            id="dataProducao"
-                            required>
+                <!-- PRODUTO -->
 
-                    </div>
+                <div class="input-group">
 
-                    <div class="input-group">
+                    <label for="produtoEtiqueta">
+                        Produto
+                    </label>
 
-                        <label>Quantidade</label>
 
-                        <input
-                            type="number"
-                            id="quantidadeProducao"
-                            value="1"
-                            min="1">
+                    <select
+                        id="produtoEtiqueta"
+                        required>
 
-                    </div>
+                        <option value="">
+                            Selecione o produto
+                        </option>
+
+                    </select>
 
                 </div>
 
-                <button type="submit">
 
-                    🏷️ Gerar Etiqueta
+                <!-- DATA -->
 
-                </button>
+                <div class="input-group">
 
-            </form>
-
-        </section>
-
-        <!-- PRÉVIA -->
-
-        <section class="etiqueta-preview">
-
-            <h2>Pré-visualização</h2>
-
-            <div
-id="etiquetaGerada"
-class="etiqueta">
-
-    <div class="empresa-etiqueta">
-
-    <h2>
-        ENGENHO
-    </h2>
-
-    <span>
-        COMIDA CASEIRA
-    </span>
-
-</div>
+                    <label for="dataProducao">
+                        Data de Produ??o
+                    </label>
 
 
-<div class="linha-etiqueta"></div>
+                    <input
+                        type="date"
+                        id="dataProducao"
+                        required>
+
+                </div>
 
 
-<h3 id="nomeEtiqueta">
-    PRODUTO
-</h3>
+                <!-- QUANTIDADE -->
+
+                <div class="input-group">
+
+                    <label for="quantidadeProducao">
+                        Quantidade
+                    </label>
 
 
-<div class="temperatura-destaque">
+                    <input
+                        type="number"
+                        id="quantidadeProducao"
+                        value="1"
+                        min="1">
 
-    <strong>
-        TEMPERATURA
-    </strong>
-
-    <span id="temperaturaEtiqueta">
-        --
-    </span>
-
-</div>
+                </div>
 
 
-    <div class="linha-etiqueta"></div>
+            </div>
 
 
-    <div class="datas-etiqueta">
+            <button type="submit">
 
-        <p>
-            <strong>PRODUZIDO</strong>
-            <span id="dataEtiqueta">
-                --
-            </span>
-        </p>
-
-
-        <p>
-            <strong>VALIDADE</strong>
-            <span id="validadeEtiqueta">
-                --
-            </span>
-        </p>
-
-    </div>
-
-
-    <div class="linha-etiqueta"></div>
-
-
-    <div class="info-etiqueta">
-
-
-       <p>
-
-<strong>
-RESPONSÁVEL
-</strong>
-
-<span id="responsavelEtiqueta">
---
-</span>
-
-</p>
-
-       
-
-        <p>
-            <strong>LOTE:</strong>
-            <span id="loteEtiqueta">
-                --
-            </span>
-        </p>
-
-
-    </div>
-
-
-    <div id="qrcodeEtiqueta"></div>
-
-
-</div>
-
-            <button
-                type="button"
-                onclick="imprimirEtiqueta()">
-
-                🖨️ Imprimir
+                ??? Gerar Etiqueta
 
             </button>
 
-        </section>
 
-        <!-- HISTÓRICO -->
+        </form>
 
-        <section class="table-box">
 
-            <h2>Histórico de Etiquetas</h2>
+    </section>
 
-            <table>
 
-                <thead>
+    <!-- =====================================================
+         PR?-VISUALIZA??O
+    ====================================================== -->
 
-                    <tr>
+    <section class="etiqueta-preview">
 
-                        <th>Código</th>
-                        <th>Produto</th>
-                        <th>Quantidade</th>
-                        <th>Produção</th>
-                        <th>Validade</th>
-                        <th>Responsável</th>
-                        <th>Ações</th>
 
-                    </tr>
+        <h2>
+            Pr?-visualiza??o
+        </h2>
 
-                </thead>
 
-                <tbody id="listaEtiquetas">
+        <div
+            id="etiquetaGerada"
+            class="etiqueta">
 
-                    <tr>
 
-                        <td colspan="7">
+            <!-- EMPRESA -->
 
-                            Nenhuma etiqueta gerada.
+            <div class="empresa-etiqueta">
 
-                        </td>
+                <h2 id="nomeEmpresaEtiqueta">
+                    EMPRESA
+                </h2>
 
-                    </tr>
+                <span id="razaoSocialEmpresaEtiqueta">
+                    --
+                </span>
 
-                </tbody>
+                <small id="cnpjEmpresaEtiqueta">
+                    --
+                </small>
 
-            </table>
+                <small id="enderecoEmpresaEtiqueta">
+                    --
+                </small>
 
-        </section>
+            </div>
 
-    </main>
+
+            <div class="linha-etiqueta"></div>
+
+
+            <!-- PRODUTO -->
+
+            <h3 id="nomeEtiqueta">
+                PRODUTO
+            </h3>
+
+
+            <!-- TEMPERATURA -->
+
+            <div class="temperatura-destaque">
+
+                <strong>
+                    TEMPERATURA
+                </strong>
+
+                <span id="temperaturaEtiqueta">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="linha-etiqueta"></div>
+
+
+            <!-- DATAS -->
+
+            <div class="datas-etiqueta">
+
+                <p>
+
+                    <strong>
+                        PRODUZIDO
+                    </strong>
+
+                    <span id="dataEtiqueta">
+                        --
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        VALIDADE
+                    </strong>
+
+                    <span id="validadeEtiqueta">
+                        --
+                    </span>
+
+                </p>
+
+            </div>
+
+
+            <div class="linha-etiqueta"></div>
+
+
+            <!-- INFORMA??ES -->
+
+            <div class="info-etiqueta">
+
+
+                <p>
+
+                    <strong>
+                        RESPONS?VEL
+                    </strong>
+
+                    <span id="responsavelEtiqueta">
+                        --
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        LOTE:
+                    </strong>
+
+                    <span id="loteEtiqueta">
+                        --
+                    </span>
+
+                </p>
+
+
+            </div>
+
+
+            <!-- QR CODE -->
+
+            <div id="qrcodeEtiqueta"></div>
+
+
+        </div>
+
+
+        <!-- IMPRIMIR -->
+
+        <button
+            type="button"
+            onclick="imprimirEtiqueta()">
+
+            ??? Imprimir
+
+        </button>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         HIST?RICO
+    ====================================================== -->
+
+    <section class="table-box">
+
+
+        <div class="historico-header">
+
+            <h2>
+                Hist?rico de Etiquetas
+            </h2>
+
+
+            <button
+                type="button"
+                id="btnLimparHistorico"
+                class="btn-limpar-historico">
+
+                ??? Limpar hist?rico
+
+            </button>
+
+        </div>
+
+
+        <table>
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        C?digo
+                    </th>
+
+                    <th>
+                        Produto
+                    </th>
+
+                    <th>
+                        Quantidade
+                    </th>
+
+                    <th>
+                        Produ??o
+                    </th>
+
+                    <th>
+                        Validade
+                    </th>
+
+                    <th>
+                        Respons?vel
+                    </th>
+
+                    <th>
+                        A??es
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="listaEtiquetas">
+
+                <tr>
+
+                    <td colspan="7">
+
+                        Nenhuma etiqueta gerada.
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+
+        </table>
+
+
+    </section>
+
+
+</main>
+
 
 </div>
 
-<script type="module" src="js/firebase.js"></script>
-<script type="module" src="js/app.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
 
-<script type="module" src="js/etiquetas.js"></script>
+<script
+    type="module"
+    src="js/firebase.js">
+</script>
 
-<script type="module" src="js/auth.js"></script>
+
+<script
+    type="module"
+    src="js/app.js">
+</script>
+
+
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
+</script>
+
+
+<script
+    type="module"
+    src="js/etiquetas.js">
+</script>
+
+
+<script
+    type="module"
+    src="js/auth.js">
+</script>
+
+
+<!-- SIDEBAR -->
+
+<script
+    src="js/sidebar.js">
+</script>
+
 
 </body>
 
 </html>
-

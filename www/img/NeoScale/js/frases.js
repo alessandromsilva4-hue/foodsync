@@ -78,7 +78,7 @@ async function buscarFrase(){
             return {
 
                 frase:
-                "Uma boa refeição transforma o dia.",
+                "Uma boa refei??o transforma o dia.",
 
                 autor:
                 "NeoScale"
@@ -136,7 +136,7 @@ async function buscarFrase(){
 
 
             frase:
-            "A felicidade está nas pequenas coisas.",
+            "A felicidade est? nas pequenas coisas.",
 
 
             autor:

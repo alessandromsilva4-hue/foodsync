@@ -9,7 +9,7 @@ console.log("NEOSCALE DASHBOARD CARREGADO");
 
 
 // ==========================================
-// SAUDAÇÃO AUTOMÁTICA
+// SAUDA??O AUTOM?TICA
 // ==========================================
 
 function atualizarSaudacao(){
@@ -120,7 +120,7 @@ const frasesNeoScale = [
     {
 
         texto:
-        "A simplicidade é o último grau da sofisticação.",
+        "A simplicidade ? o ?ltimo grau da sofistica??o.",
 
         autor:
         "Leonardo da Vinci"
@@ -131,7 +131,7 @@ const frasesNeoScale = [
     {
 
         texto:
-        "Tudo vale a pena quando a alma não é pequena.",
+        "Tudo vale a pena quando a alma n?o ? pequena.",
 
         autor:
         "Fernando Pessoa"
@@ -142,7 +142,7 @@ const frasesNeoScale = [
     {
 
         texto:
-        "A vida é a arte do encontro.",
+        "A vida ? a arte do encontro.",
 
         autor:
         "Vinicius de Moraes"
@@ -153,10 +153,10 @@ const frasesNeoScale = [
     {
 
         texto:
-        "O essencial é invisível aos olhos.",
+        "O essencial ? invis?vel aos olhos.",
 
         autor:
-        "Antoine de Saint-Exupéry"
+        "Antoine de Saint-Exup?ry"
 
     }
 
@@ -221,7 +221,7 @@ function trocarFrase(){
 
 
 // ==========================================
-// INICIALIZAÇÃO
+// INICIALIZA??O
 // ==========================================
 
 

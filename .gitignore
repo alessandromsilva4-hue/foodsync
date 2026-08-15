@@ -70,3 +70,34 @@ node_modules/
 
 # Firebase Admin private key
 FoodSync-AI/serviceAccountKey.json
+
+# Printer Service - certificados e chaves privadas
+printer-service/*.pem
+printer-service/*-key.pem
+
+# Backups locais de correção UTF-8
+*_backup*
+*_backup_*
+*_backup_antes_*
+*_backup_mojibake*
+*_backup_utf8*
+www_backup_*/
+css_backup_mojibake/
+NeoScale_backup_mojibake/
+
+# Arquivos temporários de diagnóstico
+dashboard_corrompido.txt
+*.seguro
+
+# Arquivos de teste locais
+teste-raw.zpl
+teste.zpl
+
+# Serviço local de impressão - certificados
+printer-service/*.pem
+printer-service/*-key.pem
+
+# Backups específicos
+firestore.rules.backup
+www/js/*.backup_corrupcao
+www/*.bak

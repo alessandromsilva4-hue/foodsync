@@ -1,474 +1,689 @@
 // =======================================
-// FOODSYNC / LOTRIX - USUÁRIOS V5
+// LOTRIX - USUÁRIOS V6
+// FIRESTORE + MULTIEMPRESA
+//
+// NOVO USUÁRIO:
+// SEMPRE PERTENCE À LOJA ATUAL
+//
+// LISTAGEM:
+// SOMENTE USUÁRIOS DA LOJA ATUAL
 // =======================================
 
-console.log("USUARIOS.JS V5 CARREGADO");
+console.log("=======================================");
+console.log("LOTRIX USUARIOS.JS V6 CARREGADO");
+console.log("MULTIEMPRESA ATIVO");
+console.log("USUÁRIO SEMPRE VINCULADO À LOJA ATUAL");
+console.log("=======================================");
 
+
+// =======================================
+// FIREBASE
+// =======================================
 
 import { db, auth } from "./firebase.js";
 
 import {
-collection,
-getDocs,
-doc,
-setDoc,
-updateDoc,
-deleteDoc,
-serverTimestamp
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-import {
-createUserWithEmailAndPassword
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
+    collection,
+    getDocs,
+    doc,
+    setDoc,
+    updateDoc,
+    deleteDoc,
+    query,
+    where,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import {
-mostrarToast
-}
-from "./utils.js";
+    createUserWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+    mostrarToast
+} from "./utils.js";
 
 
-
-
+// =======================================
 // ELEMENTOS
+// =======================================
 
 const tabelaUsuarios =
-document.getElementById("tabelaUsuarios");
-
+    document.getElementById("tabelaUsuarios");
 
 const btnNovoUsuario =
-document.getElementById("btnNovoUsuario");
-
+    document.getElementById("btnNovoUsuario");
 
 const modalUsuario =
-document.getElementById("modalUsuario");
-
+    document.getElementById("modalUsuario");
 
 const btnCancelar =
-document.getElementById("btnCancelar");
-
+    document.getElementById("btnCancelar");
 
 const btnFecharModal =
-document.getElementById("btnFecharModal");
-
+    document.getElementById("btnFecharModal");
 
 const formUsuario =
-document.getElementById("formUsuario");
+    document.getElementById("formUsuario");
 
 
-
+// =======================================
 // CAMPOS
+// =======================================
 
 const nomeUsuario =
-document.getElementById("nomeUsuario");
-
+    document.getElementById("nomeUsuario");
 
 const emailUsuario =
-document.getElementById("emailUsuario");
-
+    document.getElementById("emailUsuario");
 
 const senhaUsuario =
-document.getElementById("senhaUsuario");
-
+    document.getElementById("senhaUsuario");
 
 const perfilUsuario =
-document.getElementById("perfilUsuario");
-
+    document.getElementById("perfilUsuario");
 
 const statusUsuario =
-document.getElementById("statusUsuario");
-
-
-
-let usuarios=[];
-
-let usuarioEditando=null;
-
-
-
+    document.getElementById("statusUsuario");
 
 
 // =======================================
-// PERMISSÕES DOS CHECKBOX
+// VARIÁVEIS
 // =======================================
 
-function pegarPermissoes(){
+let usuarios = [];
+
+let usuarioEditando = null;
 
 
-return {
+// =======================================
+// USUÁRIO LOGADO
+// =======================================
 
-dashboard:
-document.getElementById("permDashboard")?.checked || false,
+function usuarioAtual() {
 
+    try {
 
-produtos:
-document.getElementById("permProdutos")?.checked || false,
+        const dados =
+            localStorage.getItem(
+                "usuarioFoodSync"
+            );
 
+        if (!dados) {
 
-producao:
-document.getElementById("permProducao")?.checked || false,
+            console.error(
+                "usuarioFoodSync não encontrado."
+            );
 
+            return null;
 
-etiquetas:
-document.getElementById("permEtiquetas")?.checked || false,
+        }
 
+        return JSON.parse(dados);
 
-estoque:
-document.getElementById("permEstoque")?.checked || false,
+    } catch (error) {
 
+        console.error(
+            "Erro ao ler usuário logado:",
+            error
+        );
 
-relatorios:
-document.getElementById("permRelatorios")?.checked || false,
+        return null;
 
-
-usuarios:
-document.getElementById("permUsuarios")?.checked || false,
-
-
-configuracoes:
-document.getElementById("permConfiguracoes")?.checked || false
-
-};
-
+    }
 
 }
 
 
+// =======================================
+// EMPRESA ATUAL
+// =======================================
+
+function empresaAtual() {
+
+    const usuario =
+        usuarioAtual();
+
+    if (!usuario) {
+
+        console.error(
+            "Usuário logado não encontrado."
+        );
+
+        return null;
+
+    }
+
+    if (!usuario.idEmpresa) {
+
+        console.error(
+            "Usuário logado não possui idEmpresa:",
+            usuario
+        );
+
+        return null;
+
+    }
+
+    return usuario.idEmpresa;
+
+}
+
+
+// =======================================
+// VERIFICAR EMPRESA
+// =======================================
+
+function verificarEmpresa() {
+
+    const idEmpresa =
+        empresaAtual();
+
+    if (!idEmpresa) {
+
+        console.error(
+            "Não foi possível identificar a empresa atual."
+        );
+
+        mostrarToast(
+            "Não foi possível identificar a loja atual.",
+            "erro"
+        );
+
+        return false;
+
+    }
+
+    console.log(
+        "LOJA ATUAL:",
+        idEmpresa
+    );
+
+    return true;
+
+}
+
+
+// =======================================
+// PERMISSÕES
+// =======================================
+
+function pegarPermissoes() {
+
+    return {
+
+        dashboard:
+            document.getElementById(
+                "permDashboard"
+            )?.checked || false,
+
+        produtos:
+            document.getElementById(
+                "permProdutos"
+            )?.checked || false,
+
+        producao:
+            document.getElementById(
+                "permProducao"
+            )?.checked || false,
+
+        etiquetas:
+            document.getElementById(
+                "permEtiquetas"
+            )?.checked || false,
+
+        estoque:
+            document.getElementById(
+                "permEstoque"
+            )?.checked || false,
+
+        relatorios:
+            document.getElementById(
+                "permRelatorios"
+            )?.checked || false,
+
+        usuarios:
+            document.getElementById(
+                "permUsuarios"
+            )?.checked || false,
+
+        configuracoes:
+            document.getElementById(
+                "permConfiguracoes"
+            )?.checked || false
+
+    };
+
+}
 
 
 // =======================================
 // CARREGAR USUÁRIOS
+//
+// SOMENTE A LOJA ATUAL
 // =======================================
 
-async function carregarUsuarios(){
+async function carregarUsuarios() {
+
+    if (!tabelaUsuarios) {
+
+        return;
+
+    }
+
+    const idEmpresa =
+        empresaAtual();
+
+    if (!idEmpresa) {
+
+        tabelaUsuarios.innerHTML = `
+
+            <tr>
+
+                <td colspan="5">
+
+                    Não foi possível identificar a loja atual.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+    try {
+
+        console.log("=======================================");
+        console.log("CARREGANDO USUÁRIOS");
+        console.log(
+            "LOJA ATUAL:",
+            idEmpresa
+        );
+        console.log("=======================================");
 
 
-if(!tabelaUsuarios)
-return;
+        const consulta =
+            query(
+
+                collection(
+                    db,
+                    "usuarios"
+                ),
+
+                where(
+                    "idEmpresa",
+                    "==",
+                    idEmpresa
+                )
+
+            );
 
 
-try{
+        const snap =
+            await getDocs(
+                consulta
+            );
 
 
-const snap =
-await getDocs(
-collection(db,"usuarios")
-);
+        usuarios = [];
 
 
+        snap.forEach(
+            item => {
 
-usuarios=[];
+                const dados =
+                    item.data();
+
+                // SEGURANÇA EXTRA
+                if (
+                    dados.idEmpresa !==
+                    idEmpresa
+                ) {
+
+                    return;
+
+                }
+
+                usuarios.push({
+
+                    id:
+                        item.id,
+
+                    ...dados
+
+                });
+
+            }
+        );
 
 
-
-snap.forEach(item=>{
-
-
-usuarios.push({
-
-id:item.id,
-
-...item.data()
-
-});
+        console.log(
+            "USUÁRIOS DA LOJA:",
+            usuarios.length
+        );
 
 
-});
+        mostrarUsuarios(
+            usuarios
+        );
 
 
-
-mostrarUsuarios(usuarios);
-
-atualizarCards();
+        atualizarCards();
 
 
+    } catch (error) {
+
+        console.error(
+            "ERRO AO CARREGAR USUÁRIOS:",
+            error
+        );
+
+        mostrarToast(
+            "Erro ao carregar usuários.",
+            "erro"
+        );
+
+    }
 
 }
-
-
-catch(error){
-
-
-console.error(error);
-
-
-mostrarToast(
-"Erro ao carregar usuários",
-"erro"
-);
-
-
-}
-
-
-}
-
-
-
-
 
 
 // =======================================
 // CARDS
 // =======================================
 
-function atualizarCards(){
+function atualizarCards() {
+
+    const total =
+        document.getElementById(
+            "cardTotal"
+        );
+
+    const ativos =
+        document.getElementById(
+            "cardAtivos"
+        );
+
+    const admins =
+        document.getElementById(
+            "cardAdmins"
+        );
+
+    const operadores =
+        document.getElementById(
+            "cardOperadores"
+        );
 
 
-const total =
-document.getElementById("cardTotal");
+    if (total) {
+
+        total.innerText =
+            usuarios.length;
+
+    }
 
 
-const ativos =
-document.getElementById("cardAtivos");
+    if (ativos) {
+
+        ativos.innerText =
+            usuarios.filter(
+                u =>
+                    (u.status || "")
+                        .toLowerCase() ===
+                    "ativo"
+            ).length;
+
+    }
 
 
-const admins =
-document.getElementById("cardAdmins");
+    if (admins) {
+
+        admins.innerText =
+            usuarios.filter(
+                u =>
+                    (u.perfil || "")
+                        .toLowerCase() ===
+                    "administrador"
+            ).length;
+
+    }
 
 
-const operadores =
-document.getElementById("cardOperadores");
+    if (operadores) {
 
+        operadores.innerText =
+            usuarios.filter(
+                u =>
+                    (u.perfil || "")
+                        .toLowerCase() ===
+                    "operador"
+            ).length;
 
-
-if(total)
-total.innerText = usuarios.length;
-
-
-
-if(ativos)
-
-ativos.innerText =
-
-usuarios.filter(u=>
-
-(u.status || "")
-.toLowerCase()==="ativo"
-
-).length;
-
-
-
-
-if(admins)
-
-admins.innerText =
-
-usuarios.filter(u=>
-
-(u.perfil || "")
-.toLowerCase()==="administrador"
-
-).length;
-
-
-
-
-if(operadores)
-
-operadores.innerText =
-
-usuarios.filter(u=>
-
-(u.perfil || "")
-.toLowerCase()==="operador"
-
-).length;
-
+    }
 
 }
-
-
-
-
 
 
 // =======================================
 // MOSTRAR TABELA
 // =======================================
 
-function mostrarUsuarios(lista){
+function mostrarUsuarios(lista) {
+
+    if (!tabelaUsuarios) {
+
+        return;
+
+    }
 
 
-if(!tabelaUsuarios)
-return;
+    tabelaUsuarios.innerHTML =
+        "";
 
 
+    if (!lista.length) {
 
-tabelaUsuarios.innerHTML="";
+        tabelaUsuarios.innerHTML = `
 
+            <tr>
 
+                <td colspan="5">
 
-lista.forEach(u=>{
+                    Nenhum usuário cadastrado nesta loja.
 
+                </td>
 
-tabelaUsuarios.innerHTML += `
+            </tr>
 
-<tr>
+        `;
 
-<td>${u.nome || "-"}</td>
+        return;
 
-<td>${u.email || "-"}</td>
-
-<td>${u.perfil || "-"}</td>
-
-<td>
-
-<span class="status ${u.status}">
-
-${u.status || "-"}
-
-</span>
-
-</td>
+    }
 
 
-<td>
+    lista.forEach(
+        u => {
+
+            tabelaUsuarios.innerHTML += `
+
+                <tr>
+
+                    <td>
+                        ${u.nome || "-"}
+                    </td>
+
+                    <td>
+                        ${u.email || "-"}
+                    </td>
+
+                    <td>
+                        ${u.perfil || "-"}
+                    </td>
+
+                    <td>
+
+                        <span class="status ${u.status || ""}">
+
+                            ${u.status || "-"}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            type="button"
+                            onclick="editarUsuario('${u.id}')">
+
+                            ✏️
+
+                        </button>
 
 
-<button onclick="editarUsuario('${u.id}')">
+                        <button
+                            type="button"
+                            onclick="excluirUsuario('${u.id}')">
 
-✏️
+                            🗑️
 
-</button>
+                        </button>
 
+                    </td>
 
+                </tr>
 
-<button onclick="excluirUsuario('${u.id}')">
+            `;
 
-🗑️
-
-</button>
-
-
-</td>
-
-
-</tr>
-
-`;
-
-
-});
-
+        }
+    );
 
 }
 
 
-
-
-
 // =======================================
-// ABRIR MODAL NOVO
+// ABRIR NOVO USUÁRIO
 // =======================================
-
 
 btnNovoUsuario?.addEventListener(
-"click",
-()=>{
+    "click",
+    () => {
+
+        usuarioEditando =
+            null;
 
 
-usuarioEditando=null;
+        formUsuario?.reset();
 
 
-formUsuario.reset();
+        emailUsuario.disabled =
+            false;
 
 
-emailUsuario.disabled=false;
+        senhaUsuario.required =
+            true;
 
 
-senhaUsuario.required=true;
+        document.getElementById(
+            "tituloModal"
+        ).innerHTML =
+            "👤 Novo Usuário";
 
 
+        modalUsuario.style.display =
+            "flex";
 
-document.getElementById(
-"tituloModal"
-).innerHTML =
-"👤 Novo Usuário";
-
-
-
-modalUsuario.style.display="flex";
-
-
-}
-
+    }
 );
 
 
+// =======================================
+// FECHAR MODAL
+// =======================================
 
+function fecharModal() {
 
+    if (modalUsuario) {
 
-function fecharModal(){
+        modalUsuario.style.display =
+            "none";
 
-
-modalUsuario.style.display="none";
-
+    }
 
 }
-
-
-
 
 
 btnCancelar?.addEventListener(
-"click",
-fecharModal
+    "click",
+    fecharModal
 );
-
 
 
 btnFecharModal?.addEventListener(
-"click",
-fecharModal
+    "click",
+    fecharModal
 );
+
+
 // =======================================
-// MARCAR PERMISSÕES AO EDITAR
+// CARREGAR PERMISSÕES
 // =======================================
 
-function carregarPermissoes(permissoes = {}){
+function carregarPermissoes(
+    permissoes = {}
+) {
+
+    document.getElementById(
+        "permDashboard"
+    ).checked =
+        permissoes.dashboard || false;
 
 
-document.getElementById("permDashboard").checked =
-permissoes.dashboard || false;
+    document.getElementById(
+        "permProdutos"
+    ).checked =
+        permissoes.produtos || false;
 
 
-document.getElementById("permProdutos").checked =
-permissoes.produtos || false;
+    document.getElementById(
+        "permProducao"
+    ).checked =
+        permissoes.producao || false;
 
 
-document.getElementById("permProducao").checked =
-permissoes.producao || false;
+    document.getElementById(
+        "permEtiquetas"
+    ).checked =
+        permissoes.etiquetas || false;
 
 
-document.getElementById("permEtiquetas").checked =
-permissoes.etiquetas || false;
+    document.getElementById(
+        "permEstoque"
+    ).checked =
+        permissoes.estoque || false;
 
 
-document.getElementById("permEstoque").checked =
-permissoes.estoque || false;
+    document.getElementById(
+        "permRelatorios"
+    ).checked =
+        permissoes.relatorios || false;
 
 
-document.getElementById("permRelatorios").checked =
-permissoes.relatorios || false;
+    document.getElementById(
+        "permUsuarios"
+    ).checked =
+        permissoes.usuarios || false;
 
 
-document.getElementById("permUsuarios").checked =
-permissoes.usuarios || false;
-
-
-document.getElementById("permConfiguracoes").checked =
-permissoes.configuracoes || false;
-
+    document.getElementById(
+        "permConfiguracoes"
+    ).checked =
+        permissoes.configuracoes || false;
 
 }
-
-
-
 
 
 // =======================================
@@ -476,303 +691,409 @@ permissoes.configuracoes || false;
 // =======================================
 
 formUsuario?.addEventListener(
-"submit",
+    "submit",
 
-async(e)=>{
+    async event => {
 
-
-e.preventDefault();
-
+        event.preventDefault();
 
 
-try{
+        try {
+
+            // ===================================
+            // EMPRESA ATUAL
+            // ===================================
+
+            const idEmpresa =
+                empresaAtual();
 
 
-const nome =
-nomeUsuario.value.trim();
+            if (!idEmpresa) {
+
+                mostrarToast(
+                    "Não foi possível identificar a loja atual.",
+                    "erro"
+                );
+
+                return;
+
+            }
 
 
-const email =
-emailUsuario.value.trim();
+            console.log("=======================================");
+            console.log("SALVANDO USUÁRIO");
+            console.log(
+                "ID EMPRESA:",
+                idEmpresa
+            );
+            console.log("=======================================");
 
 
-const senha =
-senhaUsuario.value;
+            // ===================================
+            // DADOS
+            // ===================================
+
+            const nome =
+                nomeUsuario.value.trim();
 
 
-const perfil =
-perfilUsuario.value.toLowerCase();
+            const email =
+                emailUsuario.value.trim();
 
 
-const status =
-statusUsuario.value.toLowerCase();
+            const senha =
+                senhaUsuario.value;
 
 
-
-const permissoes =
-pegarPermissoes();
-
+            const perfil =
+                perfilUsuario.value.toLowerCase();
 
 
+            const status =
+                statusUsuario.value.toLowerCase();
 
 
-// NOVO USUÁRIO
+            const permissoes =
+                pegarPermissoes();
 
-if(!usuarioEditando){
+
+            // ===================================
+            // NOVO USUÁRIO
+            // ===================================
+
+            if (!usuarioEditando) {
+
+                if (!senha) {
+
+                    mostrarToast(
+                        "Informe uma senha.",
+                        "erro"
+                    );
+
+                    return;
+
+                }
 
 
-if(!senha){
+                // ===================================
+                // CRIAR AUTENTICAÇÃO
+                // ===================================
 
-mostrarToast(
-"Informe uma senha",
-"erro"
+                const credencial =
+                    await createUserWithEmailAndPassword(
+
+                        auth,
+
+                        email,
+
+                        senha
+
+                    );
+
+
+                const uid =
+                    credencial.user.uid;
+
+
+                console.log(
+                    "UID NOVO USUÁRIO:",
+                    uid
+                );
+
+
+                // ===================================
+                // CRIAR DOCUMENTO
+                //
+                // AQUI ESTÁ A CORREÇÃO PRINCIPAL
+                // ===================================
+
+                await setDoc(
+
+                    doc(
+                        db,
+                        "usuarios",
+                        uid
+                    ),
+
+                    {
+
+                        nome,
+
+                        email,
+
+                        perfil,
+
+                        status,
+
+                        permissoes,
+
+                        // LOJA ATUAL
+                        idEmpresa:
+                            idEmpresa,
+
+                        criadoEm:
+                            serverTimestamp()
+
+                    }
+
+                );
+
+
+                console.log(
+                    "USUÁRIO CRIADO NA LOJA:",
+                    idEmpresa
+                );
+
+
+                mostrarToast(
+                    "Usuário criado com sucesso!"
+                );
+
+            }
+
+
+            // ===================================
+            // EDITAR
+            // ===================================
+
+            else {
+
+                const usuario =
+                    usuarios.find(
+                        u =>
+                            u.id ===
+                            usuarioEditando
+                    );
+
+
+                if (!usuario) {
+
+                    mostrarToast(
+                        "Usuário não encontrado.",
+                        "erro"
+                    );
+
+                    return;
+
+                }
+
+
+                // SEGURANÇA:
+                // NÃO PERMITE EDITAR USUÁRIO
+                // DE OUTRA EMPRESA
+
+                if (
+                    usuario.idEmpresa !==
+                    idEmpresa
+                ) {
+
+                    mostrarToast(
+                        "Este usuário não pertence à loja atual.",
+                        "erro"
+                    );
+
+                    return;
+
+                }
+
+
+                await updateDoc(
+
+                    doc(
+                        db,
+                        "usuarios",
+                        usuarioEditando
+                    ),
+
+                    {
+
+                        nome,
+
+                        perfil,
+
+                        status,
+
+                        permissoes,
+
+                        atualizadoEm:
+                            serverTimestamp()
+
+                    }
+
+                );
+
+
+                mostrarToast(
+                    "Usuário atualizado!"
+                );
+
+            }
+
+
+            // ===================================
+            // FINALIZAR
+            // ===================================
+
+            fecharModal();
+
+
+            formUsuario.reset();
+
+
+            usuarioEditando =
+                null;
+
+
+            await carregarUsuarios();
+
+
+        } catch (error) {
+
+            console.error(
+                "ERRO AO SALVAR USUÁRIO:",
+                error
+            );
+
+
+            let mensagem =
+                "Erro ao salvar usuário.";
+
+
+            if (
+                error?.code ===
+                "auth/email-already-in-use"
+            ) {
+
+                mensagem =
+                    "Este email já está cadastrado.";
+
+            }
+
+
+            if (
+                error?.code ===
+                "auth/invalid-email"
+            ) {
+
+                mensagem =
+                    "Email inválido.";
+
+            }
+
+
+            if (
+                error?.code ===
+                "auth/weak-password"
+            ) {
+
+                mensagem =
+                    "A senha deve ter pelo menos 6 caracteres.";
+
+            }
+
+
+            mostrarToast(
+                mensagem,
+                "erro"
+            );
+
+        }
+
+    }
 );
-
-return;
-
-}
-
-
-
-const credencial =
-
-await createUserWithEmailAndPassword(
-
-auth,
-
-email,
-
-senha
-
-);
-
-
-
-const uid =
-credencial.user.uid;
-
-
-
-await setDoc(
-
-doc(
-db,
-"usuarios",
-uid
-),
-
-{
-
-
-nome,
-
-email,
-
-
-perfil,
-
-
-status,
-
-
-permissoes,
-
-
-criadoEm:
-serverTimestamp()
-
-
-}
-
-);
-
-
-
-mostrarToast(
-"Usuário criado com sucesso!"
-);
-
-
-}
-
-
-
-
-// EDITAR
-
-else{
-
-
-await updateDoc(
-
-doc(
-db,
-"usuarios",
-usuarioEditando
-),
-
-{
-
-
-nome,
-
-
-perfil,
-
-
-status,
-
-
-permissoes,
-
-
-atualizadoEm:
-serverTimestamp()
-
-
-}
-
-);
-
-
-
-mostrarToast(
-"Usuário atualizado!"
-);
-
-
-}
-
-
-
-
-fecharModal();
-
-
-formUsuario.reset();
-
-
-usuarioEditando=null;
-
-
-carregarUsuarios();
-
-
-
-}
-
-
-catch(error){
-
-
-console.error(
-"Erro:",
-error
-);
-
-
-
-mostrarToast(
-"Erro ao salvar usuário",
-"erro"
-);
-
-
-
-}
-
-
-}
-
-);
-
-
-
-
-
 
 
 // =======================================
 // EDITAR USUÁRIO
 // =======================================
 
-window.editarUsuario=function(id){
+window.editarUsuario =
+    function(id) {
+
+        const usuario =
+            usuarios.find(
+                u =>
+                    u.id ===
+                    id
+            );
 
 
+        if (!usuario) {
 
-const usuario =
+            return;
 
-usuarios.find(
-u=>u.id===id
-);
-
+        }
 
 
-if(!usuario)
-return;
+        const idEmpresa =
+            empresaAtual();
 
 
+        if (
+            !idEmpresa ||
+            usuario.idEmpresa !==
+            idEmpresa
+        ) {
 
-usuarioEditando=id;
+            mostrarToast(
+                "Este usuário não pertence à loja atual.",
+                "erro"
+            );
 
+            return;
 
-
-document.getElementById(
-"tituloModal"
-).innerHTML =
-"✏️ Editar Usuário";
-
-
-
-nomeUsuario.value =
-usuario.nome || "";
-
-
-
-emailUsuario.value =
-usuario.email || "";
+        }
 
 
-
-senhaUsuario.value="";
-
-
-// senha não é alterada na edição
-
-senhaUsuario.required=false;
+        usuarioEditando =
+            id;
 
 
-
-emailUsuario.disabled=true;
-
-
-
-perfilUsuario.value =
-usuario.perfil || "operador";
+        document.getElementById(
+            "tituloModal"
+        ).innerHTML =
+            "✏️ Editar Usuário";
 
 
-
-statusUsuario.value =
-usuario.status || "ativo";
-
+        nomeUsuario.value =
+            usuario.nome || "";
 
 
-carregarPermissoes(
-usuario.permissoes
-);
+        emailUsuario.value =
+            usuario.email || "";
 
 
-
-modalUsuario.style.display="flex";
-
-
-
-};
+        senhaUsuario.value =
+            "";
 
 
+        senhaUsuario.required =
+            false;
 
 
+        emailUsuario.disabled =
+            true;
 
+
+        perfilUsuario.value =
+            usuario.perfil ||
+            "operador";
+
+
+        statusUsuario.value =
+            usuario.status ||
+            "ativo";
+
+
+        carregarPermissoes(
+            usuario.permissoes
+        );
+
+
+        modalUsuario.style.display =
+            "flex";
+
+    };
 
 
 // =======================================
@@ -780,73 +1101,111 @@ modalUsuario.style.display="flex";
 // =======================================
 
 window.excluirUsuario =
-async function(id){
+    async function(id) {
+
+        const idEmpresa =
+            empresaAtual();
 
 
+        if (!idEmpresa) {
 
-const confirmar =
+            mostrarToast(
+                "Loja atual não identificada.",
+                "erro"
+            );
 
-confirm(
-"Deseja realmente excluir este usuário?"
-);
+            return;
 
-
-
-if(!confirmar)
-return;
-
+        }
 
 
-try{
+        const usuario =
+            usuarios.find(
+                u =>
+                    u.id ===
+                    id
+            );
 
 
-await deleteDoc(
+        if (!usuario) {
 
-doc(
-db,
-"usuarios",
-id
+            mostrarToast(
+                "Usuário não encontrado.",
+                "erro"
+            );
 
-)
+            return;
 
-);
-
-
-
-mostrarToast(
-"Usuário removido!"
-);
+        }
 
 
+        // SEGURANÇA MULTIEMPRESA
 
-carregarUsuarios();
+        if (
+            usuario.idEmpresa !==
+            idEmpresa
+        ) {
 
+            mostrarToast(
+                "Este usuário não pertence à loja atual.",
+                "erro"
+            );
 
+            return;
 
-}
-
-
-catch(error){
-
-
-console.error(error);
-
-
-mostrarToast(
-"Erro ao excluir usuário",
-"erro"
-);
+        }
 
 
-}
+        const confirmar =
+            confirm(
+                "Deseja realmente excluir este usuário?"
+            );
 
 
-};
+        if (!confirmar) {
+
+            return;
+
+        }
 
 
+        try {
+
+            await deleteDoc(
+
+                doc(
+                    db,
+                    "usuarios",
+                    id
+                )
+
+            );
 
 
+            mostrarToast(
+                "Usuário removido!"
+            );
 
+
+            await carregarUsuarios();
+
+
+        } catch (error) {
+
+            console.error(
+                "ERRO AO EXCLUIR USUÁRIO:",
+                error
+            );
+
+
+            mostrarToast(
+                "Erro ao excluir usuário.",
+                "erro"
+            );
+
+        }
+
+    };
 
 
 // =======================================
@@ -854,72 +1213,70 @@ mostrarToast(
 // =======================================
 
 document
-.getElementById("pesquisaUsuario")
-?.addEventListener(
+    .getElementById(
+        "pesquisaUsuario"
+    )
+    ?.addEventListener(
 
-"input",
+        "input",
 
-(e)=>{
+        event => {
 
-
-const texto =
-e.target.value.toLowerCase();
-
-
-
-const filtrados =
-
-usuarios.filter(u=>{
+            const texto =
+                event.target.value
+                    .toLowerCase()
+                    .trim();
 
 
-return (
+            const filtrados =
+                usuarios.filter(
+                    u => {
 
-(u.nome || "")
-.toLowerCase()
-.includes(texto)
+                        return (
 
+                            (u.nome || "")
+                                .toLowerCase()
+                                .includes(
+                                    texto
+                                )
 
-||
+                            ||
 
+                            (u.email || "")
+                                .toLowerCase()
+                                .includes(
+                                    texto
+                                )
 
-(u.email || "")
-.toLowerCase()
-.includes(texto)
+                            ||
 
+                            (u.perfil || "")
+                                .toLowerCase()
+                                .includes(
+                                    texto
+                                )
 
-||
+                        );
 
-
-(u.perfil || "")
-.toLowerCase()
-.includes(texto)
-
-
-);
-
-
-});
-
-
-
-mostrarUsuarios(
-filtrados
-);
-
-
-}
-
-);
+                    }
+                );
 
 
+            mostrarUsuarios(
+                filtrados
+            );
 
+        }
 
-
-
+    );
 
 
 // =======================================
 // INICIAR
 // =======================================
 
-carregarUsuarios();
+if (verificarEmpresa()) {
+
+    carregarUsuarios();
+
+}

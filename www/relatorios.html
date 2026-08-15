@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Lotrix - Relatórios</title>
+<title>Lotrix - Relat?rios</title>
 
 <link rel="icon" href="img/favicon.png">
 
@@ -19,419 +19,363 @@
 
 <body>
 
+<!-- BOT?O MENU -->
+<button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
+    ?
+</button>
+
+<!-- FUNDO ESCURO -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+
 <div class="layout">
 
-<aside class="sidebar">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
 
-<div class="logo-area">
-    <img src="img/logo.png" alt="Lotrix">
-    <h2>LOTRIX</h2>
-    <small>Food Safety Platform</small>
-</div>
+        <!-- BOT?O FECHAR -->
+        <button class="sidebar-close" id="sidebarClose" aria-label="Fechar menu">
+            ?
+        </button>
 
-<nav class="menu">
 
-    <div class="menu-section">
-        <span class="menu-title">GERAL</span>
+        <!-- LOGO -->
+        <div class="logo-area">
 
-        <a href="dashboard.html">
-            <span>🏠</span>
-            <span class="nav-label">Dashboard</span>
-        </a>
-    </div>
+            <img src="img/logo.png" alt="Lotrix">
 
-    <div class="menu-section">
-        <span class="menu-title">OPERAÇÃO</span>
+            <h2>LOTRIX</h2>
 
-        <a href="producao.html">
-            <span>⚙️</span>
-            <span class="nav-label">Produção</span>
-        </a>
+            <small>Food Safety Platform</small>
 
-        <a href="produtos.html">
-            <span>📦</span>
-            <span class="nav-label">Produtos</span>
-        </a>
+        </div>
 
-        <a href="etiquetas.html">
-            <span>🏷️</span>
-            <span class="nav-label">Etiquetas</span>
-        </a>
 
-        <a href="estoque.html">
-            <span>📚</span>
-            <span class="nav-label">Estoque</span>
-        </a>
+        <!-- MENU -->
+        <nav class="menu">
 
-    </div>
+            <div class="menu-section">
 
-    <div class="menu-section">
+                <span class="menu-title">
+                    GERAL
+                </span>
 
-        <span class="menu-title">GESTÃO</span>
+                <a href="dashboard.html">
+                    <span>??</span>
+                    <span class="nav-label">Dashboard</span>
+                </a>
 
-        <a href="relatorios.html" class="active">
-            <span>📈</span>
-            <span class="nav-label">Relatórios</span>
-        </a>
+            </div>
 
-        <a href="auditoria.html">
-            <span>📋</span>
-            <span class="nav-label">Auditoria</span>
-        </a>
 
-        <a href="usuario.html">
-            <span>👥</span>
-            <span class="nav-label">Usuários</span>
-        </a>
+            <div class="menu-section">
 
-    </div>
+                <span class="menu-title">
+                    OPERA??O
+                </span>
 
-    <div class="menu-section">
+                <a href="producao.html">
+                    <span>??</span>
+                    <span class="nav-label">Produ??o</span>
+                </a>
 
-        <span class="menu-title">SISTEMA</span>
+                <a href="produtos.html">
+                    <span>??</span>
+                    <span class="nav-label">Produtos</span>
+                </a>
 
-        <a href="configuracoes.html">
-            <span>⚙️</span>
-            <span class="nav-label">Configurações</span>
-        </a>
+                <a href="etiquetas.html">
+                    <span>???</span>
+                    <span class="nav-label">Etiquetas</span>
+                </a>
 
-        <a href="ajuda.html">
-            <span>ⓘ</span>
-            <span class="nav-label">Ajuda</span>
-        </a>
+                <a href="estoque.html">
+                    <span>??</span>
+                    <span class="nav-label">Estoque</span>
+                </a>
 
-        <a href="sac.html">
-            <span>🎧</span>
-            <span class="nav-label">SAC</span>
-        </a>
+            </div>
 
-    </div>
 
-</nav>
+            <div class="menu-section">
 
-<div class="user-card">
+                <span class="menu-title">
+                    GEST?O
+                </span>
 
-    <div class="avatar">
-        👤
-    </div>
+                <a href="relatorios.html" class="active">
+                    <span>??</span>
+                    <span class="nav-label">Relat?rios</span>
+                </a>
 
-    <div>
-        <strong id="nomeUsuarioLogado">
-            Usuário
-        </strong>
+                <a href="auditoria.html">
+                    <span>??</span>
+                    <span class="nav-label">Auditoria</span>
+                </a>
 
-        <small id="perfilUsuarioLogado">
-            Carregando...
-        </small>
-    </div>
+                <a href="usuario.html">
+                    <span>??</span>
+                    <span class="nav-label">Usu?rios</span>
+                </a>
 
-    <button onclick="logout()">
-        🚪 Sair
-    </button>
+            </div>
 
-</div>
 
-</aside>
+            <div class="menu-section">
 
-<main class="content">
+                <span class="menu-title">
+                    SISTEMA
+                </span>
 
+                <a href="configuracoes.html">
+                    <span>??</span>
+                    <span class="nav-label">Configura??es</span>
+                </a>
 
+                <a href="ajuda.html">
+                    <span>?</span>
+                    <span class="nav-label">Ajuda</span>
+                </a>
 
-<header class="top-header">
+                <a href="sac.html">
+                    <span>??</span>
+                    <span class="nav-label">SAC</span>
+                </a>
 
+            </div>
 
-<div>
+        </nav>
 
 
-<h1>
-Relatórios
-</h1>
+        <!-- USU?RIO -->
+        <div class="user-card">
 
+            <div class="avatar">
+                ??
+            </div>
 
-<p>
-Análise dos dados do Lotrix
-</p>
+            <div>
 
+                <strong id="nomeUsuarioLogado">
+                    Usu?rio
+                </strong>
 
-</div>
+                <small id="perfilUsuarioLogado">
+                    Carregando...
+                </small>
 
+            </div>
 
-</header>
+            <button onclick="logout()">
+                ?? Sair
+            </button>
 
+        </div>
 
-<div class="acoes-relatorio">
+    </aside>
 
-<button onclick="exportarExcel()">
-ðŸ“Š Exportar Excel
-</button>
 
+    <!-- CONTE?DO -->
+    <main class="content">
 
-<button onclick="exportarCSV()">
-ðŸ“„ Exportar CSV
-</button>
+        <header class="top-header">
 
+            <div>
 
-<button onclick="imprimirRelatorio()">
-ðŸ–¨ï¸ Imprimir
-</button>
+                <h1>
+                    Relat?rios
+                </h1>
 
-</div>
+                <p>
+                    An?lise dos dados do Lotrix
+                </p>
 
+            </div>
 
+        </header>
 
 
+        <!-- A??ES -->
+        <div class="acoes-relatorio">
 
-<section class="cards">
+            <button onclick="exportarExcel()">
+                ?? Exportar Excel
+            </button>
 
+            <button onclick="exportarCSV()">
+                ?? Exportar CSV
+            </button>
 
+            <button onclick="imprimirRelatorio()">
+                ??? Imprimir
+            </button>
 
-<div class="card">
+        </div>
 
 
-<div class="card-icon">
+        <!-- CARDS -->
+        <section class="cards">
 
-ðŸ±
+            <div class="card">
 
-</div>
+                <div class="card-icon">
+                    ??
+                </div>
 
+                <div>
 
-<div>
+                    <h3>
+                        Produ??es
+                    </h3>
 
+                    <strong id="totalProducoes">
+                        0
+                    </strong>
 
-<h3>
-Produções
-</h3>
+                </div>
 
+            </div>
 
-<strong id="totalProducoes">
 
-0
+            <div class="card">
 
-</strong>
+                <div class="card-icon">
+                    ???
+                </div>
 
+                <div>
 
-</div>
+                    <h3>
+                        Etiquetas
+                    </h3>
 
+                    <strong id="totalEtiquetas">
+                        0
+                    </strong>
 
-</div>
+                </div>
 
+            </div>
 
 
+            <div class="card">
 
+                <div class="card-icon">
+                    ??
+                </div>
 
+                <div>
 
-<div class="card">
+                    <h3>
+                        Produtos
+                    </h3>
 
+                    <strong id="totalProdutos">
+                        0
+                    </strong>
 
-<div class="card-icon">
+                </div>
 
-ðŸ·ï¸
+            </div>
 
-</div>
 
+            <div class="card">
 
-<div>
+                <div class="card-icon">
+                    ??
+                </div>
 
+                <div>
 
-<h3>
-Etiquetas
-</h3>
+                    <h3>
+                        Estoque Baixo
+                    </h3>
 
+                    <strong id="totalEstoqueBaixo">
+                        0
+                    </strong>
 
-<strong id="totalEtiquetas">
+                </div>
 
-0
+            </div>
 
-</strong>
+        </section>
 
 
-</div>
+        <!-- GR?FICO -->
+        <section class="table-box">
 
+            <h2>
+                ?? Produ??o por Produto
+            </h2>
 
-</div>
+            <canvas id="graficoProducao"></canvas>
 
+        </section>
 
 
+        <!-- ?LTIMAS PRODU??ES -->
+        <section class="table-box">
 
+            <h2>
+                ?ltimas Produ??es
+            </h2>
 
+            <table>
 
+                <thead>
 
-<div class="card">
+                    <tr>
 
+                        <th>
+                            Produto
+                        </th>
 
-<div class="card-icon">
+                        <th>
+                            Quantidade
+                        </th>
 
-ðŸ“¦
+                        <th>
+                            Respons?vel
+                        </th>
 
-</div>
+                        <th>
+                            Data
+                        </th>
 
+                    </tr>
 
-<div>
+                </thead>
 
 
-<h3>
-Produtos
-</h3>
+                <tbody id="relatorioProducao">
 
+                    <tr>
 
-<strong id="totalProdutos">
+                        <td colspan="4">
+                            Sem dados
+                        </td>
 
-0
+                    </tr>
 
-</strong>
+                </tbody>
 
+            </table>
 
-</div>
+        </section>
 
-
-</div>
-
-
-
-
-
-
-
-<div class="card">
-
-
-<div class="card-icon">
-
-âš ï¸
-
-</div>
-
-
-<div>
-
-
-<h3>
-Estoque Baixo
-</h3>
-
-
-<strong id="totalEstoqueBaixo">
-
-0
-
-</strong>
-
-
-</div>
-
-
-</div>
-
-
-
-</section>
-
-<section class="table-box">
-
-<h2>
-ðŸ“Š Produção por Produto
-</h2>
-
-<canvas id="graficoProducao"></canvas>
-
-</section>
-
-
-
-
-
-
-<section class="table-box">
-
-
-<h2>
-Últimas Produções
-</h2>
-
-
-
-
-<table>
-
-
-<thead>
-
-
-<tr>
-
-
-<th>
-Produto
-</th>
-
-
-<th>
-Quantidade
-</th>
-
-
-<th>
-Responsável
-</th>
-
-
-<th>
-Data
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-
-<tbody id="relatorioProducao">
-
-
-<tr>
-
-<td colspan="4">
-
-Sem dados
-
-</td>
-
-
-</tr>
-
-
-</tbody>
-
-
-
-
-</table>
-
-
-</section>
-
-
-
-
-
-
-
-
-</main>
-
+    </main>
 
 </div>
 
-
-
-
+<!-- BIBLIOTECAS -->
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+
+<!-- FIREBASE -->
 
 <script type="module" src="js/firebase.js"></script>
 
@@ -442,9 +386,9 @@ Sem dados
 <script type="module" src="js/auth.js"></script>
 
 
+<!-- MENU LATERAL GLOBAL -->
+
+<script src="js/sidebar.js"></script>
 
 </body>
-
 </html>
-
-

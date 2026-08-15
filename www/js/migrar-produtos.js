@@ -7,7 +7,7 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-console.log("=== LOTRIX - MIGRAÇÃO DE PRODUTOS ===");
+console.log("=== LOTRIX - MIGRA??O DE PRODUTOS ===");
 
 async function migrarProdutos() {
 
@@ -35,11 +35,11 @@ async function migrarProdutos() {
                 produto.nome
             );
 
-            // Produto já migrado
+            // Produto j? migrado
             if (produto.idEmpresa) {
 
                 console.log(
-                    "Já possui idEmpresa:",
+                    "J? possui idEmpresa:",
                     produto.idEmpresa
                 );
 
@@ -62,7 +62,7 @@ async function migrarProdutos() {
                 continue;
             }
 
-            // Cria uma cópia para cada empresa
+            // Cria uma c?pia para cada empresa
             for (const idEmpresa of produto.empresas) {
 
                 if (!idEmpresa) {
@@ -92,20 +92,20 @@ async function migrarProdutos() {
                 console.log(
                     "CRIADO:",
                     produto.nome,
-                    "→",
+                    "?",
                     idEmpresa
                 );
             }
         }
 
         console.log("================================");
-        console.log("MIGRAÇÃO CONCLUÍDA");
+        console.log("MIGRA??O CONCLU?DA");
         console.log("Criados:", criados);
         console.log("Ignorados:", ignorados);
         console.log("================================");
 
         document.getElementById("resultado").innerHTML = `
-            <strong>✅ Migração concluída!</strong><br><br>
+            <strong>? Migra??o conclu?da!</strong><br><br>
             Produtos criados: ${criados}<br>
             Produtos ignorados: ${ignorados}
         `;
@@ -114,12 +114,12 @@ async function migrarProdutos() {
     catch (erro) {
 
         console.error(
-            "ERRO NA MIGRAÇÃO:",
+            "ERRO NA MIGRA??O:",
             erro
         );
 
         document.getElementById("resultado").innerHTML = `
-            <strong>❌ Erro na migração</strong><br><br>
+            <strong>? Erro na migra??o</strong><br><br>
             ${erro.message}
         `;
     }

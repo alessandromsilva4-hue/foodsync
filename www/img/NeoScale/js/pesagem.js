@@ -1,4 +1,4 @@
-/* Leitura automática da balança e emissão da comanda. */
+/* Leitura autom?tica da balan?a e emiss?o da comanda. */
 import { db } from "./firebase.js";
 import { collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -34,17 +34,17 @@ async function carregarConfiguracao() {
         const dados = await getDoc(doc(db, "configuracoes", "principal"));
         if (dados.exists()) precoKg = dados.data().precoKg || precoKg;
     } catch (erro) {
-        console.error("Não foi possível carregar o preço por kg.", erro);
+        console.error("N?o foi poss?vel carregar o pre?o por kg.", erro);
     }
     if (precoKgDisplay) precoKgDisplay.textContent = formatarMoeda(precoKg);
 }
 
 async function gerarPreview(valor) {
-    let frase = { frase: "Uma boa refeição transforma momentos.", autor: "NeoScale" };
+    let frase = { frase: "Uma boa refei??o transforma momentos.", autor: "NeoScale" };
     if (window.NeoFrases) frase = await window.NeoFrases.buscarFrase();
 
     document.getElementById("previewComanda").textContent =
-        `NEOSCALE\nBuffet por quilo\n\nPeso: ${formatarPeso(pesoAtual)}\nValor: ${formatarMoeda(valor)}\n\n“${frase.frase}”\n— ${frase.autor}`;
+        `NEOSCALE\nBuffet por quilo\n\nPeso: ${formatarPeso(pesoAtual)}\nValor: ${formatarMoeda(valor)}\n\n?${frase.frase}?\n? ${frase.autor}`;
 }
 
 function atualizarLeitura(peso) {
@@ -58,7 +58,7 @@ function atualizarLeitura(peso) {
 async function salvarPesagem() {
     if (pesoAtual <= 0) return false;
     await addDoc(collection(db, "historico"), {
-        produto: "Buffet Almoço",
+        produto: "Buffet Almo?o",
         peso: pesoAtual,
         valor: pesoAtual * precoKg,
         data: serverTimestamp()
@@ -71,7 +71,7 @@ async function concluirPesagemAutomatica() {
 
     comandaEmProcessamento = true;
     precisaZerarBalanca = true;
-    atualizarStatus("Peso confirmado — emitindo comanda", true);
+    atualizarStatus("Peso confirmado ? emitindo comanda", true);
     if (previewStatus) previewStatus.textContent = "Emitindo automaticamente";
 
     try {
@@ -142,20 +142,20 @@ async function lerBalanca() {
 
 async function conectarBalanca() {
     if (!("serial" in navigator)) {
-        alert("Use o Google Chrome ou Microsoft Edge para conectar a balança por USB/serial.");
+        alert("Use o Google Chrome ou Microsoft Edge para conectar a balan?a por USB/serial.");
         return;
     }
     try {
         portaBalanca = await navigator.serial.requestPort();
         await portaBalanca.open({ baudRate: 9600 });
         leitorAtivo = true;
-        iniciar.textContent = "Balança conectada";
+        iniciar.textContent = "Balan?a conectada";
         iniciar.disabled = true;
         atualizarStatus("Aguardando prato", true);
         lerBalanca();
     } catch (erro) {
-        console.error("Erro ao conectar a balança.", erro);
-        atualizarStatus("Não foi possível conectar", false);
+        console.error("Erro ao conectar a balan?a.", erro);
+        atualizarStatus("N?o foi poss?vel conectar", false);
     }
 }
 
@@ -167,13 +167,13 @@ async function alternarTelaCheia() {
             await document.documentElement.requestFullscreen();
         }
     } catch (erro) {
-        console.error("Não foi possível alternar a tela cheia.", erro);
+        console.error("N?o foi poss?vel alternar a tela cheia.", erro);
     }
 }
 
 document.addEventListener("fullscreenchange", () => {
     if (botaoTelaCheia) {
-        botaoTelaCheia.textContent = document.fullscreenElement ? "⛶ Sair da tela cheia" : "⛶ Tela cheia";
+        botaoTelaCheia.textContent = document.fullscreenElement ? "? Sair da tela cheia" : "? Tela cheia";
     }
 });
 

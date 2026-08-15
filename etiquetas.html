@@ -26,7 +26,7 @@
     <aside class="sidebar">
 
     <div class="logo-area">
-        <img src="img/logo.jpg" alt="Lotrix">
+        <img src="img/logo.png" alt="Lotrix">
         <h2>LOTRIX</h2>
         <small>Food Safety Platform</small>
     </div>
@@ -216,15 +216,23 @@
 id="etiquetaGerada"
 class="etiqueta">
 
-    <div class="empresa-etiqueta">
+ <div class="empresa-etiqueta">
 
-    <h2>
-        ENGENHO
+    <h2 id="nomeEmpresaEtiqueta">
+        EMPRESA
     </h2>
 
-    <span>
-        COMIDA CASEIRA
+    <span id="razaoSocialEmpresaEtiqueta">
+        --
     </span>
+
+    <small id="cnpjEmpresaEtiqueta">
+        --
+    </small>
+
+    <small id="enderecoEmpresaEtiqueta">
+        --
+    </small>
 
 </div>
 
@@ -323,7 +331,22 @@ RESPONSÁVEL
 
         <section class="table-box">
 
-            <h2>Histórico de Etiquetas</h2>
+    <div class="historico-header">
+
+        <h2>
+            Histórico de Etiquetas
+        </h2>
+
+        <button
+            type="button"
+            id="btnLimparHistorico"
+            class="btn-limpar-historico">
+
+            🗑️ Limpar histórico
+
+        </button>
+
+    </div>
 
             <table>
 
@@ -377,3 +400,4 @@ RESPONSÁVEL
 </body>
 
 </html>
+

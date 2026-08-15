@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/alessandromsilva4-hue/foodsync/issues"
   },
-  "homepage": "https://github.com/alessandromsilva4-hue/foodsync#readme"
+  "homepage": "https://github.com/alessandromsilva4-hue/foodsync#readme",
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5"
+  }
 }

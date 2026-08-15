@@ -10,7 +10,7 @@ console.log("NEOSCALE APP CARREGADO");
 
 
 // ==========================================
-// CONFIGURAÇÃO GERAL
+// CONFIGURA??O GERAL
 // ==========================================
 
 
@@ -46,7 +46,7 @@ const NeoScale = {
 
 
 // ==========================================
-// INICIALIZAÇÃO
+// INICIALIZA??O
 // ==========================================
 
 
@@ -66,7 +66,7 @@ function iniciarSistema(){
 
     console.log(
 
-        "Versão:",
+        "Vers?o:",
 
         NeoScale.versao
 

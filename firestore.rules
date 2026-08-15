@@ -14,15 +14,22 @@ service cloud.firestore {
 
 
     // =====================================
+    // PERFIL DO USUÁRIO
+    // =====================================
+
+    function perfilUsuario() {
+      return get(
+        /databases/$(database)/documents/usuarios/$(request.auth.uid)
+      );
+    }
+
+
+    // =====================================
     // EMPRESA DO USUÁRIO
     // =====================================
 
     function idEmpresaUsuario() {
-
-      return get(
-        /databases/$(database)/documents/usuarios/$(request.auth.uid)
-      ).data.idEmpresa;
-
+      return perfilUsuario().data.idEmpresa;
     }
 
 
@@ -31,87 +38,45 @@ service cloud.firestore {
     // =====================================
 
     function usuarioAtivo() {
-
       return usuarioLogado()
         &&
-        get(
-          /databases/$(database)/documents/usuarios/$(request.auth.uid)
-        ).data.status == "ativo";
-
+        perfilUsuario().data.status == "ativo";
     }
 
-// =====================================
-// PRODUTOS
-// =====================================
 
-match /produtos/{produtoId} {
+    // =====================================
+    // PRODUTOS
+    // =====================================
 
-  allow read: if
-    usuarioAtivo()
-    &&
-    (
-      resource.data.idEmpresa == idEmpresaUsuario()
-      ||
-      (
-        resource.data.empresas is list
+    match /produtos/{produtoId} {
+
+      // Somente produtos vinculados à empresa
+      // do usuário logado.
+      allow read: if
+        usuarioAtivo()
+        &&
+        idEmpresaUsuario() in resource.data.empresas;
+
+
+      allow create: if
+        usuarioAtivo()
+        &&
+        idEmpresaUsuario() in request.resource.data.empresas;
+
+
+      allow update: if
+        usuarioAtivo()
         &&
         idEmpresaUsuario() in resource.data.empresas
-      )
-    );
-
-
-  allow create: if
-    usuarioAtivo()
-    &&
-    (
-      request.resource.data.idEmpresa == idEmpresaUsuario()
-      ||
-      (
-        request.resource.data.empresas is list
         &&
-        idEmpresaUsuario() in request.resource.data.empresas
-      )
-    );
+        idEmpresaUsuario() in request.resource.data.empresas;
 
 
-  allow update: if
-    usuarioAtivo()
-    &&
-    (
-      resource.data.idEmpresa == idEmpresaUsuario()
-      ||
-      (
-        resource.data.empresas is list
+      allow delete: if
+        usuarioAtivo()
         &&
-        idEmpresaUsuario() in resource.data.empresas
-      )
-    )
-    &&
-    (
-      request.resource.data.idEmpresa == idEmpresaUsuario()
-      ||
-      (
-        request.resource.data.empresas is list
-        &&
-        idEmpresaUsuario() in request.resource.data.empresas
-      )
-    );
-
-
-  allow delete: if
-    usuarioAtivo()
-    &&
-    (
-      resource.data.idEmpresa == idEmpresaUsuario()
-      ||
-      (
-        resource.data.empresas is list
-        &&
-        idEmpresaUsuario() in resource.data.empresas
-      )
-    );
-
-}
+        idEmpresaUsuario() in resource.data.empresas;
+    }
 
 
     // =====================================
@@ -144,7 +109,6 @@ match /produtos/{produtoId} {
         usuarioAtivo()
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
-
     }
 
 
@@ -178,7 +142,6 @@ match /produtos/{produtoId} {
         usuarioAtivo()
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
-
     }
 
 
@@ -212,7 +175,6 @@ match /produtos/{produtoId} {
         usuarioAtivo()
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
-
     }
 
 
@@ -246,10 +208,27 @@ match /produtos/{produtoId} {
         usuarioAtivo()
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
-
     }
 
+// =====================================
+// CONSULTAS PÚBLICAS DE ETIQUETAS
+// =====================================
 
+match /consultasPublicas/{codigoEtiqueta} {
+
+  // Qualquer pessoa que tenha o QR pode consultar
+  allow read: if true;
+
+  // Somente usuário ativo pode criar
+  // uma consulta pública vinculada à própria empresa
+  allow create: if
+    usuarioAtivo()
+    &&
+    request.resource.data.idEmpresa == idEmpresaUsuario();
+
+  // Não permitir alteração ou exclusão pública
+  allow update, delete: if false;
+}
     // =====================================
     // AUDITORIA
     // =====================================
@@ -271,41 +250,90 @@ match /produtos/{produtoId} {
       allow update: if
         usuarioAtivo()
         &&
-        resource.data.idEmpresa == idEmpresaUsuario();
+        resource.data.idEmpresa == idEmpresaUsuario()
+        &&
+        request.resource.data.idEmpresa == idEmpresaUsuario();
 
 
       allow delete: if
         usuarioAtivo()
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
-
     }
 
+// =====================================
+// USUÁRIOS
+// MULTIEMPRESA
+// =====================================
+
+match /usuarios/{userId} {
+
+  // -------------------------------------
+  // LER USUÁRIOS DA PRÓPRIA LOJA
+  // -------------------------------------
+
+  allow read: if
+    usuarioAtivo()
+    &&
+    resource.data.idEmpresa == idEmpresaUsuario();
+
+
+  // -------------------------------------
+  // CRIAR USUÁRIO NA PRÓPRIA LOJA
+  // -------------------------------------
+
+  allow create: if
+    usuarioAtivo()
+    &&
+    request.resource.data.idEmpresa == idEmpresaUsuario();
+
+
+  // -------------------------------------
+  // EDITAR USUÁRIO DA PRÓPRIA LOJA
+  // -------------------------------------
+
+  allow update: if
+    usuarioAtivo()
+    &&
+    resource.data.idEmpresa == idEmpresaUsuario()
+    &&
+    request.resource.data.idEmpresa == idEmpresaUsuario();
+
+
+  // -------------------------------------
+  // EXCLUIR USUÁRIO DA PRÓPRIA LOJA
+  // -------------------------------------
+
+  allow delete: if
+    usuarioAtivo()
+    &&
+    resource.data.idEmpresa == idEmpresaUsuario();
+
+}
+
 
     // =====================================
-    // USUÁRIOS
+    // EMPRESAS
     // =====================================
 
-    match /usuarios/{userId} {
+    match /empresas/{empresaId} {
 
       allow read: if
-        usuarioLogado()
+        usuarioAtivo()
         &&
-        request.auth.uid == userId;
+        empresaId == idEmpresaUsuario();
 
+      allow create, update, delete: if false;
     }
 
 
     // =====================================
-    // BLOQUEAR RESTANTE
+    // BLOQUEAR TODO O RESTANTE
     // =====================================
 
     match /{document=**} {
 
       allow read, write: if false;
-
     }
-
   }
-
 }

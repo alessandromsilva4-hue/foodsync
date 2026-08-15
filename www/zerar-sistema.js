@@ -17,7 +17,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // =======================================
-// COLEÇÕES OPERACIONAIS
+// COLE??ES OPERACIONAIS
 // =======================================
 
 const COLECOES = [
@@ -30,7 +30,7 @@ const COLECOES = [
 ];
 
 // =======================================
-// USUÁRIO ATUAL
+// USU?RIO ATUAL
 // =======================================
 
 function obterUsuarioAtual() {
@@ -49,7 +49,7 @@ function obterUsuarioAtual() {
     } catch (erro) {
 
         console.error(
-            "Erro ao carregar usuário:",
+            "Erro ao carregar usu?rio:",
             erro
         );
 
@@ -95,7 +95,7 @@ function obterEmpresaAtual() {
     if (!usuario) {
 
         alert(
-            "Usuário não encontrado."
+            "Usu?rio n?o encontrado."
         );
 
         return null;
@@ -104,12 +104,12 @@ function obterEmpresaAtual() {
     if (!usuario.idEmpresa) {
 
         console.error(
-            "Usuário sem idEmpresa:",
+            "Usu?rio sem idEmpresa:",
             usuario
         );
 
         alert(
-            "Este usuário não possui uma empresa vinculada."
+            "Este usu?rio n?o possui uma empresa vinculada."
         );
 
         return null;
@@ -119,7 +119,7 @@ function obterEmpresaAtual() {
 }
 
 // =======================================
-// APAGAR COLEÇÃO DA EMPRESA
+// APAGAR COLE??O DA EMPRESA
 // =======================================
 
 async function apagarColecao(
@@ -128,7 +128,7 @@ async function apagarColecao(
 ) {
 
     console.log(
-        `Limpando coleção: ${nomeColecao}`
+        `Limpando cole??o: ${nomeColecao}`
     );
 
     const referencia =
@@ -179,18 +179,18 @@ async function apagarColecao(
 async function zerarSistema() {
 
     // ===================================
-    // SEGURANÇA
+    // SEGURAN?A
     // ===================================
 
     if (!usuarioEhAdministrador()) {
 
         alert(
-            "⛔ Acesso negado.\n\n" +
+            "? Acesso negado.\n\n" +
             "Somente o administrador pode zerar o sistema."
         );
 
         console.warn(
-            "Tentativa de zerar sistema por usuário sem permissão."
+            "Tentativa de zerar sistema por usu?rio sem permiss?o."
         );
 
         return;
@@ -216,35 +216,35 @@ async function zerarSistema() {
     );
 
     console.log(
-        "EMPRESA QUE SERÁ LIMPA:",
+        "EMPRESA QUE SER? LIMPA:",
         idEmpresa
     );
 
     // ===================================
-    // PRIMEIRA CONFIRMAÇÃO
+    // PRIMEIRA CONFIRMA??O
     // ===================================
 
     const primeiraConfirmacao =
         confirm(
-            "⚠️ ATENÇÃO!\n\n" +
+            "?? ATEN??O!\n\n" +
 
-            "Você está prestes a ZERAR o Lotrix " +
+            "Voc? est? prestes a ZERAR o Lotrix " +
             "para esta empresa.\n\n" +
 
-            "Serão apagados SOMENTE os dados " +
+            "Ser?o apagados SOMENTE os dados " +
             "operacionais desta empresa:\n\n" +
 
-            "• Produtos\n" +
-            "• Produções\n" +
-            "• Estoque\n" +
-            "• Movimentações\n" +
-            "• Etiquetas\n" +
-            "• Auditoria\n\n" +
+            "? Produtos\n" +
+            "? Produ??es\n" +
+            "? Estoque\n" +
+            "? Movimenta??es\n" +
+            "? Etiquetas\n" +
+            "? Auditoria\n\n" +
 
-            "Usuários NÃO serão apagados.\n" +
-            "A empresa NÃO será apagada.\n\n" +
+            "Usu?rios N?O ser?o apagados.\n" +
+            "A empresa N?O ser? apagada.\n\n" +
 
-            "Esta operação não poderá ser desfeita.\n\n" +
+            "Esta opera??o n?o poder? ser desfeita.\n\n" +
 
             "Deseja continuar?"
         );
@@ -252,22 +252,22 @@ async function zerarSistema() {
     if (!primeiraConfirmacao) {
 
         console.log(
-            "Operação cancelada."
+            "Opera??o cancelada."
         );
 
         return;
     }
 
     // ===================================
-    // SEGUNDA CONFIRMAÇÃO
+    // SEGUNDA CONFIRMA??O
     // ===================================
 
     const segundaConfirmacao =
         prompt(
-            "🚨 ÚLTIMA CONFIRMAÇÃO 🚨\n\n" +
+            "?? ?LTIMA CONFIRMA??O ??\n\n" +
 
             "Todos os dados operacionais desta empresa " +
-            "serão apagados.\n\n" +
+            "ser?o apagados.\n\n" +
 
             "Digite exatamente:\n\n" +
 
@@ -281,7 +281,7 @@ async function zerarSistema() {
     ) {
 
         alert(
-            "Operação cancelada.\n\n" +
+            "Opera??o cancelada.\n\n" +
             "Nenhum dado foi apagado."
         );
 
@@ -289,7 +289,7 @@ async function zerarSistema() {
     }
 
     // ===================================
-    // BOTÃO
+    // BOT?O
     // ===================================
 
     const botao =
@@ -302,7 +302,7 @@ async function zerarSistema() {
         botao.disabled = true;
 
         botao.textContent =
-            "⏳ Zerando sistema...";
+            "? Zerando sistema...";
     }
 
     // ===================================
@@ -359,16 +359,16 @@ async function zerarSistema() {
         );
 
         alert(
-            "✅ LOTRIX ZERADO COM SUCESSO!\n\n" +
+            "? LOTRIX ZERADO COM SUCESSO!\n\n" +
 
             "Todos os dados operacionais desta empresa " +
             "foram apagados.\n\n" +
 
-            "Empresa e usuários foram mantidos.\n\n" +
+            "Empresa e usu?rios foram mantidos.\n\n" +
 
             `Registros apagados: ${totalApagado}\n\n` +
 
-            "O Lotrix está pronto para começar novamente."
+            "O Lotrix est? pronto para come?ar novamente."
         );
 
         window.location.reload();
@@ -381,8 +381,8 @@ async function zerarSistema() {
         );
 
         alert(
-            "❌ Erro ao zerar o sistema.\n\n" +
-            "Nenhuma garantia de conclusão total pode ser dada.\n\n" +
+            "? Erro ao zerar o sistema.\n\n" +
+            "Nenhuma garantia de conclus?o total pode ser dada.\n\n" +
             "Verifique o Console do navegador."
         );
 
@@ -391,20 +391,20 @@ async function zerarSistema() {
             botao.disabled = false;
 
             botao.textContent =
-                "🗑️ Zerar Sistema";
+                "??? Zerar Sistema";
         }
     }
 }
 
 // =======================================
-// EXPOR FUNÇÃO
+// EXPOR FUN??O
 // =======================================
 
 window.zerarSistema =
     zerarSistema;
 
 // =======================================
-// INICIALIZAÇÃO
+// INICIALIZA??O
 // =======================================
 
 document.addEventListener(
@@ -417,7 +417,7 @@ document.addEventListener(
             );
 
         // =================================
-        // OCULTAR PARA NÃO ADMIN
+        // OCULTAR PARA N?O ADMIN
         // =================================
 
         if (
@@ -429,14 +429,14 @@ document.addEventListener(
                 "none";
 
             console.log(
-                "Zerar Sistema ocultado: usuário não é administrador."
+                "Zerar Sistema ocultado: usu?rio n?o ? administrador."
             );
 
             return;
         }
 
         // =================================
-        // CONFIGURAR BOTÃO
+        // CONFIGURAR BOT?O
         // =================================
 
         if (botao) {
@@ -447,7 +447,7 @@ document.addEventListener(
             );
 
             console.log(
-                "Botão Zerar Sistema configurado para administrador."
+                "Bot?o Zerar Sistema configurado para administrador."
             );
         }
     }

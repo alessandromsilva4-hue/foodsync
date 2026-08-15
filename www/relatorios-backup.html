@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -7,123 +7,117 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-<title>Lotrix - RelatÃ³rios</title>
-
+<title>Lotrix - Relat?rios</title>
 
 <link rel="icon" href="img/favicon.png">
 
-
 <link rel="stylesheet" href="css/style.css">
-
 <link rel="stylesheet" href="css/sidebar.css">
-
 <link rel="stylesheet" href="css/tabela.css">
-
 
 </head>
 
-
-
 <body>
-
 
 <div class="layout">
 
-
-
 <aside class="sidebar">
 
-    <div class="logo-area">
-        <img src="img/logo.png" alt="Lotrix">
-        <h2>LOTRIX</h2>
-        <small>Food Safety Platform</small>
+<div class="logo-area">
+    <img src="img/logo.png" alt="Lotrix">
+    <h2>LOTRIX</h2>
+    <small>Food Safety Platform</small>
+</div>
+
+<nav class="menu">
+
+    <div class="menu-section">
+        <span class="menu-title">GERAL</span>
+
+        <a href="dashboard.html">
+            <span>??</span>
+            <span class="nav-label">Dashboard</span>
+        </a>
     </div>
 
-    <nav class="menu">
+    <div class="menu-section">
+        <span class="menu-title">OPERA??O</span>
 
-        <div class="menu-section">
-            <span class="menu-title">GERAL</span>
+        <a href="producao.html">
+            <span>??</span>
+            <span class="nav-label">Produ??o</span>
+        </a>
 
-            <a href="dashboard.html" class="active">
-                <span>ðŸ </span>
-                <span class="nav-label">Dashboard</span>
-            </a>
-        </div>
+        <a href="produtos.html">
+            <span>??</span>
+            <span class="nav-label">Produtos</span>
+        </a>
 
-        <div class="menu-section">
-            <span class="menu-title">OPERAÃ‡ÃƒO</span>
+        <a href="etiquetas.html">
+            <span>???</span>
+            <span class="nav-label">Etiquetas</span>
+        </a>
 
-            <a href="producao.html">
-                <span>âš™ï¸</span>
-                <span class="nav-label">ProduÃ§Ã£o</span>
-            </a>
+        <a href="estoque.html">
+            <span>??</span>
+            <span class="nav-label">Estoque</span>
+        </a>
 
-            <a href="produtos.html">
-                <span>ðŸ“¦</span>
-                <span class="nav-label">Produtos</span>
-            </a>
+    </div>
 
-            <a href="etiquetas.html">
-                <span>ðŸ·ï¸</span>
-                <span class="nav-label">Etiquetas</span>
-            </a>
+    <div class="menu-section">
 
-            <a href="estoque.html">
-                <span>ðŸ“š</span>
-                <span class="nav-label">Estoque</span>
-            </a>
-        </div>
+        <span class="menu-title">GEST?O</span>
 
-        <div class="menu-section">
-            <span class="menu-title">GESTÃƒO</span>
+        <a href="relatorios.html" class="active">
+            <span>??</span>
+            <span class="nav-label">Relat?rios</span>
+        </a>
 
-            <a href="relatorios.html">
-                <span>ðŸ“ˆ</span>
-                <span class="nav-label">RelatÃ³rios</span>
-            </a>
+        <a href="auditoria.html">
+            <span>??</span>
+            <span class="nav-label">Auditoria</span>
+        </a>
 
-            <a href="auditoria.html">
-                <span>ðŸ“</span>
-                <span class="nav-label">Auditoria</span>
-            </a>
+        <a href="usuario.html">
+            <span>??</span>
+            <span class="nav-label">Usu?rios</span>
+        </a>
 
-            <a href="usuario.html">
-                <span>ðŸ‘¥</span>
-                <span class="nav-label">UsuÃ¡rios</span>
-            </a>
-        </div>
+    </div>
 
-        <div class="menu-section">
-            <span class="menu-title">SISTEMA</span>
+    <div class="menu-section">
 
-            <a href="configuracoes.html">
-                <span>âš™ï¸</span>
-                <span class="nav-label">ConfiguraÃ§Ãµes</span>
-            </a>
+        <span class="menu-title">SISTEMA</span>
 
-            <a href="ajuda.html">
-                <span>â“</span>
-                <span class="nav-label">Ajuda</span>
-            </a>
+        <a href="configuracoes.html">
+            <span>??</span>
+            <span class="nav-label">Configura??es</span>
+        </a>
 
-            <a href="sac.html">
-                <span>ðŸŽ§</span>
-                <span class="nav-label">SAC</span>
-            </a>
-        </div>
+        <a href="ajuda.html">
+            <span>?</span>
+            <span class="nav-label">Ajuda</span>
+        </a>
 
-    </nav>
+        <a href="sac.html">
+            <span>??</span>
+            <span class="nav-label">SAC</span>
+        </a>
 
-    <div class="user-card">
+    </div>
+
+</nav>
+
+<div class="user-card">
 
     <div class="avatar">
-        ðŸ‘¤
+        ??
     </div>
 
     <div>
         <strong id="nomeUsuarioLogado">
-            UsuÃ¡rio
+            Usu?rio
         </strong>
 
         <small id="perfilUsuarioLogado">
@@ -131,22 +125,13 @@
         </small>
     </div>
 
+    <button onclick="logout()">
+        ?? Sair
+    </button>
 
-        <button onclick="logout()">
-            ðŸšª Sair
-        </button>
-
-    </div>
+</div>
 
 </aside>
-
-
-
-
-
-
-
-
 
 <main class="content">
 
@@ -159,12 +144,12 @@
 
 
 <h1>
-RelatÃ³rios
+Relat?rios
 </h1>
 
 
 <p>
-AnÃ¡lise dos dados do Lotrix
+An?lise dos dados do Lotrix
 </p>
 
 
@@ -177,17 +162,17 @@ AnÃ¡lise dos dados do Lotrix
 <div class="acoes-relatorio">
 
 <button onclick="exportarExcel()">
-ðŸ“Š Exportar Excel
+        ?? Exportar Excel
 </button>
 
 
 <button onclick="exportarCSV()">
-ðŸ“„ Exportar CSV
+        ?? Exportar CSV
 </button>
 
 
 <button onclick="imprimirRelatorio()">
-ðŸ–¨ï¸ Imprimir
+        ??? Imprimir
 </button>
 
 </div>
@@ -205,7 +190,7 @@ AnÃ¡lise dos dados do Lotrix
 
 <div class="card-icon">
 
-ðŸ±
+        ??
 
 </div>
 
@@ -214,7 +199,7 @@ AnÃ¡lise dos dados do Lotrix
 
 
 <h3>
-ProduÃ§Ãµes
+Produ??es
 </h3>
 
 
@@ -240,7 +225,7 @@ ProduÃ§Ãµes
 
 <div class="card-icon">
 
-ðŸ·ï¸
+        ???
 
 </div>
 
@@ -276,7 +261,7 @@ Etiquetas
 
 <div class="card-icon">
 
-ðŸ“¦
+        ??
 
 </div>
 
@@ -312,7 +297,7 @@ Produtos
 
 <div class="card-icon">
 
-âš ï¸
+        ??
 
 </div>
 
@@ -344,7 +329,7 @@ Estoque Baixo
 <section class="table-box">
 
 <h2>
-ðŸ“Š ProduÃ§Ã£o por Produto
+        ?? Produ??o por Produto
 </h2>
 
 <canvas id="graficoProducao"></canvas>
@@ -360,7 +345,7 @@ Estoque Baixo
 
 
 <h2>
-Ãšltimas ProduÃ§Ãµes
+?ltimas Produ??es
 </h2>
 
 
@@ -386,7 +371,7 @@ Quantidade
 
 
 <th>
-ResponsÃ¡vel
+Respons?vel
 </th>
 
 
@@ -461,4 +446,5 @@ Sem dados
 </body>
 
 </html>
+
 

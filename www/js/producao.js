@@ -1,10 +1,10 @@
 // =======================================
-// LOTRIX - PRODUÇÃO V6
+// LOTRIX - PRODU??O V7
 // MULTIEMPRESA + FIRESTORE
-// COMPATÍVEL COM ESTOQUE V6
+// IMPRESS?O DIRETA ZD220 VIA PRINTER SERVICE
 // =======================================
 
-console.log("PRODUCAO.JS V6 CARREGADO");F
+console.log("PRODUCAO.JS V7 CARREGADO");
 
 import { db } from "./firebase.js";
 
@@ -22,7 +22,15 @@ import {
 
 
 // =======================================
-// VARIÁVEIS
+// CONFIGURA??O DA IMPRESSORA
+// =======================================
+
+const PRINTER_SERVICE_URL =
+    "https://192.168.0.109:9100/print";
+
+
+// =======================================
+// VARI?VEIS
 // =======================================
 
 let produtos = [];
@@ -34,12 +42,14 @@ let imprimirDepoisDeSalvar = false;
 // =======================================
 
 function obterElemento(id) {
+
     return document.getElementById(id);
+
 }
 
 
 // =======================================
-// USUÁRIO ATUAL
+// USU?RIO ATUAL
 // =======================================
 
 function usuarioAtual() {
@@ -47,10 +57,14 @@ function usuarioAtual() {
     try {
 
         const dados =
-            localStorage.getItem("usuarioFoodSync");
+            localStorage.getItem(
+                "usuarioFoodSync"
+            );
 
         if (!dados) {
+
             return null;
+
         }
 
         return JSON.parse(dados);
@@ -58,7 +72,7 @@ function usuarioAtual() {
     } catch (error) {
 
         console.error(
-            "Erro ao carregar usuário:",
+            "Erro ao carregar usu?rio:",
             error
         );
 
@@ -79,7 +93,7 @@ function empresaAtual() {
     if (!usuario) {
 
         console.error(
-            "Usuário não encontrado."
+            "Usu?rio n?o encontrado."
         );
 
         return null;
@@ -88,7 +102,7 @@ function empresaAtual() {
     if (!usuario.idEmpresa) {
 
         console.error(
-            "ID da empresa não encontrado:",
+            "ID da empresa n?o encontrado:",
             usuario
         );
 
@@ -111,7 +125,7 @@ function verificarEmpresa() {
     if (!idEmpresa) {
 
         alert(
-            "Não foi possível identificar a empresa deste usuário."
+            "N?o foi poss?vel identificar a empresa deste usu?rio."
         );
 
         return false;
@@ -142,7 +156,21 @@ function escaparHTML(valor) {
 
 
 // =======================================
-// VERIFICAR SE PRODUTO PERTENCE À EMPRESA
+// LIMPAR TEXTO PARA ZPL
+// =======================================
+
+function limparZPL(valor) {
+
+    return String(valor ?? "")
+        .replace(/[\r\n]+/g, " ")
+        .replace(/\^/g, "")
+        .replace(/~/g, "")
+        .trim();
+}
+
+
+// =======================================
+// VERIFICAR PRODUTO DA EMPRESA
 // =======================================
 
 function produtoPertenceEmpresa(
@@ -150,7 +178,6 @@ function produtoPertenceEmpresa(
     idEmpresa
 ) {
 
-    // FORMATO PRINCIPAL
     if (
         dados.idEmpresa ===
         idEmpresa
@@ -159,10 +186,13 @@ function produtoPertenceEmpresa(
         return true;
     }
 
-    // COMPATIBILIDADE COM empresas[]
     if (
-        Array.isArray(dados.empresas) &&
-        dados.empresas.includes(idEmpresa)
+        Array.isArray(
+            dados.empresas
+        ) &&
+        dados.empresas.includes(
+            idEmpresa
+        )
     ) {
 
         return true;
@@ -180,12 +210,14 @@ function produtoPertenceEmpresa(
 async function carregarProdutos() {
 
     const produtoSelect =
-        obterElemento("produtoSelect");
+        obterElemento(
+            "produtoSelect"
+        );
 
     if (!produtoSelect) {
 
         console.error(
-            "Elemento #produtoSelect não encontrado."
+            "Elemento #produtoSelect n?o encontrado."
         );
 
         return;
@@ -199,7 +231,7 @@ async function carregarProdutos() {
         if (!idEmpresa) {
 
             console.error(
-                "Não foi possível identificar a empresa."
+                "N?o foi poss?vel identificar a empresa."
             );
 
             return;
@@ -215,6 +247,7 @@ async function carregarProdutos() {
             idEmpresa
         );
 
+
         const consulta =
             query(
                 collection(
@@ -222,11 +255,12 @@ async function carregarProdutos() {
                     "produtos"
                 ),
                 where(
-                    "idEmpresa",
-                    "==",
+                    "empresas",
+                    "array-contains",
                     idEmpresa
                 )
             );
+
 
         let snapshot;
 
@@ -252,19 +286,23 @@ async function carregarProdutos() {
             throw error;
         }
 
+
         snapshot.forEach(
-            (item) => {
+            item => {
 
                 const dados =
                     item.data();
 
                 if (
-                    dados.idEmpresa !==
-                    idEmpresa
+                    !produtoPertenceEmpresa(
+                        dados,
+                        idEmpresa
+                    )
                 ) {
 
                     return;
                 }
+
 
                 const produto = {
 
@@ -275,21 +313,26 @@ async function carregarProdutos() {
 
                 };
 
+
                 produtos.push(
                     produto
                 );
+
 
                 const option =
                     document.createElement(
                         "option"
                     );
 
+
                 option.value =
                     produto.id;
+
 
                 option.textContent =
                     produto.nome ||
                     "Produto sem nome";
+
 
                 produtoSelect.appendChild(
                     option
@@ -298,15 +341,12 @@ async function carregarProdutos() {
             }
         );
 
+
         console.log(
             "PRODUTOS CARREGADOS:",
             produtos.length
         );
 
-        console.log(
-            "EMPRESA DOS PRODUTOS:",
-            idEmpresa
-        );
 
         if (
             produtos.length === 0
@@ -317,6 +357,7 @@ async function carregarProdutos() {
                 idEmpresa
             );
         }
+
 
     } catch (error) {
 
@@ -344,6 +385,7 @@ function produtoSelecionado() {
         );
 
     if (!select) {
+
         return null;
     }
 
@@ -356,7 +398,7 @@ function produtoSelecionado() {
 
 
 // =======================================
-// ATUALIZAR INFORMAÇÕES DO PRODUTO
+// ATUALIZAR INFORMA??ES DO PRODUTO
 // =======================================
 
 function atualizarInformacoesProduto() {
@@ -380,11 +422,16 @@ function atualizarInformacoesProduto() {
     if (!produto) {
 
         if (infoValidade) {
-            infoValidade.textContent = "";
+
+            infoValidade.textContent =
+                "";
         }
 
+
         if (infoTemperatura) {
-            infoTemperatura.textContent = "";
+
+            infoTemperatura.textContent =
+                "";
         }
 
         return;
@@ -447,7 +494,7 @@ function atualizarInformacoesProduto() {
 
         responsavel.value =
             usuario?.nome ||
-            "Não informado";
+            "N?o informado";
     }
 
 
@@ -556,7 +603,9 @@ function gerarLote() {
 
 
     if (campo) {
-        campo.value = lote;
+
+        campo.value =
+            lote;
     }
 
 
@@ -577,6 +626,7 @@ function preencherDataAtual() {
 
 
     if (!campo) {
+
         return;
     }
 
@@ -626,51 +676,36 @@ async function baixarEstoque(
 ) {
 
     try {
-const consulta =
-    query(
-        collection(
-            db,
-            "produtos"
-        ),
-        where(
-            "empresas",
-            "array-contains",
+
+        console.log(
+            "CONSULTANDO ESTOQUE DA EMPRESA:",
             idEmpresa
-        )
-    );
-
-let snapshot;
-
-try {
-
-    snapshot =
-        await getDocs(
-            consulta
         );
 
-} catch (error) {
 
-    console.error(
-        "ERRO FIRESTORE AO CONSULTAR ESTOQUE:",
-        error
-    );
+        const consulta =
+            query(
+                collection(
+                    db,
+                    "estoque"
+                ),
+                where(
+                    "idEmpresa",
+                    "==",
+                    idEmpresa
+                )
+            );
 
-    console.error(
-        "Empresa utilizada no estoque:",
-        idEmpresa
-    );
 
-    throw error;
-}
+        const snapshot =
+            await getDocs(
+                consulta
+            );
 
 
         let estoqueEncontrado =
             null;
 
-
-        // ---------------------------------------
-        // LOCALIZAR ESTOQUE
-        // ---------------------------------------
 
         for (
             const item of snapshot.docs
@@ -725,14 +760,10 @@ try {
         }
 
 
-        // ---------------------------------------
-        // ESTOQUE NÃO ENCONTRADO
-        // ---------------------------------------
-
         if (!estoqueEncontrado) {
 
             throw new Error(
-                `Produto "${produto.nome}" não possui estoque cadastrado para esta empresa.`
+                `Produto "${produto.nome}" n?o possui estoque cadastrado para esta empresa.`
             );
         }
 
@@ -744,17 +775,13 @@ try {
             );
 
 
-        // ---------------------------------------
-        // VERIFICAR ESTOQUE SUFICIENTE
-        // ---------------------------------------
-
         if (
             quantidadeAtual <
             quantidade
         ) {
 
             throw new Error(
-                `Estoque insuficiente para ${produto.nome}. Disponível: ${quantidadeAtual} ${unidade}.`
+                `Estoque insuficiente para ${produto.nome}. Dispon?vel: ${quantidadeAtual} ${unidade}.`
             );
         }
 
@@ -763,10 +790,6 @@ try {
             quantidadeAtual -
             quantidade;
 
-
-        // ---------------------------------------
-        // ATUALIZAR ESTOQUE
-        // ---------------------------------------
 
         await updateDoc(
 
@@ -797,13 +820,8 @@ try {
                     serverTimestamp()
 
             }
-
         );
 
-
-        // ---------------------------------------
-        // REGISTRAR MOVIMENTAÇÃO
-        // ---------------------------------------
 
         await addDoc(
 
@@ -833,7 +851,7 @@ try {
                     unidade,
 
                 motivo:
-                    "Produção",
+                    "Produ??o",
 
                 usuario:
                     usuario?.nome ||
@@ -843,23 +861,32 @@ try {
                     serverTimestamp()
 
             }
-
         );
 
 
         console.log(
             "ESTOQUE BAIXADO:",
             {
-                empresa: idEmpresa,
-                produto: produto.nome,
-                quantidadeAnterior: quantidadeAtual,
-                quantidadeBaixada: quantidade,
-                quantidadeNova: novaQuantidade
+                empresa:
+                    idEmpresa,
+
+                produto:
+                    produto.nome,
+
+                quantidadeAnterior:
+                    quantidadeAtual,
+
+                quantidadeBaixada:
+                    quantidade,
+
+                quantidadeNova:
+                    novaQuantidade
             }
         );
 
 
         return true;
+
 
     } catch (error) {
 
@@ -874,7 +901,463 @@ try {
 
 
 // =======================================
-// SALVAR PRODUÇÃO
+// FORMATAR DATA PARA ETIQUETA
+// =======================================
+
+function formatarDataEtiqueta(valor) {
+
+    if (!valor) {
+
+        return "-";
+    }
+
+
+    let data;
+
+
+    if (
+        typeof valor === "string"
+    ) {
+
+        data =
+            new Date(valor);
+
+    } else if (
+        typeof valor === "object" &&
+        valor.seconds
+    ) {
+
+        data =
+            new Date(
+                valor.seconds * 1000
+            );
+
+    } else {
+
+        data =
+            new Date(valor);
+    }
+
+
+    if (
+        isNaN(
+            data.getTime()
+        )
+    ) {
+
+        return String(valor);
+    }
+
+
+    return data.toLocaleDateString(
+        "pt-BR"
+    );
+}
+
+
+// =======================================
+// GERAR ZPL DA ETIQUETA
+// ZD220 - 203 DPI
+// 60mm x 60mm
+// =======================================
+
+function gerarZPL(
+    produto,
+    lote,
+    dataProducao,
+    validade,
+    temperatura,
+    responsavel,
+    codigoEtiqueta
+) {
+
+    const nome =
+        limparZPL(
+            produto.nome ||
+            "Produto"
+        );
+
+
+    const codigo =
+        limparZPL(
+            produto.codigo ||
+            ""
+        );
+
+
+    const loteLimpo =
+        limparZPL(
+            lote
+        );
+
+
+    const dataProd =
+        limparZPL(
+            formatarDataEtiqueta(
+                dataProducao
+            )
+        );
+
+
+    const dataValidade =
+        limparZPL(
+            formatarDataEtiqueta(
+                validade
+            )
+        );
+
+
+    const temp =
+        limparZPL(
+            temperatura ||
+            "-"
+        );
+
+
+    const resp =
+        limparZPL(
+            responsavel ||
+            "-"
+        );
+
+
+    const codEtiqueta =
+        limparZPL(
+            codigoEtiqueta
+        );
+
+
+    // ===================================
+    // 60mm x 60mm
+    // 203 DPI ? 8 dots/mm
+    // 480 x 480 dots
+    // ===================================
+
+    let zpl = "";
+
+    zpl += "^XA\n";
+
+    zpl += "^CI28\n";
+
+    zpl += "^PW480\n";
+
+    zpl += "^LL480\n";
+
+
+    // ===================================
+    // PRODUTO
+    // ===================================
+
+    zpl += "^FO25,20\n";
+
+    zpl += "^A0N,32,32\n";
+
+    zpl += "^FB430,2,0,C,0\n";
+
+    zpl += `^FD${nome}^FS\n`;
+
+
+    // ===================================
+    // LINHA
+    // ===================================
+
+    zpl += "^FO25,88\n";
+
+    zpl += "^GB430,2,2^FS\n";
+
+
+    // ===================================
+    // C?DIGO
+    // ===================================
+
+    if (codigo) {
+
+        zpl += "^FO25,105\n";
+
+        zpl += "^A0N,22,22\n";
+
+        zpl += `^FDC?digo: ${codigo}^FS\n`;
+    }
+
+
+    // ===================================
+    // LOTE
+    // ===================================
+
+    zpl += "^FO25,140\n";
+
+    zpl += "^A0N,26,26\n";
+
+    zpl += `^FDLote: ${loteLimpo}^FS\n`;
+
+
+    // ===================================
+    // FABRICA??O
+    // ===================================
+
+    zpl += "^FO25,180\n";
+
+    zpl += "^A0N,24,24\n";
+
+    zpl += `^FDProdu??o: ${dataProd}^FS\n`;
+
+
+    // ===================================
+    // VALIDADE
+    // ===================================
+
+    zpl += "^FO25,215\n";
+
+    zpl += "^A0N,26,26\n";
+
+    zpl += `^FDValidade: ${dataValidade}^FS\n`;
+
+
+    // ===================================
+    // TEMPERATURA
+    // ===================================
+
+    zpl += "^FO25,255\n";
+
+    zpl += "^A0N,24,24\n";
+
+    zpl += `^FDTemp.: ${temp}^FS\n`;
+
+
+    // ===================================
+    // RESPONS?VEL
+    // ===================================
+
+    zpl += "^FO25,290\n";
+
+    zpl += "^A0N,22,22\n";
+
+    zpl += `^FDResp.: ${resp}^FS\n`;
+
+
+    // ===================================
+    // C?DIGO DA ETIQUETA
+    // ===================================
+
+    zpl += "^FO25,325\n";
+
+    zpl += "^A0N,20,20\n";
+
+    zpl += `^FD${codEtiqueta}^FS\n`;
+
+
+    // ===================================
+    // QR CODE
+    // ===================================
+
+    zpl += "^FO345,250\n";
+
+    zpl += "^BQN,2,4\n";
+
+    zpl += `^FDLA,${codEtiqueta}^FS\n`;
+
+
+    // ===================================
+    // FINAL
+    // ===================================
+
+    zpl += "^XZ\n";
+
+
+    return zpl;
+}
+
+
+// =======================================
+// IMPRIMIR DIRETAMENTE NA ZD220
+// =======================================
+
+async function imprimirEtiquetasDireto(
+    produto,
+    lote,
+    dataProducao,
+    validade,
+    temperatura,
+    responsavel,
+    codigoEtiqueta,
+    quantidade
+) {
+
+    const qtd =
+        Number(
+            quantidade
+        ) || 1;
+
+
+    if (
+        qtd < 1
+    ) {
+
+        throw new Error(
+            "Quantidade de etiquetas inv?lida."
+        );
+    }
+
+
+    console.log(
+        "======================================="
+    );
+
+
+    console.log(
+        "PREPARANDO IMPRESS?O DIRETA"
+    );
+
+
+    console.log(
+        "Quantidade de etiquetas:",
+        qtd
+    );
+
+
+    const zplEtiqueta =
+        gerarZPL(
+
+            produto,
+
+            lote,
+
+            dataProducao,
+
+            validade,
+
+            temperatura,
+
+            responsavel,
+
+            codigoEtiqueta
+
+        );
+
+
+    // ===================================
+    // REPETIR A ETIQUETA
+    // ===================================
+
+    let zplFinal =
+        "";
+
+
+    for (
+        let i = 0;
+        i < qtd;
+        i++
+    ) {
+
+        zplFinal +=
+            zplEtiqueta;
+
+    }
+
+
+    console.log(
+        "Tamanho ZPL:",
+        new TextEncoder()
+            .encode(zplFinal)
+            .length,
+        "bytes"
+    );
+
+
+    console.log(
+        "Enviando para:",
+        PRINTER_SERVICE_URL
+    );
+
+
+    let resposta;
+
+
+    try {
+
+        resposta =
+            await fetch(
+                PRINTER_SERVICE_URL,
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "text/plain"
+
+                    },
+
+                    body:
+                        zplFinal
+
+                }
+            );
+
+    } catch (error) {
+
+        console.error(
+            "ERRO AO CONECTAR AO LOTRIX PRINTER SERVICE:",
+            error
+        );
+
+
+        throw new Error(
+            "N?o foi poss?vel conectar ao LOTRIX PRINTER SERVICE. Verifique se o server.js est? aberto no computador da impressora."
+        );
+    }
+
+
+    const retorno =
+        await resposta.text();
+
+
+    console.log(
+        "RESPOSTA DO PRINTER SERVICE:",
+        retorno
+    );
+
+
+    if (
+        !resposta.ok
+    ) {
+
+        throw new Error(
+            retorno ||
+            "Erro ao enviar etiqueta para a impressora."
+        );
+    }
+
+
+    console.log(
+        "======================================="
+    );
+
+
+    console.log(
+        "IMPRESS?O ENVIADA COM SUCESSO"
+    );
+
+
+    console.log(
+        "ETIQUETAS:",
+        qtd
+    );
+
+
+    console.log(
+        "======================================="
+    );
+
+
+    return true;
+}
+
+
+// =======================================
+// SALVAR PRODU??O
 // =======================================
 
 async function salvarProducao() {
@@ -886,6 +1369,7 @@ async function salvarProducao() {
 
 
     if (!formulario) {
+
         return;
     }
 
@@ -899,7 +1383,7 @@ async function salvarProducao() {
         if (!idEmpresa) {
 
             alert(
-                "Empresa não identificada."
+                "Empresa n?o identificada."
             );
 
             return;
@@ -920,10 +1404,6 @@ async function salvarProducao() {
         }
 
 
-        // ---------------------------------------
-        // GARANTIR QUE PRODUTO É DA EMPRESA
-        // ---------------------------------------
-
         if (
             !produtoPertenceEmpresa(
                 produto,
@@ -932,7 +1412,7 @@ async function salvarProducao() {
         ) {
 
             alert(
-                "Este produto não pertence à empresa atual."
+                "Este produto n?o pertence ? empresa atual."
             );
 
             return;
@@ -956,7 +1436,7 @@ async function salvarProducao() {
         ) {
 
             alert(
-                "Informe uma quantidade válida."
+                "Informe uma quantidade v?lida."
             );
 
             return;
@@ -969,6 +1449,18 @@ async function salvarProducao() {
                     "qtdEtiquetas"
                 )?.value
             ) || 1;
+
+
+        if (
+            qtdEtiquetas <= 0
+        ) {
+
+            alert(
+                "Informe uma quantidade v?lida de etiquetas."
+            );
+
+            return;
+        }
 
 
         const unidade =
@@ -1019,145 +1511,140 @@ async function salvarProducao() {
             gerarLote();
 
 
-        // ---------------------------------------
-        // DADOS DA PRODUÇÃO
-        // ---------------------------------------
+        // ===================================
+        // DADOS DA PRODU??O
+        // ===================================
 
         const dados = {
 
             idEmpresa:
-
                 idEmpresa,
 
             produtoId:
-
                 produto.id,
 
             produto:
-
                 produto.nome || "",
 
             codigo:
-
                 produto.codigo || "",
 
             quantidade:
-
                 quantidade,
 
             unidade:
-
                 unidade,
 
             qtdEtiquetas:
-
                 qtdEtiquetas,
 
             dataProducao:
-
                 dataProducao,
 
             validade:
-
                 validade,
 
             temperatura:
-
                 temperatura,
 
             responsavel:
-
                 responsavel,
 
             status:
-
                 status,
 
             lote:
-
                 lote,
 
             usuarioId:
-
                 usuario?.id || "",
 
             usuario:
-
                 usuario?.nome || "",
 
             criadoEm:
-
                 serverTimestamp()
 
         };
 
 
-        // ---------------------------------------
+        // ===================================
         // PRIMEIRO: BAIXAR ESTOQUE
-        // ---------------------------------------
-        // Assim não cria produção se não houver
-        // estoque suficiente.
+        // ===================================
 
         try {
 
-    await baixarEstoque(
-        idEmpresa,
-        produto,
-        quantidade,
-        unidade,
-        usuario
-    );
+            await baixarEstoque(
 
-} catch (error) {
+                idEmpresa,
 
-    console.error(
-        "ERRO NA BAIXA DE ESTOQUE:",
-        error
-    );
+                produto,
 
-    alert(
-        "Não foi possível baixar o estoque: " +
-        (error.message || "permissão negada")
-    );
+                quantidade,
 
-    throw error;
-}
+                unidade,
 
-        // ---------------------------------------
-        // SALVAR PRODUÇÃO
-        // ---------------------------------------
-let producaoRef;
+                usuario
 
-try {
+            );
 
-    producaoRef =
-        await addDoc(
-            collection(
-                db,
-                "producoes"
-            ),
-            dados
-        );
+        } catch (error) {
 
-} catch (error) {
-
-    console.error(
-        "ERRO FIRESTORE AO SALVAR PRODUÇÃO:",
-        error
-    );
-
-    console.error(
-        "Dados da produção:",
-        dados
-    );
-
-    throw error;
-}
+            console.error(
+                "ERRO NA BAIXA DE ESTOQUE:",
+                error
+            );
 
 
-        // ---------------------------------------
-        // AUDITORIA PRODUÇÃO
-        // ---------------------------------------
+            alert(
+                "N?o foi poss?vel baixar o estoque: " +
+                (
+                    error.message ||
+                    "permiss?o negada"
+                )
+            );
+
+
+            throw error;
+        }
+
+
+        // ===================================
+        // SALVAR PRODU??O
+        // ===================================
+
+        let producaoRef;
+
+
+        try {
+
+            producaoRef =
+                await addDoc(
+
+                    collection(
+                        db,
+                        "producoes"
+                    ),
+
+                    dados
+
+                );
+
+        } catch (error) {
+
+            console.error(
+                "ERRO FIRESTORE AO SALVAR PRODU??O:",
+                error
+            );
+
+
+            throw error;
+        }
+
+
+        // ===================================
+        // AUDITORIA PRODU??O
+        // ===================================
 
         await addDoc(
 
@@ -1169,37 +1656,29 @@ try {
             {
 
                 idEmpresa:
-
                     idEmpresa,
 
                 usuario:
-
                     usuario?.nome ||
                     "Sistema",
 
                 email:
-
                     usuario?.email ||
                     "",
 
                 modulo:
-
-                    "Produção",
+                    "Produ??o",
 
                 acao:
-
-                    "NOVA PRODUÇÃO",
+                    "NOVA PRODU??O",
 
                 detalhes:
-
                     `${produto.nome} - Quantidade: ${quantidade} ${unidade}`,
 
                 status:
-
                     "Sucesso",
 
                 data:
-
                     serverTimestamp()
 
             }
@@ -1207,96 +1686,56 @@ try {
         );
 
 
-        // ---------------------------------------
+        // ===================================
         // GERAR ETIQUETA
-        // ---------------------------------------
+        // ===================================
 
         const codigoEtiqueta =
             "LOT-" +
             Date.now();
 
 
-        await addDoc(
+   await addDoc(
+    collection(db, "etiquetas"),
+    {
+        idEmpresa: producao.idEmpresa,
 
-            collection(
-                db,
-                "etiquetas"
-            ),
+        codigo: codigoEtiqueta,
 
-            {
+        produtoId: produtoSelecionado.id,
 
-                idEmpresa:
+        produto: producao.produto,
 
-                    idEmpresa,
+        quantidade: producao.quantidade,
 
-                codigoEtiqueta:
+        unidade: producao.unidade || "UN",
 
-                    codigoEtiqueta,
+        dataProducao: dataSelecionada,
 
-                producaoId:
+        validade: validade.toISOString().split("T")[0],
 
-                    producaoRef.id,
+        categoria: produtoSelecionado?.categoria || "",
 
-                produtoId:
+        responsavel:
+            producao.responsavel ||
+            "N?o informado",
 
-                    produto.id,
+        temperatura:
+            produtoSelecionado?.temperatura ||
+            "AMBIENTE",
 
-                produto:
+        lote: codigoEtiqueta,
 
-                    produto.nome || "",
+        observacao: "",
 
-                codigo:
-
-                    produto.codigo || "",
-
-                quantidade:
-
-                    quantidade,
-
-                unidade:
-
-                    unidade,
-
-                qtdEtiquetas:
-
-                    qtdEtiquetas,
-
-                dataProducao:
-
-                    dataProducao,
-
-                validade:
-
-                    validade,
-
-                temperatura:
-
-                    temperatura,
-
-                responsavel:
-
-                    responsavel,
-
-                lote:
-
-                    lote,
-
-                status:
-
-                    "ativa",
-
-                criadoEm:
-
-                    serverTimestamp()
-
-            }
-
-        );
+        criadoEm: serverTimestamp()
+    }
+);
 
 
-        // ---------------------------------------
+        // ===================================
         // AUDITORIA ETIQUETA
-        // ---------------------------------------
+        // ===================================
 
         await addDoc(
 
@@ -1308,37 +1747,29 @@ try {
             {
 
                 idEmpresa:
-
                     idEmpresa,
 
                 usuario:
-
                     usuario?.nome ||
                     "Sistema",
 
                 email:
-
                     usuario?.email ||
                     "",
 
                 modulo:
-
                     "Etiquetas",
 
                 acao:
-
                     "ETIQUETA GERADA",
 
                 detalhes:
-
-                    `${produto.nome} - Código: ${codigoEtiqueta}`,
+                    `${produto.nome} - C?digo: ${codigoEtiqueta} - ${qtdEtiquetas} etiqueta(s)`,
 
                 status:
-
                     "Sucesso",
 
                 data:
-
                     serverTimestamp()
 
             }
@@ -1346,37 +1777,79 @@ try {
         );
 
 
-        // ---------------------------------------
-        // IMPRIMIR
-        // ---------------------------------------
+        // ===================================
+        // IMPRIMIR DIRETAMENTE
+        // ===================================
 
         if (
             imprimirDepoisDeSalvar
         ) {
 
-            const url =
-                `etiqueta.html?codigo=${encodeURIComponent(codigoEtiqueta)}&qtd=${qtdEtiquetas}`;
-
-
-            window.open(
-                url,
-                "_blank"
+            console.log(
+                "INICIANDO IMPRESS?O DIRETA..."
             );
+
+
+            try {
+
+                await imprimirEtiquetasDireto(
+
+                    produto,
+
+                    lote,
+
+                    dataProducao,
+
+                    validade,
+
+                    temperatura,
+
+                    responsavel,
+
+                    codigoEtiqueta,
+
+                    qtdEtiquetas
+
+                );
+
+
+                alert(
+                    `Produ??o registrada e ${qtdEtiquetas} etiqueta(s) enviada(s) para a impressora.`
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "ERRO NA IMPRESS?O:",
+                    error
+                );
+
+
+                alert(
+                    "A produ??o foi salva, mas n?o foi poss?vel imprimir a etiqueta.\n\n" +
+                    (
+                        error.message ||
+                        "Verifique o LOTRIX PRINTER SERVICE."
+                    )
+                );
+            }
 
 
             imprimirDepoisDeSalvar =
                 false;
+
+        } else {
+
+            alert(
+                "Produ??o registrada com sucesso!"
+            );
         }
 
 
-        alert(
-            "Produção registrada com sucesso!"
-        );
-
-
-        // ---------------------------------------
-        // LIMPAR FORMULÁRIO
-        // ---------------------------------------
+        // ===================================
+        // LIMPAR FORMUL?RIO
+        // ===================================
 
         formulario.reset();
 
@@ -1453,9 +1926,9 @@ try {
         }
 
 
-        // ---------------------------------------
+        // ===================================
         // ATUALIZAR TELA
-        // ---------------------------------------
+        // ===================================
 
         await carregarProdutos();
 
@@ -1463,7 +1936,7 @@ try {
 
 
         console.log(
-            "PRODUÇÃO SALVA COM SUCESSO:",
+            "PRODU??O SALVA COM SUCESSO:",
             producaoRef.id
         );
 
@@ -1471,21 +1944,21 @@ try {
     } catch (error) {
 
         console.error(
-            "ERRO AO SALVAR PRODUÇÃO:",
+            "ERRO AO SALVAR PRODU??O:",
             error
         );
 
 
         alert(
             error.message ||
-            "Erro ao registrar produção. Veja o Console."
+            "Erro ao registrar produ??o. Veja o Console."
         );
     }
 }
 
 
 // =======================================
-// CARREGAR PRODUÇÕES
+// CARREGAR PRODU??ES
 // SOMENTE EMPRESA ATUAL
 // =======================================
 
@@ -1498,6 +1971,7 @@ async function carregarProducoes() {
 
 
     if (!lista) {
+
         return;
     }
 
@@ -1509,6 +1983,7 @@ async function carregarProducoes() {
 
 
         if (!idEmpresa) {
+
             return;
         }
 
@@ -1546,7 +2021,7 @@ async function carregarProducoes() {
 
                     <td colspan="8">
 
-                        Nenhuma produção registrada.
+                        Nenhuma produ??o registrada.
 
                     </td>
 
@@ -1563,7 +2038,7 @@ async function carregarProducoes() {
 
 
         snapshot.forEach(
-            (item) => {
+            item => {
 
                 const producao =
                     item.data();
@@ -1630,7 +2105,7 @@ async function carregarProducoes() {
                             type="button"
                             class="btn-delete"
                             data-id="${item.id}">
-                            🗑️
+                            ???
                         </button>
 
                     </td>
@@ -1673,7 +2148,7 @@ async function carregarProducoes() {
     } catch (error) {
 
         console.error(
-            "Erro ao carregar produções:",
+            "Erro ao carregar produ??es:",
             error
         );
     }
@@ -1687,6 +2162,7 @@ async function carregarProducoes() {
 function formatarData(data) {
 
     if (!data) {
+
         return "-";
     }
 
@@ -1730,18 +2206,19 @@ function formatarData(data) {
 
 
 // =======================================
-// EXCLUIR PRODUÇÃO
+// EXCLUIR PRODU??O
 // =======================================
 
 async function excluirProducao(id) {
 
     const confirmar =
         confirm(
-            "Deseja excluir esta produção?"
+            "Deseja excluir esta produ??o?"
         );
 
 
     if (!confirmar) {
+
         return;
     }
 
@@ -1753,6 +2230,7 @@ async function excluirProducao(id) {
 
 
         if (!idEmpresa) {
+
             return;
         }
 
@@ -1789,14 +2267,15 @@ async function excluirProducao(id) {
         const pertence =
             documento.docs.some(
                 item =>
-                    item.id === id
+                    item.id ===
+                    id
             );
 
 
         if (!pertence) {
 
             alert(
-                "Esta produção não pertence à empresa atual."
+                "Esta produ??o n?o pertence ? empresa atual."
             );
 
             return;
@@ -1809,7 +2288,7 @@ async function excluirProducao(id) {
 
 
         alert(
-            "Produção excluída!"
+            "Produ??o exclu?da!"
         );
 
 
@@ -1819,13 +2298,13 @@ async function excluirProducao(id) {
     } catch (error) {
 
         console.error(
-            "Erro ao excluir produção:",
+            "Erro ao excluir produ??o:",
             error
         );
 
 
         alert(
-            "Erro ao excluir produção."
+            "Erro ao excluir produ??o."
         );
     }
 }
@@ -1844,6 +2323,7 @@ function aplicarBusca() {
 
 
     if (!campo) {
+
         return;
     }
 
@@ -1862,7 +2342,7 @@ function aplicarBusca() {
                     "#listaProducoes tr"
                 )
                 .forEach(
-                    (linha) => {
+                    linha => {
 
                         const texto =
                             linha.innerText
@@ -1883,7 +2363,7 @@ function aplicarBusca() {
 
 
 // =======================================
-// INICIALIZAÇÃO
+// INICIALIZA??O
 // =======================================
 
 document.addEventListener(
@@ -1894,14 +2374,15 @@ document.addEventListener(
             "======================================="
         );
 
+
         console.log(
-            "INICIANDO LOTRIX PRODUÇÃO V6"
+            "INICIANDO LOTRIX PRODU??O V7"
         );
 
 
-        // ---------------------------------------
+        // ===================================
         // EMPRESA
-        // ---------------------------------------
+        // ===================================
 
         if (
             !verificarEmpresa()
@@ -1911,37 +2392,37 @@ document.addEventListener(
         }
 
 
-        // ---------------------------------------
+        // ===================================
         // DATA
-        // ---------------------------------------
+        // ===================================
 
         preencherDataAtual();
 
 
-        // ---------------------------------------
+        // ===================================
         // LOTE
-        // ---------------------------------------
+        // ===================================
 
         gerarLote();
 
 
-        // ---------------------------------------
+        // ===================================
         // PRODUTOS
-        // ---------------------------------------
+        // ===================================
 
         await carregarProdutos();
 
 
-        // ---------------------------------------
-        // PRODUÇÕES
-        // ---------------------------------------
+        // ===================================
+        // PRODU??ES
+        // ===================================
 
         await carregarProducoes();
 
 
-        // ---------------------------------------
-        // FORMULÁRIO
-        // ---------------------------------------
+        // ===================================
+        // FORMUL?RIO
+        // ===================================
 
         const formulario =
             obterElemento(
@@ -1953,7 +2434,7 @@ document.addEventListener(
 
             formulario.addEventListener(
                 "submit",
-                async (evento) => {
+                async evento => {
 
                     evento.preventDefault();
 
@@ -1969,9 +2450,9 @@ document.addEventListener(
         }
 
 
-        // ---------------------------------------
+        // ===================================
         // SALVAR + IMPRIMIR
-        // ---------------------------------------
+        // ===================================
 
         const botao =
             obterElemento(
@@ -2008,9 +2489,9 @@ document.addEventListener(
         }
 
 
-        // ---------------------------------------
+        // ===================================
         // PRODUTO ALTERADO
-        // ---------------------------------------
+        // ===================================
 
         const select =
             obterElemento(
@@ -2031,9 +2512,9 @@ document.addEventListener(
         }
 
 
-        // ---------------------------------------
+        // ===================================
         // DATA ALTERADA
-        // ---------------------------------------
+        // ===================================
 
         const campoData =
             obterElemento(
@@ -2056,7 +2537,6 @@ document.addEventListener(
                         calcularValidade(
                             produto.validadeDias || 0
                         );
-
                     }
 
                 }
@@ -2065,13 +2545,21 @@ document.addEventListener(
 
 
         console.log(
-            "PÁGINA DE PRODUÇÃO V6 PRONTA."
+            "P?GINA DE PRODU??O V7 PRONTA."
         );
+
 
         console.log(
             "EMPRESA:",
             empresaAtual()
         );
+
+
+        console.log(
+            "PRINTER SERVICE:",
+            PRINTER_SERVICE_URL
+        );
+
 
         console.log(
             "======================================="
@@ -2082,8 +2570,109 @@ document.addEventListener(
 
 
 // =======================================
-// EXCLUSÃO GLOBAL
+// EXCLUS?O GLOBAL
 // =======================================
 
 window.excluirProducao =
     excluirProducao;
+
+
+// =======================================
+// TESTE GLOBAL DE IMPRESS?O
+// =======================================
+
+window.testarImpressoraLotrix =
+    async function () {
+
+        try {
+
+            const produtoTeste = {
+
+                nome:
+                    "LOTRIX TESTE",
+
+                codigo:
+                    "TESTE"
+
+            };
+
+
+            const zpl =
+                gerarZPL(
+
+                    produtoTeste,
+
+                    "TESTE",
+
+                    new Date(),
+
+                    new Date(),
+
+                    "-",
+
+                    "Lotrix",
+
+                    "LOT-TESTE"
+
+                );
+
+
+            const resposta =
+                await fetch(
+                    PRINTER_SERVICE_URL,
+                    {
+
+                        method:
+                            "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "text/plain"
+
+                        },
+
+                        body:
+                            zpl
+
+                    }
+                );
+
+
+            const texto =
+                await resposta.text();
+
+
+            console.log(
+                "TESTE IMPRESSORA:",
+                texto
+            );
+
+
+            if (!resposta.ok) {
+
+                throw new Error(
+                    texto
+                );
+            }
+
+
+            alert(
+                "Teste enviado para a impressora."
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Erro no teste da impressora:",
+                error
+            );
+
+
+            alert(
+                error.message ||
+                "N?o foi poss?vel testar a impressora."
+            );
+        }
+    };

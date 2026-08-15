@@ -8,7 +8,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>Lotrix — Estoque</title>
+    <title>Lotrix - Estoque</title>
 
     <link rel="icon"
           href="img/favicon.png">
@@ -28,6 +28,31 @@
 <body>
 
 
+<!-- ==========================================
+     BOT?O MENU
+=========================================== -->
+
+<button
+    class="menu-toggle"
+    id="menuToggle"
+    aria-label="Abrir menu">
+
+    ?
+
+</button>
+
+
+<!-- ==========================================
+     FUNDO ESCURO
+=========================================== -->
+
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay">
+</div>
+
+
+
 <div class="layout">
 
 
@@ -35,8 +60,25 @@
          SIDEBAR
     =========================================== -->
 
-    <aside class="sidebar">
+    <aside
+        class="sidebar"
+        id="sidebar">
 
+
+        <!-- BOT?O FECHAR -->
+
+        <button
+            class="sidebar-close"
+            id="sidebarClose"
+            aria-label="Fechar menu">
+
+            ?
+
+        </button>
+
+
+
+        <!-- LOGO -->
 
         <div class="logo-area">
 
@@ -44,7 +86,9 @@
                 src="img/logo.png"
                 alt="Lotrix">
 
-            <h2>LOTRIX</h2>
+            <h2>
+                LOTRIX
+            </h2>
 
             <small>
                 Food Safety Platform
@@ -53,8 +97,13 @@
         </div>
 
 
+
+        <!-- MENU -->
+
         <nav class="menu">
 
+
+            <!-- GERAL -->
 
             <div class="menu-section">
 
@@ -65,7 +114,7 @@
 
                 <a href="dashboard.html">
 
-                    <span>🏠</span>
+                    <span>??</span>
 
                     <span class="nav-label">
                         Dashboard
@@ -77,19 +126,21 @@
 
 
 
+            <!-- OPERA??O -->
+
             <div class="menu-section">
 
                 <span class="menu-title">
-                    OPERAÇÃO
+                    OPERA??O
                 </span>
 
 
                 <a href="producao.html">
 
-                    <span>⚙️</span>
+                    <span>??</span>
 
                     <span class="nav-label">
-                        Produção
+                        Produ??o
                     </span>
 
                 </a>
@@ -97,7 +148,7 @@
 
                 <a href="produtos.html">
 
-                    <span>📦</span>
+                    <span>??</span>
 
                     <span class="nav-label">
                         Produtos
@@ -108,7 +159,7 @@
 
                 <a href="etiquetas.html">
 
-                    <span>🏷️</span>
+                    <span>???</span>
 
                     <span class="nav-label">
                         Etiquetas
@@ -117,10 +168,11 @@
                 </a>
 
 
-                <a href="estoque.html"
-                   class="active">
+                <a
+                    href="estoque.html"
+                    class="active">
 
-                    <span>📚</span>
+                    <span>??</span>
 
                     <span class="nav-label">
                         Estoque
@@ -132,19 +184,21 @@
 
 
 
+            <!-- GEST?O -->
+
             <div class="menu-section">
 
                 <span class="menu-title">
-                    GESTÃO
+                    GEST?O
                 </span>
 
 
                 <a href="relatorios.html">
 
-                    <span>📈</span>
+                    <span>??</span>
 
                     <span class="nav-label">
-                        Relatórios
+                        Relat?rios
                     </span>
 
                 </a>
@@ -152,7 +206,7 @@
 
                 <a href="auditoria.html">
 
-                    <span>📝</span>
+                    <span>??</span>
 
                     <span class="nav-label">
                         Auditoria
@@ -163,10 +217,10 @@
 
                 <a href="usuario.html">
 
-                    <span>👥</span>
+                    <span>??</span>
 
                     <span class="nav-label">
-                        Usuários
+                        Usu?rios
                     </span>
 
                 </a>
@@ -174,6 +228,8 @@
             </div>
 
 
+
+            <!-- SISTEMA -->
 
             <div class="menu-section">
 
@@ -184,10 +240,10 @@
 
                 <a href="configuracoes.html">
 
-                    <span>⚙️</span>
+                    <span>??</span>
 
                     <span class="nav-label">
-                        Configurações
+                        Configura??es
                     </span>
 
                 </a>
@@ -195,7 +251,7 @@
 
                 <a href="ajuda.html">
 
-                    <span>❓</span>
+                    <span>?</span>
 
                     <span class="nav-label">
                         Ajuda
@@ -206,7 +262,7 @@
 
                 <a href="sac.html">
 
-                    <span>🎧</span>
+                    <span>??</span>
 
                     <span class="nav-label">
                         SAC
@@ -220,19 +276,22 @@
         </nav>
 
 
-        <!-- USUÁRIO -->
+
+        <!-- ==========================================
+             USU?RIO
+        =========================================== -->
 
         <div class="sidebar-user">
 
             <div class="avatar">
-                👤
+                ??
             </div>
 
 
             <div>
 
                 <strong id="nomeUsuarioLogado">
-                    Usuário
+                    Usu?rio
                 </strong>
 
 
@@ -250,7 +309,7 @@
 
 
     <!-- ==========================================
-         CONTEÚDO
+         CONTE?DO
     =========================================== -->
 
     <main class="content">
@@ -259,7 +318,7 @@
         <div class="estoque-page">
 
 
-            <!-- CABEÇALHO -->
+            <!-- CABE?ALHO -->
 
             <header class="dashboard-header">
 
@@ -267,7 +326,7 @@
                 <div>
 
                     <span class="header-kicker">
-                        OPERAÇÃO
+                        OPERA??O
                     </span>
 
 
@@ -278,7 +337,7 @@
 
                     <p>
                         Gerencie os produtos, quantidades
-                        e movimentações do estoque.
+                        e movimenta??es do estoque.
                     </p>
 
                 </div>
@@ -316,8 +375,7 @@
 
 
 
-                <form
-                    id="estoqueForm">
+                <form id="estoqueForm">
 
 
                     <!-- PRODUTO -->
@@ -364,12 +422,12 @@
 
 
 
-                    <!-- MÍNIMO -->
+                    <!-- M?NIMO -->
 
                     <div class="campo">
 
                         <label for="estoqueMinimo">
-                            Estoque mínimo
+                            Estoque m?nimo
                         </label>
 
 
@@ -384,12 +442,12 @@
 
 
 
-                    <!-- MÁXIMO -->
+                    <!-- M?XIMO -->
 
                     <div class="campo">
 
                         <label for="estoqueMaximo">
-                            Estoque máximo
+                            Estoque m?ximo
                         </label>
 
 
@@ -404,10 +462,9 @@
 
 
 
-                    <button
-                        type="submit">
+                    <button type="submit">
 
-                        💾
+                        ??
                         Salvar Estoque
 
                     </button>
@@ -433,7 +490,7 @@
                     <div>
 
                         <span class="panel-eyebrow">
-                            INVENTÁRIO
+                            INVENT?RIO
                         </span>
 
 
@@ -479,11 +536,11 @@
                                 </th>
 
                                 <th>
-                                    Mínimo
+                                    M?nimo
                                 </th>
 
                                 <th>
-                                    Máximo
+                                    M?ximo
                                 </th>
 
                                 <th>
@@ -491,7 +548,7 @@
                                 </th>
 
                                 <th>
-                                    Ação
+                                    A??o
                                 </th>
 
                             </tr>
@@ -499,9 +556,7 @@
                         </thead>
 
 
-                        <tbody
-                            id="listaEstoque">
-
+                        <tbody id="listaEstoque">
 
                             <tr>
 
@@ -533,7 +588,7 @@
 
 
             <!-- ==========================================
-                 MOVIMENTAÇÃO
+                 MOVIMENTA??O
             =========================================== -->
 
             <section class="dashboard-panel">
@@ -545,12 +600,12 @@
                     <div>
 
                         <span class="panel-eyebrow">
-                            MOVIMENTAÇÃO
+                            MOVIMENTA??O
                         </span>
 
 
                         <h2>
-                            Registrar movimentação
+                            Registrar movimenta??o
                         </h2>
 
                     </div>
@@ -560,16 +615,14 @@
 
 
 
-                <form
-                    id="movimentacaoForm">
+                <form id="movimentacaoForm">
 
 
                     <!-- PRODUTO -->
 
                     <div class="campo">
 
-                        <label
-                            for="produtoMovimentacao">
+                        <label for="produtoMovimentacao">
 
                             Produto
 
@@ -594,8 +647,7 @@
 
                     <div class="campo">
 
-                        <label
-                            for="tipoMovimentacao">
+                        <label for="tipoMovimentacao">
 
                             Tipo
 
@@ -611,7 +663,7 @@
                             </option>
 
                             <option value="SAIDA">
-                                Saída
+                                Sa?da
                             </option>
 
                         </select>
@@ -624,8 +676,7 @@
 
                     <div class="campo">
 
-                        <label
-                            for="quantidadeMovimentacao">
+                        <label for="quantidadeMovimentacao">
 
                             Quantidade
 
@@ -648,8 +699,7 @@
 
                     <div class="campo">
 
-                        <label
-                            for="motivoMovimentacao">
+                        <label for="motivoMovimentacao">
 
                             Motivo
 
@@ -659,17 +709,16 @@
                         <input
                             type="text"
                             id="motivoMovimentacao"
-                            placeholder="Ex: Compra, Produção, Perda">
+                            placeholder="Ex: Compra, Produ??o, Perda">
 
                     </div>
 
 
 
-                    <button
-                        type="submit">
+                    <button type="submit">
 
-                        ↕️
-                        Registrar Movimentação
+                        ??
+                        Registrar Movimenta??o
 
                     </button>
 
@@ -682,7 +731,7 @@
 
 
             <!-- ==========================================
-                 HISTÓRICO DE MOVIMENTAÇÕES
+                 HIST?RICO DE MOVIMENTA??ES
             =========================================== -->
 
             <section class="dashboard-panel">
@@ -694,12 +743,12 @@
                     <div>
 
                         <span class="panel-eyebrow">
-                            HISTÓRICO
+                            HIST?RICO
                         </span>
 
 
                         <h2>
-                            Movimentações recentes
+                            Movimenta??es recentes
                         </h2>
 
                     </div>
@@ -752,8 +801,7 @@
                         </thead>
 
 
-                        <tbody
-                            id="listaMovimentacoes">
+                        <tbody id="listaMovimentacoes">
 
 
                             <tr>
@@ -765,7 +813,7 @@
                                         text-align:center;
                                     ">
 
-                                    Carregando movimentações...
+                                    Carregando movimenta??es...
 
                                 </td>
 
@@ -823,8 +871,11 @@
 </script>
 
 
+<!-- MENU LATERAL GLOBAL -->
+
+<script src="js/sidebar.js"></script>
+
+
 </body>
 
 </html>
-
-

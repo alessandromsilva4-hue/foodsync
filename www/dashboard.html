@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Lotrix — Dashboard</title>
+    <title>Lotrix - Dashboard</title>
 
     <link rel="icon" href="img/favicon.png">
 
@@ -16,20 +16,63 @@
 
 </head>
 
-
 <body>
+
+
+<!-- ========================= -->
+<!-- BOT?O MENU -->
+<!-- ========================= -->
+
+<button
+    class="menu-toggle"
+    id="menuToggle"
+    aria-label="Abrir menu">
+
+    ?
+
+</button>
+
+
+<!-- ========================= -->
+<!-- FUNDO ESCURO -->
+<!-- ========================= -->
+
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay">
+</div>
+
 
 
 <!-- ========================= -->
 <!-- SIDEBAR -->
 <!-- ========================= -->
 
-<aside class="sidebar">
+<aside
+    class="sidebar"
+    id="sidebar">
 
+
+    <!-- BOT?O FECHAR -->
+
+    <button
+        class="sidebar-close"
+        id="sidebarClose"
+        aria-label="Fechar menu">
+
+        ?
+
+    </button>
+
+
+
+    <!-- LOGO -->
 
     <div class="logo-area">
 
-        <img src="img/logo.png" alt="Lotrix">
+        <img
+            src="img/logo.png"
+            alt="Lotrix">
 
         <h2>
             LOTRIX
@@ -41,6 +84,9 @@
 
     </div>
 
+
+
+    <!-- MENU -->
 
     <nav class="menu">
 
@@ -54,9 +100,11 @@
             </span>
 
 
-            <a href="dashboard.html" class="active">
+            <a
+                href="dashboard.html"
+                class="active">
 
-                <span>🏠</span>
+                <span>??</span>
 
                 <span class="nav-label">
                     Dashboard
@@ -68,21 +116,21 @@
 
 
 
-        <!-- OPERAÇÃO -->
+        <!-- OPERA??O -->
 
         <div class="menu-section">
 
             <span class="menu-title">
-                OPERAÇÃO
+                OPERA??O
             </span>
 
 
             <a href="producao.html">
 
-                <span>⚙️</span>
+                <span>??</span>
 
                 <span class="nav-label">
-                    Produção
+                    Produ??o
                 </span>
 
             </a>
@@ -90,7 +138,7 @@
 
             <a href="produtos.html">
 
-                <span>📦</span>
+                <span>??</span>
 
                 <span class="nav-label">
                     Produtos
@@ -101,7 +149,7 @@
 
             <a href="etiquetas.html">
 
-                <span>🏷️</span>
+                <span>???</span>
 
                 <span class="nav-label">
                     Etiquetas
@@ -112,7 +160,7 @@
 
             <a href="estoque.html">
 
-                <span>📚</span>
+                <span>??</span>
 
                 <span class="nav-label">
                     Estoque
@@ -124,21 +172,21 @@
 
 
 
-        <!-- GESTÃO -->
+        <!-- GEST?O -->
 
         <div class="menu-section">
 
             <span class="menu-title">
-                GESTÃO
+                GEST?O
             </span>
 
 
             <a href="relatorios.html">
 
-                <span>📈</span>
+                <span>??</span>
 
                 <span class="nav-label">
-                    Relatórios
+                    Relat?rios
                 </span>
 
             </a>
@@ -146,7 +194,7 @@
 
             <a href="auditoria.html">
 
-                <span>📝</span>
+                <span>??</span>
 
                 <span class="nav-label">
                     Auditoria
@@ -157,10 +205,10 @@
 
             <a href="usuario.html">
 
-                <span>👥</span>
+                <span>??</span>
 
                 <span class="nav-label">
-                    Usuários
+                    Usu?rios
                 </span>
 
             </a>
@@ -180,10 +228,10 @@
 
             <a href="configuracoes.html">
 
-                <span>⚙️</span>
+                <span>??</span>
 
                 <span class="nav-label">
-                    Configurações
+                    Configura??es
                 </span>
 
             </a>
@@ -191,7 +239,7 @@
 
             <a href="ajuda.html">
 
-                <span>❓</span>
+                <span>?</span>
 
                 <span class="nav-label">
                     Ajuda
@@ -202,7 +250,7 @@
 
             <a href="sac.html">
 
-                <span>🎧</span>
+                <span>??</span>
 
                 <span class="nav-label">
                     SAC
@@ -217,7 +265,9 @@
 
 
 
-    <!-- USUÁRIO -->
+    <!-- ========================= -->
+    <!-- USU?RIO -->
+    <!-- ========================= -->
 
     <div class="sidebar-footer">
 
@@ -226,14 +276,14 @@
 
 
             <div class="avatar">
-                👤
+                ??
             </div>
 
 
             <div>
 
                 <strong id="nomeUsuarioLogado">
-                    Usuário
+                    Usu?rio
                 </strong>
 
 
@@ -249,7 +299,7 @@
 
         <button onclick="logout()">
 
-            🚪 Sair
+            ?? Sair
 
         </button>
 
@@ -262,7 +312,7 @@
 
 
 <!-- ========================= -->
-<!-- CONTEÚDO -->
+<!-- CONTE?DO -->
 <!-- ========================= -->
 
 <main class="content dashboard-page">
@@ -278,23 +328,25 @@
         <div>
 
 
-            <p class="header-kicker" id="dataAtual">
+            <p
+                class="header-kicker"
+                id="dataAtual">
 
-                Visão operacional
+                Vis?o operacional
 
             </p>
 
 
             <h1 id="saudacao">
 
-                Bom dia 👋
+                Bom dia!
 
             </h1>
 
 
             <p>
 
-                Veja o que precisa da sua atenção hoje.
+                Veja o que precisa da sua aten??o hoje.
 
             </p>
 
@@ -310,7 +362,7 @@
                 class="button button-secondary"
                 href="producao.html">
 
-                Nova produção
+                Nova produ??o
 
             </a>
 
@@ -351,11 +403,11 @@
             <div>
 
                 <p>
-                    Produções hoje
+                    Produ??es hoje
                 </p>
 
                 <strong id="producoesHoje">
-                    —
+                    0
                 </strong>
 
                 <small>
@@ -386,7 +438,7 @@
                 </p>
 
                 <strong id="etiquetasHoje">
-                    —
+                    0
                 </strong>
 
                 <small>
@@ -417,7 +469,7 @@
                 </p>
 
                 <strong id="vencendoHoje">
-                    —
+                    0
                 </strong>
 
                 <small>
@@ -444,15 +496,15 @@
             <div>
 
                 <p>
-                    Estoque crítico
+                    Estoque cr?tico
                 </p>
 
                 <strong id="estoqueCritico">
-                    —
+                    0
                 </strong>
 
                 <small>
-                    Abaixo do mínimo
+                    Abaixo do m?nimo
                 </small>
 
             </div>
@@ -472,7 +524,7 @@
     <section class="dashboard-grid">
 
 
-        <!-- GRÁFICO -->
+        <!-- GR?FICO -->
 
         <article class="dashboard-panel panel-wide">
 
@@ -487,14 +539,14 @@
                     </p>
 
                     <h2>
-                        Gráfico da semana
+                        Gr?fico da semana
                     </h2>
 
                 </div>
 
 
                 <span class="panel-badge">
-                    Últimos 7 dias
+                    ?ltimos 7 dias
                 </span>
 
 
@@ -551,7 +603,7 @@
 
 
 
-        <!-- PRODUÇÕES -->
+        <!-- PRODU??ES -->
 
         <article class="dashboard-panel">
 
@@ -566,7 +618,7 @@
                     </p>
 
                     <h2>
-                        Últimas produções
+                        ?ltimas produ??es
                     </h2>
 
                 </div>
@@ -606,11 +658,11 @@
                 <div>
 
                     <p class="panel-eyebrow">
-                        Impressões
+                        Impress?es
                     </p>
 
                     <h2>
-                        Últimas etiquetas
+                        ?ltimas etiquetas
                     </h2>
 
                 </div>
@@ -650,11 +702,11 @@
                 <div>
 
                     <p class="panel-eyebrow">
-                        Atenção
+                        Aten??o
                     </p>
 
                     <h2>
-                        Próximos do vencimento
+                        Pr?ximos do vencimento
                     </h2>
 
                 </div>
@@ -694,11 +746,11 @@
                 <div>
 
                     <p class="panel-eyebrow">
-                        Reposição
+                        Reposi??o
                     </p>
 
                     <h2>
-                        Estoque crítico
+                        Estoque cr?tico
                     </h2>
 
                 </div>
@@ -728,104 +780,118 @@
 
 
         <!-- ========================= -->
-<!-- ASSISTENTE IA -->
-<!-- ========================= -->
+        <!-- ASSISTENTE IA -->
+        <!-- ========================= -->
 
-<article class="dashboard-panel panel-wide ia-panel">
-
-    <div class="panel-heading">
-
-        <div>
-
-            <p class="panel-eyebrow">
-                Inteligência operacional
-            </p>
-
-            <h2>
-                Assistente IA
-            </h2>
-
-        </div>
-
-        <span class="panel-badge">
-            ● Online
-        </span>
-
-    </div>
+        <article class="dashboard-panel panel-wide ia-panel">
 
 
-    <div class="ia-container">
+            <div class="panel-heading">
 
 
-        <!-- MENSAGENS -->
+                <div>
 
-        <div
-            class="ia-messages"
-            id="iaMensagens">
+                    <p class="panel-eyebrow">
+                        Intelig?ncia operacional
+                    </p>
 
+                    <h2>
+                        Assistente IA
+                    </h2>
 
-            <div class="ia-message ia-message-bot">
-
-
-                <div class="ia-avatar">
-                    🤖
                 </div>
 
 
-                <div class="ia-bubble">
-
-                    <strong>
-                        Olá, Alessandro! 👋
-                    </strong>
+                <span class="panel-badge">
+                    ?? Online
+                </span>
 
 
-                    <p>
-                        Sou a IA da Lotrix.
-                        Posso ajudar você com estoque,
-                        produções, etiquetas e informações
-                        operacionais.
-                    </p>
+            </div>
 
 
-                    <!-- PERGUNTAS RÁPIDAS -->
-
-                    <div class="ia-suggestions">
+            <div class="ia-container">
 
 
-                        <button
-                            type="button"
-                            onclick="perguntaRapida('Qual o estoque atual dos produtos?')">
+                <!-- MENSAGENS -->
 
-                            📦 Consultar estoque
-
-                        </button>
+                <div
+                    class="ia-messages"
+                    id="iaMensagens">
 
 
-                        <button
-                            type="button"
-                            onclick="perguntaRapida('Quais produtos estão próximos do vencimento?')">
-
-                            ⚠️ Ver vencimentos
-
-                        </button>
+                    <div class="ia-message ia-message-bot">
 
 
-                        <button
-                            type="button"
-                            onclick="perguntaRapida('Quais foram as últimas produções?')">
-
-                            ⚙️ Últimas produções
-
-                        </button>
+                        <div class="ia-avatar">
+                            ??
+                        </div>
 
 
-                        <button
-                            type="button"
-                            onclick="perguntaRapida('Faça um resumo da operação.')">
+                        <div class="ia-bubble">
 
-                            📊 Resumo
 
-                        </button>
+                            <strong>
+                                Ol?, Alessandro! ??
+                            </strong>
+
+
+                            <p>
+
+                                Sou a IA da Lotrix.
+                                Posso ajudar voc? com estoque,
+                                produ??es, etiquetas e informa??es
+                                operacionais.
+
+                            </p>
+
+
+
+                            <!-- PERGUNTAS R?PIDAS -->
+
+                            <div class="ia-suggestions">
+
+
+                                <button
+                                    type="button"
+                                    onclick="perguntaRapida('Qual o estoque atual dos produtos?')">
+
+                                    ?? Consultar estoque
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    onclick="perguntaRapida('Quais produtos est?o pr?ximos do vencimento?')">
+
+                                    ? Ver vencimentos
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    onclick="perguntaRapida('Quais foram as ?ltimas produ??es?')">
+
+                                    ?? ?ltimas produ??es
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    onclick="perguntaRapida('Fa?a um resumo da opera??o.')">
+
+                                    ?? Resumo
+
+                                </button>
+
+
+                            </div>
+
+
+                        </div>
 
 
                     </div>
@@ -834,53 +900,46 @@
                 </div>
 
 
+
+                <!-- RESPOSTA -->
+
+                <div id="respostaIA"></div>
+
+
+
+                <!-- CAMPO DA IA -->
+
+                <form
+                    id="iaForm"
+                    class="ia-form"
+                    onsubmit="event.preventDefault(); perguntarIA();">
+
+
+                    <input
+                        type="text"
+                        id="mensagemIA"
+                        placeholder="Pergunte algo para a IA..."
+                        autocomplete="off">
+
+
+                    <button
+                        type="submit"
+                        id="iaEnviar">
+
+                        <i data-lucide="send"></i>
+
+                        Enviar
+
+                    </button>
+
+
+                </form>
+
+
             </div>
 
 
-        </div>
-
-
-
-        <!-- RESPOSTA -->
-
-        <div id="respostaIA"></div>
-
-
-
-        <!-- CAMPO DA IA -->
-
-        <form
-            id="iaForm"
-            class="ia-form"
-            onsubmit="event.preventDefault(); perguntarIA();">
-
-
-            <input
-                type="text"
-                id="mensagemIA"
-                placeholder="Pergunte algo para a IA..."
-                autocomplete="off"
-            >
-
-
-            <button
-                type="submit"
-                id="iaEnviar">
-
-                <i data-lucide="send"></i>
-
-                Enviar
-
-            </button>
-
-
-        </form>
-
-
-    </div>
-
-
-</article>
+        </article>
 
 
     </section>
@@ -895,23 +954,45 @@
 <!-- ========================= -->
 
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+
     if (window.lucide) {
+
         lucide.createIcons();
+
     }
+
 </script>
 
-<!-- AUTENTICAÇÃO / USUÁRIO -->
-<script type="module" src="js/auth.js"></script>
+
+<!-- AUTENTICA??O / USU?RIO -->
+
+<script
+    type="module"
+    src="js/auth.js">
+</script>
+
 
 <!-- DASHBOARD -->
-<script type="module" src="js/dashboard.js"></script>
 
-<!-- INTELIGÊNCIA ARTIFICIAL -->
+<script
+    type="module"
+    src="js/dashboard.js">
+</script>
+
+
+<!-- INTELIG?NCIA ARTIFICIAL -->
+
 <script src="js/ia.js"></script>
 
+
+<!-- MENU LATERAL GLOBAL -->
+
+<script src="js/sidebar.js"></script>
+
+
 </body>
+
 </html>
-
-

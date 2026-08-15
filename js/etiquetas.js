@@ -1,125 +1,2373 @@
+﻿// =======================================
+// LOTRIX - ETIQUETAS V14
+// FIRESTORE + MULTIEMPRESA ISOLADO
+//
+// COMPATÍVEL COM etiquetas.html
+//
+// ETIQUETAS INDEPENDENTES
+// NÃO PASSA POR PRODUÇÃO
+// NÃO PASSA POR ESTOQUE
+// NÃO BAIXA ESTOQUE
+// NÃO CRIA MOVIMENTAÇÃO
+//
+// IMPRESSÃO RAW ZPL - ZD220
+// LOTRIX PRINTER SERVICE
+//
+// V14
+// AJUSTE DE LAYOUT DA ETIQUETA
 // =======================================
-// FOODSYNC - ETIQUETAS
+
+console.log("=======================================");
+console.log("LOTRIX ETIQUETAS V14 CARREGADO");
+console.log("Firestore: MULTIEMPRESA ISOLADO");
+console.log("Etiquetas: INDEPENDENTES");
+console.log("Produção: NÃO UTILIZADA");
+console.log("Estoque: NÃO UTILIZADO");
+console.log("Movimentações: NÃO UTILIZADAS");
+console.log("Impressão: ZPL RAW");
+console.log("Printer Service: HTTPS 192.168.0.109:9100");
+console.log("Layout: PADRÃO DEFINITIVO");
+console.log("=======================================");
+
+// =======================================
+// FIREBASE
 // =======================================
 
 import { db } from "./firebase.js";
 
 import {
     collection,
-    getDocs,
-    addDoc,
-    query,
-    where,
-    orderBy,
-    limit,
-    serverTimestamp,
-    deleteDoc,
-    doc
-}from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+getDocs,
+getDoc,
+addDoc,
+setDoc,
+deleteDoc,
+doc,
+query,
+where,
+serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// =======================================
+// CONFIGURAÇÃO DA IMPRESSORA
+// =======================================
 
+const PRINTER_SERVICE_URL =
+    "https://192.168.0.109:9100/print";
 
-
-console.log("ETIQUETAS.JS VERSÃO NOVA - 19/07/2026");
-
-// ELEMENTOS
-
-const etiquetaForm = document.getElementById("etiquetaForm");
-const produtoSelect = document.getElementById("produtoEtiqueta");
+// =======================================
+// VARIÁVEIS
+// =======================================
 
 let produtos = [];
 
+let etiquetas = [];
+
+let empresaAtualDados = null;
+
+let imprimirDepoisDeSalvar = false;
+
+let ultimaEtiquetaGerada = null;
+
 // =======================================
-// CARREGAR PRODUTOS
+// ELEMENTOS
 // =======================================
 
-async function carregarProdutos() {
+function obterElemento(id) {
 
-    if (!produtoSelect) return;
+    return document.getElementById(id);
 
-    produtoSelect.innerHTML = `
-        <option value="">Selecione o produto</option>
-    `;
+}
 
-    produtos = [];
+// =======================================
+// USUÁRIO ATUAL
+// =======================================
+
+function usuarioAtual() {
 
     try {
 
-        const snapshot = await getDocs(
-            collection(db, "produtos")
-        );
+        const dados =
+            localStorage.getItem(
+                "usuarioFoodSync"
+            );
 
-        snapshot.forEach(doc => {
+        if (!dados) {
 
-            const produto = {
-                id: doc.id,
-                ...doc.data()
-            };
+            return null;
 
-            produtos.push(produto);
+        }
 
-            produtoSelect.innerHTML += `
-                <option value="${produto.nome}">
-                    ${produto.nome}
-                </option>
-            `;
-
-        });
-
-        console.log("Produtos carregados:", produtos);
+        return JSON.parse(dados);
 
     } catch (error) {
 
-        console.error("Erro ao carregar produtos:", error);
+        console.error(
+            "Erro ao carregar usuário:",
+            error
+        );
+
+        return null;
 
     }
 
 }
+
 // =======================================
-// HISTÓRICO DE ETIQUETAS
+// EMPRESA ATUAL
 // =======================================
 
-async function carregarHistoricoEtiquetas(){
+function empresaAtual() {
 
-    const tabela =
-    document.getElementById("listaEtiquetas");
+    const usuario =
+        usuarioAtual();
 
+    if (!usuario) {
 
-    if(!tabela) return;
+        console.error(
+            "Usuário não encontrado."
+        );
 
+        return null;
 
-    tabela.innerHTML="";
+    }
 
+    if (!usuario.idEmpresa) {
+
+        console.error(
+            "ID da empresa não encontrado:",
+            usuario
+        );
+
+        return null;
+
+    }
+
+    return usuario.idEmpresa;
+
+}
+
+// =======================================
+// VERIFICAR EMPRESA
+// =======================================
+
+function verificarEmpresa() {
+
+    const idEmpresa =
+        empresaAtual();
+
+    if (!idEmpresa) {
+
+        alert(
+            "Não foi possível identificar a empresa deste usuário."
+        );
+
+        return false;
+
+    }
+
+    console.log(
+        "EMPRESA ATUAL:",
+        idEmpresa
+    );
+
+    return true;
+
+}
+
+// =======================================
+// ESCAPAR HTML
+// =======================================
+
+function escaparHTML(valor) {
+
+    return String(valor ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+// =======================================
+// LIMPAR TEXTO PARA ZPL
+// =======================================
+
+function limparZPL(valor) {
+
+    return String(valor ?? "")
+        .replace(/[\r\n]+/g, " ")
+        .replace(/\^/g, "")
+        .replace(/~/g, "")
+        .trim();
+
+}
+
+// =======================================
+// PRODUTO PERTENCE À EMPRESA
+// =======================================
+
+function produtoPertenceEmpresa(
+    produto,
+    idEmpresa
+) {
+
+    if (!produto) {
+
+        return false;
+
+    }
+
+    if (
+        produto.idEmpresa ===
+        idEmpresa
+    ) {
+
+        return true;
+
+    }
+
+    if (
+        Array.isArray(
+            produto.empresas
+        ) &&
+        produto.empresas.includes(
+            idEmpresa
+        )
+    ) {
+
+        return true;
+
+    }
+
+    return false;
+
+}
+
+// =======================================
+// FORMATAR CNPJ
+// =======================================
+
+function formatarCNPJ(cnpj) {
+
+    const numeros =
+        String(
+            cnpj || ""
+        ).replace(
+            /\D/g,
+            ""
+        );
+
+    if (
+        numeros.length !== 14
+    ) {
+
+        return cnpj || "";
+
+    }
+
+    return numeros.replace(
+        /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+        "$1.$2.$3/$4-$5"
+    );
+
+}
+
+// =======================================
+// GERAR CÓDIGO DA ETIQUETA
+// =======================================
+
+function gerarCodigoEtiqueta() {
+
+    return (
+        "LOT-" +
+        Date.now()
+    );
+
+}
+
+// =======================================
+// GERAR URL DO QR CODE
+//
+// CORREÇÃO V14:
+// Esta função fica fora de salvarEtiqueta()
+// para poder ser utilizada pela prévia,
+// gerarZPL() e demais funções.
+// =======================================
+
+function gerarURLConsultaEtiqueta(
+    codigoEtiqueta
+) {
+
+    const codigo =
+        limparZPL(
+            codigoEtiqueta || ""
+        );
+
+    if (!codigo) {
+
+        return "";
+
+    }
+
+    return (
+        "https://foodsync-43a7e.web.app/consulta.html?codigo=" +
+        encodeURIComponent(
+            codigo
+        )
+    );
+
+}
+
+// =======================================
+// CARREGAR DADOS DA EMPRESA
+// =======================================
+
+async function carregarDadosEmpresa() {
+
+    const idEmpresa =
+        empresaAtual();
+
+    if (!idEmpresa) {
+
+        throw new Error(
+            "Empresa não identificada."
+        );
+
+    }
 
     try {
 
+        const referencia =
+            doc(
+                db,
+                "empresas",
+                idEmpresa
+            );
 
-        const consulta = query(
+        const snapshot =
+            await getDoc(
+                referencia
+            );
 
-            collection(db,"etiquetas"),
+        if (!snapshot.exists()) {
 
-            orderBy(
-                "criadoEm",
-                "desc"
+            console.warn(
+                "Documento da empresa não encontrado:",
+                idEmpresa
+            );
+
+            empresaAtualDados = {
+
+                id:
+                    idEmpresa,
+
+                idEmpresa:
+                    idEmpresa,
+
+                nomeFantasia:
+                    idEmpresa,
+
+                nome:
+                    idEmpresa
+
+            };
+
+            atualizarInformacoesEmpresa();
+
+            return empresaAtualDados;
+
+        }
+
+        const dados =
+            snapshot.data();
+
+        empresaAtualDados = {
+
+            id:
+                idEmpresa,
+
+            idEmpresa:
+                idEmpresa,
+
+            ...dados
+
+        };
+
+        console.log("=======================================");
+        console.log("EMPRESA ATUAL:");
+        console.log("ID:", idEmpresa);
+
+        console.log(
+            "NOME:",
+            dados.nomeFantasia ||
+            dados.nome ||
+            "-"
+        );
+
+        console.log(
+            "DADOS:",
+            empresaAtualDados
+        );
+
+        console.log("=======================================");
+
+        atualizarInformacoesEmpresa();
+
+        return empresaAtualDados;
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao carregar empresa:",
+            error
+        );
+
+        throw error;
+
+    }
+
+}
+
+// =======================================
+// ATUALIZAR EMPRESA NA PRÉVIA
+// =======================================
+
+function atualizarInformacoesEmpresa() {
+
+    if (!empresaAtualDados) {
+
+        return;
+
+    }
+
+    const nome =
+        empresaAtualDados.nomeFantasia ||
+        empresaAtualDados.nome ||
+        "EMPRESA";
+
+    const razao =
+        empresaAtualDados.razaoSocial ||
+        empresaAtualDados.razao ||
+        "--";
+
+    const cnpj =
+        limparZPL(
+            formatarCNPJ(
+                empresaAtualDados.cnpj || ""
             )
+        );
+
+    const endereco =
+        empresaAtualDados.endereco ||
+        "--";
+
+    const nomeEmpresa =
+        obterElemento(
+            "nomeEmpresaEtiqueta"
+        );
+
+    if (nomeEmpresa) {
+
+        nomeEmpresa.textContent =
+            nome;
+
+    }
+
+    const razaoElemento =
+        obterElemento(
+            "razaoSocialEmpresaEtiqueta"
+        );
+
+    if (razaoElemento) {
+
+        razaoElemento.textContent =
+            razao;
+
+    }
+
+    const cnpjElemento =
+        obterElemento(
+            "cnpjEmpresaEtiqueta"
+        );
+
+    if (cnpjElemento) {
+
+        cnpjElemento.textContent =
+            cnpj;
+
+    }
+
+    const enderecoElemento =
+        obterElemento(
+            "enderecoEmpresaEtiqueta"
+        );
+
+    if (enderecoElemento) {
+
+        enderecoElemento.textContent =
+            endereco;
+
+    }
+
+}
+
+// =======================================
+// CARREGAR PRODUTOS
+// SOMENTE EMPRESA LOGADA
+//
+// NÃO CONSULTA ESTOQUE
+// NÃO CONSULTA PRODUÇÃO
+// =======================================
+
+async function carregarProdutos() {
+
+    const produtoSelect =
+        obterElemento(
+            "produtoEtiqueta"
+        );
+
+    if (!produtoSelect) {
+
+        console.error(
+            "Elemento #produtoEtiqueta não encontrado."
+        );
+
+        return;
+
+    }
+
+    const idEmpresa =
+        empresaAtual();
+
+    if (!idEmpresa) {
+
+        console.error(
+            "Empresa não identificada."
+        );
+
+        return;
+
+    }
+
+    try {
+
+        console.log("=======================================");
+        console.log("CARREGANDO PRODUTOS");
+        console.log(
+            "EMPRESA:",
+            idEmpresa
+        );
+        console.log("=======================================");
+
+        produtos = [];
+
+        produtoSelect.innerHTML =
+            '<option value="">Selecione o produto</option>';
+
+        const consulta =
+            query(
+
+                collection(
+                    db,
+                    "produtos"
+                ),
+
+                where(
+                    "empresas",
+                    "array-contains",
+                    idEmpresa
+                )
+
+            );
+
+        const snapshot =
+            await getDocs(
+                consulta
+            );
+
+        snapshot.forEach(
+            item => {
+
+                const dados =
+                    item.data();
+
+                if (
+                    !produtoPertenceEmpresa(
+                        dados,
+                        idEmpresa
+                    )
+                ) {
+
+                    return;
+
+                }
+
+                produtos.push({
+
+                    id:
+                        item.id,
+
+                    ...dados
+
+                });
+
+            }
+        );
+
+        produtos.sort(
+            (a, b) =>
+                String(
+                    a.nome || ""
+                ).localeCompare(
+                    String(
+                        b.nome || ""
+                    ),
+                    "pt-BR"
+                )
+        );
+
+        produtos.forEach(
+            produto => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    produto.id;
+
+                option.textContent =
+                    produto.nome ||
+                    "Produto sem nome";
+
+                produtoSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+        console.log(
+            "PRODUTOS DA EMPRESA:",
+            idEmpresa
+        );
+
+        console.log(
+            "TOTAL:",
+            produtos.length
+        );
+
+        console.log(
+            "PRODUTOS:",
+            produtos
+        );
+
+    } catch (error) {
+
+        console.error(
+            "ERRO AO CARREGAR PRODUTOS:",
+            error
+        );
+
+        alert(
+            "Erro ao carregar os produtos da empresa."
+        );
+
+        throw error;
+
+    }
+
+}
+
+// =======================================
+// PRODUTO SELECIONADO
+// =======================================
+
+function produtoSelecionado() {
+
+    const select =
+        obterElemento(
+            "produtoEtiqueta"
+        );
+
+    if (!select) {
+
+        return null;
+
+    }
+
+    return produtos.find(
+        produto =>
+            produto.id ===
+            select.value
+    ) || null;
+
+}
+
+// =======================================
+// ATUALIZAR PRÉVIA DO PRODUTO
+// =======================================
+
+function atualizarInformacoesProduto() {
+
+    const produto =
+        produtoSelecionado();
+
+    const nomeEtiqueta =
+        obterElemento(
+            "nomeEtiqueta"
+        );
+
+    const temperaturaEtiqueta =
+        obterElemento(
+            "temperaturaEtiqueta"
+        );
+
+    if (!produto) {
+
+        if (nomeEtiqueta) {
+
+            nomeEtiqueta.textContent =
+                "PRODUTO";
+
+        }
+
+        if (temperaturaEtiqueta) {
+
+            temperaturaEtiqueta.textContent =
+                "--";
+
+        }
+
+        calcularValidadeProduto();
+
+        return;
+
+    }
+
+    if (nomeEtiqueta) {
+
+        nomeEtiqueta.textContent =
+            produto.nome ||
+            "PRODUTO";
+
+    }
+
+    if (temperaturaEtiqueta) {
+
+        temperaturaEtiqueta.textContent =
+            produto.temperatura ||
+            "AMBIENTE";
+
+    }
+
+    calcularValidadeProduto();
+
+}
+
+// =======================================
+// FORMATAR DATA PARA INPUT DATE
+// yyyy-MM-dd
+// =======================================
+
+function formatarDataInputDate(data) {
+
+    if (!data) {
+
+        return "";
+
+    }
+
+    const dataObj =
+        data instanceof Date
+            ? data
+            : new Date(data);
+
+    if (
+        isNaN(
+            dataObj.getTime()
+        )
+    ) {
+
+        return "";
+
+    }
+
+    const ano =
+        dataObj.getFullYear();
+
+    const mes =
+        String(
+            dataObj.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+    const dia =
+        String(
+            dataObj.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+    return (
+        `${ano}-${mes}-${dia}`
+    );
+
+}
+
+// =======================================
+// FORMATAR DATA PARA EXIBIÇÃO
+// =======================================
+
+function formatarDataEtiqueta(valor) {
+
+    if (!valor) {
+
+        return "-";
+
+    }
+
+    let data;
+
+    if (
+        typeof valor === "string"
+    ) {
+
+        if (
+            /^\d{4}-\d{2}-\d{2}$/.test(
+                valor
+            )
+        ) {
+
+            const partes =
+                valor.split("-");
+
+            data =
+                new Date(
+                    Number(partes[0]),
+                    Number(partes[1]) - 1,
+                    Number(partes[2])
+                );
+
+        } else {
+
+            data =
+                new Date(valor);
+
+        }
+
+    } else if (
+        typeof valor === "object" &&
+        valor.seconds
+    ) {
+
+        data =
+            new Date(
+                valor.seconds * 1000
+            );
+
+    } else {
+
+        data =
+            new Date(valor);
+
+    }
+
+    if (
+        isNaN(
+            data.getTime()
+        )
+    ) {
+
+        return String(valor);
+
+    }
+
+    return data.toLocaleDateString(
+        "pt-BR"
+    );
+
+}
+
+// =======================================
+// PREENCHER DATA ATUAL
+// =======================================
+
+function preencherDataAtual() {
+
+    const campo =
+        obterElemento(
+            "dataProducao"
+        );
+
+    if (!campo) {
+
+        console.warn(
+            "Campo #dataProducao não encontrado."
+        );
+
+        return;
+
+    }
+
+    if (!campo.value) {
+
+        campo.value =
+            formatarDataInputDate(
+                new Date()
+            );
+
+    }
+
+    calcularValidadeProduto();
+
+    atualizarPreviaDatas();
+
+}
+
+// =======================================
+// CALCULAR VALIDADE
+// =======================================
+
+function calcularValidadeProduto() {
+
+    const produto =
+        produtoSelecionado();
+
+    const campoData =
+        obterElemento(
+            "dataProducao"
+        );
+
+    if (
+        !produto ||
+        !campoData ||
+        !campoData.value
+    ) {
+
+        const validade =
+            obterElemento(
+                "validadeEtiqueta"
+            );
+
+        if (validade) {
+
+            validade.textContent =
+                "--";
+
+        }
+
+        return "";
+
+    }
+
+    const dias =
+        Number(
+            produto.validadeDias ||
+            0
+        );
+
+    const data =
+        new Date(
+            `${campoData.value}T00:00:00`
+        );
+
+    if (
+        isNaN(
+            data.getTime()
+        )
+    ) {
+
+        return "";
+
+    }
+
+    data.setDate(
+        data.getDate() +
+        dias
+    );
+
+    const validade =
+        formatarDataInputDate(
+            data
+        );
+
+    const validadeElemento =
+        obterElemento(
+            "validadeEtiqueta"
+        );
+
+    if (validadeElemento) {
+
+        validadeElemento.textContent =
+            formatarDataEtiqueta(
+                validade
+            );
+
+    }
+
+    return validade;
+
+}
+
+// =======================================
+// ATUALIZAR DATAS DA PRÉVIA
+// =======================================
+
+function atualizarPreviaDatas() {
+
+    const campoData =
+        obterElemento(
+            "dataProducao"
+        );
+
+    const dataElemento =
+        obterElemento(
+            "dataEtiqueta"
+        );
+
+    if (dataElemento) {
+
+        dataElemento.textContent =
+            campoData?.value
+                ? formatarDataEtiqueta(
+                    campoData.value
+                )
+                : "--";
+
+    }
+
+    calcularValidadeProduto();
+
+}
+
+// =======================================
+// GERAR LOTE
+// =======================================
+
+function gerarLote() {
+
+    const agora =
+        new Date();
+
+    const lote =
+        "LOT-" +
+        agora.getFullYear() +
+        String(
+            agora.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        ) +
+        String(
+            agora.getDate()
+        ).padStart(
+            2,
+            "0"
+        ) +
+        "-" +
+        String(
+            Date.now()
+        ).slice(
+            -5
+        );
+
+    const loteElemento =
+        obterElemento(
+            "loteEtiqueta"
+        );
+
+    if (loteElemento) {
+
+        loteElemento.textContent =
+            lote;
+
+    }
+
+    return lote;
+
+}
+
+// =======================================
+// ATUALIZAR RESPONSÁVEL NA PRÉVIA
+// =======================================
+
+function atualizarResponsavelPrevia() {
+
+    const usuario =
+        usuarioAtual();
+
+    const elemento =
+        obterElemento(
+            "responsavelEtiqueta"
+        );
+
+    if (!elemento) {
+
+        return;
+
+    }
+
+    elemento.textContent =
+        usuario?.nome ||
+        "Não informado";
+
+}
+
+// =======================================
+// ATUALIZAR TEMPERATURA NA PRÉVIA
+// =======================================
+
+function atualizarTemperaturaPrevia() {
+
+    const produto =
+        produtoSelecionado();
+
+    const elemento =
+        obterElemento(
+            "temperaturaEtiqueta"
+        );
+
+    if (!elemento) {
+
+        return;
+
+    }
+
+    elemento.textContent =
+        produto?.temperatura ||
+        "AMBIENTE";
+
+}
+
+// =======================================
+// ATUALIZAR PRÉVIA COMPLETA
+// =======================================
+
+function atualizarPrevia() {
+
+    const produto =
+        produtoSelecionado();
+
+    const nomeElemento =
+        obterElemento(
+            "nomeEtiqueta"
+        );
+
+    if (nomeElemento) {
+
+        nomeElemento.textContent =
+            produto?.nome ||
+            "PRODUTO";
+
+    }
+
+    atualizarTemperaturaPrevia();
+
+    atualizarPreviaDatas();
+
+    atualizarResponsavelPrevia();
+
+    const lote =
+        gerarLote();
+
+    const qrElemento =
+        obterElemento(
+            "qrcodeEtiqueta"
+        );
+
+    if (qrElemento) {
+
+        qrElemento.innerHTML =
+            "";
+
+        if (produto) {
+
+            const codigoPreview =
+                gerarCodigoEtiqueta();
+
+            const urlConsulta =
+                gerarURLConsultaEtiqueta(
+                    codigoPreview
+                );
+
+            if (
+                typeof QRCode !==
+                "undefined"
+            ) {
+
+                new QRCode(
+                    qrElemento,
+                    {
+
+                        text:
+                            urlConsulta,
+
+                        width:
+                            90,
+
+                        height:
+                            90
+
+                    }
+                );
+
+            }
+
+        }
+
+    }
+
+    return lote;
+
+}
+// =======================================
+// GERAR ZPL - ETIQUETA OFICIAL LOTRIX
+//
+// PADRÃO DEFINITIVO
+//
+// 480 x 480 DOTS
+// 60mm x 60mm
+// ZD220 - 203 DPI
+//
+// ESTRUTURA OFICIAL:
+// PRODUTO
+// TEMPERATURA
+// PRODUZIDO
+// VALIDADE
+// RESPONSÁVEL
+// EMPRESA
+// CNPJ
+// ENDEREÇO
+// LOTE
+// QR CODE
+// =======================================
+
+function gerarZPL(
+    produto,
+    lote,
+    dataProducao,
+    validade,
+    temperatura,
+    responsavel,
+    codigoEtiqueta
+) {
+
+    // ===================================
+    // DADOS DO PRODUTO
+    // ===================================
+
+    const nome =
+        limparZPL(
+            produto?.nome ||
+            "PRODUTO"
+        );
+
+    const temp =
+        limparZPL(
+            temperatura ||
+            produto?.temperatura ||
+            "AMBIENTE"
+        );
+
+    // ===================================
+    // DADOS DA EMPRESA
+    // ===================================
+
+    const empresa =
+        empresaAtualDados || {};
+
+    const nomeEmpresa =
+        limparZPL(
+            empresa.nomeFantasia ||
+            empresa.nome ||
+            "EMPRESA"
+        );
+
+    const cnpj =
+        limparZPL(
+            formatarCNPJ(
+                empresa.cnpj ||
+                ""
+            )
+        );
+
+    const endereco =
+        limparZPL(
+            empresa.endereco ||
+            ""
+        );
+
+    // ===================================
+    // DADOS DA ETIQUETA
+    // ===================================
+
+    const loteLimpo =
+        limparZPL(
+            lote ||
+            ""
+        );
+
+    const dataProduzido =
+        limparZPL(
+            formatarDataEtiqueta(
+                dataProducao
+            )
+        );
+
+    const dataValidade =
+        limparZPL(
+            formatarDataEtiqueta(
+                validade
+            )
+        );
+
+    const resp =
+        limparZPL(
+            responsavel ||
+            "Não informado"
+        );
+
+    const codigo =
+        limparZPL(
+            codigoEtiqueta ||
+            ""
+        );
+
+    // ===================================
+    // CONFIGURAÇÃO ZPL
+    // ===================================
+
+    let zpl = "";
+
+    zpl += "^XA\n";
+
+    // UTF-8
+    zpl += "^CI28\n";
+
+    // TAMANHO
+    zpl += "^PW480\n";
+    zpl += "^LL480\n";
+
+    // ===================================
+    // BORDA EXTERNA
+    // ===================================
+
+    zpl += "^FO8,8\n";
+    zpl += "^GB464,464,3\n";
+    zpl += "^FS\n";
+
+
+    // ===================================
+    // PRODUTO
+    // ===================================
+
+    zpl += "^FO25,24\n";
+    zpl += "^A0N,30,30\n";
+    zpl += "^FB430,1,0,L,0\n";
+    zpl += `^FD${nome}^FS\n`;
+
+
+    // ===================================
+    // TEMPERATURA
+    // ===================================
+
+    zpl += "^FO25,57\n";
+    zpl += "^A0N,20,20\n";
+    zpl += "^FB430,1,0,L,0\n";
+    zpl += `^FD${temp}^FS\n`;
+
+
+    // ===================================
+    // PRIMEIRA LINHA
+    // ===================================
+
+    zpl += "^FO20,86\n";
+    zpl += "^GB440,2,2\n";
+    zpl += "^FS\n";
+
+
+    // ===================================
+    // PRODUZIDO
+    // ===================================
+
+    zpl += "^FO25,104\n";
+    zpl += "^A0N,21,21\n";
+    zpl += "^FDPRODUZIDO:^FS\n";
+
+    zpl += "^FO275,102\n";
+    zpl += "^A0N,24,24\n";
+    zpl += `^FD${dataProduzido}^FS\n`;
+
+
+    // ===================================
+    // VALIDADE
+    // ===================================
+
+    zpl += "^FO25,136\n";
+    zpl += "^A0N,21,21\n";
+    zpl += "^FDVALIDADE:^FS\n";
+
+    zpl += "^FO275,134\n";
+    zpl += "^A0N,24,24\n";
+    zpl += `^FD${dataValidade}^FS\n`;
+
+
+    // ===================================
+    // SEGUNDA LINHA
+    // ===================================
+
+    zpl += "^FO20,168\n";
+    zpl += "^GB440,2,2\n";
+    zpl += "^FS\n";
+
+
+    // ===================================
+    // RESPONSÁVEL
+    // ===================================
+
+    zpl += "^FO25,184\n";
+    zpl += "^A0N,20,20\n";
+    zpl += "^FB430,1,0,L,0\n";
+    zpl += `^FDRESP.: ${resp}^FS\n`;
+
+
+    // ===================================
+    // NOME FANTASIA
+    // ===================================
+
+    zpl += "^FO25,211\n";
+    zpl += "^A0N,22,22\n";
+    zpl += "^FB430,1,0,L,0\n";
+    zpl += `^FD${nomeEmpresa}^FS\n`;
+
+
+    // ===================================
+    // CNPJ
+    // ===================================
+
+    if (cnpj) {
+
+        zpl += "^FO25,239\n";
+        zpl += "^A0N,18,18\n";
+        zpl += "^FB430,1,0,L,0\n";
+        zpl += `^FDCNPJ: ${cnpj}^FS\n`;
+
+    }
+
+
+    // ===================================
+    // ENDEREÇO
+    // ===================================
+
+    if (endereco) {
+
+        zpl += "^FO25,264\n";
+        zpl += "^A0N,17,17\n";
+        zpl += "^FB305,2,0,L,0\n";
+        zpl += `^FD${endereco}^FS\n`;
+
+    }
+
+
+    // ===================================
+    // LOTE
+    //
+    // CANTO INFERIOR ESQUERDO
+    // ===================================
+
+    zpl += "^FO25,385\n";
+    zpl += "^A0N,19,19\n";
+    zpl += "^FB300,1,0,L,0\n";
+    zpl += `^FDLOTE: ${loteLimpo}^FS\n`;
+
+
+// ===================================
+// QR CODE
+// CANTO INFERIOR DIREITO
+// ===================================
+
+const urlConsulta =
+    new URL(
+        "consulta.html",
+        window.location.href
+    );
+
+urlConsulta.searchParams.set(
+    "codigo",
+    codigo
+);
+
+if (codigo) {
+
+    zpl += "^FO350,335\n";
+    zpl += "^BQN,3,3\n";
+    zpl += `^FDLA,${urlConsulta.href}^FS\n`;
+
+}
+
+    // ===================================
+    // FINAL
+    // ===================================
+
+    zpl += "^XZ\n";
+
+    return zpl;
+
+}
+
+// =======================================
+// IMPRIMIR DIRETAMENTE
+// =======================================
+
+async function imprimirEtiquetaDireto(
+    produto,
+    lote,
+    dataProducao,
+    validade,
+    temperatura,
+    responsavel,
+    codigoEtiqueta,
+    quantidade
+) {
+
+    const qtd =
+        Number(
+            quantidade
+        );
+
+    if (
+        !Number.isInteger(qtd) ||
+        qtd < 1
+    ) {
+
+        throw new Error(
+            "Quantidade de etiquetas inválida."
+        );
+
+    }
+
+    console.log("=======================================");
+    console.log("PREPARANDO IMPRESSÃO DIRETA");
+
+    console.log(
+        "PRODUTO:",
+        produto.nome
+    );
+
+    console.log(
+        "QUANTIDADE:",
+        qtd
+    );
+
+    const zplEtiqueta =
+        gerarZPL(
+
+            produto,
+
+            lote,
+
+            dataProducao,
+
+            validade,
+
+            temperatura,
+
+            responsavel,
+
+            codigoEtiqueta
 
         );
 
+    let zplFinal =
+        "";
+
+    for (
+        let i = 0;
+        i < qtd;
+        i++
+    ) {
+
+        zplFinal +=
+            zplEtiqueta;
+
+    }
+
+    console.log(
+        "ETIQUETAS ZPL GERADAS:",
+        qtd
+    );
+
+    console.log(
+        "TAMANHO ZPL:",
+        new TextEncoder()
+            .encode(
+                zplFinal
+            )
+            .length,
+        "bytes"
+    );
+
+    console.log(
+        "ENVIANDO PARA:",
+        PRINTER_SERVICE_URL
+    );
+
+    let resposta;
+
+    try {
+
+        resposta =
+            await fetch(
+                PRINTER_SERVICE_URL,
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "text/plain"
+
+                    },
+
+                    body:
+                        zplFinal
+
+                }
+            );
+
+    } catch (error) {
+
+        console.error(
+            "ERRO AO CONECTAR AO PRINTER SERVICE:",
+            error
+        );
+
+        throw new Error(
+            "Não foi possível conectar ao LOTRIX PRINTER SERVICE. Verifique se o server.js está aberto no computador da impressora."
+        );
+
+    }
+
+    const retorno =
+        await resposta.text();
+
+    console.log(
+        "RESPOSTA DO PRINTER SERVICE:",
+        retorno
+    );
+
+    if (
+        !resposta.ok
+    ) {
+
+        throw new Error(
+            retorno ||
+            "Erro ao enviar etiqueta para a impressora."
+        );
+
+    }
+
+    console.log(
+        "IMPRESSÃO ENVIADA COM SUCESSO"
+    );
+
+    console.log(
+        "ETIQUETAS:",
+        qtd
+    );
+
+    console.log("=======================================");
+
+    return true;
+
+}
+
+// =======================================
+// SALVAR ETIQUETA
+//
+// SOMENTE /etiquetas
+//
+// NÃO USA:
+// produção
+// estoque
+// movimentações
+// baixarEstoque()
+// =======================================
+
+async function salvarEtiqueta() {
+
+    const formulario =
+        obterElemento(
+            "etiquetaForm"
+        );
+
+    try {
+
+        const idEmpresa =
+            empresaAtual();
+
+        if (!idEmpresa) {
+
+            alert(
+                "Empresa não identificada."
+            );
+
+            return;
+
+        }
+
+        // ===================================
+        // PRODUTO
+        // ===================================
+
+        const produto =
+            produtoSelecionado();
+
+        if (!produto) {
+
+            alert(
+                "Selecione um produto."
+            );
+
+            return;
+
+        }
+
+        // ===================================
+        // SEGURANÇA MULTIEMPRESA
+        // ===================================
+
+        if (
+            !produtoPertenceEmpresa(
+                produto,
+                idEmpresa
+            )
+        ) {
+
+            alert(
+                "Este produto não pertence à empresa atual."
+            );
+
+            return;
+
+        }
+
+        // ===================================
+        // USUÁRIO
+        // ===================================
+
+        const usuario =
+            usuarioAtual();
+
+        // ===================================
+        // QUANTIDADE
+        // ===================================
+
+        const campoQuantidade =
+            obterElemento(
+                "quantidadeProducao"
+            );
+
+        if (!campoQuantidade) {
+
+            alert(
+                "Campo de quantidade não encontrado."
+            );
+
+            console.error(
+                "Elemento #quantidadeProducao não encontrado."
+            );
+
+            return;
+
+        }
+
+        const quantidade =
+            parseInt(
+                campoQuantidade.value,
+                10
+            );
+
+        if (
+            !Number.isInteger(
+                quantidade
+            ) ||
+            quantidade < 1
+        ) {
+
+            alert(
+                "Informe uma quantidade válida de etiquetas."
+            );
+
+            campoQuantidade.focus();
+
+            return;
+
+        }
+
+        // ===================================
+        // DATA DE PRODUÇÃO
+        // ===================================
+
+        const campoData =
+            obterElemento(
+                "dataProducao"
+            );
+
+        if (
+            !campoData ||
+            !campoData.value
+        ) {
+
+            alert(
+                "Informe a data de produção."
+            );
+
+            return;
+
+        }
+
+        const dataProducao =
+            campoData.value;
+
+        // ===================================
+        // VALIDADE
+        // ===================================
+
+        const validade =
+            calcularValidadeProduto();
+
+        if (!validade) {
+
+            alert(
+                "Não foi possível calcular a validade do produto."
+            );
+
+            return;
+
+        }
+
+        // ===================================
+        // TEMPERATURA
+        // ===================================
+
+        const temperatura =
+            produto.temperatura ||
+            "AMBIENTE";
+
+        // ===================================
+        // RESPONSÁVEL
+        // ===================================
+
+        const responsavel =
+            usuario?.nome ||
+            "Não informado";
+
+        // ===================================
+        // UNIDADE
+        // ===================================
+
+        const unidade =
+            produto.unidade ||
+            "UN";
+
+        // ===================================
+        // LOTE
+        // ===================================
+
+        const lote =
+            gerarLote();
+
+        // ===================================
+        // CÓDIGO
+        // ===================================
+
+        const codigoEtiqueta =
+            gerarCodigoEtiqueta();
+
+        // ===================================
+        // DADOS DA ETIQUETA
+        // ===================================
+
+        const dadosEtiqueta = {
+
+            idEmpresa:
+                idEmpresa,
+
+            codigo:
+                codigoEtiqueta,
+
+            produtoId:
+                produto.id,
+
+            produto:
+                produto.nome || "",
+
+            codigoProduto:
+                produto.codigo || "",
+
+            quantidade:
+                quantidade,
+
+            unidade:
+                unidade,
+
+            dataProducao:
+                dataProducao,
+
+            validade:
+                validade,
+
+            categoria:
+                produto.categoria || "",
+
+            grupo:
+                produto.grupo || "",
+
+            temperatura:
+                temperatura,
+
+            responsavel:
+                responsavel,
+
+            lote:
+                lote,
+
+            observacao:
+                "",
+
+            usuarioId:
+                usuario?.id || "",
+
+            usuario:
+                usuario?.nome || "",
+
+            email:
+                usuario?.email || "",
+
+            criadoEm:
+                serverTimestamp()
+
+        };
+
+        console.log("=======================================");
+        console.log("CRIANDO ETIQUETA");
+
+        console.log(
+            "EMPRESA:",
+            idEmpresa
+        );
+
+        console.log(
+            "PRODUTO:",
+            produto.nome
+        );
+
+        console.log(
+            "CÓDIGO:",
+            codigoEtiqueta
+        );
+
+        console.log(
+            "QUANTIDADE:",
+            quantidade
+        );
+
+        console.log(
+            "DATA:",
+            dataProducao
+        );
+
+        console.log(
+            "VALIDADE:",
+            validade
+        );
+
+        console.log(
+            "LOTE:",
+            lote
+        );
+
+        console.log("=======================================");
+
+        // ===================================
+        // SALVAR NO FIRESTORE
+        // ===================================
+
+        const etiquetaRef =
+            await addDoc(
+
+                collection(
+                    db,
+                    "etiquetas"
+                ),
+
+                dadosEtiqueta
+
+            );
+
+        console.log(
+            "ETIQUETA SALVA:",
+            etiquetaRef.id
+        );
+// ===================================
+// CRIAR CONSULTA PÚBLICA DO QR
+// ===================================
+
+await setDoc(
+    doc(
+        db,
+        "consultasPublicas",
+        codigoEtiqueta
+    ),
+    {
+        codigo: codigoEtiqueta,
+
+        idEmpresa: idEmpresa,
+
+        produto:
+            dadosEtiqueta.produto || "",
+
+        temperatura:
+            dadosEtiqueta.temperatura || "",
+
+        dataProducao:
+            dadosEtiqueta.dataProducao || null,
+
+        validade:
+            dadosEtiqueta.validade || null,
+
+        lote:
+            dadosEtiqueta.lote || "",
+
+        responsavel:
+            dadosEtiqueta.responsavel || "",
+
+        quantidade:
+            dadosEtiqueta.quantidade || "",
+
+        unidade:
+            dadosEtiqueta.unidade || "",
+
+        observacao:
+            dadosEtiqueta.observacao || "",
+
+        criadoEm:
+            serverTimestamp()
+    }
+);
+        // ===================================
+        // GUARDAR ÚLTIMA ETIQUETA
+        // ===================================
+
+        ultimaEtiquetaGerada = {
+
+            id:
+                etiquetaRef.id,
+
+            ...dadosEtiqueta
+
+        };
+
+        // ===================================
+        // AUDITORIA
+        // ===================================
+
+        try {
+
+            await addDoc(
+
+                collection(
+                    db,
+                    "auditoria"
+                ),
+
+                {
+
+                    idEmpresa:
+                        idEmpresa,
+
+                    usuario:
+                        usuario?.nome ||
+                        "Sistema",
+
+                    email:
+                        usuario?.email ||
+                        "",
+
+                    modulo:
+                        "Etiquetas",
+
+                    acao:
+                        "ETIQUETA GERADA",
+
+                    detalhes:
+                        `${produto.nome} - Código: ${codigoEtiqueta} - ${quantidade} etiqueta(s)`,
+
+                    status:
+                        "Sucesso",
+
+                    data:
+                        serverTimestamp()
+
+                }
+
+            );
+
+        } catch (error) {
+
+            console.warn(
+                "Não foi possível registrar auditoria:",
+                error
+            );
+
+        }
+
+        // ===================================
+        // IMPRIMIR
+        // ===================================
+
+        if (
+            imprimirDepoisDeSalvar
+        ) {
+
+            try {
+
+                await imprimirEtiquetaDireto(
+
+                    produto,
+
+                    lote,
+
+                    dataProducao,
+
+                    validade,
+
+                    temperatura,
+
+                    responsavel,
+
+                    codigoEtiqueta,
+
+                    quantidade
+
+                );
+
+                alert(
+                    `Etiqueta criada e ${quantidade} etiqueta(s) enviada(s) para a impressora.`
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "ERRO NA IMPRESSÃO:",
+                    error
+                );
+
+                alert(
+                    "A etiqueta foi salva, mas não foi possível imprimir.\n\n" +
+                    (
+                        error.message ||
+                        "Verifique o LOTRIX PRINTER SERVICE."
+                    )
+                );
+
+            }
+
+            imprimirDepoisDeSalvar =
+                false;
+
+        } else {
+
+            alert(
+                "Etiqueta criada com sucesso!"
+            );
+
+        }
+
+        // ===================================
+        // LIMPAR FORMULÁRIO
+        // ===================================
+
+        if (formulario) {
+
+            formulario.reset();
+
+        }
+
+        // ===================================
+        // RESTAURAR CAMPOS
+        // ===================================
+
+        preencherDataAtual();
+
+        if (campoQuantidade) {
+
+            campoQuantidade.value =
+                "1";
+
+        }
+
+        atualizarInformacoesProduto();
+
+        atualizarResponsavelPrevia();
+
+        gerarLote();
+
+        // ===================================
+        // RECARREGAR HISTÓRICO
+        // ===================================
+
+        await carregarEtiquetas();
+
+        console.log(
+            "ETIQUETA CRIADA COM SUCESSO:",
+            etiquetaRef.id
+        );
+
+    } catch (error) {
+
+        console.error(
+            "ERRO AO SALVAR ETIQUETA:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Erro ao criar etiqueta. Veja o Console."
+        );
+
+    }
+
+}
+
+// =======================================
+// CARREGAR ETIQUETAS
+// SOMENTE EMPRESA ATUAL
+// =======================================
+
+async function carregarEtiquetas() {
+
+    const lista =
+        obterElemento(
+            "listaEtiquetas"
+        );
+
+    if (!lista) {
+
+        return;
+
+    }
+
+    const idEmpresa =
+        empresaAtual();
+
+    if (!idEmpresa) {
+
+        return;
+
+    }
+
+    try {
+
+        console.log(
+            "CARREGANDO ETIQUETAS DA EMPRESA:",
+            idEmpresa
+        );
+
+        const consulta =
+            query(
+
+                collection(
+                    db,
+                    "etiquetas"
+                ),
+
+                where(
+                    "idEmpresa",
+                    "==",
+                    idEmpresa
+                )
+
+            );
 
         const snapshot =
-        await getDocs(consulta);
+            await getDocs(
+                consulta
+            );
 
+        etiquetas = [];
 
+        snapshot.forEach(
+            item => {
 
-        if(snapshot.empty){
+                const dados =
+                    item.data();
 
-            tabela.innerHTML = `
+                if (
+                    dados.idEmpresa !==
+                    idEmpresa
+                ) {
 
-            <tr>
-            <td colspan="7">
-            Nenhuma etiqueta gerada
-            </td>
-            </tr>
+                    return;
+
+                }
+
+                etiquetas.push({
+
+                    id:
+                        item.id,
+
+                    ...dados
+
+                });
+
+            }
+        );
+
+        etiquetas.sort(
+            (a, b) => {
+
+                const dataA =
+                    a.criadoEm?.seconds ||
+                    0;
+
+                const dataB =
+                    b.criadoEm?.seconds ||
+                    0;
+
+                return dataB - dataA;
+
+            }
+        );
+
+        lista.innerHTML =
+            "";
+
+        if (
+            etiquetas.length === 0
+        ) {
+
+            lista.innerHTML = `
+
+                <tr>
+
+                    <td colspan="7">
+
+                        Nenhuma etiqueta registrada.
+
+                    </td>
+
+                </tr>
 
             `;
 
@@ -127,82 +2375,142 @@ async function carregarHistoricoEtiquetas(){
 
         }
 
+        etiquetas.forEach(
+            etiqueta => {
 
+                const tr =
+                    document.createElement(
+                        "tr"
+                    );
 
-        snapshot.forEach(item=>{
+                tr.innerHTML = `
 
+                    <td>
+                        ${escaparHTML(
+                            etiqueta.codigo ||
+                            "-"
+                        )}
+                    </td>
 
-            const etiqueta =
-            item.data();
+                    <td>
+                        ${escaparHTML(
+                            etiqueta.produto ||
+                            "-"
+                        )}
+                    </td>
 
+                    <td>
+                        ${escaparHTML(
+                            etiqueta.quantidade ??
+                            1
+                        )}
+                    </td>
 
+                    <td>
+                        ${escaparHTML(
+                            formatarDataEtiqueta(
+                                etiqueta.dataProducao
+                            )
+                        )}
+                    </td>
 
-            tabela.innerHTML += `
+                    <td>
+                        ${escaparHTML(
+                            formatarDataEtiqueta(
+                                etiqueta.validade
+                            )
+                        )}
+                    </td>
 
-            <tr>
+                    <td>
+                        ${escaparHTML(
+                            etiqueta.responsavel ||
+                            "-"
+                        )}
+                    </td>
 
-            <td>
-            ${etiqueta.codigo}
-            </td>
+                    <td>
 
+                        <button
+                            type="button"
+                            class="btn-imprimir-etiqueta"
+                            data-id="${escaparHTML(
+                                etiqueta.id
+                            )}">
+                            🖨️
+                        </button>
 
-            <td>
-            ${etiqueta.produto}
-            </td>
+                        <button
+                            type="button"
+                            class="btn-delete-etiqueta"
+                            data-id="${escaparHTML(
+                                etiqueta.id
+                            )}">
+                            🗑️
+                        </button>
 
+                    </td>
 
-            <td>
-            ${etiqueta.quantidade || "-"}
-            ${etiqueta.unidade || ""}
-            </td>
+                `;
 
+                const imprimir =
+                    tr.querySelector(
+                        ".btn-imprimir-etiqueta"
+                    );
 
-            <td>
-            ${formatarData(etiqueta.dataProducao)}
-            </td>
+                if (imprimir) {
 
+                    imprimir.addEventListener(
+                        "click",
+                        () => {
 
-            <td>
-            ${formatarData(etiqueta.validade)}
-            </td>
+                            imprimirEtiquetaExistente(
+                                etiqueta.id
+                            );
 
+                        }
+                    );
 
-            <td>
-            ${etiqueta.responsavel}
-            </td>
+                }
 
+                const excluir =
+                    tr.querySelector(
+                        ".btn-delete-etiqueta"
+                    );
 
-            <td>
+                if (excluir) {
 
-            <button onclick="
-            reimprimirEtiqueta('${item.id}')
-            ">
-            🖨️
-            </button>
+                    excluir.addEventListener(
+                        "click",
+                        () => {
 
+                            excluirEtiqueta(
+                                etiqueta.id
+                            );
 
-            <button onclick="
-            excluirEtiqueta('${item.id}')
-            ">
-            🗑️
-            </button>
+                        }
+                    );
 
+                }
 
-            </td>
+                lista.appendChild(
+                    tr
+                );
 
-            </tr>
+            }
+        );
 
-            `;
+        aplicarBuscaEtiquetas();
 
+        console.log(
+            "ETIQUETAS CARREGADAS:",
+            etiquetas.length
+        );
 
-        });
-
-
-
-    }catch(error){
+    } catch (error) {
 
         console.error(
-            "Erro histórico:",
+            "ERRO AO CARREGAR ETIQUETAS:",
             error
         );
 
@@ -210,519 +2518,943 @@ async function carregarHistoricoEtiquetas(){
 
 }
 
-
-
-
-function formatarData(data){
-
-    if(!data)
-        return "-";
-
-    // Datas no formato YYYY-MM-DD devem ser interpretadas como data local.
-    // new Date("YYYY-MM-DD") usa UTC e pode exibir o dia anterior no Brasil.
-    if (typeof data === "string" && /^\d{4}-\d{2}-\d{2}$/.test(data)) {
-        const [ano, mes, dia] = data.split("-");
-        return `${dia}/${mes}/${ano}`;
-    }
-
-    return new Date(data)
-    .toLocaleDateString("pt-BR");
-
-}
 // =======================================
-// BUSCAR ÚLTIMA PRODUÇÃO
+// IMPRIMIR ETIQUETA EXISTENTE
 // =======================================
 
-async function buscarUltimaProducao(produtoId) {
+async function imprimirEtiquetaExistente(
+    id
+) {
 
-    const consulta = query(
-        collection(db, "producoes"),
-       where("produtoId","==",produtoId),
-        orderBy("dataProducao", "desc"),
-        limit(1)
-    );
+    try {
 
+        const idEmpresa =
+            empresaAtual();
 
-    const snapshot = await getDocs(consulta);
-
-
-    if(snapshot.empty){
-
-        return null;
-
-    }
-
-
-    return snapshot.docs[0].data();
-
-}
-
-// =======================================
-// GERAR ETIQUETA
-// =======================================
-
-if (etiquetaForm) {
-
-   etiquetaForm.addEventListener("submit", async (e) => {
-
-    e.preventDefault();
-
-    const codigoEtiqueta = "FS-" + Date.now();
-
-
-console.log("TESTE CODIGO:", codigoEtiqueta);
-
-        const nomeProduto = produtoSelect.value;
-const produtoSelecionado = produtos.find(
-    p => p.nome === nomeProduto
-);
-
-console.log("Produto selecionado:", produtoSelecionado);
-
-        if (!nomeProduto) {
-
-            alert("Selecione o produto.");
+        if (!idEmpresa) {
 
             return;
 
         }
 
-     const producao = await buscarUltimaProducao(produtoSelecionado.id);
-console.log("ÚLTIMA PRODUÇÃO USADA NA ETIQUETA:", producao);
+        const referencia =
+            doc(
+                db,
+                "etiquetas",
+                id
+            );
 
-if (!producao) {
+        const snapshot =
+            await getDoc(
+                referencia
+            );
 
-    alert("Não existe produção registrada para este produto.");
+        if (
+            !snapshot.exists()
+        ) {
 
-    return;
+            alert(
+                "Etiqueta não encontrada."
+            );
 
-}
+            return;
 
+        }
 
-// Buscar dados do produto cadastrado
+        const etiqueta =
+            snapshot.data();
 
-const produtoDados = produtos.find(
-    p => p.nome === nomeProduto
-);
+        // ===================================
+        // SEGURANÇA MULTIEMPRESA
+        // ===================================
 
+        if (
+            etiqueta.idEmpresa !==
+            idEmpresa
+        ) {
 
+            alert(
+                "Esta etiqueta não pertence à empresa atual."
+            );
 
-// ================================
-// DADOS DA ETIQUETA
-// ================================
+            return;
 
+        }
 
-const dataSelecionada = document.getElementById("dataProducao").value;
+        const produto = {
 
-if (!dataSelecionada) {
-    alert("Informe a data de produção.");
-    return;
-}
+            nome:
+                etiqueta.produto ||
+                "Produto",
 
-// Cria a data no horário local para preservar exatamente o dia escolhido.
-const [ano, mes, dia] = dataSelecionada.split("-").map(Number);
-const dataProducao = new Date(ano, mes - 1, dia);
+            codigo:
+                etiqueta.codigoProduto ||
+                ""
 
+        };
 
-let validade;
+        const quantidade =
+            Number(
+                etiqueta.quantidade
+            ) || 1;
 
+        await imprimirEtiquetaDireto(
 
-if(produtoSelecionado?.validadeDias){
+            produto,
 
-    validade = new Date(dataProducao);
+            etiqueta.lote ||
+                "",
 
-    validade.setDate(
-        validade.getDate() + Number(produtoSelecionado.validadeDias)
-    );
+            etiqueta.dataProducao ||
+                "",
 
-}else{
+            etiqueta.validade ||
+                "",
 
-    validade = new Date(producao.validade);
+            etiqueta.temperatura ||
+                "AMBIENTE",
 
-}
+            etiqueta.responsavel ||
+                "Não informado",
 
+            etiqueta.codigo ||
+                "",
 
+            quantidade
 
-const producaoFormatada =
-dataProducao.toLocaleDateString("pt-BR");
+        );
 
+        alert(
+            `${quantidade} etiqueta(s) enviada(s) para a impressora.`
+        );
 
-const validadeFormatada =
-validade.toLocaleDateString("pt-BR");
+    } catch (error) {
 
+        console.error(
+            "ERRO AO IMPRIMIR ETIQUETA:",
+            error
+        );
 
+        alert(
+            error.message ||
+            "Erro ao imprimir etiqueta."
+        );
 
-
-// PRODUTO
-
-document.getElementById("nomeEtiqueta").innerText =
-(producao.produto || nomeProduto)
-.toUpperCase();
-
-
-
-
-
-const categoriaEtiqueta = document.getElementById("categoriaEtiqueta");
-
-if (categoriaEtiqueta) {
-    categoriaEtiqueta.innerText = produtoSelecionado?.categoria || "--";
-}
-
-
-document.getElementById("temperaturaEtiqueta").innerText =
-produtoSelecionado?.temperatura || "--";
-
-
-const quantidadeEtiqueta = document.getElementById("quantidadeEtiqueta");
-
-if(quantidadeEtiqueta){
-    quantidadeEtiqueta.innerText =
-    (producao.quantidade || 1)
-    + " "
-    + (produtoSelecionado?.unidade || "UN");
-}
-
-
-
-// DATAS
-
-document.getElementById("dataEtiqueta").innerText =
-producaoFormatada;
-
-
-document.getElementById("validadeEtiqueta").innerText =
-validadeFormatada;
-
-
-
-
-// TEMPERATURA DO PRODUTO
-
-let temperaturaEtiqueta = 
-produtoSelecionado?.temperatura || "AMBIENTE";
-
-
-if(temperaturaEtiqueta.includes("Refrigerado")){
-    temperaturaEtiqueta = "🧊 RESFRIADO";
-}
-
-else if(temperaturaEtiqueta.includes("Congelado")){
-    temperaturaEtiqueta = "❄️ CONGELADO";
-}
-
-else{
-    temperaturaEtiqueta = "🌡️ AMBIENTE";
-}
-
-
-document.getElementById("temperaturaEtiqueta").innerText =
-temperaturaEtiqueta;
-
-
-
-
-// RESPONSÁVEL
-document.getElementById("responsavelEtiqueta").innerText =
-
-producao.responsavel || "Não informado";
-
-
-
-
-
-// QUANTIDADE
-
-if(quantidadeEtiqueta){
-    quantidadeEtiqueta.innerText =
-    (producao.quantidade || 1)
-    + " "
-    + (produtoSelecionado?.unidade || "UN");
-}
-
-
-
-
-
-// LOTE
-
-document.getElementById("loteEtiqueta").innerText =
-
-codigoEtiqueta.substring(0,12);
-
-// GERAR QR CODE
-
-const qrDiv = document.getElementById("qrcodeEtiqueta");
-
-if (qrDiv) {
-
-    qrDiv.innerHTML = "";
-
-  const paginaConsulta = new URL("consulta.html", window.location.href);
-  paginaConsulta.searchParams.set("codigo", codigoEtiqueta);
-  const linkConsulta = paginaConsulta.href;
-
-
-    console.log("Link QR:", linkConsulta);
-
-
-new QRCode(qrDiv, {
-    text: linkConsulta,
-    width: 200,
-    height: 200,
-    correctLevel: QRCode.CorrectLevel.H
-});
-
-}
-
-
-// Salvar histórico
-
-try {
-
-
-console.log("ETIQUETA QUE SERÁ SALVA:", {
-
-    codigo: codigoEtiqueta,
-
-    dataProducaoOriginal: producao.dataProducao,
-
-    dataProducaoFormatada: producaoFormatada
-
-});
-
-
-await addDoc(
-    collection(db, "etiquetas"),
-    {
-        codigo: codigoEtiqueta,
-
-        produto: producao.produto,
-
-        quantidade: producao.quantidade,
-
-        unidade: producao.unidade || "UN",
-
-       dataProducao: dataSelecionada,
-
-        validade: validade.toISOString().split("T")[0],
-
-        categoria: produtoSelecionado?.categoria || "",
-
-       responsavel: producao.responsavel || "Não informado",
-
-        temperatura: produtoSelecionado?.temperatura || "AMBIENTE",
-
-        lote: codigoEtiqueta,
-
-        observacao: "",
-
-        criadoEm: serverTimestamp()
     }
-);
-
-      console.log("Etiqueta salva.");
-
-await carregarHistoricoEtiquetas();
-} catch (erro) {
-
-    console.error(
-        "Erro ao salvar etiqueta:",
-        erro
-    );
 
 }
 
-});
+// =======================================
+// BOTÃO IMPRIMIR DA PRÉVIA
+// =======================================
+
+async function imprimirEtiqueta() {
+
+    if (
+        !ultimaEtiquetaGerada
+    ) {
+
+        alert(
+            "Nenhuma etiqueta foi gerada para impressão."
+        );
+
+        return;
+
+    }
+
+    try {
+
+        const produto = {
+
+            nome:
+                ultimaEtiquetaGerada.produto ||
+                "Produto",
+
+            codigo:
+                ultimaEtiquetaGerada.codigoProduto ||
+                ""
+
+        };
+
+        await imprimirEtiquetaDireto(
+
+            produto,
+
+            ultimaEtiquetaGerada.lote,
+
+            ultimaEtiquetaGerada.dataProducao,
+
+            ultimaEtiquetaGerada.validade,
+
+            ultimaEtiquetaGerada.temperatura,
+
+            ultimaEtiquetaGerada.responsavel,
+
+            ultimaEtiquetaGerada.codigo,
+
+            ultimaEtiquetaGerada.quantidade
+
+        );
+
+        alert(
+            `${ultimaEtiquetaGerada.quantidade} etiqueta(s) enviada(s) para a impressora.`
+        );
+
+    } catch (error) {
+
+        console.error(
+            "ERRO AO IMPRIMIR PRÉVIA:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Erro ao imprimir etiqueta."
+        );
+
+    }
 
 }
+
 // =======================================
 // EXCLUIR ETIQUETA
 // =======================================
 
-window.excluirEtiqueta = async function(id){
+async function excluirEtiqueta(
+    id
+) {
 
+    const confirmar =
+        confirm(
+            "Deseja excluir esta etiqueta?"
+        );
 
-    if(!confirm("Excluir etiqueta?"))
-    return;
+    if (!confirmar) {
 
+        return;
 
-    await deleteDoc(
-        doc(db,"etiquetas",id)
-    );
+    }
 
+    try {
 
-    await carregarHistoricoEtiquetas();
+        const idEmpresa =
+            empresaAtual();
 
+        if (!idEmpresa) {
 
-};
-
-
-
-// =======================================
-// REIMPRIMIR ETIQUETA
-// =======================================
-
-window.reimprimirEtiqueta = async function(id){
-
-
-    const snapshot =
-    await getDocs(
-        collection(db,"etiquetas")
-    );
-
-
-    snapshot.forEach(item=>{
-
-
-        if(item.id === id){
-
-
-            const dados =
-            item.data();
-
-
-
-            document.getElementById(
-                "nomeEtiqueta"
-            ).innerText =
-            dados.produto;
-
-
-
-            document.getElementById(
-                "dataEtiqueta"
-            ).innerText =
-            formatarData(
-                dados.dataProducao
-            );
-
-
-
-            document.getElementById(
-                "validadeEtiqueta"
-            ).innerText =
-            formatarData(
-                dados.validade
-            );
-
-
-
-            document.getElementById(
-                "temperaturaEtiqueta"
-            ).innerText =
-            dados.temperatura;
-
-
-
-            document.getElementById(
-                "responsavelEtiqueta"
-            ).innerText =
-            dados.responsavel || dados.usuario || "Não informado";
-
-
-
-            imprimirEtiqueta();
-
+            return;
 
         }
 
+        const referencia =
+            doc(
+                db,
+                "etiquetas",
+                id
+            );
 
-    });
+        const snapshot =
+            await getDoc(
+                referencia
+            );
 
+        if (
+            !snapshot.exists()
+        ) {
 
-};
-// =======================================
-// IMPRIMIR ETIQUETA
-// =======================================
+            alert(
+                "Etiqueta não encontrada."
+            );
 
-window.imprimirEtiqueta = function () {
+            return;
 
-    const qtd =
-        Number(new URLSearchParams(window.location.search).get("qtd")) || 1;
+        }
 
-    const conteudo =
-        document.getElementById("etiquetaGerada").outerHTML;
+        const dados =
+            snapshot.data();
 
-    let etiquetas = "";
+        // ===================================
+        // SEGURANÇA MULTIEMPRESA
+        // ===================================
 
-    for (let i = 0; i < qtd; i++) {
-        etiquetas += conteudo;
+        if (
+            dados.idEmpresa !==
+            idEmpresa
+        ) {
+
+            alert(
+                "Esta etiqueta não pertence à empresa atual."
+            );
+
+            return;
+
+        }
+
+        await deleteDoc(
+            referencia
+        );
+
+        alert(
+            "Etiqueta excluída!"
+        );
+
+        await carregarEtiquetas();
+
+    } catch (error) {
+
+        console.error(
+            "ERRO AO EXCLUIR ETIQUETA:",
+            error
+        );
+
+        alert(
+            "Erro ao excluir etiqueta."
+        );
+
     }
-
-    const janela = window.open(
-        "",
-        "_blank",
-        "width=800,height=600"
-    );
-
-    janela.document.write(`
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
-
-<meta charset="UTF-8">
-
-<link rel="stylesheet" href="${new URL("css/impressao-etiqueta.css", window.location.href).href}">
-
-</head>
-
-<body>
-
-${etiquetas}
-
-<script>
-
-window.onload = () => {
-
-    setTimeout(() => {
-
-        window.print();
-
-    },300);
 
 }
 
-</script>
+// =======================================
+// LIMPAR HISTÓRICO DE ETIQUETAS
+// SOMENTE EMPRESA ATUAL
+// =======================================
 
-</body>
+async function limparHistoricoEtiquetas() {
 
-</html>
-`);
+    const idEmpresa =
+        empresaAtual();
 
-    janela.document.close();
+    if (!idEmpresa) {
 
-};
+        alert(
+            "Não foi possível identificar a empresa atual."
+        );
+
+        return;
+
+    }
+
+    try {
+
+        const consulta =
+            query(
+
+                collection(
+                    db,
+                    "etiquetas"
+                ),
+
+                where(
+                    "idEmpresa",
+                    "==",
+                    idEmpresa
+                )
+
+            );
+
+        const snapshot =
+            await getDocs(
+                consulta
+            );
+
+        if (
+            snapshot.empty
+        ) {
+
+            alert(
+                "Não existem etiquetas no histórico desta empresa."
+            );
+
+            return;
+
+        }
+
+        const quantidade =
+            snapshot.size;
+
+        const confirmar =
+            confirm(
+
+                `⚠️ ATENÇÃO!\n\n` +
+                `Existem ${quantidade} etiqueta(s) no histórico.\n\n` +
+                `Todas as etiquetas desta empresa serão apagadas.\n\n` +
+                `Esta ação não poderá ser desfeita.\n\n` +
+                `Deseja realmente continuar?`
+
+            );
+
+        if (!confirmar) {
+
+            return;
+
+        }
+
+        const botao =
+            obterElemento(
+                "btnLimparHistorico"
+            );
+
+        if (botao) {
+
+            botao.disabled =
+                true;
+
+            botao.textContent =
+                "⏳ Apagando...";
+
+        }
+
+        // ===================================
+        // APAGAR ETIQUETAS DA EMPRESA
+        // ===================================
+
+        for (
+            const item
+            of snapshot.docs
+        ) {
+
+            await deleteDoc(
+
+                doc(
+                    db,
+                    "etiquetas",
+                    item.id
+                )
+
+            );
+
+        }
+
+        // ===================================
+        // LIMPAR ARRAY LOCAL
+        // ===================================
+
+        etiquetas = [];
+
+        // ===================================
+        // ATUALIZAR HISTÓRICO
+        // ===================================
+
+        await carregarEtiquetas();
+
+        // ===================================
+        // AUDITORIA
+        // ===================================
+
+        const usuario =
+            usuarioAtual();
+
+        try {
+
+            await addDoc(
+
+                collection(
+                    db,
+                    "auditoria"
+                ),
+
+                {
+
+                    idEmpresa:
+                        idEmpresa,
+
+                    usuario:
+                        usuario?.nome ||
+                        "Sistema",
+
+                    email:
+                        usuario?.email ||
+                        "",
+
+                    modulo:
+                        "Etiquetas",
+
+                    acao:
+                        "HISTÓRICO DE ETIQUETAS LIMPO",
+
+                    detalhes:
+                        `${quantidade} etiqueta(s) excluída(s) do histórico.`,
+
+                    status:
+                        "Sucesso",
+
+                    data:
+                        serverTimestamp()
+
+                }
+
+            );
+
+        } catch (error) {
+
+            console.warn(
+                "Não foi possível registrar auditoria:",
+                error
+            );
+
+        }
+
+        alert(
+            `${quantidade} etiqueta(s) foram removidas do histórico.`
+        );
+
+    } catch (error) {
+
+        console.error(
+            "ERRO AO LIMPAR HISTÓRICO:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Erro ao limpar o histórico de etiquetas."
+        );
+
+    } finally {
+
+        const botao =
+            obterElemento(
+                "btnLimparHistorico"
+            );
+
+        if (botao) {
+
+            botao.disabled =
+                false;
+
+            botao.textContent =
+                "🗑️ Limpar histórico";
+
+        }
+
+    }
+
+}
+
+// =======================================
+// BUSCA DE ETIQUETAS
+// =======================================
+
+function aplicarBuscaEtiquetas() {
+
+    const campo =
+        obterElemento(
+            "buscarEtiqueta"
+        );
+
+    if (!campo) {
+
+        return;
+
+    }
+
+    campo.oninput =
+        function () {
+
+            const termo =
+                this.value
+                    .trim()
+                    .toLowerCase();
+
+            document
+                .querySelectorAll(
+                    "#listaEtiquetas tr"
+                )
+                .forEach(
+                    linha => {
+
+                        const texto =
+                            linha.innerText
+                                .toLowerCase();
+
+                        linha.style.display =
+                            texto.includes(
+                                termo
+                            )
+                                ? ""
+                                : "none";
+
+                    }
+                );
+
+        };
+
+}
+
+// =======================================
+// TESTAR IMPRESSORA
+// =======================================
+
+window.testarImpressoraLotrix =
+    async function () {
+
+        try {
+
+            const produtoTeste = {
+
+                nome:
+                    "LOTRIX TESTE",
+
+                codigo:
+                    "TESTE"
+
+            };
+
+            const zpl =
+                gerarZPL(
+
+                    produtoTeste,
+
+                    "TESTE",
+
+                    new Date(),
+
+                    new Date(),
+
+                    "AMBIENTE",
+
+                    "Lotrix",
+
+                    "LOT-TESTE"
+
+                );
+
+            const resposta =
+                await fetch(
+                    PRINTER_SERVICE_URL,
+                    {
+
+                        method:
+                            "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "text/plain"
+
+                        },
+
+                        body:
+                            zpl
+
+                    }
+                );
+
+            const texto =
+                await resposta.text();
+
+            console.log(
+                "TESTE IMPRESSORA:",
+                texto
+            );
+
+            if (
+                !resposta.ok
+            ) {
+
+                throw new Error(
+                    texto ||
+                    "Erro no Printer Service."
+                );
+
+            }
+
+            alert(
+                "Teste enviado para a impressora."
+            );
+
+        } catch (error) {
+
+            console.error(
+                "ERRO NO TESTE DA IMPRESSORA:",
+                error
+            );
+
+            alert(
+                error.message ||
+                "Não foi possível testar a impressora."
+            );
+
+        }
+
+    };
+
+// =======================================
+// FUNÇÕES GLOBAIS
+// =======================================
+
+window.salvarEtiqueta =
+    salvarEtiqueta;
+
+window.carregarEtiquetas =
+    carregarEtiquetas;
+
+window.carregarProdutosEtiquetas =
+    carregarProdutos;
+
+window.imprimirEtiquetaExistente =
+    imprimirEtiquetaExistente;
+
+window.imprimirEtiqueta =
+    imprimirEtiqueta;
+
+window.excluirEtiqueta =
+    excluirEtiqueta;
+
+window.gerarLoteEtiqueta =
+    gerarLote;
+
+window.limparHistoricoEtiquetas =
+    limparHistoricoEtiquetas;
+
 // =======================================
 // INICIALIZAÇÃO
 // =======================================
 
 document.addEventListener(
-"DOMContentLoaded",
-async()=>{
+    "DOMContentLoaded",
+    async () => {
 
-    await carregarProdutos();
+        console.log("=======================================");
+        console.log(
+            "INICIANDO LOTRIX ETIQUETAS V14"
+        );
+        console.log("=======================================");
 
-await carregarHistoricoEtiquetas();
+        try {
 
+            // ===================================
+            // EMPRESA
+            // ===================================
 
-    const campoData =
-    document.getElementById("dataProducao");
+            if (
+                !verificarEmpresa()
+            ) {
 
+                return;
 
-    if(campoData){
+            }
 
-        const hoje = new Date();
+            const idEmpresa =
+                empresaAtual();
 
-        campoData.value =
-        hoje.toISOString().split("T")[0];
+            console.log(
+                "ID EMPRESA LOGADA:",
+                idEmpresa
+            );
+
+            // ===================================
+            // DADOS EMPRESA
+            // ===================================
+
+            await carregarDadosEmpresa();
+
+            // ===================================
+            // DATA
+            // ===================================
+
+            preencherDataAtual();
+
+            // ===================================
+            // PRODUTOS
+            // ===================================
+
+            await carregarProdutos();
+
+            // ===================================
+            // PRÉVIA
+            // ===================================
+
+            atualizarInformacoesProduto();
+
+            atualizarResponsavelPrevia();
+
+            gerarLote();
+
+            // ===================================
+            // ETIQUETAS
+            // ===================================
+
+            await carregarEtiquetas();
+
+            // ===================================
+            // FORMULÁRIO
+            // ===================================
+
+            const formulario =
+                obterElemento(
+                    "etiquetaForm"
+                );
+
+            if (formulario) {
+
+                formulario.addEventListener(
+                    "submit",
+                    async evento => {
+
+                        evento.preventDefault();
+
+                        imprimirDepoisDeSalvar =
+                            true;
+
+                        await salvarEtiqueta();
+
+                    }
+                );
+
+            }
+
+            // ===================================
+            // PRODUTO ALTERADO
+            // ===================================
+
+            const select =
+                obterElemento(
+                    "produtoEtiqueta"
+                );
+
+            if (select) {
+
+                select.addEventListener(
+                    "change",
+                    () => {
+
+                        atualizarInformacoesProduto();
+
+                        atualizarTemperaturaPrevia();
+
+                        calcularValidadeProduto();
+
+                        atualizarPrevia();
+
+                    }
+                );
+
+            }
+
+            // ===================================
+            // DATA ALTERADA
+            // ===================================
+
+            const campoData =
+                obterElemento(
+                    "dataProducao"
+                );
+
+            if (campoData) {
+
+                campoData.addEventListener(
+                    "change",
+                    () => {
+
+                        atualizarPreviaDatas();
+
+                        atualizarPrevia();
+
+                    }
+                );
+
+            }
+
+            // ===================================
+            // QUANTIDADE
+            // ===================================
+
+            const campoQuantidade =
+                obterElemento(
+                    "quantidadeProducao"
+                );
+
+            if (campoQuantidade) {
+
+                campoQuantidade.addEventListener(
+                    "input",
+                    () => {
+
+                        const valor =
+                            parseInt(
+                                campoQuantidade.value,
+                                10
+                            );
+
+                        console.log(
+                            "QUANTIDADE ATUAL:",
+                            valor
+                        );
+
+                    }
+                );
+
+            }
+// ===================================
+// BOTÃO LIMPAR HISTÓRICO
+// ===================================
+
+const btnLimparHistorico =
+    obterElemento(
+        "btnLimparHistorico"
+    );
+
+if (btnLimparHistorico) {
+
+    btnLimparHistorico.addEventListener(
+        "click",
+        async () => {
+
+            await limparHistoricoEtiquetas();
+
+        }
+    );
+
+}
+            // ===================================
+            // FINAL
+            // ===================================
+
+            console.log("=======================================");
+            console.log(
+                "MÓDULO LOTRIX ETIQUETAS V14 PRONTO"
+            );
+
+            console.log(
+                "EMPRESA:",
+                empresaAtual()
+            );
+
+            console.log(
+                "EMPRESA:",
+                empresaAtualDados?.nomeFantasia ||
+                empresaAtualDados?.nome ||
+                "-"
+            );
+
+            console.log(
+                "PRODUTOS:",
+                produtos.length
+            );
+
+            console.log(
+                "ETIQUETAS:",
+                etiquetas.length
+            );
+
+            console.log(
+                "PRINTER SERVICE:",
+                PRINTER_SERVICE_URL
+            );
+
+            console.log("=======================================");
+
+        } catch (error) {
+
+            console.error(
+                "ERRO NA INICIALIZAÇÃO:",
+                error
+            );
+
+        }
 
     }
 
-
-    console.log(
-    "Módulo de etiquetas iniciado."
-    );
-
-});
+);

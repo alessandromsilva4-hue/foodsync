@@ -6,7 +6,7 @@ console.log("IA.JS CARREGADO");
 
 
 // ==========================================
-// PERGUNTAR À IA
+// PERGUNTAR ? IA
 // ==========================================
 
 async function perguntarIA(texto = null) {
@@ -17,7 +17,7 @@ async function perguntarIA(texto = null) {
     if (!campo) {
 
         console.error(
-            "Campo #mensagemIA não encontrado no HTML."
+            "Campo #mensagemIA n?o encontrado no HTML."
         );
 
         return;
@@ -26,14 +26,14 @@ async function perguntarIA(texto = null) {
     if (!resposta) {
 
         console.error(
-            "Elemento #respostaIA não encontrado no HTML."
+            "Elemento #respostaIA n?o encontrado no HTML."
         );
 
         return;
     }
 
 
-    // Se veio uma pergunta rápida
+    // Se veio uma pergunta r?pida
     // coloca ela no campo
 
     if (texto) {
@@ -50,7 +50,7 @@ async function perguntarIA(texto = null) {
             <div class="ia-resposta">
 
                 <div class="ia-titulo">
-                    🤖 Lotrix AI
+                    ?? Lotrix AI
                 </div>
 
                 <div class="ia-texto">
@@ -72,11 +72,11 @@ async function perguntarIA(texto = null) {
         <div class="ia-resposta">
 
             <div class="ia-titulo">
-                🤖 Lotrix AI
+                ?? Lotrix AI
             </div>
 
             <div class="ia-texto">
-                ⏳ Analisando informações...
+                ? Analisando informa??es...
             </div>
 
         </div>
@@ -135,7 +135,7 @@ async function perguntarIA(texto = null) {
             <div class="ia-resposta">
 
                 <div class="ia-titulo">
-                    🤖 Lotrix AI
+                    ?? Lotrix AI
                 </div>
 
                 <div class="ia-texto">
@@ -163,11 +163,11 @@ async function perguntarIA(texto = null) {
             <div class="ia-resposta">
 
                 <div class="ia-titulo">
-                    🤖 Lotrix AI
+                    ?? Lotrix AI
                 </div>
 
                 <div class="ia-texto">
-                    ❌ Não foi possível conectar à Lotrix AI.
+                    ? N?o foi poss?vel conectar ? Lotrix AI.
                 </div>
 
             </div>
@@ -180,7 +180,7 @@ async function perguntarIA(texto = null) {
 
 
 // ==========================================
-// PERGUNTAS RÁPIDAS
+// PERGUNTAS R?PIDAS
 // ==========================================
 
 async function perguntaRapida(texto) {
@@ -192,7 +192,7 @@ async function perguntaRapida(texto) {
 
 
 // ==========================================
-// DISPONÍVEL PARA O HTML
+// DISPON?VEL PARA O HTML
 // ==========================================
 
 window.perguntarIA = perguntarIA;

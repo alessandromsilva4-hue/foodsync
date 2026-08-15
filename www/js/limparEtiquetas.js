@@ -11,7 +11,7 @@ import {
 async function limparEtiquetas(){
 
     const confirmar = confirm(
-        "ATENÇÃO: Deseja apagar TODAS as etiquetas?"
+        "ATEN??O: Deseja apagar TODAS as etiquetas?"
     );
 
 
@@ -64,7 +64,7 @@ async function limparEtiquetas(){
 
 
         console.log(
-            "Limpeza total concluída:",
+            "Limpeza total conclu?da:",
             contador
         );
 

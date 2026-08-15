@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -17,20 +16,63 @@
 
 </head>
 
-
 <body>
+
+
+<!-- ========================= -->
+<!-- BOTÃO MENU -->
+<!-- ========================= -->
+
+<button
+    class="menu-toggle"
+    id="menuToggle"
+    aria-label="Abrir menu">
+
+    ☰
+
+</button>
+
+
+<!-- ========================= -->
+<!-- FUNDO ESCURO -->
+<!-- ========================= -->
+
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay">
+</div>
+
 
 
 <!-- ========================= -->
 <!-- SIDEBAR -->
 <!-- ========================= -->
 
-<aside class="sidebar">
+<aside
+    class="sidebar"
+    id="sidebar">
 
+
+    <!-- BOTÃO FECHAR -->
+
+    <button
+        class="sidebar-close"
+        id="sidebarClose"
+        aria-label="Fechar menu">
+
+        ×
+
+    </button>
+
+
+
+    <!-- LOGO -->
 
     <div class="logo-area">
 
-        <img src="img/logo.jpg" alt="Lotrix">
+        <img
+            src="img/logo.png"
+            alt="Lotrix">
 
         <h2>
             LOTRIX
@@ -42,6 +84,9 @@
 
     </div>
 
+
+
+    <!-- MENU -->
 
     <nav class="menu">
 
@@ -55,7 +100,9 @@
             </span>
 
 
-            <a href="dashboard.html" class="active">
+            <a
+                href="dashboard.html"
+                class="active">
 
                 <span>🏠</span>
 
@@ -218,7 +265,9 @@
 
 
 
+    <!-- ========================= -->
     <!-- USUÁRIO -->
+    <!-- ========================= -->
 
     <div class="sidebar-footer">
 
@@ -279,7 +328,9 @@
         <div>
 
 
-            <p class="header-kicker" id="dataAtual">
+            <p
+                class="header-kicker"
+                id="dataAtual">
 
                 Visão operacional
 
@@ -729,104 +780,118 @@
 
 
         <!-- ========================= -->
-<!-- ASSISTENTE IA -->
-<!-- ========================= -->
+        <!-- ASSISTENTE IA -->
+        <!-- ========================= -->
 
-<article class="dashboard-panel panel-wide ia-panel">
-
-    <div class="panel-heading">
-
-        <div>
-
-            <p class="panel-eyebrow">
-                Inteligência operacional
-            </p>
-
-            <h2>
-                Assistente IA
-            </h2>
-
-        </div>
-
-        <span class="panel-badge">
-            ● Online
-        </span>
-
-    </div>
+        <article class="dashboard-panel panel-wide ia-panel">
 
 
-    <div class="ia-container">
+            <div class="panel-heading">
 
 
-        <!-- MENSAGENS -->
+                <div>
 
-        <div
-            class="ia-messages"
-            id="iaMensagens">
+                    <p class="panel-eyebrow">
+                        Inteligência operacional
+                    </p>
 
+                    <h2>
+                        Assistente IA
+                    </h2>
 
-            <div class="ia-message ia-message-bot">
-
-
-                <div class="ia-avatar">
-                    🤖
                 </div>
 
 
-                <div class="ia-bubble">
-
-                    <strong>
-                        Olá, Alessandro! 👋
-                    </strong>
+                <span class="panel-badge">
+                    ● Online
+                </span>
 
 
-                    <p>
-                        Sou a IA da Lotrix.
-                        Posso ajudar você com estoque,
-                        produções, etiquetas e informações
-                        operacionais.
-                    </p>
+            </div>
 
 
-                    <!-- PERGUNTAS RÁPIDAS -->
-
-                    <div class="ia-suggestions">
+            <div class="ia-container">
 
 
-                        <button
-                            type="button"
-                            onclick="perguntaRapida('Qual o estoque atual dos produtos?')">
+                <!-- MENSAGENS -->
 
-                            📦 Consultar estoque
-
-                        </button>
+                <div
+                    class="ia-messages"
+                    id="iaMensagens">
 
 
-                        <button
-                            type="button"
-                            onclick="perguntaRapida('Quais produtos estão próximos do vencimento?')">
-
-                            ⚠️ Ver vencimentos
-
-                        </button>
+                    <div class="ia-message ia-message-bot">
 
 
-                        <button
-                            type="button"
-                            onclick="perguntaRapida('Quais foram as últimas produções?')">
-
-                            ⚙️ Últimas produções
-
-                        </button>
+                        <div class="ia-avatar">
+                            🤖
+                        </div>
 
 
-                        <button
-                            type="button"
-                            onclick="perguntaRapida('Faça um resumo da operação.')">
+                        <div class="ia-bubble">
 
-                            📊 Resumo
 
-                        </button>
+                            <strong>
+                                Olá, Alessandro! 👋
+                            </strong>
+
+
+                            <p>
+
+                                Sou a IA da Lotrix.
+                                Posso ajudar você com estoque,
+                                produções, etiquetas e informações
+                                operacionais.
+
+                            </p>
+
+
+
+                            <!-- PERGUNTAS RÁPIDAS -->
+
+                            <div class="ia-suggestions">
+
+
+                                <button
+                                    type="button"
+                                    onclick="perguntaRapida('Qual o estoque atual dos produtos?')">
+
+                                    📦 Consultar estoque
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    onclick="perguntaRapida('Quais produtos estão próximos do vencimento?')">
+
+                                    ⚠️ Ver vencimentos
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    onclick="perguntaRapida('Quais foram as últimas produções?')">
+
+                                    ⚙️ Últimas produções
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    onclick="perguntaRapida('Faça um resumo da operação.')">
+
+                                    📊 Resumo
+
+                                </button>
+
+
+                            </div>
+
+
+                        </div>
 
 
                     </div>
@@ -835,53 +900,46 @@
                 </div>
 
 
+
+                <!-- RESPOSTA -->
+
+                <div id="respostaIA"></div>
+
+
+
+                <!-- CAMPO DA IA -->
+
+                <form
+                    id="iaForm"
+                    class="ia-form"
+                    onsubmit="event.preventDefault(); perguntarIA();">
+
+
+                    <input
+                        type="text"
+                        id="mensagemIA"
+                        placeholder="Pergunte algo para a IA..."
+                        autocomplete="off">
+
+
+                    <button
+                        type="submit"
+                        id="iaEnviar">
+
+                        <i data-lucide="send"></i>
+
+                        Enviar
+
+                    </button>
+
+
+                </form>
+
+
             </div>
 
 
-        </div>
-
-
-
-        <!-- RESPOSTA -->
-
-        <div id="respostaIA"></div>
-
-
-
-        <!-- CAMPO DA IA -->
-
-        <form
-            id="iaForm"
-            class="ia-form"
-            onsubmit="event.preventDefault(); perguntarIA();">
-
-
-            <input
-                type="text"
-                id="mensagemIA"
-                placeholder="Pergunte algo para a IA..."
-                autocomplete="off"
-            >
-
-
-            <button
-                type="submit"
-                id="iaEnviar">
-
-                <i data-lucide="send"></i>
-
-                Enviar
-
-            </button>
-
-
-        </form>
-
-
-    </div>
-
-
-</article>
+        </article>
 
 
     </section>
@@ -896,22 +954,44 @@
 <!-- ========================= -->
 
 <script src="https://unpkg.com/lucide@latest"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+
     if (window.lucide) {
+
         lucide.createIcons();
+
     }
+
 </script>
 
+
 <!-- AUTENTICAÇÃO / USUÁRIO -->
-<script type="module" src="js/auth.js"></script>
+
+<script
+    type="module"
+    src="js/auth.js">
+</script>
+
 
 <!-- DASHBOARD -->
-<script type="module" src="js/dashboard.js"></script>
+
+<script
+    type="module"
+    src="js/dashboard.js">
+</script>
+
 
 <!-- INTELIGÊNCIA ARTIFICIAL -->
+
 <script src="js/ia.js"></script>
 
+
+<!-- MENU LATERAL GLOBAL -->
+
+<script src="js/sidebar.js"></script>
+
+
 </body>
+
 </html>
-```

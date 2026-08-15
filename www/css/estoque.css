@@ -1,11 +1,11 @@
 /* ==========================================
-   LOTRIX — CONTROLE DE ESTOQUE
-   Layout profissional e espaçado
+   LOTRIX ? CONTROLE DE ESTOQUE
+   Layout profissional e espa?ado
 ========================================== */
 
 
 /* ==========================================
-   PÁGINA
+   P?GINA
 ========================================== */
 
 .estoque-page {
@@ -17,7 +17,7 @@
 
 
 /* ==========================================
-   CABEÇALHO
+   CABE?ALHO
 ========================================== */
 
 .estoque-page .dashboard-header {
@@ -35,7 +35,7 @@
 
 
 /* ==========================================
-   PAINÉIS
+   PAIN?IS
 ========================================== */
 
 .estoque-page .dashboard-panel {
@@ -47,7 +47,7 @@
 
 
 /* ==========================================
-   TÍTULOS
+   T?TULOS
 ========================================== */
 
 .estoque-page .panel-heading {
@@ -66,7 +66,7 @@
 
 
 /* ==========================================
-   FORMULÁRIOS
+   FORMUL?RIOS
 ========================================== */
 
 .estoque-page form {
@@ -105,7 +105,7 @@
 }
 
 
-/* Botão ocupa linha inteira */
+/* Bot?o ocupa linha inteira */
 
 .estoque-page form > button {
     grid-column: 1 / -1;
@@ -127,7 +127,7 @@
 }
 
 
-/* Remove dependência do inline */
+/* Remove depend?ncia do inline */
 
 .estoque-page table {
     width: 100% !important;
@@ -137,7 +137,7 @@
 }
 
 
-/* Cabeçalho */
+/* Cabe?alho */
 
 .estoque-page table thead th {
     padding: 16px 18px !important;
@@ -173,7 +173,7 @@
 
 
 /* ==========================================
-   COLUNAS DO INVENTÁRIO
+   COLUNAS DO INVENT?RIO
 ========================================== */
 
 .estoque-page #listaEstoque td:first-child {
@@ -208,7 +208,7 @@
 
 
 /* ==========================================
-   BOTÃO DE EXCLUSÃO
+   BOT?O DE EXCLUS?O
 ========================================== */
 
 .estoque-page #listaEstoque button {
@@ -220,7 +220,7 @@
 
 
 /* ==========================================
-   HISTÓRICO
+   HIST?RICO
 ========================================== */
 
 .estoque-page #listaMovimentacoes td:first-child {
@@ -260,7 +260,7 @@
 
 
 /* ==========================================
-   SEPARAÇÃO ENTRE BLOCOS
+   SEPARA??O ENTRE BLOCOS
 ========================================== */
 
 .estoque-page > section {
@@ -269,7 +269,7 @@
 
 
 /* ==========================================
-   MOVIMENTAÇÃO
+   MOVIMENTA??O
 ========================================== */
 
 .estoque-page #movimentacaoForm {

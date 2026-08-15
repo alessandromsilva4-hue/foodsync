@@ -166,7 +166,7 @@ tabela.innerHTML=`
 
 <td colspan="6">
 
-Nenhuma ação registrada
+Nenhuma a??o registrada
 
 </td>
 

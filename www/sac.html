@@ -23,364 +23,851 @@
 
 <div class="layout">
 
-<aside class="sidebar">
+<!-- ==========================================
+     SIDEBAR
+========================================== -->
+
+<aside class="sidebar" id="sidebar">
+
+    <!-- BOT?O FECHAR -->
+
+    <button
+        type="button"
+        class="sidebar-close"
+        id="sidebarClose"
+        aria-label="Fechar menu">
+
+        ?
+
+    </button>
+
+
+    <!-- LOGO -->
 
     <div class="logo-area">
-        <img src="img/logo.png" alt="Lotrix">
+
+        <img
+            src="img/logo.png"
+            alt="Lotrix">
+
         <h2>LOTRIX</h2>
-        <small>Food Safety Platform</small>
+
+        <small>
+            Food Safety Platform
+        </small>
+
     </div>
+
+
+    <!-- MENU -->
 
     <nav class="menu">
 
-        <div class="menu-section">
-            <span class="menu-title">GERAL</span>
 
-            <a href="dashboard.html" class="active">
-                <span>🏠</span>
-                <span class="nav-label">Dashboard</span>
+        <!-- GERAL -->
+
+        <div class="menu-section">
+
+            <span class="menu-title">
+                GERAL
+            </span>
+
+            <a href="dashboard.html">
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Dashboard
+                </span>
+
             </a>
+
         </div>
 
+
+        <!-- OPERA??O -->
+
         <div class="menu-section">
-            <span class="menu-title">OPERAÇÃO</span>
+
+            <span class="menu-title">
+                OPERA??O
+            </span>
+
 
             <a href="producao.html">
-                <span>⚙️</span>
-                <span class="nav-label">Produção</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Produ??o
+                </span>
+
             </a>
+
 
             <a href="produtos.html">
-                <span>📦</span>
-                <span class="nav-label">Produtos</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Produtos
+                </span>
+
             </a>
+
 
             <a href="etiquetas.html">
-                <span>🏷️</span>
-                <span class="nav-label">Etiquetas</span>
+
+                <span>???</span>
+
+                <span class="nav-label">
+                    Etiquetas
+                </span>
+
             </a>
+
 
             <a href="estoque.html">
-                <span>📚</span>
-                <span class="nav-label">Estoque</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Estoque
+                </span>
+
             </a>
+
         </div>
 
+
+        <!-- GEST?O -->
+
         <div class="menu-section">
-            <span class="menu-title">GESTÃO</span>
+
+            <span class="menu-title">
+                GEST?O
+            </span>
+
 
             <a href="relatorios.html">
-                <span>📈</span>
-                <span class="nav-label">Relatórios</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Relat?rios
+                </span>
+
             </a>
+
 
             <a href="auditoria.html">
-                <span>📝</span>
-                <span class="nav-label">Auditoria</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Auditoria
+                </span>
+
             </a>
+
 
             <a href="usuario.html">
-                <span>👥</span>
-                <span class="nav-label">Usuários</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Usu?rios
+                </span>
+
             </a>
+
         </div>
 
+
+        <!-- SISTEMA -->
+
         <div class="menu-section">
-            <span class="menu-title">SISTEMA</span>
+
+            <span class="menu-title">
+                SISTEMA
+            </span>
+
 
             <a href="configuracoes.html">
-                <span>⚙️</span>
-                <span class="nav-label">Configurações</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Configura??es
+                </span>
+
             </a>
+
 
             <a href="ajuda.html">
-                <span>❓</span>
-                <span class="nav-label">Ajuda</span>
+
+                <span>?</span>
+
+                <span class="nav-label">
+                    Ajuda
+                </span>
+
             </a>
 
-            <a href="sac.html">
-                <span>🎧</span>
-                <span class="nav-label">SAC</span>
+
+            <!-- SAC ATIVO -->
+
+            <a
+                href="sac.html"
+                class="active">
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    SAC
+                </span>
+
             </a>
+
         </div>
 
     </nav>
 
+
+    <!-- USU?RIO -->
+
     <div class="sidebar-footer">
 
-<div class="user-card">
+        <div class="user-card">
 
-    <div class="avatar">
-        👤
-    </div>
+            <div class="avatar">
+                ??
+            </div>
 
-    <div>
-        <strong id="nomeUsuarioLogado">
-            Usuário
-        </strong>
+            <div>
 
-        <small id="perfilUsuarioLogado">
-            Carregando...
-        </small>
-    </div>
+                <strong id="nomeUsuarioLogado">
+                    Usu?rio
+                </strong>
 
-</div>
+                <small id="perfilUsuarioLogado">
+                    Carregando...
+                </small>
+
+            </div>
+
+        </div>
+
+
         <button onclick="logout()">
-            🚪 Sair
+
+            ?? Sair
+
         </button>
 
     </div>
 
 </aside>
 
+
+<!-- ==========================================
+     FUNDO ESCURO
+========================================== -->
+
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay">
+</div>
+
+
+<!-- ==========================================
+     CONTE?DO
+========================================== -->
+
 <main class="content">
 
-<header class="top-header">
 
-<div>
+    <!-- BOT?O ? -->
 
-<h1>🎧 Central de Atendimento</h1>
+    <button
+        type="button"
+        class="menu-toggle"
+        id="menuToggle"
+        aria-label="Abrir menu"
+        aria-expanded="false">
 
-<p>
-Envie dúvidas, sugestões ou relate problemas encontrados no Lotrix.
-</p>
+        ?
 
-</div>
+    </button>
 
-</header>
 
-<section class="support-contact" aria-labelledby="contato-sac-titulo">
+    <!-- HEADER -->
 
-<div>
+    <header class="top-header">
 
-<p class="support-contact__eyebrow">Canais de atendimento</p>
+        <div>
 
-<h2 id="contato-sac-titulo">Precisa falar com a Lotrix?</h2>
+            <h1>
+                ?? Central de Atendimento
+            </h1>
 
-<p>Use um dos canais abaixo para falar diretamente com nossa equipe.</p>
+            <p>
+                Envie d?vidas, sugest?es ou relate problemas encontrados no Lotrix.
+            </p>
 
-</div>
+        </div>
 
-<div class="support-contact__actions">
+    </header>
 
-<a href="mailto:foodsyncbr@gmail.com" class="support-contact__link">
 
-<span aria-hidden="true">✉</span>
+    <!-- CONTATOS -->
 
-<div><small>E-mail</small><strong>lotrixsuporte@gmail.com</strong></div>
+    <section
+        class="support-contact"
+        aria-labelledby="contato-sac-titulo">
 
-</a>
+        <div>
 
-<a href="https://wa.me/5562991391910" target="_blank" rel="noopener noreferrer" class="support-contact__link">
+            <p class="support-contact__eyebrow">
+                Canais de atendimento
+            </p>
 
-<span aria-hidden="true">◉</span>
+            <h2 id="contato-sac-titulo">
+                Precisa falar com a Lotrix?
+            </h2>
 
-<div><small>WhatsApp</small><strong>(62) 99139-1910</strong></div>
+            <p>
+                Use um dos canais abaixo para falar diretamente com nossa equipe.
+            </p>
 
-</a>
+        </div>
 
-</div>
 
-</section>
+        <div class="support-contact__actions">
 
-<section class="assistant-sac" aria-labelledby="assistente-sac-titulo">
+            <a
+                href="mailto:lotrixsuporte@gmail.com"
+                class="support-contact__link">
 
-<div class="assistant-sac__header">
-<div>
-<p class="assistant-sac__eyebrow">Atendimento imediato</p>
-<h2 id="assistente-sac-titulo">Assistente Lotrix</h2>
-</div>
-<span class="assistant-sac__status"><i></i> Online</span>
-</div>
+                <span aria-hidden="true">
+                    ?
+                </span>
 
-<div class="assistant-sac__messages" id="mensagensAssistente" aria-live="polite">
-<div class="assistant-sac__message assistant-sac__message--bot">Olá! Posso ajudar com produtos, produção, etiquetas, estoque e relatórios. O que você precisa?</div>
-</div>
+                <div>
 
-<div class="assistant-sac__suggestions" aria-label="Sugestões de perguntas">
-<button type="button" data-pergunta="Como gerar uma etiqueta?">Gerar etiqueta</button>
-<button type="button" data-pergunta="Como registrar uma produção?">Registrar produção</button>
-<button type="button" data-pergunta="Como cadastrar um produto?">Cadastrar produto</button>
-<button type="button" data-pergunta="Preciso de ajuda com estoque">Ajuda com estoque</button>
-</div>
+                    <small>
+                        E-mail
+                    </small>
 
-<form class="assistant-sac__form" id="formAssistenteSac">
-<label class="sr-only" for="mensagemAssistente">Mensagem para o assistente</label>
-<input id="mensagemAssistente" type="text" maxlength="500" placeholder="Escreva sua dúvida..." autocomplete="off" required>
-<button type="submit">Enviar</button>
-</form>
+                    <strong>
+                        lotrixsuporte@gmail.com
+                    </strong>
 
-</section>
+                </div>
 
-<section class="form-box">
+            </a>
 
-<h2>📩 Novo Chamado</h2>
 
-<form id="formSac">
+            <a
+                href="https://wa.me/5562991391910"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="support-contact__link">
 
-<div class="form-grid">
+                <span aria-hidden="true">
+                    ?
+                </span>
 
-<div class="input-group">
+                <div>
 
-<label>Tipo</label>
+                    <small>
+                        WhatsApp
+                    </small>
 
-<select id="tipo">
+                    <strong>
+                        (62) 99139-1910
+                    </strong>
 
-<option>Dúvida</option>
+                </div>
 
-<option>Problema Técnico</option>
+            </a>
 
-<option>Sugestão</option>
+        </div>
 
-<option>Reportar Erro</option>
+    </section>
 
-<option>Outro</option>
 
-</select>
+    <!-- ==========================================
+         ASSISTENTE LOTRIX
+    =========================================== -->
 
-</div>
+    <section
+        class="assistant-sac"
+        aria-labelledby="assistente-sac-titulo">
 
-<div class="input-group">
 
-<label>Prioridade</label>
+        <div class="assistant-sac__header">
 
-<select id="prioridade">
+            <div>
 
-<option>Baixa</option>
+                <p class="assistant-sac__eyebrow">
+                    Atendimento imediato
+                </p>
 
-<option>Média</option>
+                <h2 id="assistente-sac-titulo">
+                    Assistente Lotrix
+                </h2>
 
-<option>Alta</option>
+            </div>
 
-</select>
 
-</div>
+            <span class="assistant-sac__status">
 
-<div class="input-group">
+                <i></i>
 
-<label>Assunto</label>
+                Online
 
-<input
-type="text"
-id="assunto"
-placeholder="Informe o assunto">
+            </span>
 
-</div>
+        </div>
 
-<div class="input-group">
 
-<label>Descrição</label>
+        <div
+            class="assistant-sac__messages"
+            id="mensagensAssistente"
+            aria-live="polite">
 
-<textarea
-id="descricao"
-rows="6"
-placeholder="Descreva detalhadamente sua solicitação"></textarea>
+            <div class="assistant-sac__message assistant-sac__message--bot">
 
-</div>
+                Ol?! Posso ajudar com produtos, produ??o, etiquetas,
+                estoque e relat?rios. O que voc? precisa?
 
-</div>
+            </div>
 
-<button type="submit">
+        </div>
 
-📩 Enviar Solicitação
 
-</button>
+        <div
+            class="assistant-sac__suggestions"
+            aria-label="Sugest?es de perguntas">
 
-</form>
+            <button
+                type="button"
+                data-pergunta="Como gerar uma etiqueta?">
 
-</section>
+                Gerar etiqueta
 
-<section class="table-box">
+            </button>
 
-<h2>📋 Histórico de Chamados</h2>
 
-<table>
+            <button
+                type="button"
+                data-pergunta="Como registrar uma produ??o?">
 
-<thead>
+                Registrar produ??o
 
-<tr>
+            </button>
 
-<th>Data</th>
 
-<th>Tipo</th>
+            <button
+                type="button"
+                data-pergunta="Como cadastrar um produto?">
 
-<th>Assunto</th>
+                Cadastrar produto
 
-<th>Prioridade</th>
+            </button>
 
-<th>Status</th>
 
-</tr>
+            <button
+                type="button"
+                data-pergunta="Preciso de ajuda com estoque">
 
-</thead>
+                Ajuda com estoque
 
-<tbody id="listaChamados">
+            </button>
 
-<tr>
+        </div>
 
-<td colspan="5">
 
-Nenhum chamado encontrado.
+        <form
+            class="assistant-sac__form"
+            id="formAssistenteSac">
 
-</td>
+            <label
+                class="sr-only"
+                for="mensagemAssistente">
 
-</tr>
+                Mensagem para o assistente
 
-</tbody>
+            </label>
 
-</table>
 
-</section>
+            <input
+                id="mensagemAssistente"
+                type="text"
+                maxlength="500"
+                placeholder="Escreva sua d?vida..."
+                autocomplete="off"
+                required>
 
-<section class="table-box">
 
-<h2>❓ Perguntas Frequentes</h2>
+            <button type="submit">
+                Enviar
+            </button>
 
-<ul>
+        </form>
 
-<li>Como cadastrar um produto?</li>
+    </section>
 
-<li>Como registrar uma produção?</li>
 
-<li>Como gerar etiquetas?</li>
+    <!-- ==========================================
+         NOVO CHAMADO
+    =========================================== -->
 
-<li>Como imprimir etiquetas?</li>
+    <section class="form-box">
 
-<li>Como registrar movimentações de estoque?</li>
+        <h2>
+            ?? Novo Chamado
+        </h2>
 
-<li>Como consultar a auditoria?</li>
 
-<li>Como exportar relatórios?</li>
+        <form id="formSac">
 
-<li>Como alterar as configurações do sistema?</li>
+            <div class="form-grid">
 
-</ul>
 
-</section>
+                <div class="input-group">
 
-<section class="table-box">
+                    <label>
+                        Tipo
+                    </label>
 
-<h2>ℹ️ Informações do Sistema</h2>
+                    <select id="tipo">
 
-<p><strong>Sistema:</strong> Lotrix</p>
+                        <option>D?vida</option>
+                        <option>Problema T?cnico</option>
+                        <option>Sugest?o</option>
+                        <option>Reportar Erro</option>
+                        <option>Outro</option>
 
-<p><strong>Versão:</strong> 2.0</p>
+                    </select>
 
-<p><strong>Status:</strong> 🟢 Online</p>
+                </div>
 
-<p><strong>Banco de Dados:</strong> Firebase Firestore</p>
 
-</section>
+                <div class="input-group">
+
+                    <label>
+                        Prioridade
+                    </label>
+
+                    <select id="prioridade">
+
+                        <option>Baixa</option>
+                        <option>M?dia</option>
+                        <option>Alta</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>
+                        Assunto
+                    </label>
+
+                    <input
+                        type="text"
+                        id="assunto"
+                        placeholder="Informe o assunto">
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>
+                        Descri??o
+                    </label>
+
+                    <textarea
+                        id="descricao"
+                        rows="6"
+                        placeholder="Descreva detalhadamente sua solicita??o"></textarea>
+
+                </div>
+
+            </div>
+
+
+            <button type="submit">
+
+                ?? Enviar Solicita??o
+
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- ==========================================
+         HIST?RICO
+    =========================================== -->
+
+    <section class="table-box">
+
+        <h2>
+            ?? Hist?rico de Chamados
+        </h2>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Assunto</th>
+                    <th>Prioridade</th>
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="listaChamados">
+
+                <tr>
+
+                    <td colspan="5">
+                        Nenhum chamado encontrado.
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+
+    <!-- ==========================================
+         FAQ
+    =========================================== -->
+
+    <section class="table-box">
+
+        <h2>
+            ? Perguntas Frequentes
+        </h2>
+
+
+        <ul>
+
+            <li>
+                Como cadastrar um produto?
+            </li>
+
+            <li>
+                Como registrar uma produ??o?
+            </li>
+
+            <li>
+                Como gerar etiquetas?
+            </li>
+
+            <li>
+                Como imprimir etiquetas?
+            </li>
+
+            <li>
+                Como registrar movimenta??es de estoque?
+            </li>
+
+            <li>
+                Como consultar a auditoria?
+            </li>
+
+            <li>
+                Como exportar relat?rios?
+            </li>
+
+            <li>
+                Como alterar as configura??es do sistema?
+            </li>
+
+        </ul>
+
+    </section>
+
+
+    <!-- ==========================================
+         INFORMA??ES
+    =========================================== -->
+
+    <section class="table-box">
+
+        <h2>
+            ?? Informa??es do Sistema
+        </h2>
+
+        <p>
+            <strong>Sistema:</strong> Lotrix
+        </p>
+
+        <p>
+            <strong>Vers?o:</strong> 2.0
+        </p>
+
+        <p>
+            <strong>Status:</strong> ?? Online
+        </p>
+
+        <p>
+            <strong>Banco de Dados:</strong> Firebase Firestore
+        </p>
+
+    </section>
+
 
 </main>
 
 </div>
 
+
+<!-- ==========================================
+     SCRIPTS
+========================================== -->
+
 <script type="module" src="js/auth.js"></script>
 
 <script type="module" src="js/sac.js"></script>
 
+
+<!-- ==========================================
+     MENU LATERAL
+========================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const sidebar = document.getElementById("sidebar");
+    const menuToggle = document.getElementById("menuToggle");
+    const sidebarClose = document.getElementById("sidebarClose");
+    const sidebarOverlay = document.getElementById("sidebarOverlay");
+
+
+    function abrirMenu() {
+
+        sidebar.classList.add("open");
+
+        sidebarOverlay.classList.add("active");
+
+        menuToggle.innerHTML = "?";
+
+        menuToggle.setAttribute(
+            "aria-expanded",
+            "true"
+        );
+
+        document.body.style.overflow = "hidden";
+
+    }
+
+
+    function fecharMenu() {
+
+        sidebar.classList.remove("open");
+
+        sidebarOverlay.classList.remove("active");
+
+        menuToggle.innerHTML = "?";
+
+        menuToggle.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+        document.body.style.overflow = "";
+
+    }
+
+
+    menuToggle.addEventListener(
+        "click",
+        function () {
+
+            if (sidebar.classList.contains("open")) {
+
+                fecharMenu();
+
+            } else {
+
+                abrirMenu();
+
+            }
+
+        }
+    );
+
+
+    sidebarClose.addEventListener(
+        "click",
+        fecharMenu
+    );
+
+
+    sidebarOverlay.addEventListener(
+        "click",
+        fecharMenu
+    );
+
+
+    /* Fecha ao clicar em um item do menu */
+
+    sidebar
+        .querySelectorAll(".menu a")
+        .forEach(function (link) {
+
+            link.addEventListener(
+                "click",
+                fecharMenu
+            );
+
+        });
+
+
+    /* ESC fecha o menu */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key === "Escape" &&
+                sidebar.classList.contains("open")
+            ) {
+
+                fecharMenu();
+
+            }
+
+        }
+    );
+
+});
+
+</script>
+
+
 </body>
 
 </html>
-

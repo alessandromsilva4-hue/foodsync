@@ -1,4 +1,4 @@
-/* Comanda térmica para Elgin i9 Full (bobina de 80 mm). */
+/* Comanda t?rmica para Elgin i9 Full (bobina de 80 mm). */
 const RESTAURANTE = {
     nome: "NEOSCALE RESTAURANTE",
     endereco: "Sistema de pesagem inteligente",
@@ -6,26 +6,26 @@ const RESTAURANTE = {
 };
 
 const FRASES_RESERVA = [
-    { frase: "Que a sua refeição seja um momento especial.", autor: "NeoScale" },
+    { frase: "Que a sua refei??o seja um momento especial.", autor: "NeoScale" },
     { frase: "Sabores que tornam o dia melhor.", autor: "NeoScale" },
     { frase: "Boa comida, bons momentos.", autor: "NeoScale" },
     { frase: "Aproveite cada sabor do seu dia.", autor: "NeoScale" },
-    { frase: "Uma pausa gostosa faz toda a diferença.", autor: "NeoScale" },
-    { frase: "Comer bem é cuidar de você.", autor: "NeoScale" },
-    { frase: "Uma refeição feita para ser aproveitada.", autor: "NeoScale" },
-    { frase: "Que não faltem bons sabores no seu dia.", autor: "NeoScale" },
-    { frase: "O melhor tempero é estar bem acompanhado.", autor: "NeoScale" },
+    { frase: "Uma pausa gostosa faz toda a diferen?a.", autor: "NeoScale" },
+    { frase: "Comer bem ? cuidar de voc?.", autor: "NeoScale" },
+    { frase: "Uma refei??o feita para ser aproveitada.", autor: "NeoScale" },
+    { frase: "Que n?o faltem bons sabores no seu dia.", autor: "NeoScale" },
+    { frase: "O melhor tempero ? estar bem acompanhado.", autor: "NeoScale" },
     { frase: "Seu momento de recarregar as energias chegou.", autor: "NeoScale" },
-    { frase: "A vida fica melhor com uma boa refeição.", autor: "NeoScale" },
+    { frase: "A vida fica melhor com uma boa refei??o.", autor: "NeoScale" },
     { frase: "Saboreie o presente, prato por prato.", autor: "NeoScale" },
-    { frase: "Que seu almoço seja leve, saboroso e feliz.", autor: "NeoScale" },
-    { frase: "Boas escolhas começam com uma boa refeição.", autor: "NeoScale" },
+    { frase: "Que seu almo?o seja leve, saboroso e feliz.", autor: "NeoScale" },
+    { frase: "Boas escolhas come?am com uma boa refei??o.", autor: "NeoScale" },
     { frase: "Aprecie com calma cada detalhe do seu prato.", autor: "NeoScale" },
-    { frase: "Hoje é um ótimo dia para comer bem.", autor: "NeoScale" },
+    { frase: "Hoje ? um ?timo dia para comer bem.", autor: "NeoScale" },
     { frase: "Alimente seus planos com bons momentos.", autor: "NeoScale" },
     { frase: "Sabor que combina com o seu dia.", autor: "NeoScale" },
     { frase: "Que a sua pausa seja deliciosa.", autor: "NeoScale" },
-    { frase: "Uma boa refeição começa com bons ingredientes.", autor: "NeoScale" }
+    { frase: "Uma boa refei??o come?a com bons ingredientes.", autor: "NeoScale" }
 ];
 
 let ultimaFrase = "";
@@ -77,8 +77,8 @@ function gerarHtmlComanda(teste = false, frase) {
 <header class="empresa centro"><strong>${RESTAURANTE.nome}</strong><span>${RESTAURANTE.endereco}</span><br><span>${RESTAURANTE.cidade}</span></header>
 <div class="titulo centro">Comanda N.${Number(sequencia)}${teste ? "<small class=\"teste\">COMANDA DE TESTE</small>" : ""}</div>
 <div class="data">Data: ${agora.toLocaleDateString("pt-BR")} ${agora.toLocaleTimeString("pt-BR")}</div><div class="linha"></div>
-<table><thead><tr><th>Produto</th><th>R$/kg</th><th>Peso</th><th>Total</th></tr></thead><tbody><tr><td>Refeição</td><td>${precoKg}</td><td>${pesoNumero}</td><td>${total}</td></tr><tr><td>Refrigerante / Suco</td><td></td><td></td><td></td></tr><tr><td>Doces</td><td></td><td></td><td></td></tr></tbody></table>
-<div class="total">TOTAL: R$ ${total}</div><div class="frase centro">"${escaparHtml(frase.frase)}"<strong>${escaparHtml(frase.autor || "NeoScale")}</strong></div><div class="rodape">Obrigado pela preferência, volte sempre!</div><div class="site">neoscale.com.br</div>
+<table><thead><tr><th>Produto</th><th>R$/kg</th><th>Peso</th><th>Total</th></tr></thead><tbody><tr><td>Refei??o</td><td>${precoKg}</td><td>${pesoNumero}</td><td>${total}</td></tr><tr><td>Refrigerante / Suco</td><td></td><td></td><td></td></tr><tr><td>Doces</td><td></td><td></td><td></td></tr></tbody></table>
+<div class="total">TOTAL: R$ ${total}</div><div class="frase centro">"${escaparHtml(frase.frase)}"<strong>${escaparHtml(frase.autor || "NeoScale")}</strong></div><div class="rodape">Obrigado pela prefer?ncia, volte sempre!</div><div class="site">neoscale.com.br</div>
 </body></html>`;
 }
 

@@ -22,7 +22,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // =======================================
-// VARIÁVEIS
+// VARI?VEIS
 // =======================================
 
 let usuarioLogado = null;
@@ -56,7 +56,7 @@ let listaMovimentacoes = null;
 function obterIdEmpresaAtual() {
 
     // ===================================
-    // PRIMEIRA OPÇÃO
+    // PRIMEIRA OP??O
     // auth.js
     // ===================================
 
@@ -76,7 +76,7 @@ function obterIdEmpresaAtual() {
     }
 
     // ===================================
-    // SEGUNDA OPÇÃO
+    // SEGUNDA OP??O
     // localStorage
     // ===================================
 
@@ -90,8 +90,8 @@ function obterIdEmpresaAtual() {
     }
 
     // ===================================
-    // TERCEIRA OPÇÃO
-    // USUÁRIO SALVO
+    // TERCEIRA OP??O
+    // USU?RIO SALVO
     // ===================================
 
     const chaves = [
@@ -129,7 +129,7 @@ function obterIdEmpresaAtual() {
         catch (erro) {
 
             console.error(
-                "Erro lendo usuário:",
+                "Erro lendo usu?rio:",
                 erro
             );
 
@@ -142,7 +142,7 @@ function obterIdEmpresaAtual() {
 }
 
 // =======================================
-// OBTER USUÁRIO
+// OBTER USU?RIO
 // =======================================
 
 function obterUsuarioAtual() {
@@ -176,7 +176,7 @@ function obterUsuarioAtual() {
         catch (erro) {
 
             console.error(
-                "Erro lendo usuário:",
+                "Erro lendo usu?rio:",
                 erro
             );
 
@@ -200,7 +200,7 @@ function empresaValida() {
     if (!idEmpresa) {
 
         console.error(
-            "ESTOQUE: empresa não encontrada."
+            "ESTOQUE: empresa n?o encontrada."
         );
 
         return false;
@@ -318,7 +318,7 @@ function iniciarElementos() {
 }
 
 // =======================================
-// PRODUTO PERTENCE À EMPRESA
+// PRODUTO PERTENCE ? EMPRESA
 // =======================================
 
 function produtoPertenceEmpresa(dados) {
@@ -634,7 +634,7 @@ function verificarStatus(item) {
 
         return `
             <span style="color:#dc2626;font-weight:bold;">
-                🔴 Crítico
+                ?? Cr?tico
             </span>
         `;
 
@@ -647,7 +647,7 @@ function verificarStatus(item) {
 
         return `
             <span style="color:#ca8a04;font-weight:bold;">
-                🟡 Atenção
+                ?? Aten??o
             </span>
         `;
 
@@ -655,7 +655,7 @@ function verificarStatus(item) {
 
     return `
         <span style="color:#16a34a;font-weight:bold;">
-            🟢 Normal
+            ?? Normal
         </span>
     `;
 
@@ -744,7 +744,7 @@ function renderizarEstoque() {
                 "btn-danger";
 
             botao.textContent =
-                "🗑️";
+                "???";
 
             botao.addEventListener(
                 "click",
@@ -805,7 +805,7 @@ async function salvarEstoque(evento) {
     if (!produto) {
 
         alert(
-            "Produto não encontrado."
+            "Produto n?o encontrado."
         );
 
         return;
@@ -834,7 +834,7 @@ async function salvarEstoque(evento) {
     ) {
 
         alert(
-            "Os valores não podem ser negativos."
+            "Os valores n?o podem ser negativos."
         );
 
         return;
@@ -980,7 +980,7 @@ async function excluirEstoque(id) {
     if (!estoque) {
 
         alert(
-            "Estoque não encontrado."
+            "Estoque n?o encontrado."
         );
 
         return;
@@ -995,7 +995,7 @@ async function excluirEstoque(id) {
     ) {
 
         alert(
-            "Este estoque não pertence à empresa atual."
+            "Este estoque n?o pertence ? empresa atual."
         );
 
         return;
@@ -1025,7 +1025,7 @@ async function excluirEstoque(id) {
         );
 
         alert(
-            "Item excluído com sucesso!"
+            "Item exclu?do com sucesso!"
         );
 
         await carregarEstoque();
@@ -1047,7 +1047,7 @@ async function excluirEstoque(id) {
 }
 
 // =======================================
-// REGISTRAR MOVIMENTAÇÃO
+// REGISTRAR MOVIMENTA??O
 // =======================================
 
 async function registrarMovimentacao(evento) {
@@ -1081,7 +1081,7 @@ async function registrarMovimentacao(evento) {
     if (!produto) {
 
         alert(
-            "Produto não encontrado."
+            "Produto n?o encontrado."
         );
 
         return;
@@ -1097,7 +1097,7 @@ async function registrarMovimentacao(evento) {
     ) {
 
         alert(
-            "Selecione o tipo de movimentação."
+            "Selecione o tipo de movimenta??o."
         );
 
         return;
@@ -1114,7 +1114,7 @@ async function registrarMovimentacao(evento) {
     ) {
 
         alert(
-            "Informe uma quantidade válida."
+            "Informe uma quantidade v?lida."
         );
 
         return;
@@ -1145,7 +1145,7 @@ async function registrarMovimentacao(evento) {
     if (!estoque) {
 
         alert(
-            "Este produto ainda não possui estoque cadastrado para esta empresa."
+            "Este produto ainda n?o possui estoque cadastrado para esta empresa."
         );
 
         return;
@@ -1252,7 +1252,7 @@ async function registrarMovimentacao(evento) {
         );
 
         alert(
-            "Movimentação registrada!"
+            "Movimenta??o registrada!"
         );
 
         if (movimentacaoForm) {
@@ -1267,12 +1267,12 @@ async function registrarMovimentacao(evento) {
     catch (erro) {
 
         console.error(
-            "ERRO NA MOVIMENTAÇÃO:",
+            "ERRO NA MOVIMENTA??O:",
             erro
         );
 
         alert(
-            "Erro ao registrar movimentação."
+            "Erro ao registrar movimenta??o."
         );
 
     }
@@ -1280,7 +1280,7 @@ async function registrarMovimentacao(evento) {
 }
 
 // =======================================
-// CARREGAR MOVIMENTAÇÕES
+// CARREGAR MOVIMENTA??ES
 // =======================================
 
 async function carregarMovimentacoes() {
@@ -1297,7 +1297,7 @@ async function carregarMovimentacoes() {
         <tr>
             <td colspan="6"
                 style="text-align:center;padding:20px;">
-                Carregando movimentações...
+                Carregando movimenta??es...
             </td>
         </tr>
     `;
@@ -1411,7 +1411,7 @@ async function carregarMovimentacoes() {
                 <tr>
                     <td colspan="6"
                         style="text-align:center;padding:20px;">
-                        Nenhuma movimentação.
+                        Nenhuma movimenta??o.
                     </td>
                 </tr>
             `;
@@ -1419,7 +1419,7 @@ async function carregarMovimentacoes() {
         }
 
         console.log(
-            "MOVIMENTAÇÕES:",
+            "MOVIMENTA??ES:",
             idEmpresa,
             total
         );
@@ -1428,7 +1428,7 @@ async function carregarMovimentacoes() {
     catch (erro) {
 
         console.error(
-            "ERRO AO CARREGAR MOVIMENTAÇÕES:",
+            "ERRO AO CARREGAR MOVIMENTA??ES:",
             erro
         );
 
@@ -1436,7 +1436,7 @@ async function carregarMovimentacoes() {
             <tr>
                 <td colspan="6"
                     style="text-align:center;padding:20px;color:red;">
-                    Erro ao carregar movimentações.
+                    Erro ao carregar movimenta??es.
                 </td>
             </tr>
         `;
@@ -1485,7 +1485,7 @@ async function iniciarEstoque() {
         "INICIANDO ESTOQUE LOTRIX"
     );
 
-    // Usuário
+    // Usu?rio
     usuarioLogado =
         obterUsuarioAtual();
 
@@ -1494,7 +1494,7 @@ async function iniciarEstoque() {
         obterIdEmpresaAtual();
 
     console.log(
-        "USUÁRIO:",
+        "USU?RIO:",
         usuarioLogado
     );
 
@@ -1529,7 +1529,7 @@ async function iniciarEstoque() {
 }
 
 // =======================================
-// INICIALIZAÇÃO
+// INICIALIZA??O
 // =======================================
 
 if (
@@ -1553,7 +1553,7 @@ else {
 }
 
 // =======================================
-// FUNÇÃO GLOBAL
+// FUN??O GLOBAL
 // =======================================
 
 window.excluirEstoque =

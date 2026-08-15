@@ -4,222 +4,492 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Lotrix - Produção</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <link rel="icon" href="img/favicon.png">
+    <title>Lotrix - Produ??o</title>
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/producao.css">
+    <link rel="icon"
+          href="img/favicon.png">
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <link rel="stylesheet"
+          href="css/sidebar.css">
+
+    <link rel="stylesheet"
+          href="css/producao.css">
 
 </head>
 
+
 <body>
+
+
+<!-- ==========================================
+     BOT?O MENU
+=========================================== -->
+
+<button
+    class="menu-toggle"
+    id="menuToggle"
+    aria-label="Abrir menu"
+    type="button">
+
+    ?
+
+</button>
+
+
+<!-- ==========================================
+     FUNDO ESCURO
+=========================================== -->
+
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay">
+</div>
+
 
 <div class="layout">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
 
-    <div class="logo-area">
-        <img src="img/logo.png" alt="Lotrix">
-        <h2>LOTRIX</h2>
-        <small>Food Safety Platform</small>
-    </div>
+    <!-- ==========================================
+         SIDEBAR
+    =========================================== -->
 
-    <nav class="menu">
+    <aside
+        class="sidebar"
+        id="sidebar">
 
-        <div class="menu-section">
-            <span class="menu-title">GERAL</span>
 
-           <a href="dashboard.html">
-    <span>🏠</span>
-    <span class="nav-label">Dashboard</span>
-</a>
-        </div>
+        <!-- BOT?O FECHAR -->
 
-        <div class="menu-section">
-            <span class="menu-title">OPERAÇÃO</span>
+        <button
+            class="sidebar-close"
+            id="sidebarClose"
+            aria-label="Fechar menu"
+            type="button">
 
-           <a href="producao.html">
-    <span>⚙️</span>
-    <span class="nav-label">Produção</span>
-</a>
+            ?
 
-            <a href="produtos.html">
-                <span>📦</span>
-                <span class="nav-label">Produtos</span>
-            </a>
-
-            <a href="etiquetas.html">
-                <span>🏷️</span>
-                <span class="nav-label">Etiquetas</span>
-            </a>
-
-            <a href="estoque.html">
-                <span>📚</span>
-                <span class="nav-label">Estoque</span>
-            </a>
-        </div>
-
-        <div class="menu-section">
-            <span class="menu-title">GESTÃO</span>
-
-            <a href="relatorios.html">
-                <span>📈</span>
-                <span class="nav-label">Relatórios</span>
-            </a>
-
-            <a href="auditoria.html">
-                <span>📝</span>
-                <span class="nav-label">Auditoria</span>
-            </a>
-
-            <a href="usuario.html">
-                <span>👥</span>
-                <span class="nav-label">Usuários</span>
-            </a>
-        </div>
-
-        <div class="menu-section">
-            <span class="menu-title">SISTEMA</span>
-
-            <a href="configuracoes.html">
-                <span>⚙️</span>
-                <span class="nav-label">Configurações</span>
-            </a>
-
-            <a href="ajuda.html">
-                <span>❓</span>
-                <span class="nav-label">Ajuda</span>
-            </a>
-
-            <a href="sac.html">
-                <span>🎧</span>
-                <span class="nav-label">SAC</span>
-            </a>
-        </div>
-
-    </nav>
-
-    <div class="sidebar-footer">
-<div class="user-card">
-
-    <div class="avatar">
-        👤
-    </div>
-
-    <div>
-        <strong id="nomeUsuarioLogado">
-            Usuário
-        </strong>
-
-        <small id="perfilUsuarioLogado">
-            Carregando...
-        </small>
-    </div>
-
-</div>
-        <button onclick="logout()">
-            🚪 Sair
         </button>
 
-    </div>
 
-</aside>
+        <!-- LOGO -->
 
-    <!-- CONTEÚDO -->
+        <div class="logo-area">
+
+            <img
+                src="img/logo.png"
+                alt="Lotrix">
+
+            <h2>
+                LOTRIX
+            </h2>
+
+            <small>
+                Food Safety Platform
+            </small>
+
+        </div>
+
+
+        <!-- ==========================================
+             MENU
+        =========================================== -->
+
+        <nav class="menu">
+
+
+            <!-- GERAL -->
+
+            <div class="menu-section">
+
+                <span class="menu-title">
+                    GERAL
+                </span>
+
+
+                <a href="dashboard.html">
+
+                    <span>?</span>
+
+                    <span class="nav-label">
+                        Dashboard
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- OPERA??O -->
+
+            <div class="menu-section">
+
+                <span class="menu-title">
+                    OPERA??O
+                </span>
+
+
+                <a
+                    href="producao.html"
+                    class="active">
+
+                    <span>?</span>
+
+                    <span class="nav-label">
+                        Produ??o
+                    </span>
+
+                </a>
+
+
+                <a href="produtos.html">
+
+                    <span>?</span>
+
+                    <span class="nav-label">
+                        Produtos
+                    </span>
+
+                </a>
+
+
+                <a href="etiquetas.html">
+
+                    <span>?</span>
+
+                    <span class="nav-label">
+                        Etiquetas
+                    </span>
+
+                </a>
+
+
+                <a href="estoque.html">
+
+                    <span>?</span>
+
+                    <span class="nav-label">
+                        Estoque
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- GEST?O -->
+
+            <div class="menu-section">
+
+                <span class="menu-title">
+                    GEST?O
+                </span>
+
+
+                <a href="relatorios.html">
+
+                    <span>?</span>
+
+                    <span class="nav-label">
+                        Relat?rios
+                    </span>
+
+                </a>
+
+
+                <a href="auditoria.html">
+
+                    <span>?</span>
+
+                    <span class="nav-label">
+                        Auditoria
+                    </span>
+
+                </a>
+
+
+                <a href="usuario.html">
+
+                    <span>?</span>
+
+                    <span class="nav-label">
+                        Usu?rios
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- SISTEMA -->
+
+            <div class="menu-section">
+
+                <span class="menu-title">
+                    SISTEMA
+                </span>
+
+
+                <a href="configuracoes.html">
+
+                    <span>?</span>
+
+                    <span class="nav-label">
+                        Configura??es
+                    </span>
+
+                </a>
+
+
+                <a href="ajuda.html">
+
+                    <span>?</span>
+
+                    <span class="nav-label">
+                        Ajuda
+                    </span>
+
+                </a>
+
+
+                <a href="sac.html">
+
+                    <span>?</span>
+
+                    <span class="nav-label">
+                        SAC
+                    </span>
+
+                </a>
+
+            </div>
+
+
+        </nav>
+
+
+        <!-- ==========================================
+             USU?RIO
+        =========================================== -->
+
+        <div class="sidebar-footer">
+
+
+            <div class="user-card">
+
+
+                <div class="avatar">
+                    ??
+                </div>
+
+
+                <div>
+
+                    <strong id="nomeUsuarioLogado">
+                        Usu?rio
+                    </strong>
+
+
+                    <small id="perfilUsuarioLogado">
+                        Carregando...
+                    </small>
+
+                </div>
+
+
+            </div>
+
+
+            <button
+                type="button"
+                onclick="logout()">
+
+                ? Sair
+
+            </button>
+
+
+        </div>
+
+
+    </aside>
+
+
+    <!-- ==========================================
+         CONTE?DO
+    =========================================== -->
+
     <main class="content">
+
+
+        <!-- CABE?ALHO -->
 
         <header class="top-header">
 
+
             <div>
-                <h1>🍱 Produção</h1>
-                <p>Controle de produção, validade e rastreabilidade dos alimentos.</p>
+
+                <h1>
+                    ? Produ??o
+                </h1>
+
+
+                <p>
+                    Controle de produ??o, validade
+                    e rastreabilidade dos alimentos.
+                </p>
+
             </div>
+
 
         </header>
 
-        <!-- FORMULÁRIO -->
+
+        <!-- ==========================================
+             FORMUL?RIO
+        =========================================== -->
 
         <section class="form-box">
 
-            <h2>Nova Produção</h2>
+
+            <h2>
+                Nova Produ??o
+            </h2>
+
 
             <form id="producaoForm">
 
+
                 <div class="form-grid">
+
+
+                    <!-- PRODUTO -->
 
                     <div class="input-group">
 
-                        <label>Produto</label>
+                        <label for="produtoSelect">
+                            Produto
+                        </label>
 
-                        <select id="produtoSelect">
 
-                            <option value="">Selecione um produto</option>
+                        <select
+                            id="produtoSelect"
+                            required>
+
+                            <option value="">
+                                Selecione um produto
+                            </option>
 
                         </select>
 
                     </div>
 
-                    <!-- Painel de informações -->
 
-                    <div id="produtoInfo" class="produto-info">
+                    <!-- INFORMA??ES DO PRODUTO -->
 
-<p>
-<strong>Validade padrão:</strong>
-<span id="infoValidade">-</span>
-</p>
+                    <div
+                        id="produtoInfo"
+                        class="produto-info">
 
-<p>
-<strong>Temperatura:</strong>
-<span id="infoTemperatura">-</span>
-</p>
 
-</div>
+                        <p>
 
-                    <div class="input-group">
+                            <strong>
+                                Validade padr?o:
+                            </strong>
 
-    <label>Quantidade</label>
+                            <span id="infoValidade">
+                                -
+                            </span>
 
-    <input
-        type="number"
-        id="quantidadeProducao"
-        min="1"
-        value="1"
-        required>
+                        </p>
 
-</div>
 
-<div class="input-group">
+                        <p>
 
-    <label>Quantidade de Etiquetas</label>
+                            <strong>
+                                Temperatura:
+                            </strong>
 
-    <input
-        type="number"
-        id="qtdEtiquetas"
-        min="1"
-        value="1"
-        required>
+                            <span id="infoTemperatura">
+                                -
+                            </span>
 
-</div>
+                        </p>
 
-<div class="input-group">
 
-    <label>Unidade</label>
+                    </div>
 
-    <input
-        type="text"
-        id="unidadeProducao"
-        readonly>
 
-</div>
+                    <!-- QUANTIDADE -->
 
                     <div class="input-group">
 
-                        <label>Data e Hora da Produção</label>
+                        <label for="quantidadeProducao">
+                            Quantidade
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="quantidadeProducao"
+                            min="1"
+                            value="1"
+                            required>
+
+                    </div>
+
+
+                    <!-- QUANTIDADE DE ETIQUETAS -->
+
+                    <div class="input-group">
+
+                        <label for="qtdEtiquetas">
+                            Quantidade de Etiquetas
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="qtdEtiquetas"
+                            min="1"
+                            value="1"
+                            required>
+
+                    </div>
+
+
+                    <!-- UNIDADE -->
+
+                    <div class="input-group">
+
+                        <label for="unidadeProducao">
+                            Unidade
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="unidadeProducao"
+                            readonly>
+
+                    </div>
+
+
+                    <!-- DATA PRODU??O -->
+
+                    <div class="input-group">
+
+                        <label for="dataProducao">
+                            Data e Hora da Produ??o
+                        </label>
+
 
                         <input
                             type="datetime-local"
@@ -228,9 +498,15 @@
 
                     </div>
 
+
+                    <!-- VALIDADE -->
+
                     <div class="input-group">
 
-                        <label>Data e Hora da Validade</label>
+                        <label for="validadeProducao">
+                            Data e Hora da Validade
+                        </label>
+
 
                         <input
                             type="datetime-local"
@@ -239,9 +515,15 @@
 
                     </div>
 
+
+                    <!-- TEMPERATURA -->
+
                     <div class="input-group">
 
-                        <label>Temperatura</label>
+                        <label for="temperaturaProducao">
+                            Temperatura
+                        </label>
+
 
                         <input
                             type="text"
@@ -249,9 +531,16 @@
                             readonly>
 
                     </div>
-                                        <div class="input-group">
 
-                        <label>Lote</label>
+
+                    <!-- LOTE -->
+
+                    <div class="input-group">
+
+                        <label for="loteProducao">
+                            Lote
+                        </label>
+
 
                         <input
                             type="text"
@@ -260,21 +549,33 @@
 
                     </div>
 
-                    <div class="input-group">
 
-    <label>Responsável</label>
-
-    <input
-        type="text"
-        id="responsavelProducao"
-        placeholder="Ex: Cozinha, João, Chef..."
-        required>
-
-</div>
+                    <!-- RESPONS?VEL -->
 
                     <div class="input-group">
 
-                        <label>Status</label>
+                        <label for="responsavelProducao">
+                            Respons?vel
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="responsavelProducao"
+                            placeholder="Ex: Cozinha, Jo?o, Chef..."
+                            required>
+
+                    </div>
+
+
+                    <!-- STATUS -->
+
+                    <div class="input-group">
+
+                        <label for="statusProducao">
+                            Status
+                        </label>
+
 
                         <select id="statusProducao">
 
@@ -282,117 +583,192 @@
                                 Finalizado
                             </option>
 
-                            <option value="Em produção">
-                                Em produção
+
+                            <option value="Em produ??o">
+                                Em produ??o
                             </option>
 
                         </select>
 
                     </div>
 
+
                 </div>
 
+
+                <!-- BOT?ES -->
+
                 <div class="button-group">
+
 
                     <button
                         type="submit"
                         class="btn-primary">
 
-                        💾 Salvar
+                        ??
+                        Salvar
 
                     </button>
+
 
                     <button
                         type="button"
                         id="btnSalvarImprimir"
                         class="btn-secondary">
 
-                        🖨️ Salvar e Imprimir
+                        ???
+                        Salvar e Imprimir
 
                     </button>
 
+
                 </div>
+
 
             </form>
 
+
         </section>
 
-        <!-- HISTÓRICO -->
+
+        <!-- ==========================================
+             HIST?RICO
+        =========================================== -->
 
         <section class="table-box">
 
+
             <div class="table-header">
 
-                <h2>Produções Realizadas</h2>
+
+                <h2>
+                    Produ??es Realizadas
+                </h2>
+
 
                 <input
                     type="search"
                     id="buscarProducao"
-                    placeholder="🔍 Buscar por produto ou lote...">
+                    placeholder="?? Buscar por produto ou lote...">
+
 
             </div>
 
+
             <table>
+
 
                 <thead>
 
                     <tr>
 
-                        <th>Produto</th>
+                        <th>
+                            Produto
+                        </th>
 
-                        <th>Lote</th>
+                        <th>
+                            Lote
+                        </th>
 
-                        <th>Quantidade</th>
+                        <th>
+                            Quantidade
+                        </th>
 
-                        <th>Produção</th>
+                        <th>
+                            Produ??o
+                        </th>
 
-                        <th>Validade</th>
+                        <th>
+                            Validade
+                        </th>
 
-                        <th>Responsável</th>
+                        <th>
+                            Respons?vel
+                        </th>
 
-                        <th>Status</th>
+                        <th>
+                            Status
+                        </th>
 
-                        <th>Ações</th>
+                        <th>
+                            A??es
+                        </th>
 
                     </tr>
 
                 </thead>
 
+
                 <tbody id="listaProducoes">
+
 
                     <tr>
 
                         <td colspan="8">
 
-                            Nenhuma produção registrada.
+                            Nenhuma produ??o registrada.
 
                         </td>
 
                     </tr>
 
+
                 </tbody>
+
 
             </table>
 
+
         </section>
+
 
     </main>
 
+
 </div>
 
-<!-- FIREBASE -->
 
-<script type="module" src="js/firebase.js"></script>
+<!-- ==========================================
+     FIREBASE
+=========================================== -->
 
-<!-- SISTEMA -->
+<script
+    type="module"
+    src="js/firebase.js">
+</script>
 
-<script type="module" src="js/app.js"></script>
 
-<script type="module" src="js/producao.js"></script>
+<!-- ==========================================
+     SISTEMA
+=========================================== -->
 
-<script type="module" src="js/auth.js"></script>
+<script
+    type="module"
+    src="js/app.js">
+</script>
+
+
+<script
+    type="module"
+    src="js/producao.js">
+</script>
+
+
+<script
+    type="module"
+    src="js/auth.js">
+</script>
+
+
+<!-- ==========================================
+     MENU LATERAL
+=========================================== -->
+
+<script
+    src="js/sidebar.js">
+</script>
+
 
 </body>
 
 </html>
-

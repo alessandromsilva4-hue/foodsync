@@ -23,923 +23,828 @@
 <body>
 
 
-<div class="layout">
-
-
-<!-- SIDEBAR -->
-
-<aside class="sidebar">
-
-<div class="logo-area">
-
-<img src="img/logo.png" alt="Lotrix">
-
-<h2>LOTRIX</h2>
-
-<small>Food Safety Platform</small>
-
-</div>
-
-
-<nav class="menu">
-
-
-<div class="menu-section">
-
-<span class="menu-title">GERAL</span>
-
-
-<a href="dashboard.html">
-
-<span>🏠</span>
-
-<span class="nav-label">
-Dashboard
-</span>
-
-</a>
-
-</div>
-
-
-
-<div class="menu-section">
-
-<span class="menu-title">
-OPERAÇÃO
-</span>
-
-
-<a href="producao.html">
-
-<span>⚙️</span>
-
-<span class="nav-label">
-Produção
-</span>
-
-</a>
-
-
-
-<a href="produtos.html" class="active">
-
-<span>📦</span>
-
-<span class="nav-label">
-Produtos
-</span>
-
-</a>
-
-
-
-<a href="etiquetas.html">
-
-<span>🏷️</span>
-
-<span class="nav-label">
-Etiquetas
-</span>
-
-</a>
-
-
-
-<a href="estoque.html">
-
-<span>📚</span>
-
-<span class="nav-label">
-Estoque
-</span>
-
-</a>
-
-
-</div>
-
-
-<div class="menu-section">
-
-<span class="menu-title">
-GESTÃO
-</span>
-
-
-<a href="relatorios.html">
-
-<span>📈</span>
-
-<span class="nav-label">
-Relatórios
-</span>
-
-</a>
-
-
-<a href="auditoria.html">
-
-<span>📝</span>
-
-<span class="nav-label">
-Auditoria
-</span>
-
-</a>
-
-
-<a href="usuario.html">
-
-<span>👥</span>
-
-<span class="nav-label">
-Usuários
-</span>
-
-</a>
-
-
-</div>
-
-
-
-<div class="menu-section">
-
-<span class="menu-title">
-SISTEMA
-</span>
-
-
-<a href="configuracoes.html">
-
-<span>⚙️</span>
-
-<span class="nav-label">
-Configurações
-</span>
-
-</a>
-
-
-<a href="ajuda.html">
-
-<span>❓</span>
-
-<span class="nav-label">
-Ajuda
-</span>
-
-</a>
-
-
-<a href="sac.html">
-
-<span>🎧</span>
-
-<span class="nav-label">
-SAC
-</span>
-
-</a>
-
-
-</div>
-
-
-</nav>
-
-
-
-<div class="sidebar-footer">
-
-
-<div class="user-card">
-
-
-<div class="avatar">
-👤
-</div>
-
-
-<div>
-
-<strong id="nomeUsuarioLogado">
-Usuário
-</strong>
-
-
-<small id="perfilUsuarioLogado">
-Carregando...
-</small>
-
-
-</div>
-
-
-</div>
-
-
-
-<button onclick="logout()">
-
-🚪 Sair
+<!-- =========================================================
+     BOT?O MENU
+========================================================= -->
+
+<button
+    class="menu-toggle"
+    id="menuToggle"
+    aria-label="Abrir menu"
+    type="button">
+
+    ?
 
 </button>
 
 
+<!-- =========================================================
+     FUNDO ESCURO
+========================================================= -->
+
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay">
 </div>
+
+
+
+<div class="layout">
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside
+    class="sidebar"
+    id="sidebar">
+
+
+    <!-- BOT?O FECHAR -->
+
+    <button
+        class="sidebar-close"
+        id="sidebarClose"
+        aria-label="Fechar menu"
+        type="button">
+
+        ?
+
+    </button>
+
+
+
+    <!-- LOGO -->
+
+    <div class="logo-area">
+
+        <img
+            src="img/logo.png"
+            alt="Lotrix">
+
+        <h2>
+            LOTRIX
+        </h2>
+
+        <small>
+            Food Safety Platform
+        </small>
+
+    </div>
+
+
+
+    <!-- MENU -->
+
+    <nav class="menu">
+
+
+        <!-- GERAL -->
+
+        <div class="menu-section">
+
+            <span class="menu-title">
+                GERAL
+            </span>
+
+
+            <a href="dashboard.html">
+
+                <span>?</span>
+
+                <span class="nav-label">
+                    Dashboard
+                </span>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- OPERA??O -->
+
+        <div class="menu-section">
+
+            <span class="menu-title">
+                OPERA??O
+            </span>
+
+
+            <a href="producao.html">
+
+                <span>?</span>
+
+                <span class="nav-label">
+                    Produ??o
+                </span>
+
+            </a>
+
+
+            <a
+                href="produtos.html"
+                class="active">
+
+                <span>?</span>
+
+                <span class="nav-label">
+                    Produtos
+                </span>
+
+            </a>
+
+
+            <a href="etiquetas.html">
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Etiquetas
+                </span>
+
+            </a>
+
+
+            <a href="estoque.html">
+
+                <span>?</span>
+
+                <span class="nav-label">
+                    Estoque
+                </span>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- GEST?O -->
+
+        <div class="menu-section">
+
+            <span class="menu-title">
+                GEST?O
+            </span>
+
+
+            <a href="relatorios.html">
+
+                <span>?</span>
+
+                <span class="nav-label">
+                    Relat?rios
+                </span>
+
+            </a>
+
+
+            <a href="auditoria.html">
+
+                <span>?</span>
+
+                <span class="nav-label">
+                    Auditoria
+                </span>
+
+            </a>
+
+
+            <a href="usuario.html">
+
+                <span>?</span>
+
+                <span class="nav-label">
+                    Usu?rios
+                </span>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- SISTEMA -->
+
+        <div class="menu-section">
+
+            <span class="menu-title">
+                SISTEMA
+            </span>
+
+
+            <a href="configuracoes.html">
+
+                <span>?</span>
+
+                <span class="nav-label">
+                    Configura??es
+                </span>
+
+            </a>
+
+
+            <a href="ajuda.html">
+
+                <span>?</span>
+
+                <span class="nav-label">
+                    Ajuda
+                </span>
+
+            </a>
+
+
+            <a href="sac.html">
+
+                <span>?</span>
+
+                <span class="nav-label">
+                    SAC
+                </span>
+
+            </a>
+
+        </div>
+
+
+    </nav>
+
+
+
+    <!-- USU?RIO -->
+
+    <div class="sidebar-footer">
+
+
+        <div class="user-card">
+
+
+            <div class="avatar">
+                ??
+            </div>
+
+
+            <div>
+
+                <strong id="nomeUsuarioLogado">
+                    Usu?rio
+                </strong>
+
+
+                <small id="perfilUsuarioLogado">
+                    Carregando...
+                </small>
+
+            </div>
+
+
+        </div>
+
+
+        <button
+            type="button"
+            onclick="logout()">
+
+            ? Sair
+
+        </button>
+
+
+    </div>
 
 
 </aside>
 
 
 
-
-<!-- CONTEÚDO -->
-
+<!-- =========================================================
+     CONTE?DO
+========================================================= -->
 
 <main class="content">
 
 
 <header class="top-header">
 
-<div>
+    <div>
 
-<h1>
-📦 Produtos
-</h1>
+        <h1>
+            ?? Produtos
+        </h1>
 
-<p>
-Cadastro e controle de produtos
-</p>
+        <p>
+            Cadastro e controle de produtos
+        </p>
 
-</div>
+    </div>
 
 </header>
 
 
 
+<!-- =========================================================
+     BARRA DE A??ES
+========================================================= -->
+
 <section class="produto-toolbar">
 
 
-<button
-class="btn-primary"
-onclick="abrirModalProduto()">
+    <button
+        class="btn-primary"
+        type="button"
+        onclick="abrirModalProduto()">
 
-➕ Novo Produto
+        + Novo Produto
 
-</button>
+    </button>
 
 
 
-<div class="pesquisa">
+    <div class="pesquisa">
 
-<input
+        <input
+            type="text"
+            id="pesquisaProduto"
+            placeholder="?? Pesquisar produto">
 
-type="text"
-
-id="pesquisaProduto"
-
-placeholder="🔍 Pesquisar produto">
-
-</div>
+    </div>
 
 
 </section>
 
 
+
+<!-- =========================================================
+     TABELA DE PRODUTOS
+========================================================= -->
 
 <section class="table-box">
 
 
-<h2>
-Produtos cadastrados
-</h2>
+    <h2>
+        Produtos cadastrados
+    </h2>
 
 
-<table>
+    <table>
 
 
-<thead>
+        <thead>
 
-<tr>
+            <tr>
 
-<th>
-Código
-</th>
+                <th>
+                    C?digo
+                </th>
 
-<th>
-Produto
-</th>
+                <th>
+                    Produto
+                </th>
 
-<th>
-Categoria
-</th>
+                <th>
+                    Categoria
+                </th>
 
-<th>
-Unidade
-</th>
+                <th>
+                    Unidade
+                </th>
 
-<th>
-Validade
-</th>
+                <th>
+                    Validade
+                </th>
 
-<th>
-Setor
-</th>
+                <th>
+                    Setor
+                </th>
 
-<th>
-Status
-</th>
+                <th>
+                    Status
+                </th>
 
-<th>
-Ações
-</th>
+                <th>
+                    A??es
+                </th>
 
+            </tr>
 
-</tr>
-
-</thead>
-
-
-<tbody id="listaProdutos">
+        </thead>
 
 
-<tr>
+        <tbody id="listaProdutos">
 
-<td colspan="8">
-Nenhum produto cadastrado
-</td>
+            <tr>
 
-</tr>
+                <td colspan="8">
+                    Nenhum produto cadastrado
+                </td>
+
+            </tr>
+
+        </tbody>
 
 
-</tbody>
-
-
-</table>
+    </table>
 
 
 </section>
 
 
 
-<!-- MODAL -->
+<!-- =========================================================
+     MODAL PRODUTO
+========================================================= -->
 
-<div id="modalProduto" class="modal">
-
-
-<div class="modal-content">
-
-
-<div class="modal-header">
-
-<h2>
-Novo Produto
-</h2>
+<div
+    id="modalProduto"
+    class="modal">
 
 
-<button onclick="fecharModalProduto()">
-✖
-</button>
+    <div class="modal-content">
+
+
+        <div class="modal-header">
+
+            <h2>
+                Novo Produto
+            </h2>
+
+
+            <button
+                type="button"
+                onclick="fecharModalProduto()"
+                aria-label="Fechar">
+
+                ?
+
+            </button>
+
+        </div>
+
+
+
+        <form id="produtoForm">
+
+
+            <!-- GRUPO -->
+
+            <div class="campo">
+
+                <label for="grupoProduto">
+                    Grupo
+                </label>
+
+                <select id="grupoProduto">
+
+                    <option value="">
+                        Selecione o grupo
+                    </option>
+
+                    <option value="PROTE?NAS">
+                        PROTE?NAS
+                    </option>
+
+                    <option value="GR?OS">
+                        GR?OS
+                    </option>
+
+                    <option value="MOLHOS">
+                        MOLHOS
+                    </option>
+
+                    <option value="COMPLEMENTOS">
+                        COMPLEMENTOS
+                    </option>
+
+                    <option value="BEBIDAS">
+                        BEBIDAS
+                    </option>
+
+                    <option value="SOBREMESAS">
+                        SOBREMESAS
+                    </option>
+
+                    <option value="EMBALAGENS">
+                        EMBALAGENS
+                    </option>
+
+                    <option value="HORTIFRUT">
+                        HORTIFRUT
+                    </option>
+
+                    <option value="OUTROS">
+                        OUTROS
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- CATEGORIA -->
+
+            <div class="campo">
+
+                <label for="categoriaProduto">
+                    Categoria
+                </label>
+
+                <select id="categoriaProduto">
+
+                    <option value="">
+                        Selecione a categoria
+                    </option>
+
+                    <option value="SECO">
+                        SECO
+                    </option>
+
+                    <option value="RESFRIADO">
+                        RESFRIADO
+                    </option>
+
+                    <option value="CONGELADO">
+                        CONGELADO
+                    </option>
+
+                    <option value="HORTIFRUT">
+                        HORTIFRUT
+                    </option>
+
+                    <option value="BEBIDA">
+                        BEBIDA
+                    </option>
+
+                    <option value="EMBALAGEM">
+                        EMBALAGEM
+                    </option>
+
+                    <option value="MOLHO">
+                        MOLHO
+                    </option>
+
+                    <option value="SOBREMESA">
+                        SOBREMESA
+                    </option>
+
+                    <option value="COMPLEMENTO">
+                        COMPLEMENTO
+                    </option>
+
+                    <option value="DESCART?VEL">
+                        DESCART?VEL
+                    </option>
+
+                    <option value="LIMPEZA">
+                        LIMPEZA
+                    </option>
+
+                    <option value="OUTROS">
+                        OUTROS
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- C?DIGO -->
+
+            <div class="campo">
+
+                <label for="codigoProduto">
+                    C?digo do Produto
+                </label>
+
+
+                <input
+                    type="text"
+                    id="codigoProduto"
+                    placeholder="Ex: SAL001">
+
+            </div>
+
+
+
+            <!-- FORM GRID -->
+
+            <div class="form-grid">
+
+
+                <div class="input-group">
+
+                    <label>
+                        Nome do Produto
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nomeProduto"
+                        placeholder="Digite o nome do produto"
+                        required>
+
+                </div>
+
+
+
+                <div class="input-group">
+
+                    <label>
+                        Unidade
+                    </label>
+
+
+                    <select id="unidadeProduto">
+
+                        <option value="KG">
+                            KG
+                        </option>
+
+                        <option value="UN">
+                            UN
+                        </option>
+
+                        <option value="L">
+                            L
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="input-group">
+
+                    <label>
+                        Validade padr?o (dias)
+                    </label>
+
+
+                    <input
+                        type="number"
+                        id="validadeProduto"
+                        value="1"
+                        min="1">
+
+                </div>
+
+
+
+                <div class="input-group">
+
+                    <label>
+                        Temperatura de armazenamento
+                    </label>
+
+
+                    <select id="temperaturaProduto">
+
+                        <option value="Refrigerado 0?C a 5?C">
+                            Refrigerado 0?C a 5?C
+                        </option>
+
+                        <option value="Congelado -18?C">
+                            Congelado -18?C
+                        </option>
+
+                        <option value="Ambiente">
+                            Ambiente
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="input-group">
+
+                    <label>
+                        Setor
+                    </label>
+
+
+                    <select id="setorProduto">
+
+                        <option value="Cozinha">
+                            Cozinha
+                        </option>
+
+                        <option value="Sushi">
+                            Sushi
+                        </option>
+
+                        <option value="Estoque">
+                            Estoque
+                        </option>
+
+                        <option value="Expedi??o">
+                            Expedi??o
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="input-group">
+
+                    <label>
+                        Estoque M?nimo
+                    </label>
+
+
+                    <input
+                        type="number"
+                        id="estoqueMinimoProduto"
+                        value="1"
+                        min="0">
+
+                </div>
+
+
+
+                <div class="input-group">
+
+                    <label>
+                        Status
+                    </label>
+
+
+                    <select id="statusProduto">
+
+                        <option value="ativo">
+                            Ativo
+                        </option>
+
+                        <option value="inativo">
+                            Inativo
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="input-group campo-completo">
+
+                    <label>
+                        Observa??o
+                    </label>
+
+
+                    <textarea
+                        id="observacaoProduto"
+                        rows="3"></textarea>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- RODAP? MODAL -->
+
+            <div class="modal-footer">
+
+
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    onclick="fecharModalProduto()">
+
+                    Cancelar
+
+                </button>
+
+
+
+                <button
+                    type="submit"
+                    class="btn-primary">
+
+                    ? Salvar Produto
+
+                </button>
+
+
+            </div>
+
+
+        </form>
+
+
+    </div>
 
 
 </div>
-
-
-
-<form id="produtoForm">
-
-
-<div class="campo">
-
-<label for="grupoProduto">
-Grupo
-</label>
-
-
-<select id="grupoProduto">
-
-
-<option value="">
-Selecione o grupo
-</option>
-
-
-<option value="PROTEÍNAS">
-PROTEÍNAS
-</option>
-
-
-<option value="GRÃOS">
-GRÃOS
-</option>
-
-
-<option value="MOLHOS">
-MOLHOS
-</option>
-
-
-<option value="COMPLEMENTOS">
-COMPLEMENTOS
-</option>
-
-
-<option value="BEBIDAS">
-BEBIDAS
-</option>
-
-
-<option value="SOBREMESAS">
-SOBREMESAS
-</option>
-
-
-<option value="EMBALAGENS">
-EMBALAGENS
-</option>
-
-
-<option value="OUTROS">
-OUTROS
-</option>
-
-
-</select>
-
-</div>
-<div class="campo">
-
-<label for="categoriaProduto">
-Categoria
-</label>
-
-
-<select id="categoriaProduto">
-
-
-<option value="">
-Selecione a categoria
-</option>
-
-
-<option value="SECO">
-SECO
-</option>
-
-
-<option value="RESFRIADO">
-RESFRIADO
-</option>
-
-
-<option value="CONGELADO">
-CONGELADO
-</option>
-
-
-<option value="BEBIDA">
-BEBIDA
-</option>
-
-
-<option value="EMBALAGEM">
-EMBALAGEM
-</option>
-
-
-<option value="MOLHO">
-MOLHO
-</option>
-
-
-<option value="SOBREMESA">
-SOBREMESA
-</option>
-
-
-<option value="COMPLEMENTO">
-COMPLEMENTO
-</option>
-
-
-<option value="DESCARTÁVEL">
-DESCARTÁVEL
-</option>
-
-
-<option value="LIMPEZA">
-LIMPEZA
-</option>
-
-
-<option value="OUTROS">
-OUTROS
-</option>
-
-
-</select>
-
-</div>
-
-
-
-
-<div class="campo">
-
-
-<label for="codigoProduto">
-
-Código do Produto
-
-</label>
-
-
-<input
-
-type="text"
-
-id="codigoProduto"
-
-placeholder="Ex: SAL001"
-
->
-
-
-</div>
-
-
-
-
-
-
-<div class="form-grid">
-
-
-
-<div class="input-group">
-
-
-<label>
-
-Nome do Produto
-
-</label>
-
-
-<input
-
-type="text"
-
-id="nomeProduto"
-
-placeholder="Digite o nome do produto"
-
-required
-
->
-
-
-</div>
-
-
-
-
-
-
-<div class="input-group">
-
-
-<label>
-
-Unidade
-
-</label>
-
-
-<select id="unidadeProduto">
-
-
-<option value="KG">
-
-KG
-
-</option>
-
-
-<option value="UN">
-
-UN
-
-</option>
-
-
-<option value="L">
-
-L
-
-</option>
-
-
-</select>
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="input-group">
-
-
-<label>
-
-Validade padrão (dias)
-
-</label>
-
-
-<input
-
-type="number"
-
-id="validadeProduto"
-
-value="1"
-
-min="1"
-
->
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="input-group">
-
-
-<label>
-
-Temperatura de armazenamento
-
-</label>
-
-
-<select id="temperaturaProduto">
-
-
-<option value="Refrigerado 0°C a 5°C">
-
-Refrigerado 0°C a 5°C
-
-</option>
-
-
-<option value="Congelado -18°C">
-
-Congelado -18°C
-
-</option>
-
-
-<option value="Ambiente">
-
-Ambiente
-
-</option>
-
-
-</select>
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="input-group">
-
-
-<label>
-
-Setor
-
-</label>
-
-
-<select id="setorProduto">
-
-
-<option value="Cozinha">
-
-Cozinha
-
-</option>
-
-
-<option value="Sushi">
-
-Sushi
-
-</option>
-
-
-<option value="Estoque">
-
-Estoque
-
-</option>
-
-
-<option value="Expedição">
-
-Expedição
-
-</option>
-
-
-</select>
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="input-group">
-
-
-<label>
-
-Estoque Mínimo
-
-</label>
-
-
-<input
-
-type="number"
-
-id="estoqueMinimoProduto"
-
-value="1"
-
-min="0"
-
->
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="input-group">
-
-
-<label>
-
-Status
-
-</label>
-
-
-<select id="statusProduto">
-
-
-<option value="ativo">
-
-Ativo
-
-</option>
-
-
-<option value="inativo">
-
-Inativo
-
-</option>
-
-
-</select>
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="input-group campo-completo">
-
-
-<label>
-
-Observação
-
-</label>
-
-
-<textarea
-
-id="observacaoProduto"
-
-rows="3"
-
-></textarea>
-
-
-</div>
-
-
-
-
-
-</div>
-
-
-
-
-
-<div class="modal-footer">
-
-
-
-<button
-
-type="button"
-
-class="btn-secondary"
-
-onclick="fecharModalProduto()"
-
->
-
-Cancelar
-
-</button>
-
-
-
-
-
-<button
-
-type="submit"
-
-class="btn-primary"
-
->
-
-💾 Salvar Produto
-
-</button>
-
-
-
-
-
-</div>
-
-
-
-</form>
-
-
-
-</div>
-
-
-</div>
-
-
 
 
 
@@ -947,31 +852,62 @@ class="btn-primary"
 
 
 </div>
-<!-- FIREBASE -->
-
-<script type="module" src="js/firebase.js"></script>
 
 
 
-<!-- SISTEMA -->
+<!-- =========================================================
+     FIREBASE
+========================================================= -->
 
-<script type="module" src="js/app.js"></script>
-
-
-
-<!-- PRODUTOS -->
-
-<script type="module" src="js/produtos.js"></script>
-
+<script
+    type="module"
+    src="js/firebase.js">
+</script>
 
 
-<!-- AUTENTICAÇÃO -->
 
-<script type="module" src="js/auth.js"></script>
+<!-- =========================================================
+     SISTEMA
+========================================================= -->
 
+<script
+    type="module"
+    src="js/app.js">
+</script>
+
+
+
+<!-- =========================================================
+     PRODUTOS
+========================================================= -->
+
+<script
+    type="module"
+    src="js/produtos.js">
+</script>
+
+
+
+<!-- =========================================================
+     AUTENTICA??O
+========================================================= -->
+
+<script
+    type="module"
+    src="js/auth.js">
+</script>
+
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<script
+    src="js/sidebar.js">
+</script>
 
 
 </body>
-
 
 </html>

@@ -5,306 +5,523 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>Lotrix - Auditoria</title>
 
-<link rel="icon" href="img/favicon.png">
+<link rel="icon"
+      href="img/favicon.png">
 
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/sidebar.css">
-<link rel="stylesheet" href="css/tabela.css">
-<link rel="stylesheet" href="css/auditoria.css">
+<link rel="stylesheet"
+      href="css/style.css">
+
+<link rel="stylesheet"
+      href="css/sidebar.css">
+
+<link rel="stylesheet"
+      href="css/tabela.css">
+
+<link rel="stylesheet"
+      href="css/auditoria.css">
+
 </head>
 
 
 <body>
 
 
+<!-- ==========================================
+     BOT?O MENU
+=========================================== -->
+
+<button
+    class="menu-toggle"
+    id="menuToggle"
+    aria-label="Abrir menu">
+
+    ?
+
+</button>
+
+
+<!-- ==========================================
+     FUNDO ESCURO
+=========================================== -->
+
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay">
+</div>
+
+
+
 <div class="layout">
 
 
-<aside class="sidebar">
+<!-- ==========================================
+     SIDEBAR
+=========================================== -->
+
+<aside
+    class="sidebar"
+    id="sidebar">
+
+
+    <!-- BOT?O FECHAR -->
+
+    <button
+        class="sidebar-close"
+        id="sidebarClose"
+        aria-label="Fechar menu">
+
+        ?
+
+    </button>
+
+
+
+    <!-- LOGO -->
 
     <div class="logo-area">
-        <img src="img/logo.png" alt="Lotrix">
-        <h2>LOTRIX</h2>
-        <small>Food Safety Platform</small>
+
+        <img
+            src="img/logo.png"
+            alt="Lotrix">
+
+        <h2>
+            LOTRIX
+        </h2>
+
+        <small>
+            Food Safety Platform
+        </small>
+
     </div>
+
+
+
+    <!-- MENU -->
 
     <nav class="menu">
 
-        <div class="menu-section">
-            <span class="menu-title">GERAL</span>
 
-            <a href="dashboard.html" class="active">
-                <span>🏠</span>
-                <span class="nav-label">Dashboard</span>
+        <!-- GERAL -->
+
+        <div class="menu-section">
+
+            <span class="menu-title">
+                GERAL
+            </span>
+
+
+            <a href="dashboard.html">
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Dashboard
+                </span>
+
             </a>
+
         </div>
 
+
+
+        <!-- OPERA??O -->
+
         <div class="menu-section">
-            <span class="menu-title">OPERAÇÃO</span>
+
+            <span class="menu-title">
+                OPERA??O
+            </span>
+
 
             <a href="producao.html">
-                <span>⚙️</span>
-                <span class="nav-label">Produção</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Produ??o
+                </span>
+
             </a>
+
 
             <a href="produtos.html">
-                <span>📦</span>
-                <span class="nav-label">Produtos</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Produtos
+                </span>
+
             </a>
+
 
             <a href="etiquetas.html">
-                <span>🏷️</span>
-                <span class="nav-label">Etiquetas</span>
+
+                <span>???</span>
+
+                <span class="nav-label">
+                    Etiquetas
+                </span>
+
             </a>
+
 
             <a href="estoque.html">
-                <span>📚</span>
-                <span class="nav-label">Estoque</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Estoque
+                </span>
+
             </a>
+
         </div>
 
+
+
+        <!-- GEST?O -->
+
         <div class="menu-section">
-            <span class="menu-title">GESTÃO</span>
+
+            <span class="menu-title">
+                GEST?O
+            </span>
+
 
             <a href="relatorios.html">
-                <span>📈</span>
-                <span class="nav-label">Relatórios</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Relat?rios
+                </span>
+
             </a>
 
-            <a href="auditoria.html">
-                <span>📝</span>
-                <span class="nav-label">Auditoria</span>
+
+            <a
+                href="auditoria.html"
+                class="active">
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Auditoria
+                </span>
+
             </a>
+
 
             <a href="usuario.html">
-                <span>👥</span>
-                <span class="nav-label">Usuários</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Usu?rios
+                </span>
+
             </a>
+
         </div>
+
+
+
+        <!-- SISTEMA -->
 
         <div class="menu-section">
-            <span class="menu-title">SISTEMA</span>
+
+            <span class="menu-title">
+                SISTEMA
+            </span>
+
 
             <a href="configuracoes.html">
-                <span>⚙️</span>
-                <span class="nav-label">Configurações</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    Configura??es
+                </span>
+
             </a>
+
 
             <a href="ajuda.html">
-                <span>❓</span>
-                <span class="nav-label">Ajuda</span>
+
+                <span>?</span>
+
+                <span class="nav-label">
+                    Ajuda
+                </span>
+
             </a>
 
+
             <a href="sac.html">
-                <span>🎧</span>
-                <span class="nav-label">SAC</span>
+
+                <span>??</span>
+
+                <span class="nav-label">
+                    SAC
+                </span>
+
             </a>
+
         </div>
+
 
     </nav>
 
+
+
+    <!-- USU?RIO -->
+
     <div class="sidebar-footer">
 
-   <div class="user-card">
 
-    <div class="avatar">
-        👤
-    </div>
+        <div class="user-card">
 
-    <div>
-        <strong id="nomeUsuarioLogado">
-            Usuário
-        </strong>
 
-        <small id="perfilUsuarioLogado">
-            Carregando...
-        </small>
-    </div>
+            <div class="avatar">
+                ??
+            </div>
 
-</div>
+
+            <div>
+
+                <strong id="nomeUsuarioLogado">
+                    Usu?rio
+                </strong>
+
+
+                <small id="perfilUsuarioLogado">
+                    Carregando...
+                </small>
+
+            </div>
+
+
+        </div>
+
 
         <button onclick="logout()">
-            🚪 Sair
+
+            ?? Sair
+
         </button>
 
+
     </div>
+
 
 </aside>
 
 
 
+<!-- ==========================================
+     CONTE?DO
+=========================================== -->
 
 <main class="content">
 
 
+    <!-- CABE?ALHO -->
 
-<header class="top-header">
+    <header class="top-header">
 
 
-<div>
+        <div>
 
-<h1>
-📝 Auditoria
-</h1>
+            <h1>
+                ?? Auditoria
+            </h1>
 
 
-<p>
-Histórico de ações realizadas no Lotrix
-</p>
+            <p>
+                Hist?rico de a??es realizadas no Lotrix
+            </p>
 
+        </div>
 
-</div>
 
+    </header>
 
-</header>
 
 
+    <!-- A??ES -->
 
-<div class="acoes-relatorio">
+    <div class="acoes-relatorio">
 
 
-<button onclick="exportarExcel()">
+        <button
+            onclick="exportarExcel()">
 
-📊 Exportar Excel
+            ?? Exportar Excel
 
-</button>
+        </button>
 
 
-<button onclick="imprimirAuditoria()">
+        <button
+            onclick="imprimirAuditoria()">
 
-🖨️ Imprimir
+            ??? Imprimir
 
-</button>
+        </button>
 
 
-</div>
+    </div>
 
 
 
+    <!-- HIST?RICO -->
 
+    <section class="table-box">
 
-<section class="table-box">
 
+        <h2>
+            Hist?rico de a??es
+        </h2>
 
-<h2>
-Histórico de ações
-</h2>
 
 
-<div class="filtros-auditoria">
+        <!-- FILTROS -->
 
-<select id="filtroModulo">
+        <div class="filtros-auditoria">
 
-<option value="">
-Todos os módulos
-</option>
 
-<option value="Produtos">
-Produtos
-</option>
+            <select id="filtroModulo">
 
-<option value="Produção">
-Produção
-</option>
 
-<option value="Etiquetas">
-Etiquetas
-</option>
+                <option value="">
+                    Todos os m?dulos
+                </option>
 
-<option value="Estoque">
-Estoque
-</option>
 
-</select>
+                <option value="Produtos">
+                    Produtos
+                </option>
 
 
-<input 
-type="date" 
-id="filtroData"
->
+                <option value="Produ??o">
+                    Produ??o
+                </option>
 
 
-<button onclick="filtrarAuditoria()">
-🔎 Filtrar
-</button>
+                <option value="Etiquetas">
+                    Etiquetas
+                </option>
 
 
-</div>
+                <option value="Estoque">
+                    Estoque
+                </option>
 
 
+            </select>
 
-<table id="tabelaAuditoria">
 
 
-<thead>
+            <input
+                type="date"
+                id="filtroData">
 
-<tr>
 
-<th>
-Data
-</th>
 
+            <button
+                onclick="filtrarAuditoria()">
 
-<th>
-Usuário
-</th>
+                ?? Filtrar
 
+            </button>
 
-<th>
-Módulo
-</th>
 
+        </div>
 
-<th>
-Ação
-</th>
 
 
-<th>
-Detalhes
-</th>
+        <!-- TABELA -->
 
+        <div
+            style="
+                width:100%;
+                overflow-x:auto;
+            ">
 
-<th>
-Status
-</th>
 
+            <table id="tabelaAuditoria">
 
-</tr>
 
-</thead>
+                <thead>
 
+                    <tr>
 
 
-<tbody id="listaAuditoria">
+                        <th>
+                            Data
+                        </th>
 
 
-<tr>
+                        <th>
+                            Usu?rio
+                        </th>
 
-<td colspan="6">
 
-Carregando...
+                        <th>
+                            M?dulo
+                        </th>
 
-</td>
 
+                        <th>
+                            A??o
+                        </th>
 
-</tr>
 
+                        <th>
+                            Detalhes
+                        </th>
 
-</tbody>
 
+                        <th>
+                            Status
+                        </th>
 
 
-</table>
+                    </tr>
 
+                </thead>
 
-</section>
 
 
+                <tbody id="listaAuditoria">
+
+
+                    <tr>
+
+                        <td colspan="6">
+
+                            Carregando...
+
+                        </td>
+
+                    </tr>
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </section>
 
 
 </main>
@@ -314,16 +531,39 @@ Carregando...
 
 
 
-<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<!-- ==========================================
+     BIBLIOTECA EXCEL
+=========================================== -->
+
+<script
+    src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js">
+</script>
 
 
 
-<script type="module" src="js/auditoria.js"></script>
+<!-- ==========================================
+     JAVASCRIPT
+=========================================== -->
 
-<script type="module" src="js/auth.js"></script>
+<script
+    type="module"
+    src="js/auditoria.js">
+</script>
+
+
+<script
+    type="module"
+    src="js/auth.js">
+</script>
+
+
+<!-- SIDEBAR -->
+
+<script
+    src="js/sidebar.js">
+</script>
 
 
 </body>
 
 </html>
-

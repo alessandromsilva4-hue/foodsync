@@ -1093,7 +1093,7 @@ onAuthStateChanged(
 
 
         // ===================================
-        // EMPRESA OBRIGATÓRIA
+// EMPRESA OBRIGATÓRIA
         // ===================================
 
         if (!usuario.idEmpresa) {
@@ -1454,7 +1454,7 @@ window.debugEmpresa = function () {
 
 
     console.log(
-        "Permissões:",
+        "Permissµes:",
         usuario?.permissoes
     );
 

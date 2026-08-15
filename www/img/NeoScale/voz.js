@@ -10,7 +10,7 @@ console.log("NEOSCALE VOZ CARREGADO");
 
 
 // ==========================================
-// CONFIGURAÇÃO DA VOZ
+// CONFIGURA??O DA VOZ
 // ==========================================
 
 
@@ -20,10 +20,10 @@ const configuracaoVoz = {
 
     idioma: "pt-BR",
 
-    // Ritmo levemente mais calmo para uma locução natural e acolhedora.
+    // Ritmo levemente mais calmo para uma locu??o natural e acolhedora.
     velocidade: 1,
 
-    // Evita o tom agudo e robótico da configuração anterior.
+    // Evita o tom agudo e rob?tico da configura??o anterior.
     tom: 1
 
 };
@@ -31,7 +31,7 @@ const configuracaoVoz = {
 
 
 // ==========================================
-// SELEÇÃO DA VOZ
+// SELE??O DA VOZ
 // ==========================================
 
 
@@ -102,7 +102,7 @@ if(window.speechSynthesis){
 
 
 
-    // Alguns navegadores disponibilizam as vozes de forma assíncrona.
+    // Alguns navegadores disponibilizam as vozes de forma ass?ncrona.
     window.speechSynthesis.onvoiceschanged = escolherVoz;
 
 
@@ -112,7 +112,7 @@ if(window.speechSynthesis){
 
 
 // ==========================================
-// FUNÇÃO PRINCIPAL DE FALA
+// FUN??O PRINCIPAL DE FALA
 // ==========================================
 
 
@@ -131,7 +131,7 @@ function falar(texto){
 
 
         console.log(
-            "Voz não disponível neste navegador"
+            "Voz n?o dispon?vel neste navegador"
         );
 
 
@@ -187,7 +187,7 @@ function falar(texto){
 
 
     // Pequena pausa deixa as respostas menos abruptas, no estilo de uma
-    // assistente virtual, sem imitar uma voz proprietária.
+    // assistente virtual, sem imitar uma voz propriet?ria.
     mensagem.volume = 1;
 
 
@@ -218,7 +218,7 @@ function iniciarAtendimento(){
 
     falar(
 
-        "Bem vindo ao NeoScale. Coloque seu prato na balança."
+        "Bem vindo ao NeoScale. Coloque seu prato na balan?a."
 
     );
 
@@ -243,7 +243,7 @@ function vozAguardandoPeso(){
 
     falar(
 
-        "Coloque seu prato na balança."
+        "Coloque seu prato na balan?a."
 
     );
 
@@ -273,7 +273,7 @@ function vozPesoIdentificado(
 
 `Peso identificado.
 ${peso} quilogramas.
-O valor da sua refeição é ${valor}.`
+O valor da sua refei??o ? ${valor}.`
 
     );
 
@@ -298,7 +298,7 @@ function vozComanda(){
 
     falar(
 
-        "Sua comanda foi impressa. Obrigado pela preferência. Tenha uma excelente refeição."
+        "Sua comanda foi impressa. Obrigado pela prefer?ncia. Tenha uma excelente refei??o."
 
     );
 
@@ -320,7 +320,7 @@ function vozErro(){
 
     falar(
 
-        "Não foi possível realizar a pesagem. Por favor tente novamente."
+        "N?o foi poss?vel realizar a pesagem. Por favor tente novamente."
 
     );
 

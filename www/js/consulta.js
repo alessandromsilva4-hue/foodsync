@@ -1,5 +1,5 @@
 console.log("ARQUIVO CONSULTA NOVO CARREGADO");
-console.log("TESTE VERSÃO CONSULTA 23/07");
+console.log("TESTE VERS?O CONSULTA 23/07");
 import { db } from "./firebase.js";
 
 import {
@@ -16,7 +16,7 @@ const parametros = new URLSearchParams(window.location.search);
 
 const codigo = parametros.get("codigo");
 
-console.log("Código recebido pelo QR:", codigo);
+console.log("C?digo recebido pelo QR:", codigo);
 
 
 
@@ -60,7 +60,7 @@ function formatarData(data){
 
 }
 // =======================================
-// CONVERTER DATA PARA CÁLCULO
+// CONVERTER DATA PARA C?LCULO
 // =======================================
 
 function converterData(data){
@@ -146,7 +146,7 @@ function verificarValidade(dataValidade){
 
         return {
 
-            texto:"🔴 PRODUTO VENCIDO",
+            texto:"?? PRODUTO VENCIDO",
 
             classe:"vencido"
 
@@ -159,7 +159,7 @@ function verificarValidade(dataValidade){
 
         return {
 
-            texto:"🟡 VENCE HOJE",
+            texto:"?? VENCE HOJE",
 
             classe:"alerta"
 
@@ -170,7 +170,7 @@ function verificarValidade(dataValidade){
 
     return {
 
-        texto:`🟢 DENTRO DA VALIDADE - ${diferenca} dia(s) restante(s)`,
+        texto:`?? DENTRO DA VALIDADE - ${diferenca} dia(s) restante(s)`,
 
         classe:"valido"
 
@@ -195,7 +195,7 @@ async function buscarEtiqueta(){
 
             <div class="status vencido">
 
-            Etiqueta não encontrada.
+            Etiqueta n?o encontrada.
 
             </div>
 
@@ -209,17 +209,17 @@ async function buscarEtiqueta(){
 
 
 
-        const consulta = query(
+      const consulta = query(
 
-            collection(db,"etiquetas"),
+    collection(db,"consultasPublicas"),
 
-            where(
-                "codigo",
-                "==",
-                codigo.trim()
-            )
+    where(
+        "codigo",
+        "==",
+        codigo.trim()
+    )
 
-        );
+);
 
 
 
@@ -241,7 +241,7 @@ async function buscarEtiqueta(){
 
             <div class="status vencido">
 
-            Etiqueta inválida.
+            Etiqueta inv?lida.
 
             </div>
 
@@ -286,7 +286,7 @@ console.log(
 <div class="cabecalho-etiqueta">
 
 
-<h2>🥗 Lotrix</h2>
+<h2>?? Lotrix</h2>
 
 
 <span>
@@ -329,7 +329,7 @@ ${dados.temperatura || "-"}
 
 <div class="campo">
 
-<strong>Manipulação:</strong>
+<strong>Produzido:</strong>
 
 ${dados.dataProducao ? formatarData(dados.dataProducao) : "-"}
 
@@ -379,7 +379,7 @@ ${dados.lote || dados.codigo || "-"}
 
 <div class="campo">
 
-<strong>Responsável:</strong>
+<strong>Respons?vel:</strong>
 
 ${dados.responsavel || dados.usuario || "-"}
 
@@ -391,7 +391,7 @@ ${dados.responsavel || dados.usuario || "-"}
 
 <div class="campo">
 
-<strong>Observação:</strong>
+<strong>Observa??o:</strong>
 
 ${dados.observacao || "-"}
 
