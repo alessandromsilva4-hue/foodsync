@@ -7,375 +7,447 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Lotrix - Relat?rios</title>
+
+<title>Lotrix - Relatórios</title>
+
 
 <link rel="icon" href="img/favicon.png">
 
+
 <link rel="stylesheet" href="css/style.css">
+
 <link rel="stylesheet" href="css/sidebar.css">
+
 <link rel="stylesheet" href="css/tabela.css">
+
 
 </head>
 
+
+
 <body>
-
-<!-- BOT?O MENU -->
-<button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
-    ?
-</button>
-
-<!-- FUNDO ESCURO -->
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 
 <div class="layout">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
-
-        <!-- BOT?O FECHAR -->
-        <button class="sidebar-close" id="sidebarClose" aria-label="Fechar menu">
-            ?
-        </button>
 
 
-        <!-- LOGO -->
-        <div class="logo-area">
+<aside class="sidebar">
 
-            <img src="img/logo.png" alt="Lotrix">
+    <div class="logo-area">
+        <img src="img/logo.jpg" alt="Lotrix">
+        <h2>LOTRIX</h2>
+        <small>Food Safety Platform</small>
+    </div>
 
-            <h2>LOTRIX</h2>
+    <nav class="menu">
 
-            <small>Food Safety Platform</small>
+        <div class="menu-section">
+            <span class="menu-title">GERAL</span>
 
+            <a href="dashboard.html" class="active">
+                <span>🏠</span>
+                <span class="nav-label">Dashboard</span>
+            </a>
         </div>
 
+        <div class="menu-section">
+            <span class="menu-title">OPERAÇÃO</span>
 
-        <!-- MENU -->
-        <nav class="menu">
+            <a href="producao.html">
+                <span>⚙️</span>
+                <span class="nav-label">Produção</span>
+            </a>
 
-            <div class="menu-section">
+            <a href="produtos.html">
+                <span>📦</span>
+                <span class="nav-label">Produtos</span>
+            </a>
 
-                <span class="menu-title">
-                    GERAL
-                </span>
+            <a href="etiquetas.html">
+                <span>🏷️</span>
+                <span class="nav-label">Etiquetas</span>
+            </a>
 
-                <a href="dashboard.html">
-                    <span>??</span>
-                    <span class="nav-label">Dashboard</span>
-                </a>
-
-            </div>
-
-
-            <div class="menu-section">
-
-                <span class="menu-title">
-                    OPERA??O
-                </span>
-
-                <a href="producao.html">
-                    <span>??</span>
-                    <span class="nav-label">Produ??o</span>
-                </a>
-
-                <a href="produtos.html">
-                    <span>??</span>
-                    <span class="nav-label">Produtos</span>
-                </a>
-
-                <a href="etiquetas.html">
-                    <span>???</span>
-                    <span class="nav-label">Etiquetas</span>
-                </a>
-
-                <a href="estoque.html">
-                    <span>??</span>
-                    <span class="nav-label">Estoque</span>
-                </a>
-
-            </div>
-
-
-            <div class="menu-section">
-
-                <span class="menu-title">
-                    GEST?O
-                </span>
-
-                <a href="relatorios.html" class="active">
-                    <span>??</span>
-                    <span class="nav-label">Relat?rios</span>
-                </a>
-
-                <a href="auditoria.html">
-                    <span>??</span>
-                    <span class="nav-label">Auditoria</span>
-                </a>
-
-                <a href="usuario.html">
-                    <span>??</span>
-                    <span class="nav-label">Usu?rios</span>
-                </a>
-
-            </div>
-
-
-            <div class="menu-section">
-
-                <span class="menu-title">
-                    SISTEMA
-                </span>
-
-                <a href="configuracoes.html">
-                    <span>??</span>
-                    <span class="nav-label">Configura??es</span>
-                </a>
-
-                <a href="ajuda.html">
-                    <span>?</span>
-                    <span class="nav-label">Ajuda</span>
-                </a>
-
-                <a href="sac.html">
-                    <span>??</span>
-                    <span class="nav-label">SAC</span>
-                </a>
-
-            </div>
-
-        </nav>
-
-
-        <!-- USU?RIO -->
-        <div class="user-card">
-
-            <div class="avatar">
-                ??
-            </div>
-
-            <div>
-
-                <strong id="nomeUsuarioLogado">
-                    Usu?rio
-                </strong>
-
-                <small id="perfilUsuarioLogado">
-                    Carregando...
-                </small>
-
-            </div>
-
-            <button onclick="logout()">
-                ?? Sair
-            </button>
-
+            <a href="estoque.html">
+                <span>📚</span>
+                <span class="nav-label">Estoque</span>
+            </a>
         </div>
 
-    </aside>
+        <div class="menu-section">
+            <span class="menu-title">GESTÃO</span>
 
+            <a href="relatorios.html">
+                <span>📈</span>
+                <span class="nav-label">Relatórios</span>
+            </a>
 
-    <!-- CONTE?DO -->
-    <main class="content">
+            <a href="auditoria.html">
+                <span>📝</span>
+                <span class="nav-label">Auditoria</span>
+            </a>
 
-        <header class="top-header">
-
-            <div>
-
-                <h1>
-                    Relat?rios
-                </h1>
-
-                <p>
-                    An?lise dos dados do Lotrix
-                </p>
-
-            </div>
-
-        </header>
-
-
-        <!-- A??ES -->
-        <div class="acoes-relatorio">
-
-            <button onclick="exportarExcel()">
-                ?? Exportar Excel
-            </button>
-
-            <button onclick="exportarCSV()">
-                ?? Exportar CSV
-            </button>
-
-            <button onclick="imprimirRelatorio()">
-                ??? Imprimir
-            </button>
-
+            <a href="usuario.html">
+                <span>👥</span>
+                <span class="nav-label">Usuários</span>
+            </a>
         </div>
 
+        <div class="menu-section">
+            <span class="menu-title">SISTEMA</span>
 
-        <!-- CARDS -->
-        <section class="cards">
+            <a href="configuracoes.html">
+                <span>⚙️</span>
+                <span class="nav-label">Configurações</span>
+            </a>
 
-            <div class="card">
+            <a href="ajuda.html">
+                <span>❓</span>
+                <span class="nav-label">Ajuda</span>
+            </a>
 
-                <div class="card-icon">
-                    ??
-                </div>
+            <a href="sac.html">
+                <span>🎧</span>
+                <span class="nav-label">SAC</span>
+            </a>
+        </div>
 
-                <div>
+    </nav>
 
-                    <h3>
-                        Produ??es
-                    </h3>
+    <div class="user-card">
 
-                    <strong id="totalProducoes">
-                        0
-                    </strong>
+    <div class="avatar">
+        👤
+    </div>
 
-                </div>
+    <div>
+        <strong id="nomeUsuarioLogado">
+            Usuário
+        </strong>
 
-            </div>
-
-
-            <div class="card">
-
-                <div class="card-icon">
-                    ???
-                </div>
-
-                <div>
-
-                    <h3>
-                        Etiquetas
-                    </h3>
-
-                    <strong id="totalEtiquetas">
-                        0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="card-icon">
-                    ??
-                </div>
-
-                <div>
-
-                    <h3>
-                        Produtos
-                    </h3>
-
-                    <strong id="totalProdutos">
-                        0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="card-icon">
-                    ??
-                </div>
-
-                <div>
-
-                    <h3>
-                        Estoque Baixo
-                    </h3>
-
-                    <strong id="totalEstoqueBaixo">
-                        0
-                    </strong>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- GR?FICO -->
-        <section class="table-box">
-
-            <h2>
-                ?? Produ??o por Produto
-            </h2>
-
-            <canvas id="graficoProducao"></canvas>
-
-        </section>
-
-
-        <!-- ?LTIMAS PRODU??ES -->
-        <section class="table-box">
-
-            <h2>
-                ?ltimas Produ??es
-            </h2>
-
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            Produto
-                        </th>
-
-                        <th>
-                            Quantidade
-                        </th>
-
-                        <th>
-                            Respons?vel
-                        </th>
-
-                        <th>
-                            Data
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody id="relatorioProducao">
-
-                    <tr>
-
-                        <td colspan="4">
-                            Sem dados
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </section>
-
-    </main>
+        <small id="perfilUsuarioLogado">
+            Carregando...
+        </small>
+    </div>
 
 </div>
 
-<!-- BIBLIOTECAS -->
+        <button onclick="logout()">
+            🚪 Sair
+        </button>
+
+    </div>
+
+</aside>
+
+
+
+
+
+
+
+
+
+<main class="content">
+
+
+
+<header class="top-header">
+
+
+<div>
+
+
+<h1>
+Relatórios
+</h1>
+
+
+<p>
+Análise dos dados do Lotrix
+</p>
+
+
+</div>
+
+
+</header>
+
+
+<div class="acoes-relatorio">
+
+<button onclick="exportarExcel()">
+📊 Exportar Excel
+</button>
+
+
+<button onclick="exportarCSV()">
+📄 Exportar CSV
+</button>
+
+
+<button onclick="imprimirRelatorio()">
+🖨️ Imprimir
+</button>
+
+</div>
+
+
+
+
+
+<section class="cards">
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+🍱
+
+</div>
+
+
+<div>
+
+
+<h3>
+Produções
+</h3>
+
+
+<strong id="totalProducoes">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+🏷️
+
+</div>
+
+
+<div>
+
+
+<h3>
+Etiquetas
+</h3>
+
+
+<strong id="totalEtiquetas">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+📦
+
+</div>
+
+
+<div>
+
+
+<h3>
+Produtos
+</h3>
+
+
+<strong id="totalProdutos">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+⚠️
+
+</div>
+
+
+<div>
+
+
+<h3>
+Estoque Baixo
+</h3>
+
+
+<strong id="totalEstoqueBaixo">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+</section>
+
+<section class="table-box">
+
+<h2>
+📊 Produção por Produto
+</h2>
+
+<canvas id="graficoProducao"></canvas>
+
+</section>
+
+
+
+
+
+
+<section class="table-box">
+
+
+<h2>
+Últimas Produções
+</h2>
+
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+Produto
+</th>
+
+
+<th>
+Quantidade
+</th>
+
+
+<th>
+Responsável
+</th>
+
+
+<th>
+Data
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+<tbody id="relatorioProducao">
+
+
+<tr>
+
+<td colspan="4">
+
+Sem dados
+
+</td>
+
+
+</tr>
+
+
+</tbody>
+
+
+
+
+</table>
+
+
+</section>
+
+
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-
-
-<!-- FIREBASE -->
 
 <script type="module" src="js/firebase.js"></script>
 
@@ -386,9 +458,7 @@
 <script type="module" src="js/auth.js"></script>
 
 
-<!-- MENU LATERAL GLOBAL -->
-
-<script src="js/sidebar.js"></script>
 
 </body>
+
 </html>

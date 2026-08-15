@@ -1,5 +1,5 @@
 // =======================================
-// FOODSYNCH - RELAT?RIOS
+// FOODSYNCH - RELATÓRIOS
 // =======================================
 
 
@@ -50,7 +50,7 @@ document.getElementById("graficoProducao");
 
 
 // =======================================
-// CARREGAR RELAT?RIOS
+// CARREGAR RELATÓRIOS
 // =======================================
 
 
@@ -63,7 +63,7 @@ try{
 
 
 
-// PRODU??ES
+// PRODUÇÕES
 
 
 const producoes =
@@ -81,7 +81,7 @@ producoes.size;
 }
 
 // =======================================
-// GR?FICO PRODU??O POR PRODUTO
+// GRÁFICO PRODUÇÃO POR PRODUTO
 // =======================================
 
 if(graficoProducao){
@@ -274,7 +274,7 @@ baixo;
 
 
 
-// ?LTIMAS PRODU??ES
+// ÚLTIMAS PRODUÇÕES
 
 
 if(tabelaProducao){
@@ -403,7 +403,7 @@ ${formatarData(p.dataProducao)}
 
 console.error(
 
-"Erro nos relat?rios:",
+"Erro nos relatórios:",
 
 error
 
@@ -496,7 +496,7 @@ document.querySelector("table");
 
 if(!tabela){
 
-alert("Tabela n?o encontrada");
+alert("Tabela não encontrada");
 
 return;
 
@@ -536,7 +536,7 @@ document.querySelector("table");
 
 if(!tabela){
 
-alert("Tabela n?o encontrada");
+alert("Tabela não encontrada");
 
 return;
 
@@ -622,7 +622,7 @@ link.click();
 
 
 // =======================================
-// IMPRIMIR RELAT?RIO
+// IMPRIMIR RELATÓRIO
 // =======================================
 
 window.imprimirRelatorio = function(){

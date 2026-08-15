@@ -1,111 +1,65 @@
-/* ==========================================
-   LOTRIX - MENU LATERAL GLOBAL
-   Arquivo: www/js/sidebar.js
-========================================== */
+/* Menu lateral retrátil compartilhado por todas as telas. */
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
+    const sidebar = document.querySelector(".sidebar");
+    if (!sidebar) return;
 
-    const sidebar = document.getElementById("sidebar");
-    const menuToggle = document.getElementById("menuToggle");
-    const sidebarClose = document.getElementById("sidebarClose");
-    const sidebarOverlay = document.getElementById("sidebarOverlay");
+    sidebar.id ||= "sidebar";
 
-    /* Verifica se a p?gina possui o menu */
-    if (!sidebar || !menuToggle || !sidebarClose || !sidebarOverlay) {
-        return;
+    let menuToggle = document.getElementById("menuToggle");
+    if (!menuToggle) {
+        menuToggle = document.createElement("button");
+        menuToggle.id = "menuToggle";
+        menuToggle.className = "menu-toggle";
+        menuToggle.type = "button";
+        menuToggle.setAttribute("aria-label", "Abrir menu");
+        menuToggle.textContent = "☰";
+        document.body.prepend(menuToggle);
     }
 
+    let sidebarClose = document.getElementById("sidebarClose");
+    if (!sidebarClose) {
+        sidebarClose = document.createElement("button");
+        sidebarClose.id = "sidebarClose";
+        sidebarClose.className = "sidebar-close";
+        sidebarClose.type = "button";
+        sidebarClose.setAttribute("aria-label", "Fechar menu");
+        sidebarClose.textContent = "×";
+        sidebar.prepend(sidebarClose);
+    }
 
-    /* ==========================================
-       ABRIR MENU
-    ========================================== */
+    let sidebarOverlay = document.getElementById("sidebarOverlay");
+    if (!sidebarOverlay) {
+        sidebarOverlay = document.createElement("div");
+        sidebarOverlay.id = "sidebarOverlay";
+        sidebarOverlay.className = "sidebar-overlay";
+        document.body.append(sidebarOverlay);
+    }
 
     function abrirMenu() {
-
         sidebar.classList.add("open");
-
         sidebarOverlay.classList.add("active");
-
+        menuToggle.setAttribute("aria-expanded", "true");
+        sidebarClose.focus();
     }
-
-
-    /* ==========================================
-       FECHAR MENU
-    ========================================== */
 
     function fecharMenu() {
-
         sidebar.classList.remove("open");
-
         sidebarOverlay.classList.remove("active");
-
+        menuToggle.setAttribute("aria-expanded", "false");
     }
 
+    menuToggle.setAttribute("aria-controls", sidebar.id);
+    menuToggle.setAttribute("aria-expanded", "false");
+    menuToggle.addEventListener("click", abrirMenu);
+    sidebarClose.addEventListener("click", fecharMenu);
+    sidebarOverlay.addEventListener("click", fecharMenu);
 
-    /* ==========================================
-       BOT?O ?
-    ========================================== */
-
-    menuToggle.addEventListener("click", function (event) {
-
-        event.stopPropagation();
-
-        abrirMenu();
-
+    sidebar.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", fecharMenu);
     });
 
-
-    /* ==========================================
-       BOT?O ?
-    ========================================== */
-
-    sidebarClose.addEventListener("click", function () {
-
-        fecharMenu();
-
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") fecharMenu();
     });
-
-
-    /* ==========================================
-       TOCAR FORA
-    ========================================== */
-
-    sidebarOverlay.addEventListener("click", function () {
-
-        fecharMenu();
-
-    });
-
-
-    /* ==========================================
-       CLICAR EM ITEM DO MENU
-    ========================================== */
-
-    const links = sidebar.querySelectorAll("a");
-
-    links.forEach(function (link) {
-
-        link.addEventListener("click", function () {
-
-            fecharMenu();
-
-        });
-
-    });
-
-
-    /* ==========================================
-       TECLA ESC
-    ========================================== */
-
-    document.addEventListener("keydown", function (event) {
-
-        if (event.key === "Escape") {
-
-            fecharMenu();
-
-        }
-
-    });
-
 });

@@ -1,16 +1,16 @@
-// =======================================
+﻿// =======================================
 // LOTRIX - ETIQUETAS V14
 // FIRESTORE + MULTIEMPRESA ISOLADO
 //
-// COMPAT?VEL COM etiquetas.html
+// COMPATÍVEL COM etiquetas.html
 //
 // ETIQUETAS INDEPENDENTES
-// N?O PASSA POR PRODU??O
-// N?O PASSA POR ESTOQUE
-// N?O BAIXA ESTOQUE
-// N?O CRIA MOVIMENTA??O
+// NÃO PASSA POR PRODUÇÃO
+// NÃO PASSA POR ESTOQUE
+// NÃO BAIXA ESTOQUE
+// NÃO CRIA MOVIMENTAÇÃO
 //
-// IMPRESS?O RAW ZPL - ZD220
+// IMPRESSÃO RAW ZPL - ZD220
 // LOTRIX PRINTER SERVICE
 //
 // V14
@@ -21,12 +21,12 @@ console.log("=======================================");
 console.log("LOTRIX ETIQUETAS V14 CARREGADO");
 console.log("Firestore: MULTIEMPRESA ISOLADO");
 console.log("Etiquetas: INDEPENDENTES");
-console.log("Produ??o: N?O UTILIZADA");
-console.log("Estoque: N?O UTILIZADO");
-console.log("Movimenta??es: N?O UTILIZADAS");
-console.log("Impress?o: ZPL RAW");
+console.log("Produção: NÃO UTILIZADA");
+console.log("Estoque: NÃO UTILIZADO");
+console.log("Movimentações: NÃO UTILIZADAS");
+console.log("Impressão: ZPL RAW");
 console.log("Printer Service: HTTPS 192.168.0.109:9100");
-console.log("Layout: PADR?O DEFINITIVO");
+console.log("Layout: PADRÃO DEFINITIVO");
 console.log("=======================================");
 
 // =======================================
@@ -49,14 +49,14 @@ serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // =======================================
-// CONFIGURA??O DA IMPRESSORA
+// CONFIGURAÇÃO DA IMPRESSORA
 // =======================================
 
 const PRINTER_SERVICE_URL =
     "https://192.168.0.109:9100/print";
 
 // =======================================
-// VARI?VEIS
+// VARIÁVEIS
 // =======================================
 
 let produtos = [];
@@ -80,7 +80,7 @@ function obterElemento(id) {
 }
 
 // =======================================
-// USU?RIO ATUAL
+// USUÁRIO ATUAL
 // =======================================
 
 function usuarioAtual() {
@@ -103,7 +103,7 @@ function usuarioAtual() {
     } catch (error) {
 
         console.error(
-            "Erro ao carregar usu?rio:",
+            "Erro ao carregar usuário:",
             error
         );
 
@@ -125,7 +125,7 @@ function empresaAtual() {
     if (!usuario) {
 
         console.error(
-            "Usu?rio n?o encontrado."
+            "Usuário não encontrado."
         );
 
         return null;
@@ -135,7 +135,7 @@ function empresaAtual() {
     if (!usuario.idEmpresa) {
 
         console.error(
-            "ID da empresa n?o encontrado:",
+            "ID da empresa não encontrado:",
             usuario
         );
 
@@ -159,7 +159,7 @@ function verificarEmpresa() {
     if (!idEmpresa) {
 
         alert(
-            "N?o foi poss?vel identificar a empresa deste usu?rio."
+            "Não foi possível identificar a empresa deste usuário."
         );
 
         return false;
@@ -205,7 +205,7 @@ function limparZPL(valor) {
 }
 
 // =======================================
-// PRODUTO PERTENCE ? EMPRESA
+// PRODUTO PERTENCE À EMPRESA
 // =======================================
 
 function produtoPertenceEmpresa(
@@ -275,7 +275,7 @@ function formatarCNPJ(cnpj) {
 }
 
 // =======================================
-// GERAR C?DIGO DA ETIQUETA
+// GERAR CÓDIGO DA ETIQUETA
 // =======================================
 
 function gerarCodigoEtiqueta() {
@@ -290,10 +290,10 @@ function gerarCodigoEtiqueta() {
 // =======================================
 // GERAR URL DO QR CODE
 //
-// CORRE??O V14:
-// Esta fun??o fica fora de salvarEtiqueta()
-// para poder ser utilizada pela pr?via,
-// gerarZPL() e demais fun??es.
+// CORREÇÃO V14:
+// Esta função fica fora de salvarEtiqueta()
+// para poder ser utilizada pela prévia,
+// gerarZPL() e demais funções.
 // =======================================
 
 function gerarURLConsultaEtiqueta(
@@ -332,7 +332,7 @@ async function carregarDadosEmpresa() {
     if (!idEmpresa) {
 
         throw new Error(
-            "Empresa n?o identificada."
+            "Empresa não identificada."
         );
 
     }
@@ -354,7 +354,7 @@ async function carregarDadosEmpresa() {
         if (!snapshot.exists()) {
 
             console.warn(
-                "Documento da empresa n?o encontrado:",
+                "Documento da empresa não encontrado:",
                 idEmpresa
             );
 
@@ -431,7 +431,7 @@ async function carregarDadosEmpresa() {
 }
 
 // =======================================
-// ATUALIZAR EMPRESA NA PR?VIA
+// ATUALIZAR EMPRESA NA PRÉVIA
 // =======================================
 
 function atualizarInformacoesEmpresa() {
@@ -517,8 +517,8 @@ function atualizarInformacoesEmpresa() {
 // CARREGAR PRODUTOS
 // SOMENTE EMPRESA LOGADA
 //
-// N?O CONSULTA ESTOQUE
-// N?O CONSULTA PRODU??O
+// NÃO CONSULTA ESTOQUE
+// NÃO CONSULTA PRODUÇÃO
 // =======================================
 
 async function carregarProdutos() {
@@ -531,7 +531,7 @@ async function carregarProdutos() {
     if (!produtoSelect) {
 
         console.error(
-            "Elemento #produtoEtiqueta n?o encontrado."
+            "Elemento #produtoEtiqueta não encontrado."
         );
 
         return;
@@ -544,7 +544,7 @@ async function carregarProdutos() {
     if (!idEmpresa) {
 
         console.error(
-            "Empresa n?o identificada."
+            "Empresa não identificada."
         );
 
         return;
@@ -708,7 +708,7 @@ function produtoSelecionado() {
 }
 
 // =======================================
-// ATUALIZAR PR?VIA DO PRODUTO
+// ATUALIZAR PRÉVIA DO PRODUTO
 // =======================================
 
 function atualizarInformacoesProduto() {
@@ -822,7 +822,7 @@ function formatarDataInputDate(data) {
 }
 
 // =======================================
-// FORMATAR DATA PARA EXIBI??O
+// FORMATAR DATA PARA EXIBIÇÃO
 // =======================================
 
 function formatarDataEtiqueta(valor) {
@@ -909,7 +909,7 @@ function preencherDataAtual() {
     if (!campo) {
 
         console.warn(
-            "Campo #dataProducao n?o encontrado."
+            "Campo #dataProducao não encontrado."
         );
 
         return;
@@ -1017,7 +1017,7 @@ function calcularValidadeProduto() {
 }
 
 // =======================================
-// ATUALIZAR DATAS DA PR?VIA
+// ATUALIZAR DATAS DA PRÉVIA
 // =======================================
 
 function atualizarPreviaDatas() {
@@ -1095,7 +1095,7 @@ function gerarLote() {
 }
 
 // =======================================
-// ATUALIZAR RESPONS?VEL NA PR?VIA
+// ATUALIZAR RESPONSÁVEL NA PRÉVIA
 // =======================================
 
 function atualizarResponsavelPrevia() {
@@ -1116,12 +1116,12 @@ function atualizarResponsavelPrevia() {
 
     elemento.textContent =
         usuario?.nome ||
-        "N?o informado";
+        "Não informado";
 
 }
 
 // =======================================
-// ATUALIZAR TEMPERATURA NA PR?VIA
+// ATUALIZAR TEMPERATURA NA PRÉVIA
 // =======================================
 
 function atualizarTemperaturaPrevia() {
@@ -1147,7 +1147,7 @@ function atualizarTemperaturaPrevia() {
 }
 
 // =======================================
-// ATUALIZAR PR?VIA COMPLETA
+// ATUALIZAR PRÉVIA COMPLETA
 // =======================================
 
 function atualizarPrevia() {
@@ -1230,7 +1230,7 @@ function atualizarPrevia() {
 // =======================================
 // GERAR ZPL - ETIQUETA OFICIAL LOTRIX
 //
-// PADR?O DEFINITIVO
+// PADRÃO DEFINITIVO
 //
 // 480 x 480 DOTS
 // 60mm x 60mm
@@ -1241,10 +1241,10 @@ function atualizarPrevia() {
 // TEMPERATURA
 // PRODUZIDO
 // VALIDADE
-// RESPONS?VEL
+// RESPONSÁVEL
 // EMPRESA
 // CNPJ
-// ENDERE?O
+// ENDEREÇO
 // LOTE
 // QR CODE
 // =======================================
@@ -1331,7 +1331,7 @@ function gerarZPL(
     const resp =
         limparZPL(
             responsavel ||
-            "N?o informado"
+            "Não informado"
         );
 
     const codigo =
@@ -1341,7 +1341,7 @@ function gerarZPL(
         );
 
     // ===================================
-    // CONFIGURA??O ZPL
+    // CONFIGURAÇÃO ZPL
     // ===================================
 
     let zpl = "";
@@ -1429,7 +1429,7 @@ function gerarZPL(
 
 
     // ===================================
-    // RESPONS?VEL
+    // RESPONSÁVEL
     // ===================================
 
     zpl += "^FO25,184\n";
@@ -1463,7 +1463,7 @@ function gerarZPL(
 
 
     // ===================================
-    // ENDERE?O
+    // ENDEREÇO
     // ===================================
 
     if (endereco) {
@@ -1494,15 +1494,21 @@ function gerarZPL(
 // ===================================
 
 const urlConsulta =
-    gerarURLConsultaEtiqueta(
-        codigo
+    new URL(
+        "consulta.html",
+        window.location.href
     );
 
-if (codigo && urlConsulta) {
+urlConsulta.searchParams.set(
+    "codigo",
+    codigo
+);
+
+if (codigo) {
 
     zpl += "^FO350,335\n";
     zpl += "^BQN,3,3\n";
-    zpl += `^FDLA,${urlConsulta}^FS\n`;
+    zpl += `^FDLA,${urlConsulta.href}^FS\n`;
 
 }
 
@@ -1542,13 +1548,13 @@ async function imprimirEtiquetaDireto(
     ) {
 
         throw new Error(
-            "Quantidade de etiquetas inv?lida."
+            "Quantidade de etiquetas inválida."
         );
 
     }
 
     console.log("=======================================");
-    console.log("PREPARANDO IMPRESS?O DIRETA");
+    console.log("PREPARANDO IMPRESSÃO DIRETA");
 
     console.log(
         "PRODUTO:",
@@ -1646,7 +1652,7 @@ async function imprimirEtiquetaDireto(
         );
 
         throw new Error(
-            "N?o foi poss?vel conectar ao LOTRIX PRINTER SERVICE. Verifique se o server.js est? aberto no computador da impressora."
+            "Não foi possível conectar ao LOTRIX PRINTER SERVICE. Verifique se o server.js está aberto no computador da impressora."
         );
 
     }
@@ -1671,7 +1677,7 @@ async function imprimirEtiquetaDireto(
     }
 
     console.log(
-        "IMPRESS?O ENVIADA COM SUCESSO"
+        "IMPRESSÃO ENVIADA COM SUCESSO"
     );
 
     console.log(
@@ -1690,10 +1696,10 @@ async function imprimirEtiquetaDireto(
 //
 // SOMENTE /etiquetas
 //
-// N?O USA:
-// produ??o
+// NÃO USA:
+// produção
 // estoque
-// movimenta??es
+// movimentações
 // baixarEstoque()
 // =======================================
 
@@ -1712,7 +1718,7 @@ async function salvarEtiqueta() {
         if (!idEmpresa) {
 
             alert(
-                "Empresa n?o identificada."
+                "Empresa não identificada."
             );
 
             return;
@@ -1737,7 +1743,7 @@ async function salvarEtiqueta() {
         }
 
         // ===================================
-        // SEGURAN?A MULTIEMPRESA
+        // SEGURANÇA MULTIEMPRESA
         // ===================================
 
         if (
@@ -1748,7 +1754,7 @@ async function salvarEtiqueta() {
         ) {
 
             alert(
-                "Este produto n?o pertence ? empresa atual."
+                "Este produto não pertence à empresa atual."
             );
 
             return;
@@ -1756,7 +1762,7 @@ async function salvarEtiqueta() {
         }
 
         // ===================================
-        // USU?RIO
+        // USUÁRIO
         // ===================================
 
         const usuario =
@@ -1774,11 +1780,11 @@ async function salvarEtiqueta() {
         if (!campoQuantidade) {
 
             alert(
-                "Campo de quantidade n?o encontrado."
+                "Campo de quantidade não encontrado."
             );
 
             console.error(
-                "Elemento #quantidadeProducao n?o encontrado."
+                "Elemento #quantidadeProducao não encontrado."
             );
 
             return;
@@ -1799,7 +1805,7 @@ async function salvarEtiqueta() {
         ) {
 
             alert(
-                "Informe uma quantidade v?lida de etiquetas."
+                "Informe uma quantidade válida de etiquetas."
             );
 
             campoQuantidade.focus();
@@ -1809,7 +1815,7 @@ async function salvarEtiqueta() {
         }
 
         // ===================================
-        // DATA DE PRODU??O
+        // DATA DE PRODUÇÃO
         // ===================================
 
         const campoData =
@@ -1823,7 +1829,7 @@ async function salvarEtiqueta() {
         ) {
 
             alert(
-                "Informe a data de produ??o."
+                "Informe a data de produção."
             );
 
             return;
@@ -1843,7 +1849,7 @@ async function salvarEtiqueta() {
         if (!validade) {
 
             alert(
-                "N?o foi poss?vel calcular a validade do produto."
+                "Não foi possível calcular a validade do produto."
             );
 
             return;
@@ -1859,12 +1865,12 @@ async function salvarEtiqueta() {
             "AMBIENTE";
 
         // ===================================
-        // RESPONS?VEL
+        // RESPONSÁVEL
         // ===================================
 
         const responsavel =
             usuario?.nome ||
-            "N?o informado";
+            "Não informado";
 
         // ===================================
         // UNIDADE
@@ -1882,7 +1888,7 @@ async function salvarEtiqueta() {
             gerarLote();
 
         // ===================================
-        // C?DIGO
+        // CÓDIGO
         // ===================================
 
         const codigoEtiqueta =
@@ -1967,7 +1973,7 @@ async function salvarEtiqueta() {
         );
 
         console.log(
-            "C?DIGO:",
+            "CÓDIGO:",
             codigoEtiqueta
         );
 
@@ -2014,7 +2020,7 @@ async function salvarEtiqueta() {
             etiquetaRef.id
         );
 // ===================================
-// CRIAR CONSULTA P?BLICA DO QR
+// CRIAR CONSULTA PÚBLICA DO QR
 // ===================================
 
 await setDoc(
@@ -2060,7 +2066,7 @@ await setDoc(
     }
 );
         // ===================================
-        // GUARDAR ?LTIMA ETIQUETA
+        // GUARDAR ÚLTIMA ETIQUETA
         // ===================================
 
         ultimaEtiquetaGerada = {
@@ -2105,7 +2111,7 @@ await setDoc(
                         "ETIQUETA GERADA",
 
                     detalhes:
-                        `${produto.nome} - C?digo: ${codigoEtiqueta} - ${quantidade} etiqueta(s)`,
+                        `${produto.nome} - Código: ${codigoEtiqueta} - ${quantidade} etiqueta(s)`,
 
                     status:
                         "Sucesso",
@@ -2120,7 +2126,7 @@ await setDoc(
         } catch (error) {
 
             console.warn(
-                "N?o foi poss?vel registrar auditoria:",
+                "Não foi possível registrar auditoria:",
                 error
             );
 
@@ -2163,12 +2169,12 @@ await setDoc(
             } catch (error) {
 
                 console.error(
-                    "ERRO NA IMPRESS?O:",
+                    "ERRO NA IMPRESSÃO:",
                     error
                 );
 
                 alert(
-                    "A etiqueta foi salva, mas n?o foi poss?vel imprimir.\n\n" +
+                    "A etiqueta foi salva, mas não foi possível imprimir.\n\n" +
                     (
                         error.message ||
                         "Verifique o LOTRIX PRINTER SERVICE."
@@ -2189,7 +2195,7 @@ await setDoc(
         }
 
         // ===================================
-        // LIMPAR FORMUL?RIO
+        // LIMPAR FORMULÁRIO
         // ===================================
 
         if (formulario) {
@@ -2218,7 +2224,7 @@ await setDoc(
         gerarLote();
 
         // ===================================
-        // RECARREGAR HIST?RICO
+        // RECARREGAR HISTÓRICO
         // ===================================
 
         await carregarEtiquetas();
@@ -2431,7 +2437,7 @@ async function carregarEtiquetas() {
                             data-id="${escaparHTML(
                                 etiqueta.id
                             )}">
-                            ???
+                            🖨️
                         </button>
 
                         <button
@@ -2440,7 +2446,7 @@ async function carregarEtiquetas() {
                             data-id="${escaparHTML(
                                 etiqueta.id
                             )}">
-                            ???
+                            🗑️
                         </button>
 
                     </td>
@@ -2548,7 +2554,7 @@ async function imprimirEtiquetaExistente(
         ) {
 
             alert(
-                "Etiqueta n?o encontrada."
+                "Etiqueta não encontrada."
             );
 
             return;
@@ -2559,7 +2565,7 @@ async function imprimirEtiquetaExistente(
             snapshot.data();
 
         // ===================================
-        // SEGURAN?A MULTIEMPRESA
+        // SEGURANÇA MULTIEMPRESA
         // ===================================
 
         if (
@@ -2568,7 +2574,7 @@ async function imprimirEtiquetaExistente(
         ) {
 
             alert(
-                "Esta etiqueta n?o pertence ? empresa atual."
+                "Esta etiqueta não pertence à empresa atual."
             );
 
             return;
@@ -2609,7 +2615,7 @@ async function imprimirEtiquetaExistente(
                 "AMBIENTE",
 
             etiqueta.responsavel ||
-                "N?o informado",
+                "Não informado",
 
             etiqueta.codigo ||
                 "",
@@ -2639,7 +2645,7 @@ async function imprimirEtiquetaExistente(
 }
 
 // =======================================
-// BOT?O IMPRIMIR DA PR?VIA
+// BOTÃO IMPRIMIR DA PRÉVIA
 // =======================================
 
 async function imprimirEtiqueta() {
@@ -2649,7 +2655,7 @@ async function imprimirEtiqueta() {
     ) {
 
         alert(
-            "Nenhuma etiqueta foi gerada para impress?o."
+            "Nenhuma etiqueta foi gerada para impressão."
         );
 
         return;
@@ -2697,7 +2703,7 @@ async function imprimirEtiqueta() {
     } catch (error) {
 
         console.error(
-            "ERRO AO IMPRIMIR PR?VIA:",
+            "ERRO AO IMPRIMIR PRÉVIA:",
             error
         );
 
@@ -2757,7 +2763,7 @@ async function excluirEtiqueta(
         ) {
 
             alert(
-                "Etiqueta n?o encontrada."
+                "Etiqueta não encontrada."
             );
 
             return;
@@ -2768,7 +2774,7 @@ async function excluirEtiqueta(
             snapshot.data();
 
         // ===================================
-        // SEGURAN?A MULTIEMPRESA
+        // SEGURANÇA MULTIEMPRESA
         // ===================================
 
         if (
@@ -2777,7 +2783,7 @@ async function excluirEtiqueta(
         ) {
 
             alert(
-                "Esta etiqueta n?o pertence ? empresa atual."
+                "Esta etiqueta não pertence à empresa atual."
             );
 
             return;
@@ -2789,7 +2795,7 @@ async function excluirEtiqueta(
         );
 
         alert(
-            "Etiqueta exclu?da!"
+            "Etiqueta excluída!"
         );
 
         await carregarEtiquetas();
@@ -2810,7 +2816,7 @@ async function excluirEtiqueta(
 }
 
 // =======================================
-// LIMPAR HIST?RICO DE ETIQUETAS
+// LIMPAR HISTÓRICO DE ETIQUETAS
 // SOMENTE EMPRESA ATUAL
 // =======================================
 
@@ -2822,7 +2828,7 @@ async function limparHistoricoEtiquetas() {
     if (!idEmpresa) {
 
         alert(
-            "N?o foi poss?vel identificar a empresa atual."
+            "Não foi possível identificar a empresa atual."
         );
 
         return;
@@ -2857,7 +2863,7 @@ async function limparHistoricoEtiquetas() {
         ) {
 
             alert(
-                "N?o existem etiquetas no hist?rico desta empresa."
+                "Não existem etiquetas no histórico desta empresa."
             );
 
             return;
@@ -2870,10 +2876,10 @@ async function limparHistoricoEtiquetas() {
         const confirmar =
             confirm(
 
-                `?? ATEN??O!\n\n` +
-                `Existem ${quantidade} etiqueta(s) no hist?rico.\n\n` +
-                `Todas as etiquetas desta empresa ser?o apagadas.\n\n` +
-                `Esta a??o n?o poder? ser desfeita.\n\n` +
+                `⚠️ ATENÇÃO!\n\n` +
+                `Existem ${quantidade} etiqueta(s) no histórico.\n\n` +
+                `Todas as etiquetas desta empresa serão apagadas.\n\n` +
+                `Esta ação não poderá ser desfeita.\n\n` +
                 `Deseja realmente continuar?`
 
             );
@@ -2895,7 +2901,7 @@ async function limparHistoricoEtiquetas() {
                 true;
 
             botao.textContent =
-                "? Apagando...";
+                "⏳ Apagando...";
 
         }
 
@@ -2927,7 +2933,7 @@ async function limparHistoricoEtiquetas() {
         etiquetas = [];
 
         // ===================================
-        // ATUALIZAR HIST?RICO
+        // ATUALIZAR HISTÓRICO
         // ===================================
 
         await carregarEtiquetas();
@@ -2965,10 +2971,10 @@ async function limparHistoricoEtiquetas() {
                         "Etiquetas",
 
                     acao:
-                        "HIST?RICO DE ETIQUETAS LIMPO",
+                        "HISTÓRICO DE ETIQUETAS LIMPO",
 
                     detalhes:
-                        `${quantidade} etiqueta(s) exclu?da(s) do hist?rico.`,
+                        `${quantidade} etiqueta(s) excluída(s) do histórico.`,
 
                     status:
                         "Sucesso",
@@ -2983,26 +2989,26 @@ async function limparHistoricoEtiquetas() {
         } catch (error) {
 
             console.warn(
-                "N?o foi poss?vel registrar auditoria:",
+                "Não foi possível registrar auditoria:",
                 error
             );
 
         }
 
         alert(
-            `${quantidade} etiqueta(s) foram removidas do hist?rico.`
+            `${quantidade} etiqueta(s) foram removidas do histórico.`
         );
 
     } catch (error) {
 
         console.error(
-            "ERRO AO LIMPAR HIST?RICO:",
+            "ERRO AO LIMPAR HISTÓRICO:",
             error
         );
 
         alert(
             error.message ||
-            "Erro ao limpar o hist?rico de etiquetas."
+            "Erro ao limpar o histórico de etiquetas."
         );
 
     } finally {
@@ -3018,7 +3024,7 @@ async function limparHistoricoEtiquetas() {
                 false;
 
             botao.textContent =
-                "??? Limpar hist?rico";
+                "🗑️ Limpar histórico";
 
         }
 
@@ -3167,7 +3173,7 @@ window.testarImpressoraLotrix =
 
             alert(
                 error.message ||
-                "N?o foi poss?vel testar a impressora."
+                "Não foi possível testar a impressora."
             );
 
         }
@@ -3175,7 +3181,7 @@ window.testarImpressoraLotrix =
     };
 
 // =======================================
-// FUN??ES GLOBAIS
+// FUNÇÕES GLOBAIS
 // =======================================
 
 window.salvarEtiqueta =
@@ -3203,7 +3209,7 @@ window.limparHistoricoEtiquetas =
     limparHistoricoEtiquetas;
 
 // =======================================
-// INICIALIZA??O
+// INICIALIZAÇÃO
 // =======================================
 
 document.addEventListener(
@@ -3257,7 +3263,7 @@ document.addEventListener(
             await carregarProdutos();
 
             // ===================================
-            // PR?VIA
+            // PRÉVIA
             // ===================================
 
             atualizarInformacoesProduto();
@@ -3273,7 +3279,7 @@ document.addEventListener(
             await carregarEtiquetas();
 
             // ===================================
-            // FORMUL?RIO
+            // FORMULÁRIO
             // ===================================
 
             const formulario =
@@ -3382,7 +3388,7 @@ document.addEventListener(
 
             }
 // ===================================
-// BOT?O LIMPAR HIST?RICO
+// BOTÃO LIMPAR HISTÓRICO
 // ===================================
 
 const btnLimparHistorico =
@@ -3408,7 +3414,7 @@ if (btnLimparHistorico) {
 
             console.log("=======================================");
             console.log(
-                "M?DULO LOTRIX ETIQUETAS V14 PRONTO"
+                "MÓDULO LOTRIX ETIQUETAS V14 PRONTO"
             );
 
             console.log(
@@ -3443,7 +3449,7 @@ if (btnLimparHistorico) {
         } catch (error) {
 
             console.error(
-                "ERRO NA INICIALIZA??O:",
+                "ERRO NA INICIALIZAÇÃO:",
                 error
             );
 

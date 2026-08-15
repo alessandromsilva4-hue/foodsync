@@ -29,7 +29,7 @@ function obterDadosFormulario() {
 async function salvarConfiguracao() {
     const dados = obterDadosFormulario();
     if (!Number.isFinite(dados.precoKg) || dados.precoKg < 0) {
-        alert("Informe um pre?o por kg v?lido.");
+        alert("Informe um preço por kg v?lido.");
         campos.precoPadrao.focus();
         return;
     }
@@ -43,8 +43,8 @@ async function salvarConfiguracao() {
         localStorage.setItem("neoscale-tema-quiosque", dados.temaQuiosque);
         alert("Configura??es salvas!");
     } catch (erro) {
-        console.error("N?o foi poss?vel salvar as configura??es:", erro);
-        alert("N?o foi poss?vel salvar as configura??es. Verifique sua conex?o e tente novamente.");
+        console.error("Não foi possível salvar as configurações:", erro);
+        alert("Não foi possível salvar as configurações. Verifique sua conexão e tente novamente.");
     } finally {
         botaoSalvar.disabled = false;
         botaoSalvar.innerHTML = textoOriginal;
@@ -62,7 +62,7 @@ async function carregarConfiguracao() {
         campos.mensagemComanda.value = dados.mensagem || "";
         campos.temaQuiosque.value = dados.temaQuiosque || localStorage.getItem("neoscale-tema-quiosque") || "azul";
     } catch (erro) {
-        console.error("N?o foi poss?vel carregar as configura??es:", erro);
+        console.error("Não foi possível carregar as configurações:", erro);
     }
 }
 

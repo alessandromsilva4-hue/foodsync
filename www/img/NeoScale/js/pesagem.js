@@ -1,4 +1,4 @@
-/* Leitura autom?tica da balan?a e emiss?o da comanda. */
+/* Leitura autom?tica da balança e emiss?o da comanda. */
 import { db } from "./firebase.js";
 import { collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -34,13 +34,13 @@ async function carregarConfiguracao() {
         const dados = await getDoc(doc(db, "configuracoes", "principal"));
         if (dados.exists()) precoKg = dados.data().precoKg || precoKg;
     } catch (erro) {
-        console.error("N?o foi poss?vel carregar o pre?o por kg.", erro);
+        console.error("Não foi possível carregar o preço por kg.", erro);
     }
     if (precoKgDisplay) precoKgDisplay.textContent = formatarMoeda(precoKg);
 }
 
 async function gerarPreview(valor) {
-    let frase = { frase: "Uma boa refei??o transforma momentos.", autor: "NeoScale" };
+    let frase = { frase: "Uma boa refeição transforma momentos.", autor: "NeoScale" };
     if (window.NeoFrases) frase = await window.NeoFrases.buscarFrase();
 
     document.getElementById("previewComanda").textContent =
@@ -142,7 +142,7 @@ async function lerBalanca() {
 
 async function conectarBalanca() {
     if (!("serial" in navigator)) {
-        alert("Use o Google Chrome ou Microsoft Edge para conectar a balan?a por USB/serial.");
+        alert("Use o Google Chrome ou Microsoft Edge para conectar a balança por USB/serial.");
         return;
     }
     try {
@@ -154,8 +154,8 @@ async function conectarBalanca() {
         atualizarStatus("Aguardando prato", true);
         lerBalanca();
     } catch (erro) {
-        console.error("Erro ao conectar a balan?a.", erro);
-        atualizarStatus("N?o foi poss?vel conectar", false);
+        console.error("Erro ao conectar a balança.", erro);
+        atualizarStatus("Não foi possível conectar", false);
     }
 }
 
@@ -167,7 +167,7 @@ async function alternarTelaCheia() {
             await document.documentElement.requestFullscreen();
         }
     } catch (erro) {
-        console.error("N?o foi poss?vel alternar a tela cheia.", erro);
+        console.error("Não foi possível alternar a tela cheia.", erro);
     }
 }
 

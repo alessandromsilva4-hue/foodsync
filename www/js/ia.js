@@ -4,9 +4,31 @@
 
 console.log("IA.JS CARREGADO");
 
+const LIMITE_CARACTERES_IA = 2_000;
+const TEMPO_LIMITE_IA_MS = 20_000;
+
+function exibirRespostaIA(elemento, texto) {
+    elemento.replaceChildren();
+
+    const cartao = document.createElement("div");
+    cartao.className = "ia-resposta";
+
+    const titulo = document.createElement("div");
+    titulo.className = "ia-titulo";
+    titulo.textContent = "🤖 Lotrix AI";
+
+    const conteudo = document.createElement("div");
+    conteudo.className = "ia-texto";
+    conteudo.style.whiteSpace = "pre-wrap";
+    conteudo.textContent = texto;
+
+    cartao.append(titulo, conteudo);
+    elemento.append(cartao);
+}
+
 
 // ==========================================
-// PERGUNTAR ? IA
+// PERGUNTAR À IA
 // ==========================================
 
 async function perguntarIA(texto = null) {
@@ -17,7 +39,7 @@ async function perguntarIA(texto = null) {
     if (!campo) {
 
         console.error(
-            "Campo #mensagemIA n?o encontrado no HTML."
+            "Campo #mensagemIA não encontrado no HTML."
         );
 
         return;
@@ -26,14 +48,14 @@ async function perguntarIA(texto = null) {
     if (!resposta) {
 
         console.error(
-            "Elemento #respostaIA n?o encontrado no HTML."
+            "Elemento #respostaIA não encontrado no HTML."
         );
 
         return;
     }
 
 
-    // Se veio uma pergunta r?pida
+    // Se veio uma pergunta rápida
     // coloca ela no campo
 
     if (texto) {
@@ -45,20 +67,16 @@ async function perguntarIA(texto = null) {
 
 
     if (!mensagem) {
+        exibirRespostaIA(resposta, "Digite uma pergunta para continuar.");
 
-        resposta.innerHTML = `
-            <div class="ia-resposta">
+        return;
+    }
 
-                <div class="ia-titulo">
-                    ?? Lotrix AI
-                </div>
-
-                <div class="ia-texto">
-                    Digite uma pergunta para continuar.
-                </div>
-
-            </div>
-        `;
+    if (mensagem.length > LIMITE_CARACTERES_IA) {
+        exibirRespostaIA(
+            resposta,
+            `A pergunta deve ter no máximo ${LIMITE_CARACTERES_IA} caracteres.`
+        );
 
         return;
     }
@@ -68,19 +86,7 @@ async function perguntarIA(texto = null) {
     // CARREGANDO
     // ==========================================
 
-    resposta.innerHTML = `
-        <div class="ia-resposta">
-
-            <div class="ia-titulo">
-                ?? Lotrix AI
-            </div>
-
-            <div class="ia-texto">
-                ? Analisando informa??es...
-            </div>
-
-        </div>
-    `;
+    exibirRespostaIA(resposta, "⏳ Analisando informações...");
 
 
     try {
@@ -91,7 +97,16 @@ async function perguntarIA(texto = null) {
         );
 
 
-        const retorno = await fetch(
+        const controlador = new AbortController();
+        const limiteTempo = setTimeout(
+            () => controlador.abort(),
+            TEMPO_LIMITE_IA_MS
+        );
+
+        let retorno;
+
+        try {
+            retorno = await fetch(
             "https://foodsync-ai.onrender.com/ia",
             {
                 method: "POST",
@@ -102,9 +117,14 @@ async function perguntarIA(texto = null) {
 
                 body: JSON.stringify({
                     mensagem: mensagem
-                })
+                }),
+
+                signal: controlador.signal
             }
-        );
+            );
+        } finally {
+            clearTimeout(limiteTempo);
+        }
 
 
         if (!retorno.ok) {
@@ -131,19 +151,7 @@ async function perguntarIA(texto = null) {
             "Sem resposta da IA.";
 
 
-        resposta.innerHTML = `
-            <div class="ia-resposta">
-
-                <div class="ia-titulo">
-                    ?? Lotrix AI
-                </div>
-
-                <div class="ia-texto">
-                    ${textoResposta.replace(/\n/g, "<br>")}
-                </div>
-
-            </div>
-        `;
+        exibirRespostaIA(resposta, textoResposta);
 
 
         // Limpa o campo depois de enviar
@@ -159,19 +167,11 @@ async function perguntarIA(texto = null) {
         );
 
 
-        resposta.innerHTML = `
-            <div class="ia-resposta">
+        const mensagemErro = erro.name === "AbortError"
+            ? "❌ A consulta demorou demais. Tente novamente."
+            : "❌ Não foi possível conectar à Lotrix AI.";
 
-                <div class="ia-titulo">
-                    ?? Lotrix AI
-                </div>
-
-                <div class="ia-texto">
-                    ? N?o foi poss?vel conectar ? Lotrix AI.
-                </div>
-
-            </div>
-        `;
+        exibirRespostaIA(resposta, mensagemErro);
 
     }
 
@@ -180,7 +180,7 @@ async function perguntarIA(texto = null) {
 
 
 // ==========================================
-// PERGUNTAS R?PIDAS
+// PERGUNTAS RÁPIDAS
 // ==========================================
 
 async function perguntaRapida(texto) {
@@ -192,7 +192,7 @@ async function perguntaRapida(texto) {
 
 
 // ==========================================
-// DISPON?VEL PARA O HTML
+// DISPONÍVEL PARA O HTML
 // ==========================================
 
 window.perguntarIA = perguntarIA;
