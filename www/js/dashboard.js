@@ -2,9 +2,9 @@
 // LOTRIX - DASHBOARD
 // FIRESTORE + MULTIEMPRESA ISOLADO
 //
-// VERS?O CORRIGIDA
+// VERSÃO CORRIGIDA
 //
-// PRODU??O:
+// PRODUÇÃO:
 // SOMENTE EMPRESA ATUAL
 //
 // ETIQUETAS:
@@ -13,7 +13,7 @@
 // ESTOQUE:
 // SOMENTE EMPRESA ATUAL
 //
-// N?O MISTURA EMPRESAS
+// NÃO MISTURA EMPRESAS
 // =======================================
 
 import { db } from "./firebase.js";
@@ -34,7 +34,7 @@ let productionChart = null;
 
 
 // =======================================
-// USU?RIO ATUAL
+// USUÁRIO ATUAL
 // =======================================
 
 function usuarioAtual() {
@@ -49,7 +49,7 @@ function usuarioAtual() {
         if (!dados) {
 
             console.warn(
-                "usuarioFoodSync n?o encontrado."
+                "usuarioFoodSync não encontrado."
             );
 
             return null;
@@ -60,7 +60,7 @@ function usuarioAtual() {
             JSON.parse(dados);
 
         console.log(
-            "USU?RIO ATUAL:",
+            "USUÁRIO ATUAL:",
             usuario
         );
 
@@ -69,7 +69,7 @@ function usuarioAtual() {
     } catch (error) {
 
         console.error(
-            "Erro ao carregar usu?rio:",
+            "Erro ao carregar usuário:",
             error
         );
 
@@ -92,7 +92,7 @@ function empresaAtual() {
     if (!usuario) {
 
         console.error(
-            "Usu?rio n?o encontrado."
+            "Usuário não encontrado."
         );
 
         return null;
@@ -105,7 +105,7 @@ function empresaAtual() {
     if (!idEmpresa) {
 
         console.error(
-            "ID DA EMPRESA N?O ENCONTRADO NO USU?RIO:",
+            "ID DA EMPRESA NÃO ENCONTRADO NO USUÁRIO:",
             usuario
         );
 
@@ -135,7 +135,7 @@ function verificarEmpresa() {
     if (!idEmpresa) {
 
         console.error(
-            "N?o foi poss?vel identificar a empresa."
+            "Não foi possível identificar a empresa."
         );
 
         return false;
@@ -282,7 +282,7 @@ function isToday(value) {
 
 
 // =======================================
-// VERIFICAR DATA ESPECFICA
+// VERIFICAR DATA ESPECÍFICA
 // =======================================
 
 function isTodayFor(
@@ -321,7 +321,7 @@ function dateText(value) {
 
     if (!date) {
 
-        return "Data n?o informada";
+        return "Data não informada";
 
     }
 
@@ -461,7 +461,7 @@ function renderEmpty(
 
 
 // =======================================
-// DIAS AT? VENCIMENTO
+// DIAS ATÉ VENCIMENTO
 // =======================================
 
 function daysUntil(value) {
@@ -516,13 +516,13 @@ function renderActivity(
 
             container,
 
-            type === "produ??o"
+            type === "produção"
 
-                ? "Nenhuma produ??o registrada."
+                ? "Nenhuma produção registrada."
 
                 : "Nenhuma etiqueta emitida.",
 
-            type === "produ??o"
+            type === "produção"
 
                 ? "chef-hat"
 
@@ -554,7 +554,7 @@ function renderActivity(
 
                 const date =
 
-                    type === "produ??o"
+                    type === "produção"
 
                         ? (
 
@@ -579,7 +579,7 @@ function renderActivity(
 
 
                 if (
-                    type === "produ??o"
+                    type === "produção"
                 ) {
 
                     detail = `
@@ -592,7 +592,7 @@ function renderActivity(
                             item.unidade || "UN"
                         )}
 
-                        ?
+                        ·
 
                         ${dateText(date)}
 
@@ -607,10 +607,10 @@ function renderActivity(
                         ${escapeHtml(
                             item.lote ||
                             item.codigo ||
-                            ""
+                            "—"
                         )}
 
-                        ?
+                        ·
 
                         ${dateText(date)}
 
@@ -621,7 +621,7 @@ function renderActivity(
 
                 const icon =
 
-                    type === "produ??o"
+                    type === "produção"
 
                         ? "chef-hat"
 
@@ -689,7 +689,7 @@ function renderExpiring(
 
             container,
 
-            "Nenhum produto pr?ximo do vencimento.",
+            "Nenhum produto próximo do vencimento.",
 
             "circle-check"
 
@@ -748,7 +748,7 @@ function renderExpiring(
                 } else if (days === 1) {
 
                     label =
-                        "Vence amanh?";
+                        "Vence amanhã";
 
                 } else {
 
@@ -781,10 +781,10 @@ function renderExpiring(
                                 ${escapeHtml(
                                     item.lote ||
                                     item.codigo ||
-                                    ""
+                                    "—"
                                 )}
 
-                                ?
+                                ·
 
                                 ${dateText(
                                     item.validade
@@ -813,7 +813,7 @@ function renderExpiring(
 
 
 // =======================================
-// ESTOQUE CR?TICO
+// ESTOQUE CRÍTICO
 // =======================================
 
 function renderStock(
@@ -838,7 +838,7 @@ function renderStock(
 
             container,
 
-            "Estoque dentro do n?vel m?nimo.",
+            "Estoque dentro do nível mínimo.",
 
             "circle-check"
 
@@ -883,9 +883,9 @@ function renderStock(
                                     item.unidade || "UN"
                                 )}
 
-                                dispon?veis
+                                disponíveis
 
-                                ? m?nimo
+                                · mínimo
 
                                 ${Number(
                                     item.minimo || 0
@@ -988,7 +988,7 @@ function renderTopProducts(
 
             container,
 
-            "Ainda n?o h? produ??es registradas.",
+            "Ainda não há produções registradas.",
 
             "package"
 
@@ -1075,7 +1075,7 @@ function renderTopProducts(
 
 
 // =======================================
-// GR?FICO
+// GRÁFICO
 // =======================================
 
 function renderChart(
@@ -1088,7 +1088,7 @@ function renderChart(
     ) {
 
         console.warn(
-            "Chart.js n?o carregado."
+            "Chart.js não carregado."
         );
 
         return;
@@ -1303,7 +1303,7 @@ function renderChart(
 
 
 // =======================================
-// SAUDAO
+// SAUDAÇÃO
 // =======================================
 
 function updateGreeting() {
@@ -1338,7 +1338,7 @@ function updateGreeting() {
 
         "saudacao",
 
-        `${period}, ${user.nome || "gestor"} ??`
+        `${period}, ${user.nome || "gestor"} 👋`
 
     );
 
@@ -1369,7 +1369,7 @@ function updateGreeting() {
 
 
 // =======================================
-// CARREGAR COLEO
+// CARREGAR COLEÇÃO
 //
 // MULTIEMPRESA
 // =======================================
@@ -1382,11 +1382,11 @@ async function loadCollection(
     try {
 
         console.log(
-            `CARREGANDO ${collectionName}`
+            `📥 CARREGANDO ${collectionName}`
         );
 
         console.log(
-            "EMPRESA:",
+            "🏢 EMPRESA:",
             idEmpresa
         );
 
@@ -1445,7 +1445,7 @@ async function loadCollection(
 
         console.log(
 
-            `OK ${collectionName.toUpperCase()} DA EMPRESA ${idEmpresa}:`,
+            `✅ ${collectionName.toUpperCase()} DA EMPRESA ${idEmpresa}:`,
 
             data.length
 
@@ -1458,7 +1458,7 @@ async function loadCollection(
 
         console.error(
 
-            `ERRO AO CARREGAR ${collectionName.toUpperCase()}:`,
+            `❌ ERRO AO CARREGAR ${collectionName.toUpperCase()}:`,
 
             error
 
@@ -1466,7 +1466,7 @@ async function loadCollection(
 
 
         console.error(
-            "Cdigo do erro:",
+            "Código do erro:",
             error?.code
         );
 
@@ -1514,7 +1514,7 @@ async function loadDashboard() {
     if (!idEmpresa) {
 
         console.error(
-            "DASHBOARD BLOQUEADO: EMPRESA N?O IDENTIFICADA."
+            "DASHBOARD BLOQUEADO: EMPRESA NÃO IDENTIFICADA."
         );
 
         setValue(
@@ -1573,7 +1573,7 @@ async function loadDashboard() {
 
 
     // =================================
-    // PRODU??ES
+    // PRODUÇÕES
     // =================================
 
     productions =
@@ -1631,7 +1631,7 @@ async function loadDashboard() {
     );
 
     console.log(
-        "TOTAL PRODU??ES:",
+        "TOTAL PRODUÇÕES:",
         productions.length
     );
 
@@ -1651,7 +1651,7 @@ async function loadDashboard() {
 
 
     // =================================
-    // ESTOQUE CR?TICO
+    // ESTOQUE CRÍTICO
     // =================================
 
     const criticalStock =
@@ -1726,7 +1726,7 @@ async function loadDashboard() {
 
 
     // =================================
-    // M?TRICAS
+    // MÉTRICAS
     // =================================
 
     const producoesHoje =
@@ -1748,21 +1748,41 @@ async function loadDashboard() {
 
     const etiquetasHoje =
 
-        labels.filter(
+        labels
 
-            item =>
+            .filter(
 
-                isToday(
+                item =>
 
-                    item.criadoEm ||
+                    isToday(
 
-                    item.dataEtiqueta ||
+                        item.criadoEm ||
 
-                    item.dataProducao
+                        item.dataEtiqueta ||
 
-                )
+                        item.dataProducao
 
-        ).length;
+                    )
+
+            )
+
+            .reduce(
+
+                (total, item) => {
+
+                    const quantidade =
+                        Number(item.quantidade);
+
+                    return total +
+                        (Number.isFinite(quantidade) && quantidade > 0
+                            ? quantidade
+                            : 1);
+
+                },
+
+                0
+
+            );
 
 
     const vencendoHoje =
@@ -1821,7 +1841,7 @@ async function loadDashboard() {
 
 
     // =================================
-    // LISTA DE PRODU??ES
+    // LISTA DE PRODUÇÕES
     // =================================
 
     renderActivity(
@@ -1860,7 +1880,7 @@ async function loadDashboard() {
 
         ),
 
-        "produ??o"
+        "produção"
 
     );
 
@@ -1942,7 +1962,7 @@ async function loadDashboard() {
 
 
     // =================================
-    // GR?FICO
+    // GRÁFICO
     // =================================
 
     renderChart(
@@ -1951,7 +1971,7 @@ async function loadDashboard() {
 
 
     // =================================
-    // ?CONES
+    // ÍCONES
     // =================================
 
     if (
@@ -1969,7 +1989,7 @@ async function loadDashboard() {
 
 
     // =================================
-    // FINALIZAO
+    // FINALIZAÇÃO
     // =================================
 
     removeLoading();
@@ -1980,7 +2000,7 @@ async function loadDashboard() {
     );
 
     console.log(
-        "? DASHBOARD FINALIZADO"
+        "✅ DASHBOARD FINALIZADO"
     );
 
     console.log(
@@ -1989,7 +2009,7 @@ async function loadDashboard() {
     );
 
     console.log(
-        "PRODU??ES:",
+        "PRODUÇÕES:",
         productions.length
     );
 
@@ -2050,14 +2070,14 @@ async function initDashboard() {
 
 
         console.log(
-            "? DASHBOARD CARREGADO COM SUCESSO"
+            "✅ DASHBOARD CARREGADO COM SUCESSO"
         );
 
 
     } catch (error) {
 
         console.error(
-            "? ERRO AO INICIAR DASHBOARD:",
+            "❌ ERRO AO INICIAR DASHBOARD:",
             error
         );
 

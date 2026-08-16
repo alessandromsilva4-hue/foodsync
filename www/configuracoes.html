@@ -8,19 +8,13 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
-<title>Lotrix - Configura??es</title>
+<title>Lotrix - Configurações</title>
 
-<link rel="icon"
-      href="img/favicon.png">
+<link rel="icon" href="img/favicon.png">
 
-<link rel="stylesheet"
-      href="css/style.css">
-
-<link rel="stylesheet"
-      href="css/sidebar.css">
-
-<link rel="stylesheet"
-      href="css/formulario.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/formulario.css">
 
 </head>
 
@@ -28,23 +22,25 @@
 <body>
 
 
-<!-- ==========================================
-     BOT?O MENU MOBILE / TABLET
-=========================================== -->
+<!-- =========================================================
+     BOTÃO MENU
+========================================================= -->
 
 <button
     class="menu-toggle"
     id="menuToggle"
-    aria-label="Abrir menu">
+    aria-label="Abrir menu"
+    type="button">
 
-    ?
+    ☰
 
 </button>
 
 
-<!-- ==========================================
+
+<!-- =========================================================
      FUNDO ESCURO
-=========================================== -->
+========================================================= -->
 
 <div
     class="sidebar-overlay"
@@ -56,23 +52,24 @@
 <div class="layout">
 
 
-<!-- ==========================================
+<!-- =========================================================
      SIDEBAR
-=========================================== -->
+========================================================= -->
 
 <aside
     class="sidebar"
     id="sidebar">
 
 
-    <!-- BOT?O FECHAR -->
+    <!-- BOTÃO FECHAR -->
 
     <button
         class="sidebar-close"
         id="sidebarClose"
-        aria-label="Fechar menu">
+        aria-label="Fechar menu"
+        type="button">
 
-        ?
+        ×
 
     </button>
 
@@ -98,9 +95,9 @@
 
 
 
-    <!-- ======================================
+    <!-- =====================================================
          MENU
-    ======================================= -->
+    ====================================================== -->
 
     <nav class="menu">
 
@@ -116,7 +113,7 @@
 
             <a href="dashboard.html">
 
-                <span>??</span>
+                <span>🏠</span>
 
                 <span class="nav-label">
                     Dashboard
@@ -128,21 +125,21 @@
 
 
 
-        <!-- OPERA??O -->
+        <!-- OPERAÇÃO -->
 
         <div class="menu-section">
 
             <span class="menu-title">
-                OPERA??O
+                OPERAÇÃO
             </span>
 
 
             <a href="producao.html">
 
-                <span>??</span>
+                <span>⚙️</span>
 
                 <span class="nav-label">
-                    Produ??o
+                    Produção
                 </span>
 
             </a>
@@ -150,7 +147,7 @@
 
             <a href="produtos.html">
 
-                <span>??</span>
+                <span>📦</span>
 
                 <span class="nav-label">
                     Produtos
@@ -161,7 +158,7 @@
 
             <a href="etiquetas.html">
 
-                <span>???</span>
+                <span>🏷️</span>
 
                 <span class="nav-label">
                     Etiquetas
@@ -172,7 +169,7 @@
 
             <a href="estoque.html">
 
-                <span>??</span>
+                <span>📚</span>
 
                 <span class="nav-label">
                     Estoque
@@ -184,21 +181,21 @@
 
 
 
-        <!-- GEST?O -->
+        <!-- GESTÃO -->
 
         <div class="menu-section">
 
             <span class="menu-title">
-                GEST?O
+                GESTÃO
             </span>
 
 
             <a href="relatorios.html">
 
-                <span>??</span>
+                <span>📈</span>
 
                 <span class="nav-label">
-                    Relat?rios
+                    Relatórios
                 </span>
 
             </a>
@@ -206,7 +203,7 @@
 
             <a href="auditoria.html">
 
-                <span>??</span>
+                <span>📝</span>
 
                 <span class="nav-label">
                     Auditoria
@@ -217,10 +214,10 @@
 
             <a href="usuario.html">
 
-                <span>??</span>
+                <span>👥</span>
 
                 <span class="nav-label">
-                    Usu?rios
+                    Usuários
                 </span>
 
             </a>
@@ -242,10 +239,10 @@
                 href="configuracoes.html"
                 class="active">
 
-                <span>??</span>
+                <span>⚙️</span>
 
                 <span class="nav-label">
-                    Configura??es
+                    Configurações
                 </span>
 
             </a>
@@ -253,7 +250,7 @@
 
             <a href="ajuda.html">
 
-                <span>?</span>
+                <span>❓</span>
 
                 <span class="nav-label">
                     Ajuda
@@ -264,29 +261,13 @@
 
             <a href="sac.html">
 
-                <span>??</span>
+                <span>🎧</span>
 
                 <span class="nav-label">
                     SAC
                 </span>
 
             </a>
-
-
-            <!-- ZERAR SISTEMA -->
-
-            <a
-                href="zerar-sistema.html"
-                class="menu-perigo">
-
-                <span>??</span>
-
-                <span class="nav-label">
-                    Zerar Sistema
-                </span>
-
-            </a>
-
 
         </div>
 
@@ -295,9 +276,9 @@
 
 
 
-    <!-- ======================================
-         USU?RIO
-    ======================================= -->
+    <!-- =====================================================
+         USUÁRIO
+    ====================================================== -->
 
     <div class="sidebar-footer">
 
@@ -306,14 +287,14 @@
 
 
             <div class="avatar">
-                ??
+                👤
             </div>
 
 
             <div>
 
                 <strong id="nomeUsuarioLogado">
-                    Usu?rio
+                    Usuário
                 </strong>
 
 
@@ -327,9 +308,11 @@
         </div>
 
 
-        <button onclick="logout()">
+        <button
+            type="button"
+            onclick="logout()">
 
-            ?? Sair
+            🚪 Sair
 
         </button>
 
@@ -341,251 +324,224 @@
 
 
 
-<!-- ==========================================
-     CONTE?DO
-=========================================== -->
+<!-- =========================================================
+     CONTEÚDO
+========================================================= -->
 
 <main class="content">
 
 
-    <!-- CABE?ALHO -->
+<header class="top-header">
 
-    <header class="top-header">
 
+    <div>
 
-        <div>
+        <h1>
+            ⚙️ Configurações
+        </h1>
 
 
-            <h1>
-                Configura??es
-            </h1>
+        <p>
+            Configurações gerais do sistema
+        </p>
 
+    </div>
 
-            <p>
-                Configura??es gerais do sistema
-            </p>
 
+</header>
 
-        </div>
 
 
-    </header>
+<!-- =========================================================
+     CONFIGURAÇÕES
+========================================================= -->
 
+<section class="form-box">
 
 
-    <!-- ======================================
-         CONFIGURA??ES
-    ======================================= -->
+    <h2>
+        Configurações Gerais
+    </h2>
 
-    <section class="form-box">
 
 
-        <h2>
-            Configura??es Gerais
-        </h2>
+    <form id="configForm">
 
 
+        <div class="form-grid">
 
-        <form id="configForm">
 
+            <!-- NOME DO SISTEMA -->
 
-            <div class="form-grid">
+            <div class="input-group">
 
+                <label for="nomeSistema">
+                    Nome do Sistema
+                </label>
 
-                <!-- NOME DO SISTEMA -->
 
-                <div class="input-group">
-
-                    <label>
-                        Nome do Sistema
-                    </label>
-
-
-                    <input
-                        type="text"
-                        id="nomeSistema"
-                        value="Lotrix">
-
-                </div>
-
-
-
-                <!-- TEMA -->
-
-                <div class="input-group">
-
-                    <label
-                        for="temaSistema">
-
-                        Tema da interface
-
-                    </label>
-
-
-                    <select
-                        id="temaSistema"
-                        aria-describedby="ajudaTema">
-
-
-                        <option value="auto">
-
-                            Autom?tico
-                            (seguir dispositivo)
-
-                        </option>
-
-
-                        <option value="light">
-
-                            Modo claro
-
-                        </option>
-
-
-                        <option value="dark">
-
-                            Modo escuro
-
-                        </option>
-
-
-                    </select>
-
-
-                    <small
-                        id="ajudaTema"
-                        class="input-help">
-
-                        Voc? pode deixar o Lotrix acompanhar
-                        o tema do seu dispositivo ou definir
-                        uma prefer?ncia.
-
-                    </small>
-
-                </div>
-
-
-
-                <!-- TAMANHO ETIQUETA -->
-
-                <div class="input-group">
-
-                    <label>
-                        Tamanho da Etiqueta
-                    </label>
-
-
-                    <select
-                        id="tamanhoEtiqueta">
-
-
-                        <option>
-                            60x60 mm
-                        </option>
-
-
-                        <option>
-                            80x50 mm
-                        </option>
-
-
-                        <option>
-                            100x50 mm
-                        </option>
-
-
-                        <option>
-                            Personalizado
-                        </option>
-
-
-                    </select>
-
-                </div>
-
-
-
-                <!-- VALIDADE -->
-
-                <div class="input-group">
-
-                    <label>
-                        Validade Padr?o (dias)
-                    </label>
-
-
-                    <input
-                        type="number"
-                        id="validadePadrao"
-                        value="1"
-                        min="1">
-
-                </div>
-
-
-
-                <!-- IMPRESSORA -->
-
-                <div class="input-group">
-
-                    <label>
-                        Impressora
-                    </label>
-
-
-                    <input
-                        type="text"
-                        id="impressora"
-                        placeholder="Nome da impressora">
-
-                </div>
-
-
-
-                <!-- QR CODE -->
-
-                <div class="input-group">
-
-                    <label>
-                        QR Code
-                    </label>
-
-
-                    <select id="qrCode">
-
-
-                        <option value="sim">
-                            Ativado
-                        </option>
-
-
-                        <option value="nao">
-                            Desativado
-                        </option>
-
-
-                    </select>
-
-                </div>
-
+                <input
+                    type="text"
+                    id="nomeSistema"
+                    value="Lotrix">
 
             </div>
 
 
 
-            <!-- SALVAR -->
+            <!-- TEMA -->
 
-            <button type="submit">
+            <div class="input-group">
 
-                ?? Salvar Configura??es
-
-            </button>
-
-
-        </form>
+                <label for="temaSistema">
+                    Tema da interface
+                </label>
 
 
-    </section>
+                <select
+                    id="temaSistema"
+                    aria-describedby="ajudaTema">
+
+                    <option value="auto">
+                        Automático (seguir dispositivo)
+                    </option>
+
+                    <option value="light">
+                        Modo claro
+                    </option>
+
+                    <option value="dark">
+                        Modo escuro
+                    </option>
+
+                </select>
+
+
+                <small
+                    id="ajudaTema"
+                    class="input-help">
+
+                    Você pode deixar o Lotrix acompanhar o
+                    tema do seu dispositivo ou definir uma preferência.
+
+                </small>
+
+            </div>
+
+
+
+            <!-- TAMANHO DA ETIQUETA -->
+
+            <div class="input-group">
+
+                <label for="tamanhoEtiqueta">
+                    Tamanho da Etiqueta
+                </label>
+
+
+                <select id="tamanhoEtiqueta">
+
+                    <option value="60x60 mm">
+                        60x60 mm
+                    </option>
+
+                    <option value="80x50 mm">
+                        80x50 mm
+                    </option>
+
+                    <option value="100x50 mm">
+                        100x50 mm
+                    </option>
+
+                    <option value="Personalizado">
+                        Personalizado
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- VALIDADE -->
+
+            <div class="input-group">
+
+                <label for="validadePadrao">
+                    Validade Padrão (dias)
+                </label>
+
+
+                <input
+                    type="number"
+                    id="validadePadrao"
+                    value="1"
+                    min="1">
+
+            </div>
+
+
+
+            <!-- IMPRESSORA -->
+
+            <div class="input-group">
+
+                <label for="impressora">
+                    Impressora
+                </label>
+
+
+                <input
+                    type="text"
+                    id="impressora"
+                    placeholder="Nome da impressora">
+
+            </div>
+
+
+
+            <!-- QR CODE -->
+
+            <div class="input-group">
+
+                <label for="qrCode">
+                    QR Code
+                </label>
+
+
+                <select id="qrCode">
+
+                    <option value="sim">
+                        Ativado
+                    </option>
+
+                    <option value="nao">
+                        Desativado
+                    </option>
+
+                </select>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- BOTÃO -->
+
+        <button
+            type="submit">
+
+            💾 Salvar Configurações
+
+        </button>
+
+
+    </form>
+
+
+</section>
 
 
 </main>
@@ -595,9 +551,9 @@
 
 
 
-<!-- ==========================================
+<!-- =========================================================
      JAVASCRIPT
-=========================================== -->
+========================================================= -->
 
 <script
     type="module"
@@ -623,9 +579,11 @@
 </script>
 
 
-<!-- SIDEBAR -->
+<!-- MENU LATERAL -->
 
-<script src="js/sidebar.js"></script>
+<script
+    src="js/sidebar.js">
+</script>
 
 
 </body>

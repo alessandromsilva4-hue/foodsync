@@ -1,6 +1,6 @@
 // =======================================
-// LOTRIX - AUTENTICAÇÃO E PERMISSÕES
-// MULTIEMPRESA
+// FOODSYNC - AUTENTICAÇÃO E PERMISSÕES
+// V10 - MULTIEMPRESA 4 EMPRESAS
 // =======================================
 
 import "./design-system.js";
@@ -13,7 +13,8 @@ import {
     createUserWithEmailAndPassword,
     sendPasswordResetEmail,
     deleteUser
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
     collection,
@@ -22,65 +23,470 @@ import {
     doc,
     getDoc,
     setDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-console.log("LOTRIX AUTH.JS CARREGADO - MULTIEMPRESA");
 
-
-// =======================================
-// CHAVES
-// =======================================
-
-const CHAVE_USUARIO = "usuarioFoodSync";
-const CHAVE_EMPRESA = "idEmpresa";
+console.log("AUTH.JS V10 MULTIEMPRESA CARREGADO");
 
 
 // =======================================
-// OBTER USUÁRIO LOCAL
+// EMPRESAS FOODSYNC
 // =======================================
 
-function obterUsuarioLocal() {
+const EMPRESAS_LOTRIX = [
+
+    {
+        idEmpresa: "empresa1",
+        nome: "Izu Oeste",
+        nomeFantasia: "Izu Oeste",
+        razaoSocial: "Izu Japanese",
+        cnpj: "23212652000195"
+    },
+
+    {
+        idEmpresa: "empresa2",
+        nome: "Engenho",
+        nomeFantasia: "Engenho",
+        razaoSocial: "Engenho Restaurante",
+        cnpj: "55875514000182"
+    },
+
+    {
+        idEmpresa: "empresa3",
+        nome: "Izu Jd. Goiás",
+        nomeFantasia: "Izu Jd. Goiás",
+        razaoSocial: "Izu Japanese",
+        cnpj: "23.212.652/0002-76"
+    },
+
+    {
+        idEmpresa: "empresa4",
+        nome: "Izu Eldorado",
+        nomeFantasia: "Izu Eldorado",
+        razaoSocial: "Izu Japanese",
+        cnpj: "23.212.652/0005-19"
+    }
+
+];
+
+
+// =======================================
+// BUSCAR EMPRESA
+// =======================================
+
+function obterDadosEmpresa(idEmpresa) {
+
+    return EMPRESAS_LOTRIX.find(
+        empresa =>
+            empresa.idEmpresa === idEmpresa
+    ) || null;
+
+}
+
+
+// =======================================
+// EMPRESA ATIVA
+// =======================================
+
+function obterEmpresaAtiva() {
+
+    const empresaSalva =
+        localStorage.getItem(
+            "empresaAtivaLotrix"
+        );
+
+
+    const empresaValida =
+        EMPRESAS_LOTRIX.some(
+            empresa =>
+                empresa.idEmpresa === empresaSalva
+        );
+
+
+    if (empresaValida) {
+
+        return empresaSalva;
+
+    }
+
+
+    localStorage.setItem(
+        "empresaAtivaLotrix",
+        "empresa1"
+    );
+
+
+    return "empresa1";
+}
+
+
+// =======================================
+// DEFINIR EMPRESA ATIVA
+// =======================================
+
+window.definirEmpresaAtiva =
+function(idEmpresa) {
 
     try {
 
-        return JSON.parse(
-            localStorage.getItem(CHAVE_USUARIO)
+        const usuario =
+            JSON.parse(
+                localStorage.getItem(
+                    "usuarioFoodSync"
+                )
+            );
+
+
+        if (!usuario) {
+
+            alert(
+                "Usuário não encontrado."
+            );
+
+            return;
+        }
+
+
+        const perfil =
+            (usuario.perfil || "")
+                .trim()
+                .toLowerCase();
+
+
+        if (
+            perfil !==
+            "administrador"
+        ) {
+
+            alert(
+                "Somente administradores podem trocar de empresa."
+            );
+
+            return;
+        }
+
+
+        const empresa =
+            obterDadosEmpresa(
+                idEmpresa
+            );
+
+
+        if (!empresa) {
+
+            alert(
+                "Empresa inválida."
+            );
+
+            return;
+        }
+
+
+        // =================================
+        // SALVAR EMPRESA ATIVA
+        // =================================
+
+        localStorage.setItem(
+            "empresaAtivaLotrix",
+            empresa.idEmpresa
         );
 
-    }
-    catch (error) {
+
+        // =================================
+        // ATUALIZAR USUÁRIO LOCAL
+        // =================================
+
+        usuario.idEmpresa =
+            empresa.idEmpresa;
+
+        usuario.nomeEmpresa =
+            empresa.nome;
+
+        usuario.nomeFantasia =
+            empresa.nomeFantasia;
+
+        usuario.razaoSocial =
+            empresa.razaoSocial;
+
+        usuario.cnpj =
+            empresa.cnpj;
+
+
+        localStorage.setItem(
+            "usuarioFoodSync",
+            JSON.stringify(usuario)
+        );
+
+
+        console.log(
+            "EMPRESA ATIVA ALTERADA:",
+            empresa
+        );
+
+
+        // =================================
+        // RECARREGAR
+        // =================================
+
+        window.location.reload();
+
+
+    } catch (error) {
 
         console.error(
-            "Erro ao ler usuário local:",
+            "ERRO AO ALTERAR EMPRESA:",
             error
         );
 
-        return null;
+    }
+
+};
+
+
+// =======================================
+// MOSTRAR EMPRESA ATIVA
+// =======================================
+
+function mostrarEmpresaAtiva(usuario) {
+
+    const existente =
+        document.getElementById(
+            "seletorEmpresaLotrix"
+        );
+
+
+    if (existente) {
+
+        existente.remove();
 
     }
 
+
+    const logoArea =
+        document.querySelector(
+            ".logo-area"
+        );
+
+
+    if (!logoArea) {
+
+        console.warn(
+            "LOGO AREA NÃO ENCONTRADA."
+        );
+
+        return;
+    }
+
+
+    const perfil =
+        (usuario.perfil || "")
+            .trim()
+            .toLowerCase();
+
+
+    // =================================
+    // ADMINISTRADOR
+    // =================================
+
+    let empresaAtiva;
+
+
+    if (
+        perfil ===
+        "administrador"
+    ) {
+
+        empresaAtiva =
+            obterEmpresaAtiva();
+
+    } else {
+
+        // Usuário comum:
+        // SEMPRE usa sua própria empresa
+
+        empresaAtiva =
+            usuario.idEmpresa || "";
+
+    }
+
+
+    const empresa =
+        obterDadosEmpresa(
+            empresaAtiva
+        );
+
+
+    if (!empresa) {
+
+        console.error(
+            "EMPRESA NÃO ENCONTRADA:",
+            empresaAtiva
+        );
+
+        return;
+    }
+
+
+    const container =
+        document.createElement(
+            "div"
+        );
+
+
+    container.id =
+        "seletorEmpresaLotrix";
+
+
+    container.style.margin =
+        "8px 15px 12px";
+
+
+    container.style.padding =
+        "8px";
+
+
+    container.style.borderRadius =
+        "8px";
+
+
+    container.style.background =
+        "rgba(255,255,255,0.08)";
+
+
+    // =================================
+    // ADMIN
+    // =================================
+
+    if (
+        perfil ===
+        "administrador"
+    ) {
+
+        container.innerHTML = `
+
+            <div style="
+                font-size:10px;
+                opacity:.65;
+                margin-bottom:4px;
+                letter-spacing:.5px;
+            ">
+                EMPRESA ATIVA
+            </div>
+
+            <select
+                id="empresaAtivaSelect"
+                style="
+                    width:100%;
+                    box-sizing:border-box;
+                    padding:7px 8px;
+                    border-radius:6px;
+                    border:none;
+                    outline:none;
+                    background:#fff;
+                    color:#111827;
+                    font-size:13px;
+                    cursor:pointer;
+                "
+            >
+
+                ${EMPRESAS_LOTRIX.map(item => `
+
+                    <option
+                        value="${item.idEmpresa}"
+                        ${
+                            item.idEmpresa ===
+                            empresaAtiva
+                                ? "selected"
+                                : ""
+                        }
+                    >
+                        ${item.nome}
+                    </option>
+
+                `).join("")}
+
+            </select>
+
+        `;
+
+
+        logoArea.after(
+            container
+        );
+
+
+        const select =
+            document.getElementById(
+                "empresaAtivaSelect"
+            );
+
+
+        if (select) {
+
+            select.addEventListener(
+                "change",
+                function() {
+
+                    definirEmpresaAtiva(
+                        this.value
+                    );
+
+                }
+            );
+
+        }
+
+
+    }
+
+    // =================================
+    // OPERADOR / COLABORADOR
+    // =================================
+
+    else {
+
+        container.innerHTML = `
+
+            <div style="
+                font-size:10px;
+                opacity:.65;
+                margin-bottom:3px;
+                letter-spacing:.5px;
+            ">
+                EMPRESA
+            </div>
+
+            <strong style="
+                font-size:13px;
+            ">
+                ${empresa.nomeFantasia || empresa.nome}
+            </strong>
+
+        `;
+
+
+        logoArea.after(
+            container
+        );
+
+    }
+
+
+    console.log(
+        "EMPRESA EXIBIDA:",
+        empresa.nome
+    );
+
 }
 
 
 // =======================================
-// OBTER ID DA EMPRESA
+// AUDITORIA
 // =======================================
 
-function obterIdEmpresa() {
-
-    const usuario =
-        obterUsuarioLocal();
-
-    return usuario?.idEmpresa || "";
-
-}
-
-
-// =======================================
-// REGISTRAR AUDITORIA
-// =======================================
-
-window.registrarAuditoria = async function (
+window.registrarAuditoria =
+async function(
     modulo,
     acao,
     detalhes = ""
@@ -89,31 +495,31 @@ window.registrarAuditoria = async function (
     try {
 
         const usuario =
-            obterUsuarioLocal();
-
-        if (!usuario) {
-
-            console.warn(
-                "Auditoria ignorada: usuário não encontrado."
+            JSON.parse(
+                localStorage.getItem(
+                    "usuarioFoodSync"
+                )
             );
-
-            return;
-
-        }
 
 
         await addDoc(
-            collection(db, "auditoria"),
+            collection(
+                db,
+                "auditoria"
+            ),
             {
 
                 usuario:
-                    usuario.nome || "Sistema",
+                    usuario?.nome ||
+                    "Sistema",
 
                 email:
-                    usuario.email || "",
+                    usuario?.email ||
+                    "",
 
                 idEmpresa:
-                    usuario.idEmpresa || "",
+                    usuario?.idEmpresa ||
+                    "",
 
                 modulo:
                     modulo,
@@ -136,13 +542,11 @@ window.registrarAuditoria = async function (
 
         console.log(
             "Auditoria registrada:",
-            acao,
-            "| Empresa:",
-            usuario.idEmpresa
+            acao
         );
 
-    }
-    catch (error) {
+
+    } catch (error) {
 
         console.error(
             "Erro auditoria:",
@@ -159,7 +563,9 @@ window.registrarAuditoria = async function (
 // =======================================
 
 const loginForm =
-    document.getElementById("loginForm");
+    document.getElementById(
+        "loginForm"
+    );
 
 
 if (loginForm) {
@@ -173,14 +579,18 @@ if (loginForm) {
 
             const email =
                 document
-                    .getElementById("email")
+                    .getElementById(
+                        "email"
+                    )
                     .value
                     .trim();
 
 
             const senha =
                 document
-                    .getElementById("senha")
+                    .getElementById(
+                        "senha"
+                    )
                     .value;
 
 
@@ -192,10 +602,6 @@ if (loginForm) {
 
             try {
 
-                // -------------------------------
-                // LOGIN FIREBASE
-                // -------------------------------
-
                 await signInWithEmailAndPassword(
                     auth,
                     email,
@@ -203,172 +609,79 @@ if (loginForm) {
                 );
 
 
-                console.log(
-                    "LOGIN FIREBASE REALIZADO"
-                );
-
-
-                // -------------------------------
-                // CARREGAR PERFIL
-                // -------------------------------
-
                 const perfilLogin =
                     await carregarPerfil(
                         auth.currentUser
                     );
 
 
-                if (!perfilLogin) {
+                if (
+                    perfilLogin?.status
+                        ?.toLowerCase() ===
+                    "pendente"
+                ) {
 
-                    await signOut(auth);
+                    await signOut(
+                        auth
+                    );
 
-                    mensagem.style.color =
-                        "#dc2626";
-
-                    mensagem.textContent =
-                        "Perfil do usuário não encontrado.";
-
-                    return;
-
-                }
-
-
-                // -------------------------------
-                // VERIFICAR STATUS
-                // -------------------------------
-
-                const status =
-                    (
-                        perfilLogin.status || ""
-                    ).toLowerCase();
-
-
-                if (status === "pendente") {
-
-                    await signOut(auth);
 
                     mensagem.style.color =
                         "#b45309";
 
+
                     mensagem.textContent =
                         "Cadastro recebido. Aguarde a liberação da equipe.";
 
-                    return;
 
+                    return;
                 }
 
 
-                if (status !== "ativo") {
+                await addDoc(
+                    collection(
+                        db,
+                        "auditoria"
+                    ),
+                    {
 
-                    await signOut(auth);
+                        usuario:
+                            perfilLogin?.nome ||
+                            email,
 
-                    mensagem.style.color =
-                        "#dc2626";
+                        email:
+                            email,
 
-                    mensagem.textContent =
-                        "Usuário não está ativo.";
+                        idEmpresa:
+                            perfilLogin?.idEmpresa ||
+                            "",
 
-                    return;
+                        modulo:
+                            "Sistema",
 
-                }
+                        acao:
+                            "LOGIN",
 
+                        detalhes:
+                            "Usuário realizou login no sistema",
 
-                // -------------------------------
-                // VERIFICAR EMPRESA
-                // -------------------------------
+                        status:
+                            "Sucesso",
 
-                if (!perfilLogin.idEmpresa) {
+                        data:
+                            serverTimestamp()
 
-                    console.error(
-                        "USUÁRIO SEM EMPRESA:",
-                        perfilLogin
-                    );
-
-                    await signOut(auth);
-
-                    localStorage.removeItem(
-                        CHAVE_USUARIO
-                    );
-
-                    localStorage.removeItem(
-                        CHAVE_EMPRESA
-                    );
-
-                    mensagem.style.color =
-                        "#dc2626";
-
-                    mensagem.textContent =
-                        "Seu usuário ainda não está vinculado a uma empresa.";
-
-                    return;
-
-                }
-
-
-                // -------------------------------
-                // SALVAR EMPRESA
-                // -------------------------------
-
-                localStorage.setItem(
-                    CHAVE_EMPRESA,
-                    perfilLogin.idEmpresa
-                );
-
-
-                console.log(
-                    "================================="
-                );
-
-                console.log(
-                    "LOTRIX LOGIN"
-                );
-
-                console.log(
-                    "Usuário:",
-                    perfilLogin.nome
-                );
-
-                console.log(
-                    "E-mail:",
-                    perfilLogin.email
-                );
-
-                console.log(
-                    "Perfil:",
-                    perfilLogin.perfil
-                );
-
-                console.log(
-                    "Empresa:",
-                    perfilLogin.idEmpresa
-                );
-
-                console.log(
-                    "================================="
-                );
-
-
-                // -------------------------------
-                // AUDITORIA
-                // -------------------------------
-
-                await registrarAuditoria(
-                    "Sistema",
-                    "LOGIN",
-                    "Usuário realizou login no sistema"
+                    }
                 );
 
 
                 mensagem.style.color =
                     "#16a34a";
 
-                mensagem.textContent =
+
+                mensagem.innerHTML =
                     "Login realizado com sucesso!";
 
-
-                // -------------------------------
-                // DASHBOARD
-                // -------------------------------
 
                 setTimeout(
                     () => {
@@ -377,22 +690,24 @@ if (loginForm) {
                             "dashboard.html";
 
                     },
-                    700
+                    1000
                 );
 
-            }
-            catch (error) {
+
+            } catch (error) {
 
                 console.error(
                     "Erro login:",
                     error
                 );
 
+
                 mensagem.style.color =
                     "#dc2626";
 
-                mensagem.textContent =
-                    "Usuário ou senha inválidos";
+
+                mensagem.innerHTML =
+                    "Usuário ou senha inválidos.";
 
             }
 
@@ -403,7 +718,7 @@ if (loginForm) {
 
 
 // =======================================
-// MOSTRAR / OCULTAR SENHA
+// SENHA
 // =======================================
 
 document
@@ -422,13 +737,15 @@ document
                             botao.dataset.passwordToggle
                         );
 
+
                     if (!campo) {
                         return;
                     }
 
 
                     const mostrar =
-                        campo.type === "password";
+                        campo.type ===
+                        "password";
 
 
                     campo.type =
@@ -466,15 +783,18 @@ const cadastroForm =
         "cadastroForm"
     );
 
+
 const mostrarCadastro =
     document.getElementById(
         "mostrarCadastro"
     );
 
+
 const voltarLogin =
     document.getElementById(
         "voltarLogin"
     );
+
 
 const alterarSenha =
     document.getElementById(
@@ -482,20 +802,19 @@ const alterarSenha =
     );
 
 
-function exibirCadastro(exibir) {
+function exibirCadastro(
+    exibir
+) {
 
     if (loginForm) {
-
         loginForm.hidden =
             exibir;
-
     }
 
-    if (cadastroForm) {
 
+    if (cadastroForm) {
         cadastroForm.hidden =
             !exibir;
-
     }
 
 }
@@ -503,13 +822,15 @@ function exibirCadastro(exibir) {
 
 mostrarCadastro?.addEventListener(
     "click",
-    () => exibirCadastro(true)
+    () =>
+        exibirCadastro(true)
 );
 
 
 voltarLogin?.addEventListener(
     "click",
-    () => exibirCadastro(false)
+    () =>
+        exibirCadastro(false)
 );
 
 
@@ -523,7 +844,9 @@ alterarSenha?.addEventListener(
 
         const email =
             document
-                .getElementById("email")
+                .getElementById(
+                    "email"
+                )
                 .value
                 .trim();
 
@@ -539,15 +862,19 @@ alterarSenha?.addEventListener(
             mensagem.style.color =
                 "#dc2626";
 
+
             mensagem.textContent =
                 "Informe seu e-mail para alterar a senha.";
 
+
             document
-                .getElementById("email")
+                .getElementById(
+                    "email"
+                )
                 .focus();
 
-            return;
 
+            return;
         }
 
 
@@ -562,19 +889,22 @@ alterarSenha?.addEventListener(
             mensagem.style.color =
                 "#16a34a";
 
+
             mensagem.textContent =
                 "Enviamos um link para alterar sua senha.";
 
-        }
-        catch (error) {
+
+        } catch (error) {
 
             console.error(
                 "Erro ao solicitar alteração de senha:",
                 error
             );
 
+
             mensagem.style.color =
                 "#dc2626";
+
 
             mensagem.textContent =
                 "Não foi possível enviar o link. Confira o e-mail informado.";
@@ -586,7 +916,7 @@ alterarSenha?.addEventListener(
 
 
 // =======================================
-// NOVO CADASTRO
+// CADASTRO DE USUÁRIO
 // =======================================
 
 cadastroForm?.addEventListener(
@@ -598,21 +928,27 @@ cadastroForm?.addEventListener(
 
         const nome =
             document
-                .getElementById("nomeCadastro")
+                .getElementById(
+                    "nomeCadastro"
+                )
                 .value
                 .trim();
 
 
         const email =
             document
-                .getElementById("emailCadastro")
+                .getElementById(
+                    "emailCadastro"
+                )
                 .value
                 .trim();
 
 
         const senha =
             document
-                .getElementById("senhaCadastro")
+                .getElementById(
+                    "senhaCadastro"
+                )
                 .value;
 
 
@@ -630,23 +966,25 @@ cadastroForm?.addEventListener(
             );
 
 
-        if (senha !== confirmarSenha) {
+        if (
+            senha !==
+            confirmarSenha
+        ) {
 
             mensagem.style.color =
                 "#dc2626";
 
+
             mensagem.textContent =
                 "As senhas precisam ser iguais.";
 
-            return;
 
+            return;
         }
 
 
-        let credencial = null;
-
-        let perfilCriado =
-            false;
+        let credencial;
+        let perfilCriado = false;
 
 
         try {
@@ -658,23 +996,6 @@ cadastroForm?.addEventListener(
                     senha
                 );
 
-
-            // -------------------------------
-            // NOVO USUÁRIO
-            // -------------------------------
-            //
-            // Não recebe empresa automaticamente.
-            //
-            // O administrador deverá definir:
-            //
-            // idEmpresa: "empresa1"
-            //
-            // ou
-            //
-            // idEmpresa: "empresa2"
-            //
-            // antes de ativar.
-            // -------------------------------
 
             await setDoc(
                 doc(
@@ -688,15 +1009,14 @@ cadastroForm?.addEventListener(
 
                     email,
 
-                    idEmpresa: "",
-
                     perfil:
                         "colaborador",
 
                     status:
                         "pendente",
 
-                    permissoes: {},
+                    permissoes:
+                        {},
 
                     criadoEm:
                         serverTimestamp()
@@ -717,14 +1037,15 @@ cadastroForm?.addEventListener(
             mensagem.style.color =
                 "#16a34a";
 
+
             mensagem.textContent =
                 "Cadastro solicitado. Aguarde a liberação da equipe.";
 
 
             cadastroForm.reset();
 
-        }
-        catch (error) {
+
+        } catch (error) {
 
             console.error(
                 "Erro no cadastro:",
@@ -733,8 +1054,7 @@ cadastroForm?.addEventListener(
 
 
             if (
-                credencial?.user
-                &&
+                credencial?.user &&
                 !perfilCriado
             ) {
 
@@ -773,7 +1093,7 @@ cadastroForm?.addEventListener(
 
 
 // =======================================
-// CARREGAR PERFIL
+// CARREGAR PERFIL FIRESTORE
 // =======================================
 
 async function carregarPerfil(user) {
@@ -794,15 +1114,16 @@ async function carregarPerfil(user) {
             );
 
 
-        if (!resultado.exists()) {
+        if (
+            !resultado.exists()
+        ) {
 
             console.warn(
-                "Perfil não encontrado para UID:",
-                user.uid
+                "PERFIL NÃO ENCONTRADO"
             );
 
-            return null;
 
+            return null;
         }
 
 
@@ -810,47 +1131,127 @@ async function carregarPerfil(user) {
             resultado.data();
 
 
+        const perfilTipo =
+            (
+                dados.perfil ||
+                ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        // =================================
+        // DEFINIR EMPRESA
+        // =================================
+
+        let idEmpresa =
+            "";
+
+
+        if (
+            perfilTipo ===
+            "administrador"
+        ) {
+
+            idEmpresa =
+                obterEmpresaAtiva();
+
+        } else {
+
+            idEmpresa =
+                dados.idEmpresa ||
+                "";
+
+        }
+
+
+        // =================================
+        // BUSCAR EMPRESA
+        // =================================
+
+        const empresa =
+            obterDadosEmpresa(
+                idEmpresa
+            );
+
+
+        // =================================
+        // SEGURANÇA
+        // =================================
+
+        if (
+            perfilTipo !==
+            "administrador" &&
+            !empresa
+        ) {
+
+            console.error(
+                "USUÁRIO SEM EMPRESA VÁLIDA:",
+                idEmpresa
+            );
+
+        }
+
+
+        // =================================
+        // PERFIL FINAL
+        // =================================
+
         const perfil = {
 
             id:
                 resultado.id,
 
             nome:
-                dados.nome || "",
+                dados.nome ||
+                "",
 
             email:
-                dados.email || user.email,
-
-            idEmpresa:
-                dados.idEmpresa || "",
+                dados.email ||
+                user.email,
 
             perfil:
-                (
-                    dados.perfil || ""
-                ).trim(),
+                (dados.perfil || "")
+                    .trim(),
 
             status:
-                dados.status || "",
+                dados.status,
+
+            idEmpresa:
+                idEmpresa,
+
+            nomeEmpresa:
+                empresa?.nome ||
+                "",
+
+            nomeFantasia:
+                empresa?.nomeFantasia ||
+                "",
+
+            razaoSocial:
+                empresa?.razaoSocial ||
+                "",
+
+            cnpj:
+                empresa?.cnpj ||
+                "",
 
             permissoes:
-                dados.permissoes || {}
+                dados.permissoes ||
+                {}
 
         };
 
 
-        // -------------------------------
+        // =================================
         // SALVAR PERFIL
-        // -------------------------------
+        // =================================
 
         localStorage.setItem(
-            CHAVE_USUARIO,
-            JSON.stringify(perfil)
-        );
-
-
-        localStorage.setItem(
-            CHAVE_EMPRESA,
-            perfil.idEmpresa
+            "usuarioFoodSync",
+            JSON.stringify(
+                perfil
+            )
         );
 
 
@@ -861,20 +1262,39 @@ async function carregarPerfil(user) {
 
 
         console.log(
-            "EMPRESA VINCULADA:",
+            "ID EMPRESA:",
             perfil.idEmpresa
+        );
+
+
+        console.log(
+            "NOME EMPRESA:",
+            perfil.nomeEmpresa
+        );
+
+
+        console.log(
+            "RAZÃO SOCIAL:",
+            perfil.razaoSocial
+        );
+
+
+        console.log(
+            "NOME FANTASIA:",
+            perfil.nomeFantasia
         );
 
 
         return perfil;
 
-    }
-    catch (error) {
+
+    } catch (error) {
 
         console.error(
-            "Erro perfil:",
+            "ERRO AO CARREGAR PERFIL:",
             error
         );
+
 
         return null;
 
@@ -884,10 +1304,12 @@ async function carregarPerfil(user) {
 
 
 // =======================================
-// ATUALIZAR SIDEBAR
+// ATUALIZAR USUÁRIO NA SIDEBAR
 // =======================================
 
-function atualizarUsuarioTela(usuario) {
+function atualizarUsuarioTela(
+    usuario
+) {
 
     const nome =
         document.getElementById(
@@ -918,9 +1340,8 @@ function atualizarUsuarioTela(usuario) {
 
 
         textoPerfil =
-            textoPerfil
-                .charAt(0)
-                .toUpperCase()
+            textoPerfil.charAt(0)
+            .toUpperCase()
             +
             textoPerfil.slice(1);
 
@@ -980,265 +1401,167 @@ onAuthStateChanged(
     auth,
     async (user) => {
 
+        if (user) {
+
+            console.log(
+                "UID ATUAL:",
+                user.uid
+            );
+
+
+            console.log(
+                "EMAIL ATUAL:",
+                user.email
+            );
+
+        }
+
+
         const pagina =
             window.location.pathname
                 .split("/")
                 .pop();
 
 
-        // ===================================
-        // NÃO LOGADO
-        // ===================================
+        if (user) {
 
-        if (!user) {
+            const usuario =
+                await carregarPerfil(
+                    user
+                );
 
-            localStorage.removeItem(
-                CHAVE_USUARIO
-            );
 
-            localStorage.removeItem(
-                CHAVE_EMPRESA
-            );
+            if (usuario) {
+
+                atualizarUsuarioTela(
+                    usuario
+                );
+
+
+                mostrarEmpresaAtiva(
+                    usuario
+                );
+
+
+                // =================================
+                // EVENTO PARA OUTROS MÓDULOS
+                // =================================
+
+                window.dispatchEvent(
+                    new CustomEvent(
+                        "foodsync:perfil-carregado",
+                        {
+                            detail:
+                                usuario
+                        }
+                    )
+                );
+
+
+                // =================================
+                // AUDITORIA
+                // =================================
+
+                if (
+                    !sessionStorage.getItem(
+                        "loginAuditoriaRegistrado"
+                    )
+                ) {
+
+                    sessionStorage.setItem(
+                        "loginAuditoriaRegistrado",
+                        "true"
+                    );
+
+
+                    await registrarAuditoria(
+                        "Sistema",
+                        "LOGIN",
+                        "Usuário realizou login no sistema"
+                    );
+
+                }
+
+
+                // =================================
+                // PERMISSÕES
+                // =================================
+
+                const permissao =
+                    paginasProtegidas[
+                        pagina
+                    ];
+
+
+                if (permissao) {
+
+                    if (
+                        (
+                            usuario.perfil ||
+                            ""
+                        )
+                            .toLowerCase()
+                        !==
+                        "administrador"
+                    ) {
+
+                        if (
+                            usuario.permissoes[
+                                permissao
+                            ] !== true
+                        ) {
+
+                            alert(
+                                "Sem permissão para acessar esta página."
+                            );
+
+
+                            window.location.href =
+                                "dashboard.html";
+
+
+                            return;
+                        }
+
+                    }
+
+                }
+
+
+                controlarMenu(
+                    usuario
+                );
+
+            }
 
 
             if (
-                pagina !== "index.html"
+                pagina ===
+                "index.html"
+                ||
+                pagina ===
+                ""
+            ) {
+
+                window.location.href =
+                    "dashboard.html";
+
+            }
+
+        } else {
+
+            if (
+                pagina !==
+                "index.html"
                 &&
-                pagina !== ""
+                pagina !==
+                ""
             ) {
 
                 window.location.href =
                     "index.html";
 
             }
-
-            return;
-
-        }
-
-
-        // ===================================
-        // LOGADO
-        // ===================================
-
-        console.log(
-            "UID ATUAL:",
-            user.uid
-        );
-
-        console.log(
-            "EMAIL ATUAL:",
-            user.email
-        );
-
-
-        const usuario =
-            await carregarPerfil(
-                user
-            );
-
-
-        if (!usuario) {
-
-            await signOut(auth);
-
-            localStorage.removeItem(
-                CHAVE_USUARIO
-            );
-
-            localStorage.removeItem(
-                CHAVE_EMPRESA
-            );
-
-            window.location.href =
-                "index.html";
-
-            return;
-
-        }
-
-
-        // ===================================
-        // STATUS
-        // ===================================
-
-        const status =
-            (
-                usuario.status || ""
-            ).toLowerCase();
-
-
-        if (status !== "ativo") {
-
-            await signOut(auth);
-
-            localStorage.removeItem(
-                CHAVE_USUARIO
-            );
-
-            localStorage.removeItem(
-                CHAVE_EMPRESA
-            );
-
-            if (pagina !== "index.html") {
-
-                window.location.href =
-                    "index.html";
-
-            }
-
-            return;
-
-        }
-
-
-        // ===================================
-// EMPRESA OBRIGATÓRIA
-        // ===================================
-
-        if (!usuario.idEmpresa) {
-
-            console.error(
-                "USUÁRIO SEM EMPRESA:",
-                usuario
-            );
-
-
-            alert(
-                "Seu usuário ainda não está vinculado a uma empresa."
-            );
-
-
-            await signOut(auth);
-
-
-            localStorage.removeItem(
-                CHAVE_USUARIO
-            );
-
-            localStorage.removeItem(
-                CHAVE_EMPRESA
-            );
-
-
-            window.location.href =
-                "index.html";
-
-
-            return;
-
-        }
-
-
-        // ===================================
-        // SIDEBAR
-        // ===================================
-
-        atualizarUsuarioTela(
-            usuario
-        );
-
-
-        // ===================================
-        // AUDITORIA
-        // ===================================
-
-        if (
-            !sessionStorage.getItem(
-                "loginAuditoriaRegistrado"
-            )
-        ) {
-
-            sessionStorage.setItem(
-                "loginAuditoriaRegistrado",
-                "true"
-            );
-
-
-            await registrarAuditoria(
-                "Sistema",
-                "LOGIN",
-                "Usuário realizou login no sistema"
-            );
-
-        }
-
-
-        // ===================================
-        // PERMISSÃO
-        // ===================================
-
-        const permissao =
-            paginasProtegidas[
-                pagina
-            ];
-
-
-        if (permissao) {
-
-            const perfilUsuario =
-                (
-                    usuario.perfil || ""
-                ).toLowerCase();
-
-
-            const ehAdministrador =
-                perfilUsuario ===
-                "administrador";
-
-
-            if (!ehAdministrador) {
-
-                const temPermissao =
-                    usuario.permissoes
-                    &&
-                    usuario.permissoes[
-                        permissao
-                    ]
-                    === true;
-
-
-                if (!temPermissao) {
-
-                    alert(
-                        "Sem permissão para acessar esta página."
-                    );
-
-
-                    window.location.href =
-                        "dashboard.html";
-
-
-                    return;
-
-                }
-
-            }
-
-        }
-
-
-        // ===================================
-        // CONTROLAR MENU
-        // ===================================
-
-        controlarMenu(
-            usuario
-        );
-
-
-        // ===================================
-        // INDEX -> DASHBOARD
-        // ===================================
-
-        if (
-            pagina === "index.html"
-            ||
-            pagina === ""
-        ) {
-
-            window.location.href =
-                "dashboard.html";
 
         }
 
@@ -1250,7 +1573,9 @@ onAuthStateChanged(
 // CONTROLAR MENU
 // =======================================
 
-function controlarMenu(usuario) {
+function controlarMenu(
+    usuario
+) {
 
     const mapa = {
 
@@ -1290,19 +1615,10 @@ function controlarMenu(usuario) {
     };
 
 
-    const perfilUsuario =
-        (
-            usuario.perfil || ""
-        ).toLowerCase();
-
-
-    const ehAdministrador =
-        perfilUsuario ===
-        "administrador";
-
-
     document
-        .querySelectorAll(".menu a")
+        .querySelectorAll(
+            ".menu a"
+        )
         .forEach(
             link => {
 
@@ -1321,31 +1637,43 @@ function controlarMenu(usuario) {
                 }
 
 
-                // ADMINISTRADOR
-                if (ehAdministrador) {
+                const perfil =
+                    (
+                        usuario.perfil ||
+                        ""
+                    )
+                        .toLowerCase();
+
+
+                if (
+                    perfil ===
+                    "administrador"
+                ) {
 
                     link.style.display =
-                        "flex";
+                        "block";
 
                     return;
 
                 }
 
 
-                // USUÁRIO NORMAL
-                const permitido =
-                    usuario.permissoes
-                    &&
+                if (
+                    usuario.permissoes &&
                     usuario.permissoes[
                         permissao
-                    ]
-                    === true;
+                    ] === true
+                ) {
 
+                    link.style.display =
+                        "block";
 
-                link.style.display =
-                    permitido
-                        ? "flex"
-                        : "none";
+                } else {
+
+                    link.style.display =
+                        "none";
+
+                }
 
             }
         );
@@ -1357,7 +1685,8 @@ function controlarMenu(usuario) {
 // LOGOUT
 // =======================================
 
-window.logout = async function () {
+window.logout =
+async function() {
 
     try {
 
@@ -1367,12 +1696,12 @@ window.logout = async function () {
 
 
         localStorage.removeItem(
-            CHAVE_USUARIO
+            "usuarioFoodSync"
         );
 
 
         localStorage.removeItem(
-            CHAVE_EMPRESA
+            "empresaAtivaLotrix"
         );
 
 
@@ -1389,8 +1718,8 @@ window.logout = async function () {
         window.location.href =
             "index.html";
 
-    }
-    catch (error) {
+
+    } catch (error) {
 
         console.error(
             "Erro logout:",
@@ -1403,67 +1732,53 @@ window.logout = async function () {
 
 
 // =======================================
-// FUNÇÃO GLOBAL
-// OUTROS ARQUIVOS USARÃO ISSO
+// BOTÃO SAIR
 // =======================================
 
-window.obterIdEmpresa = function () {
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    return obterIdEmpresa();
-
-};
-
-
-// =======================================
-// DEBUG MULTIEMPRESA
-// =======================================
-
-window.debugEmpresa = function () {
-
-    const usuario =
-        obterUsuarioLocal();
+        const btnLogout =
+            document.getElementById(
+                "btnLogout"
+            );
 
 
-    console.log(
-        "========== LOTRIX MULTIEMPRESA =========="
-    );
+        if (!btnLogout) {
+
+            console.log(
+                "BOTÃO SAIR NÃO ENCONTRADO NESTA PÁGINA"
+            );
+
+            return;
+
+        }
 
 
-    console.log(
-        "Usuário:",
-        usuario?.nome
-    );
+        btnLogout.addEventListener(
+            "click",
+            async () => {
+
+                console.log(
+                    "BOTÃO SAIR CLICADO"
+                );
 
 
-    console.log(
-        "E-mail:",
-        usuario?.email
-    );
+                await window.logout();
+
+            }
+        );
 
 
-    console.log(
-        "Perfil:",
-        usuario?.perfil
-    );
+        console.log(
+            "BOTÃO SAIR CONFIGURADO"
+        );
+
+    }
+);
 
 
-    console.log(
-        "ID EMPRESA:",
-        usuario?.idEmpresa
-    );
-
-
-    console.log(
-        "Permissµes:",
-        usuario?.permissoes
-    );
-
-
-    console.log(
-        "=========================================="
-    );
-
-
-    return usuario;
-
-};
+console.log(
+    "AUTH.JS V10 PRONTO"
+);

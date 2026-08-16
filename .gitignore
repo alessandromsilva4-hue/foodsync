@@ -75,7 +75,7 @@ FoodSync-AI/serviceAccountKey.json
 printer-service/*.pem
 printer-service/*-key.pem
 
-# Backups locais de correção UTF-8
+# Backups locais de corre  o UTF-8
 *_backup*
 *_backup_*
 *_backup_antes_*
@@ -85,7 +85,7 @@ www_backup_*/
 css_backup_mojibake/
 NeoScale_backup_mojibake/
 
-# Arquivos temporários de diagnóstico
+# Arquivos tempor rios de diagn stico
 dashboard_corrompido.txt
 *.seguro
 
@@ -93,11 +93,11 @@ dashboard_corrompido.txt
 teste-raw.zpl
 teste.zpl
 
-# Serviço local de impressão - certificados
+# Servi o local de impress o - certificados
 printer-service/*.pem
 printer-service/*-key.pem
 
-# Backups específicos
+# Backups espec ficos
 firestore.rules.backup
 www/js/*.backup_corrupcao
 www/*.bak
@@ -107,5 +107,6 @@ www/*.bak
 .android-user/
 .gradle/
 .gradle-user/
+
 # Projeto iOS local
 ios/

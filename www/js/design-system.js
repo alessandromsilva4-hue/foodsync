@@ -1,4 +1,4 @@
-/* Design system visual compartilhado: ?cones Lucide para navega??o e cart?es. */
+/* Design system visual compartilhado: ícones Lucide para navegação e cartões. */
 
 const sidebarIcons = {
     "dashboard.html": "layout-dashboard", "producao.html": "utensils-crossed",

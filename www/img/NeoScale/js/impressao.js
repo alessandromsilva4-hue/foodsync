@@ -6,26 +6,26 @@ const RESTAURANTE = {
 };
 
 const FRASES_RESERVA = [
-    { frase: "Que a sua refei??o seja um momento especial.", autor: "NeoScale" },
+    { frase: "Que a sua refeição seja um momento especial.", autor: "NeoScale" },
     { frase: "Sabores que tornam o dia melhor.", autor: "NeoScale" },
     { frase: "Boa comida, bons momentos.", autor: "NeoScale" },
     { frase: "Aproveite cada sabor do seu dia.", autor: "NeoScale" },
     { frase: "Uma pausa gostosa faz toda a diferen?a.", autor: "NeoScale" },
     { frase: "Comer bem ? cuidar de voc?.", autor: "NeoScale" },
-    { frase: "Uma refei??o feita para ser aproveitada.", autor: "NeoScale" },
-    { frase: "Que n?o faltem bons sabores no seu dia.", autor: "NeoScale" },
-    { frase: "O melhor tempero ? estar bem acompanhado.", autor: "NeoScale" },
+    { frase: "Uma refeição feita para ser aproveitada.", autor: "NeoScale" },
+    { frase: "Que não faltem bons sabores no seu dia.", autor: "NeoScale" },
+    { frase: "O melhor tempero é estar bem acompanhado.", autor: "NeoScale" },
     { frase: "Seu momento de recarregar as energias chegou.", autor: "NeoScale" },
-    { frase: "A vida fica melhor com uma boa refei??o.", autor: "NeoScale" },
+    { frase: "A vida fica melhor com uma boa refeição.", autor: "NeoScale" },
     { frase: "Saboreie o presente, prato por prato.", autor: "NeoScale" },
     { frase: "Que seu almo?o seja leve, saboroso e feliz.", autor: "NeoScale" },
-    { frase: "Boas escolhas come?am com uma boa refei??o.", autor: "NeoScale" },
+    { frase: "Boas escolhas come?am com uma boa refeição.", autor: "NeoScale" },
     { frase: "Aprecie com calma cada detalhe do seu prato.", autor: "NeoScale" },
     { frase: "Hoje ? um ?timo dia para comer bem.", autor: "NeoScale" },
     { frase: "Alimente seus planos com bons momentos.", autor: "NeoScale" },
     { frase: "Sabor que combina com o seu dia.", autor: "NeoScale" },
     { frase: "Que a sua pausa seja deliciosa.", autor: "NeoScale" },
-    { frase: "Uma boa refei??o come?a com bons ingredientes.", autor: "NeoScale" }
+    { frase: "Uma boa refeição come?a com bons ingredientes.", autor: "NeoScale" }
 ];
 
 let ultimaFrase = "";

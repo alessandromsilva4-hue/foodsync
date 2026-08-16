@@ -1,18 +1,18 @@
 // =======================================
-// LOTRIX - USU?RIOS V6
+// LOTRIX - USUÁRIOS V6
 // FIRESTORE + MULTIEMPRESA
 //
-// NOVO USU?RIO:
-// SEMPRE PERTENCE ? LOJA ATUAL
+// NOVO USUÁRIO:
+// SEMPRE PERTENCE À LOJA ATUAL
 //
 // LISTAGEM:
-// SOMENTE USU?RIOS DA LOJA ATUAL
+// SOMENTE USUÁRIOS DA LOJA ATUAL
 // =======================================
 
 console.log("=======================================");
 console.log("LOTRIX USUARIOS.JS V6 CARREGADO");
 console.log("MULTIEMPRESA ATIVO");
-console.log("USU?RIO SEMPRE VINCULADO ? LOJA ATUAL");
+console.log("USUÁRIO SEMPRE VINCULADO À LOJA ATUAL");
 console.log("=======================================");
 
 
@@ -20,10 +20,7 @@ console.log("=======================================");
 // FIREBASE
 // =======================================
 
-import {
-    db,
-    authCadastro
-} from "./firebase.js";
+import { db, auth } from "./firebase.js";
 
 import {
     collection,
@@ -90,7 +87,7 @@ const statusUsuario =
 
 
 // =======================================
-// VARI?VEIS
+// VARIÁVEIS
 // =======================================
 
 let usuarios = [];
@@ -99,7 +96,7 @@ let usuarioEditando = null;
 
 
 // =======================================
-// USU?RIO LOGADO
+// USUÁRIO LOGADO
 // =======================================
 
 function usuarioAtual() {
@@ -114,7 +111,7 @@ function usuarioAtual() {
         if (!dados) {
 
             console.error(
-                "usuarioFoodSync n?o encontrado."
+                "usuarioFoodSync não encontrado."
             );
 
             return null;
@@ -126,7 +123,7 @@ function usuarioAtual() {
     } catch (error) {
 
         console.error(
-            "Erro ao ler usu?rio logado:",
+            "Erro ao ler usuário logado:",
             error
         );
 
@@ -149,7 +146,7 @@ function empresaAtual() {
     if (!usuario) {
 
         console.error(
-            "Usu?rio logado n?o encontrado."
+            "Usuário logado não encontrado."
         );
 
         return null;
@@ -159,7 +156,7 @@ function empresaAtual() {
     if (!usuario.idEmpresa) {
 
         console.error(
-            "Usu?rio logado n?o possui idEmpresa:",
+            "Usuário logado não possui idEmpresa:",
             usuario
         );
 
@@ -184,11 +181,11 @@ function verificarEmpresa() {
     if (!idEmpresa) {
 
         console.error(
-            "N?o foi poss?vel identificar a empresa atual."
+            "Não foi possível identificar a empresa atual."
         );
 
         mostrarToast(
-            "N?o foi poss?vel identificar a loja atual.",
+            "Não foi possível identificar a loja atual.",
             "erro"
         );
 
@@ -207,7 +204,7 @@ function verificarEmpresa() {
 
 
 // =======================================
-// PERMISS?ES
+// PERMISSÕES
 // =======================================
 
 function pegarPermissoes() {
@@ -260,7 +257,7 @@ function pegarPermissoes() {
 
 
 // =======================================
-// CARREGAR USU?RIOS
+// CARREGAR USUÁRIOS
 //
 // SOMENTE A LOJA ATUAL
 // =======================================
@@ -284,7 +281,7 @@ async function carregarUsuarios() {
 
                 <td colspan="5">
 
-                    N?o foi poss?vel identificar a loja atual.
+                    Não foi possível identificar a loja atual.
 
                 </td>
 
@@ -299,7 +296,7 @@ async function carregarUsuarios() {
     try {
 
         console.log("=======================================");
-        console.log("CARREGANDO USU?RIOS");
+        console.log("CARREGANDO USUÁRIOS");
         console.log(
             "LOJA ATUAL:",
             idEmpresa
@@ -339,7 +336,7 @@ async function carregarUsuarios() {
                 const dados =
                     item.data();
 
-                // SEGURAN?A EXTRA
+                // SEGURANÇA EXTRA
                 if (
                     dados.idEmpresa !==
                     idEmpresa
@@ -363,7 +360,7 @@ async function carregarUsuarios() {
 
 
         console.log(
-            "USU?RIOS DA LOJA:",
+            "USUÁRIOS DA LOJA:",
             usuarios.length
         );
 
@@ -379,12 +376,12 @@ async function carregarUsuarios() {
     } catch (error) {
 
         console.error(
-            "ERRO AO CARREGAR USU?RIOS:",
+            "ERRO AO CARREGAR USUÁRIOS:",
             error
         );
 
         mostrarToast(
-            "Erro ao carregar usu?rios.",
+            "Erro ao carregar usuários.",
             "erro"
         );
 
@@ -494,7 +491,7 @@ function mostrarUsuarios(lista) {
 
                 <td colspan="5">
 
-                    Nenhum usu?rio cadastrado nesta loja.
+                    Nenhum usuário cadastrado nesta loja.
 
                 </td>
 
@@ -542,7 +539,7 @@ function mostrarUsuarios(lista) {
                             type="button"
                             onclick="editarUsuario('${u.id}')">
 
-                            ??
+                            ✏️
 
                         </button>
 
@@ -551,7 +548,7 @@ function mostrarUsuarios(lista) {
                             type="button"
                             onclick="excluirUsuario('${u.id}')">
 
-                            ???
+                            🗑️
 
                         </button>
 
@@ -568,7 +565,7 @@ function mostrarUsuarios(lista) {
 
 
 // =======================================
-// ABRIR NOVO USU?RIO
+// ABRIR NOVO USUÁRIO
 // =======================================
 
 btnNovoUsuario?.addEventListener(
@@ -593,7 +590,7 @@ btnNovoUsuario?.addEventListener(
         document.getElementById(
             "tituloModal"
         ).innerHTML =
-            "?? Novo Usu?rio";
+            "👤 Novo Usuário";
 
 
         modalUsuario.style.display =
@@ -632,7 +629,7 @@ btnFecharModal?.addEventListener(
 
 
 // =======================================
-// CARREGAR PERMISS?ES
+// CARREGAR PERMISSÕES
 // =======================================
 
 function carregarPermissoes(
@@ -690,7 +687,7 @@ function carregarPermissoes(
 
 
 // =======================================
-// SALVAR USU?RIO
+// SALVAR USUÁRIO
 // =======================================
 
 formUsuario?.addEventListener(
@@ -714,7 +711,7 @@ formUsuario?.addEventListener(
             if (!idEmpresa) {
 
                 mostrarToast(
-                    "N?o foi poss?vel identificar a loja atual.",
+                    "Não foi possível identificar a loja atual.",
                     "erro"
                 );
 
@@ -724,7 +721,7 @@ formUsuario?.addEventListener(
 
 
             console.log("=======================================");
-            console.log("SALVANDO USU?RIO");
+            console.log("SALVANDO USUÁRIO");
             console.log(
                 "ID EMPRESA:",
                 idEmpresa
@@ -761,7 +758,7 @@ formUsuario?.addEventListener(
 
 
             // ===================================
-            // NOVO USU?RIO
+            // NOVO USUÁRIO
             // ===================================
 
             if (!usuarioEditando) {
@@ -779,19 +776,19 @@ formUsuario?.addEventListener(
 
 
                 // ===================================
-                // CRIAR AUTENTICA??O
+                // CRIAR AUTENTICAÇÃO
                 // ===================================
 
                 const credencial =
-                await createUserWithEmailAndPassword(
+                    await createUserWithEmailAndPassword(
 
-    authCadastro,
+                        auth,
 
-    email,
+                        email,
 
-    senha
+                        senha
 
-);
+                    );
 
 
                 const uid =
@@ -799,7 +796,7 @@ formUsuario?.addEventListener(
 
 
                 console.log(
-                    "UID NOVO USU?RIO:",
+                    "UID NOVO USUÁRIO:",
                     uid
                 );
 
@@ -807,7 +804,7 @@ formUsuario?.addEventListener(
                 // ===================================
                 // CRIAR DOCUMENTO
                 //
-                // AQUI EST? A CORRE??O PRINCIPAL
+                // AQUI ESTÁ A CORREÇÃO PRINCIPAL
                 // ===================================
 
                 await setDoc(
@@ -843,13 +840,13 @@ formUsuario?.addEventListener(
 
 
                 console.log(
-                    "USU?RIO CRIADO NA LOJA:",
+                    "USUÁRIO CRIADO NA LOJA:",
                     idEmpresa
                 );
 
 
                 mostrarToast(
-                    "Usu?rio criado com sucesso!"
+                    "Usuário criado com sucesso!"
                 );
 
             }
@@ -872,7 +869,7 @@ formUsuario?.addEventListener(
                 if (!usuario) {
 
                     mostrarToast(
-                        "Usu?rio n?o encontrado.",
+                        "Usuário não encontrado.",
                         "erro"
                     );
 
@@ -881,8 +878,8 @@ formUsuario?.addEventListener(
                 }
 
 
-                // SEGURAN?A:
-                // N?O PERMITE EDITAR USU?RIO
+                // SEGURANÇA:
+                // NÃO PERMITE EDITAR USUÁRIO
                 // DE OUTRA EMPRESA
 
                 if (
@@ -891,7 +888,7 @@ formUsuario?.addEventListener(
                 ) {
 
                     mostrarToast(
-                        "Este usu?rio n?o pertence ? loja atual.",
+                        "Este usuário não pertence à loja atual.",
                         "erro"
                     );
 
@@ -927,7 +924,7 @@ formUsuario?.addEventListener(
 
 
                 mostrarToast(
-                    "Usu?rio atualizado!"
+                    "Usuário atualizado!"
                 );
 
             }
@@ -953,13 +950,13 @@ formUsuario?.addEventListener(
         } catch (error) {
 
             console.error(
-                "ERRO AO SALVAR USU?RIO:",
+                "ERRO AO SALVAR USUÁRIO:",
                 error
             );
 
 
             let mensagem =
-                "Erro ao salvar usu?rio.";
+                "Erro ao salvar usuário.";
 
 
             if (
@@ -968,7 +965,7 @@ formUsuario?.addEventListener(
             ) {
 
                 mensagem =
-                    "Este email j? est? cadastrado.";
+                    "Este email já está cadastrado.";
 
             }
 
@@ -979,7 +976,7 @@ formUsuario?.addEventListener(
             ) {
 
                 mensagem =
-                    "Email inv?lido.";
+                    "Email inválido.";
 
             }
 
@@ -1007,7 +1004,7 @@ formUsuario?.addEventListener(
 
 
 // =======================================
-// EDITAR USU?RIO
+// EDITAR USUÁRIO
 // =======================================
 
 window.editarUsuario =
@@ -1039,7 +1036,7 @@ window.editarUsuario =
         ) {
 
             mostrarToast(
-                "Este usu?rio n?o pertence ? loja atual.",
+                "Este usuário não pertence à loja atual.",
                 "erro"
             );
 
@@ -1055,7 +1052,7 @@ window.editarUsuario =
         document.getElementById(
             "tituloModal"
         ).innerHTML =
-            "?? Editar Usu?rio";
+            "✏️ Editar Usuário";
 
 
         nomeUsuario.value =
@@ -1100,7 +1097,7 @@ window.editarUsuario =
 
 
 // =======================================
-// EXCLUIR USU?RIO
+// EXCLUIR USUÁRIO
 // =======================================
 
 window.excluirUsuario =
@@ -1113,7 +1110,7 @@ window.excluirUsuario =
         if (!idEmpresa) {
 
             mostrarToast(
-                "Loja atual n?o identificada.",
+                "Loja atual não identificada.",
                 "erro"
             );
 
@@ -1133,7 +1130,7 @@ window.excluirUsuario =
         if (!usuario) {
 
             mostrarToast(
-                "Usu?rio n?o encontrado.",
+                "Usuário não encontrado.",
                 "erro"
             );
 
@@ -1142,7 +1139,7 @@ window.excluirUsuario =
         }
 
 
-        // SEGURAN?A MULTIEMPRESA
+        // SEGURANÇA MULTIEMPRESA
 
         if (
             usuario.idEmpresa !==
@@ -1150,7 +1147,7 @@ window.excluirUsuario =
         ) {
 
             mostrarToast(
-                "Este usu?rio n?o pertence ? loja atual.",
+                "Este usuário não pertence à loja atual.",
                 "erro"
             );
 
@@ -1161,7 +1158,7 @@ window.excluirUsuario =
 
         const confirmar =
             confirm(
-                "Deseja realmente excluir este usu?rio?"
+                "Deseja realmente excluir este usuário?"
             );
 
 
@@ -1186,7 +1183,7 @@ window.excluirUsuario =
 
 
             mostrarToast(
-                "Usu?rio removido!"
+                "Usuário removido!"
             );
 
 
@@ -1196,13 +1193,13 @@ window.excluirUsuario =
         } catch (error) {
 
             console.error(
-                "ERRO AO EXCLUIR USU?RIO:",
+                "ERRO AO EXCLUIR USUÁRIO:",
                 error
             );
 
 
             mostrarToast(
-                "Erro ao excluir usu?rio.",
+                "Erro ao excluir usuário.",
                 "erro"
             );
 

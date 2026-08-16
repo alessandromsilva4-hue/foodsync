@@ -21,14 +21,14 @@ const server = http.createServer((request, response) => {
 
   if (!filePath.startsWith(`${root}${path.sep}`) && filePath !== root) {
     response.writeHead(403);
-    response.end("Acesso n?o permitido");
+    response.end("Acesso não permitido");
     return;
   }
 
   fs.readFile(filePath, (error, content) => {
     if (error) {
       response.writeHead(error.code === "ENOENT" ? 404 : 500);
-      response.end(error.code === "ENOENT" ? "Arquivo n?o encontrado" : "Erro ao abrir o arquivo");
+      response.end(error.code === "ENOENT" ? "Arquivo não encontrado" : "Erro ao abrir o arquivo");
       return;
     }
 
@@ -46,5 +46,5 @@ server.once("error", (error) => {
 });
 
 server.listen(port, "127.0.0.1", () => {
-  console.log(`NeoScale dispon?vel em http://127.0.0.1:${port}`);
+  console.log(`NeoScale disponível em http://127.0.0.1:${port}`);
 });

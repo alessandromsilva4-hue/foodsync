@@ -4,7 +4,7 @@
 ========================================== */
 
 
-/* ANIMA??O INICIAL */
+/* ANIMAÇÃO INICIAL */
 
 .dashboard-page{
 
@@ -31,6 +31,12 @@
 
     text-transform:uppercase;
 
+}
+
+/* Data e saudação alinhadas à direita no cabeçalho. */
+.dashboard-header > div:first-child {
+    margin-left: auto;
+    text-align: right;
 }
 
 
@@ -66,7 +72,7 @@
 
 
 /* ==========================================
-   M?TRICAS
+   MÉTRICAS
 ========================================== */
 
 
@@ -187,7 +193,7 @@
 
 
 
-/* ?CONES */
+/* ÍCONES */
 
 .metric-icon{
 
@@ -1038,7 +1044,7 @@
 ========================================== */
 
 
-/* PAIN?IS E CARDS */
+/* PAINÉIS E CARDS */
 
 [data-theme="dark"] .dashboard-panel,
 [data-theme="dark"] .metric-card{
@@ -1067,7 +1073,7 @@
 
 
 /* ==========================================
-   ?CONES
+   ÍCONES
 ========================================== */
 
 
@@ -1230,7 +1236,7 @@
 
 
 
-/* BOT?ES IA */
+/* BOTÕES IA */
 
 [data-theme="dark"] .ia-acoes button,
 [data-theme="dark"] .ia-botoes button{
@@ -1252,7 +1258,7 @@
 
 
 /* ==========================================
-   GR?FICO
+   GRÁFICO
 ========================================== */
 
 
@@ -1335,7 +1341,7 @@
 
     .dashboard-page{
 
-        padding:0;
+        padding:72px 0 0;
 
     }
 
@@ -1348,6 +1354,12 @@
         align-items:flex-start;
 
         gap:15px;
+
+    }
+
+    .dashboard-header > div:first-child{
+
+        width:100%;
 
     }
 
@@ -1499,7 +1511,7 @@
 
 
 /* ==========================================
-   ANIMA??ES
+   ANIMAÇÕES
 ========================================== */
 
 
@@ -1668,5 +1680,3 @@ svg{
     pointer-events:none;
 
 }
-
-

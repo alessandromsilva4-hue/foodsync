@@ -120,7 +120,8 @@
 
     align-items:center;
 
-    z-index:2000;
+    /* Deve ficar acima do botão flutuante do menu lateral. */
+    z-index:100001;
 
 }
 
@@ -151,6 +152,31 @@
     border:1px solid var(--border);
 
     box-shadow:var(--shadow);
+
+    max-height:calc(100dvh - 32px);
+
+    overflow-y:auto;
+
+}
+
+
+/* No tablet em retrato, o cadastro funciona como uma tela completa. */
+@media (max-width: 900px) and (orientation: portrait) {
+
+    .modal {
+        align-items:stretch;
+    }
+
+    .modal-content {
+        width:100%;
+        max-width:none;
+        min-height:100dvh;
+        max-height:100dvh;
+        border:0;
+        border-radius:0;
+        padding:24px;
+        box-shadow:none;
+    }
 
 }
 

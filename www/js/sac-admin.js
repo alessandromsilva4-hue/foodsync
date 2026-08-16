@@ -111,7 +111,7 @@ tabela.innerHTML += `
 class="btn-primary"
 onclick="window.verChamado('${item.id}')">
 
-??? Ver
+👁️ Ver
 
 </button>
 
@@ -174,7 +174,7 @@ ${chamado.assunto}
 
 
 <p>
-<strong>Descri??o:</strong>
+<strong>Descrição:</strong>
 ${chamado.descricao}
 </p>
 

@@ -1,1302 +1,781 @@
 // =======================================
-// FOODSYNC - AUTENTICAÇÃO E PERMISSÕES
+// FOODSYNCH - RELATÓRIOS
 // =======================================
 
-
-import "./design-system.js";
-import { auth, db } from "./firebase.js";
-
-
-import {
-    signInWithEmailAndPassword,
-    onAuthStateChanged,
-    signOut,
-    createUserWithEmailAndPassword,
-    sendPasswordResetEmail,
-    deleteUser
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
+import { db } from "./firebase.js";
 
 import {
     collection,
+    getDocs,
     query,
     where,
-    getDocs,
-    addDoc,
-    serverTimestamp,
-    doc,
-    getDoc,
-    setDoc
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    orderBy,
+    limit
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+console.log("RELATORIOS.JS CARREGADO");
 
-console.log("AUTH.JS CARREGADO");
+// =======================================
+// ELEMENTOS
+// =======================================
 
+const totalProducoes =
+    document.getElementById("totalProducoes");
 
+const totalEtiquetas =
+    document.getElementById("totalEtiquetas");
 
+const totalProdutos =
+    document.getElementById("totalProdutos");
+
+const totalEstoqueBaixo =
+    document.getElementById("totalEstoqueBaixo");
+
+const tabelaProducao =
+    document.getElementById("relatorioProducao");
+
+const graficoProducao =
+    document.getElementById("graficoProducao");
 
 
 // =======================================
-// LOTRIX - EMPRESA ATIVA
-// ADMINISTRADOR PODE ALTERNAR ENTRE EMPRESAS
+// PEGAR EMPRESA DO USUÁRIO
 // =======================================
 
-const EMPRESAS_LOTRIX = [
-    {
-        idEmpresa: "empresa1",
-        nome: "Izu",
-        nomeCompleto: "Izu Japanes"
-    },
-    {
-        idEmpresa: "empresa2",
-        nome: "Engenho",
-        nomeCompleto: "Engenho Restaurante"
-    }
-];
+function obterEmpresaId() {
 
-// =======================================
-// OBTER EMPRESA ATIVA
-// =======================================
+    try {
 
-function obterEmpresaAtiva() {
+        const perfilSalvo =
+            localStorage.getItem("usuarioFoodSync");
 
-    const empresaSalva =
-        localStorage.getItem("empresaAtivaLotrix");
+        if (!perfilSalvo) {
 
-    if (
-        empresaSalva === "empresa1" ||
-        empresaSalva === "empresa2"
-    ) {
-        return empresaSalva;
-    }
-
-    // Primeira empresa como padrão
-    localStorage.setItem(
-        "empresaAtivaLotrix",
-        "empresa1"
-    );
-
-    return "empresa1";
-}
-
-// =======================================
-// DEFINIR EMPRESA ATIVA
-// =======================================
-
-window.definirEmpresaAtiva = function(idEmpresa) {
-
-    const usuario =
-        JSON.parse(
-            localStorage.getItem("usuarioFoodSync")
-        );
-
-    if (!usuario) {
-        alert("Usuário não encontrado.");
-        return;
-    }
-
-    // Somente administrador pode trocar empresa
-    if (
-        (usuario.perfil || "").toLowerCase() !==
-        "administrador"
-    ) {
-        alert(
-            "Somente administradores podem trocar de empresa."
-        );
-        return;
-    }
-
-    const empresa =
-        EMPRESAS_LOTRIX.find(
-            item =>
-                item.idEmpresa === idEmpresa
-        );
-
-    if (!empresa) {
-        alert("Empresa inválida.");
-        return;
-    }
-
-    localStorage.setItem(
-        "empresaAtivaLotrix",
-        empresa.idEmpresa
-    );
-
-    console.log(
-        "EMPRESA ATIVA ALTERADA:",
-        empresa
-    );
-
-    // Atualiza a página para carregar os dados
-    // somente da empresa selecionada
-    window.location.reload();
-};
-
-// =======================================
-// MOSTRAR EMPRESA ATIVA
-// =======================================
-
-function mostrarEmpresaAtiva(usuario) {
-
-    const existente =
-        document.getElementById(
-            "seletorEmpresaLotrix"
-        );
-
-    if (existente) {
-        existente.remove();
-    }
-
-    const logoArea =
-        document.querySelector(
-            ".logo-area"
-        );
-
-    if (!logoArea) {
-        console.warn(
-            "Logo area não encontrada."
-        );
-        return;
-    }
-
-    const empresaAtiva =
-        obterEmpresaAtiva();
-
-    const empresa =
-        EMPRESAS_LOTRIX.find(
-            item =>
-                item.idEmpresa ===
-                empresaAtiva
-        );
-
-    if (!empresa) {
-        return;
-    }
-
-    const container =
-        document.createElement("div");
-
-    container.id =
-        "seletorEmpresaLotrix";
-
-    container.style.margin =
-        "8px 15px 12px";
-
-    container.style.padding =
-        "8px";
-
-    container.style.borderRadius =
-        "8px";
-
-    container.style.background =
-        "rgba(255,255,255,0.08)";
-
-    if (
-        (usuario.perfil || "").toLowerCase() ===
-        "administrador"
-    ) {
-
-        container.innerHTML = `
-            <div style="
-                font-size:10px;
-                opacity:.65;
-                margin-bottom:4px;
-                letter-spacing:.5px;
-            ">
-                EMPRESA ATIVA
-            </div>
-
-            <select
-                id="empresaAtivaSelect"
-                style="
-                    width:100%;
-                    box-sizing:border-box;
-                    padding:7px 8px;
-                    border-radius:6px;
-                    border:none;
-                    outline:none;
-                    background:#fff;
-                    color:#111827;
-                    font-size:13px;
-                    cursor:pointer;
-                "
-            >
-                ${EMPRESAS_LOTRIX.map(item => `
-                    <option
-                        value="${item.idEmpresa}"
-                        ${
-                            item.idEmpresa ===
-                            empresaAtiva
-                                ? "selected"
-                                : ""
-                        }
-                    >
-                        ${item.nome}
-                    </option>
-                `).join("")}
-            </select>
-        `;
-
-        // Coloca DEPOIS do logo
-        logoArea.after(container);
-
-        const select =
-            document.getElementById(
-                "empresaAtivaSelect"
+            console.error(
+                "RELATÓRIOS: perfil do usuário não encontrado."
             );
 
-        if (select) {
-
-            select.addEventListener(
-                "change",
-                function() {
-
-                    definirEmpresaAtiva(
-                        this.value
-                    );
-
-                }
-            );
+            return null;
         }
 
-    } else {
 
-        container.innerHTML = `
-            <div style="
-                font-size:10px;
-                opacity:.65;
-                margin-bottom:3px;
-                letter-spacing:.5px;
-            ">
-                EMPRESA
-            </div>
-
-            <strong style="
-                font-size:13px;
-            ">
-                ${empresa.nome}
-            </strong>
-        `;
-
-        logoArea.after(container);
-    }
-}
-
-// =======================================
-// REGISTRAR AUDITORIA
-// =======================================
+        const perfil =
+            JSON.parse(perfilSalvo);
 
 
-window.registrarAuditoria = async function(
-    modulo,
-    acao,
-    detalhes=""
-){
+        if (!perfil.idEmpresa) {
 
+            console.error(
+                "RELATÓRIOS: idEmpresa não encontrado no perfil."
+            );
 
-    try{
-
-
-        const usuario =
-        JSON.parse(
-            localStorage.getItem("usuarioFoodSync")
-        );
-
-
-
-        await addDoc(
-            collection(db,"auditoria"),
-            {
-
-
-                usuario:
-                usuario?.nome || "Sistema",
-
-
-                email:
-                usuario?.email || "",
-
-
-                modulo:
-                modulo,
-
-
-                acao:
-                acao,
-
-
-                detalhes:
-                detalhes,
-
-
-                status:
-                "Sucesso",
-
-
-                data:
-                serverTimestamp()
-
-
-            }
-        );
-
+            return null;
+        }
 
 
         console.log(
-            "Auditoria registrada:",
-            acao
+            "RELATÓRIOS - ID EMPRESA:",
+            perfil.idEmpresa
         );
 
 
+        return perfil.idEmpresa;
 
-    }
-    catch(error){
-
+    } catch (error) {
 
         console.error(
-            "Erro auditoria:",
+            "RELATÓRIOS: erro ao ler perfil:",
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+// =======================================
+// CARREGAR RELATÓRIOS
+// =======================================
+
+async function carregarRelatorios() {
+
+    try {
+
+        // =======================================
+        // EMPRESA ATUAL
+        // =======================================
+
+        const empresaId =
+            obterEmpresaId();
+
+
+        if (!empresaId) {
+
+            console.error(
+                "RELATÓRIOS: empresa não identificada."
+            );
+
+            return;
+
+        }
+
+
+        console.log(
+            "RELATÓRIOS: carregando dados da empresa",
+            empresaId
+        );
+
+
+        // =======================================
+        // PRODUÇÕES
+        // =======================================
+
+        const consultaProducoes =
+            query(
+                collection(
+                    db,
+                    "producoes"
+                ),
+
+                where(
+                    "empresaId",
+                    "==",
+                    empresaId
+                )
+            );
+
+
+        const producoes =
+            await getDocs(
+                consultaProducoes
+            );
+
+
+        if (totalProducoes) {
+
+            totalProducoes.innerText =
+                producoes.size;
+
+        }
+
+
+        // =======================================
+        // GRÁFICO DE PRODUÇÃO
+        // =======================================
+
+        if (graficoProducao) {
+
+            const dadosGrafico = {};
+
+
+            producoes.forEach(doc => {
+
+                const p =
+                    doc.data();
+
+
+                const nome =
+                    p.produto ||
+                    "Sem nome";
+
+
+                const quantidade =
+                    Number(
+                        p.quantidade || 0
+                    );
+
+
+                if (!dadosGrafico[nome]) {
+
+                    dadosGrafico[nome] = 0;
+
+                }
+
+
+                dadosGrafico[nome] +=
+                    quantidade;
+
+            });
+
+
+            // =======================================
+            // EVITAR ERRO SE CHART.JS NÃO ESTIVER CARREGADO
+            // =======================================
+
+            if (typeof Chart !== "undefined") {
+
+                new Chart(
+
+                    graficoProducao,
+
+                    {
+
+                        type: "bar",
+
+                        data: {
+
+                            labels:
+                                Object.keys(
+                                    dadosGrafico
+                                ),
+
+                            datasets: [
+
+                                {
+
+                                    label:
+                                        "Quantidade Produzida",
+
+                                    data:
+                                        Object.values(
+                                            dadosGrafico
+                                        )
+
+                                }
+
+                            ]
+
+                        },
+
+                        options: {
+
+                            responsive: true,
+
+                            maintainAspectRatio: false
+
+                        }
+
+                    }
+
+                );
+
+            } else {
+
+                console.warn(
+                    "Chart.js não foi carregado."
+                );
+
+            }
+
+        }
+
+
+        // =======================================
+        // ETIQUETAS
+        // =======================================
+
+        const consultaEtiquetas =
+            query(
+                collection(
+                    db,
+                    "etiquetas"
+                ),
+
+                where(
+                    "empresaId",
+                    "==",
+                    empresaId
+                )
+            );
+
+
+        const etiquetas =
+            await getDocs(
+                consultaEtiquetas
+            );
+
+
+        if (totalEtiquetas) {
+
+            totalEtiquetas.innerText =
+                etiquetas.size;
+
+        }
+
+
+        // =======================================
+        // PRODUTOS
+        // =======================================
+
+        const consultaProdutos =
+            query(
+                collection(
+                    db,
+                    "produtos"
+                ),
+
+                where(
+                    "empresaId",
+                    "==",
+                    empresaId
+                )
+            );
+
+
+        const produtos =
+            await getDocs(
+                consultaProdutos
+            );
+
+
+        if (totalProdutos) {
+
+            totalProdutos.innerText =
+                produtos.size;
+
+        }
+
+
+        // =======================================
+        // ESTOQUE
+        // =======================================
+
+        const consultaEstoque =
+            query(
+                collection(
+                    db,
+                    "estoque"
+                ),
+
+                where(
+                    "empresaId",
+                    "==",
+                    empresaId
+                )
+            );
+
+
+        const estoque =
+            await getDocs(
+                consultaEstoque
+            );
+
+
+        let baixo = 0;
+
+
+        estoque.forEach(doc => {
+
+            const e =
+                doc.data();
+
+
+            const quantidade =
+                Number(
+                    e.quantidade || 0
+                );
+
+
+            const minimo =
+                Number(
+                    e.minimo || 0
+                );
+
+
+            if (
+                quantidade <= minimo
+            ) {
+
+                baixo++;
+
+            }
+
+        });
+
+
+        if (totalEstoqueBaixo) {
+
+            totalEstoqueBaixo.innerText =
+                baixo;
+
+        }
+
+
+        // =======================================
+        // ÚLTIMAS PRODUÇÕES
+        // =======================================
+
+        if (tabelaProducao) {
+
+            tabelaProducao.innerHTML = "";
+
+
+            const consultaUltimasProducoes =
+                query(
+
+                    collection(
+                        db,
+                        "producoes"
+                    ),
+
+                    where(
+                        "empresaId",
+                        "==",
+                        empresaId
+                    ),
+
+                    orderBy(
+                        "criadoEm",
+                        "desc"
+                    ),
+
+                    limit(10)
+
+                );
+
+
+            const dados =
+                await getDocs(
+                    consultaUltimasProducoes
+                );
+
+
+            if (dados.empty) {
+
+                tabelaProducao.innerHTML = `
+
+                    <tr>
+
+                        <td colspan="4">
+
+                            Sem dados
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            } else {
+
+                dados.forEach(item => {
+
+                    const p =
+                        item.data();
+
+
+                    tabelaProducao.innerHTML += `
+
+                        <tr>
+
+                            <td>
+                                ${p.produto || "-"}
+                            </td>
+
+                            <td>
+                                ${p.quantidade || 0}
+                            </td>
+
+                            <td>
+                                ${p.responsavel || "-"}
+                            </td>
+
+                            <td>
+                                ${formatarData(
+                                    p.dataProducao
+                                )}
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                });
+
+            }
+
+        }
+
+
+        console.log(
+            "RELATÓRIOS CARREGADOS COM SUCESSO."
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Erro nos relatórios:",
             error
         );
 
 
-    }
+        // =======================================
+        // MOSTRAR ERRO NA TABELA
+        // =======================================
 
+        if (tabelaProducao) {
 
-};
+            tabelaProducao.innerHTML = `
 
+                <tr>
 
+                    <td colspan="4">
 
+                        Erro ao carregar os relatórios.
 
+                    </td>
 
+                </tr>
 
-// =======================================
-// LOGIN
-// =======================================
+            `;
 
-
-const loginForm =
-document.getElementById("loginForm");
-
-
-
-if(loginForm){
-
-
-loginForm.addEventListener(
-"submit",
-async(e)=>{
-
-
-e.preventDefault();
-
-
-
-const email =
-document.getElementById("email").value;
-
-
-
-const senha =
-document.getElementById("senha").value;
-
-
-
-const mensagem =
-document.getElementById("mensagemLogin");
-
-
-
-try{
-
-
-const resultadoLogin =
-await signInWithEmailAndPassword(
-    auth,
-    email,
-    senha
-);
-
-
-// busca usuário no Firestore para pegar o nome
-
-const perfilLogin = await carregarPerfil(
-    auth.currentUser
-);
-
-if(perfilLogin?.status?.toLowerCase() === "pendente"){
-
-    await signOut(auth);
-
-    mensagem.style.color="#b45309";
-    mensagem.textContent =
-    "Cadastro recebido. Aguarde a liberação da equipe.";
-
-    return;
-
-}
-
-
-// grava auditoria do login
-
-await addDoc(
-    collection(db,"auditoria"),
-    {
-
-        usuario:
-        perfilLogin?.nome || email,
-
-
-        email:
-        email,
-
-
-        modulo:
-        "Sistema",
-
-
-        acao:
-        "LOGIN",
-
-
-        detalhes:
-        "Usuário realizou login no sistema",
-
-
-        status:
-        "Sucesso",
-
-
-        data:
-        serverTimestamp()
-
-    }
-);
-
-
-mensagem.style.color="#16a34a";
-
-
-mensagem.innerHTML =
-"Login realizado com sucesso!";
-
-
-
-setTimeout(()=>{
-
-
-window.location.href =
-"dashboard.html";
-
-
-},1000);
-
-
-
-}
-catch(error){
-
-
-console.error(
-"Erro login:",
-error
-);
-
-
-
-mensagem.style.color="#dc2626";
-
-
-mensagem.innerHTML =
-"Usuário ou senha inválidos";
-
-
-
-}
-
-
-});
-
-
-}
-
-
-
-
-
-
-
-
-// =======================================
-// SENHA: MOSTRAR, CADASTRAR E REDEFINIR
-// =======================================
-
-document.querySelectorAll("[data-password-toggle]").forEach((botao)=>{
-
-    botao.addEventListener("click", ()=>{
-
-        const campo = document.getElementById(botao.dataset.passwordToggle);
-
-        if(!campo){
-            return;
         }
 
-        const mostrar = campo.type === "password";
-
-        campo.type = mostrar ? "text" : "password";
-        botao.setAttribute("aria-pressed", String(mostrar));
-        botao.setAttribute(
-            "aria-label",
-            mostrar ? "Ocultar senha" : "Mostrar senha"
-        );
-    });
-
-});
-
-
-const cadastroForm = document.getElementById("cadastroForm");
-const mostrarCadastro = document.getElementById("mostrarCadastro");
-const voltarLogin = document.getElementById("voltarLogin");
-const alterarSenha = document.getElementById("alterarSenha");
-
-function exibirCadastro(exibir){
-
-    loginForm.hidden = exibir;
-    cadastroForm.hidden = !exibir;
+    }
 
 }
 
-mostrarCadastro?.addEventListener("click", ()=> exibirCadastro(true));
-voltarLogin?.addEventListener("click", ()=> exibirCadastro(false));
 
-alterarSenha?.addEventListener("click", async()=>{
+// =======================================
+// FORMATAR DATA
+// =======================================
 
-    const email = document.getElementById("email").value.trim();
-    const mensagem = document.getElementById("mensagemLogin");
+function formatarData(data) {
 
-    if(!email){
-        mensagem.style.color="#dc2626";
-        mensagem.textContent = "Informe seu e-mail para alterar a senha.";
-        document.getElementById("email").focus();
-        return;
-    }
+    if (!data) {
 
-    try{
-
-        await sendPasswordResetEmail(auth, email);
-        mensagem.style.color="#16a34a";
-        mensagem.textContent =
-        "Enviamos um link para alterar sua senha.";
-
-    }
-    catch(error){
-
-        console.error("Erro ao solicitar alteração de senha:", error);
-        mensagem.style.color="#dc2626";
-        mensagem.textContent =
-        "Não foi possível enviar o link. Confira o e-mail informado.";
+        return "-";
 
     }
 
-});
 
-cadastroForm?.addEventListener("submit", async(evento)=>{
+    // =======================================
+    // FIREBASE TIMESTAMP
+    // =======================================
 
-    evento.preventDefault();
+    if (
+        typeof data === "object" &&
+        data !== null &&
+        data.seconds
+    ) {
 
-    const nome = document.getElementById("nomeCadastro").value.trim();
-    const email = document.getElementById("emailCadastro").value.trim();
-    const senha = document.getElementById("senhaCadastro").value;
-    const confirmarSenha =
-    document.getElementById("confirmarSenhaCadastro").value;
-    const mensagem = document.getElementById("mensagemCadastro");
-
-    if(senha !== confirmarSenha){
-        mensagem.style.color="#dc2626";
-        mensagem.textContent = "As senhas precisam ser iguais.";
-        return;
-    }
-
-    let credencial;
-    let perfilCriado = false;
-
-    try{
-
-        credencial = await createUserWithEmailAndPassword(
-            auth,
-            email,
-            senha
+        return new Date(
+            data.seconds * 1000
+        ).toLocaleDateString(
+            "pt-BR"
         );
 
-        await setDoc(doc(db, "usuarios", credencial.user.uid), {
-            nome,
-            email,
-            perfil: "colaborador",
-            status: "pendente",
-            permissoes: {},
-            criadoEm: serverTimestamp()
-        });
-
-        perfilCriado = true;
-
-        await signOut(auth);
-
-        mensagem.style.color="#16a34a";
-        mensagem.textContent =
-        "Cadastro solicitado. Aguarde a liberação da equipe.";
-        cadastroForm.reset();
-
     }
-    catch(error){
 
-        console.error("Erro no cadastro:", error);
 
-        if(credencial?.user && !perfilCriado){
-            await deleteUser(credencial.user).catch((erroLimpeza)=>{
-                console.error("Erro ao cancelar cadastro incompleto:", erroLimpeza);
-            });
+    // =======================================
+    // DATA YYYY-MM-DD
+    // =======================================
+
+    if (
+        typeof data === "string"
+    ) {
+
+        const partes =
+            data.split("-");
+
+
+        if (
+            partes.length === 3
+        ) {
+
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
+
         }
 
-        mensagem.style.color="#dc2626";
-
-        mensagem.textContent = error.code === "auth/email-already-in-use"
-            ? "Este e-mail já possui cadastro."
-            : "Não foi possível concluir o cadastro. Tente novamente.";
-
-    }
-
-});
-
-
-// =======================================
-// CARREGAR PERFIL FIRESTORE
-// =======================================
-
-async function carregarPerfil(user){
-
-try{
-
-
-const referencia =
-doc(
-    db,
-    "usuarios",
-    user.uid
-);
-
-
-const resultado =
-await getDoc(referencia);
-
-
-
-if(!resultado.exists()){
-
-
-console.warn(
-"Perfil não encontrado"
-);
-
-
-return null;
-
-
-}
-
-
-
-const dados =
-resultado.data();
-
-
-
-const perfil = {
-
-id:
-resultado.id,
-
-nome:
-dados.nome || "",
-
-email:
-dados.email || user.email,
-
-perfil:
-(dados.perfil || "").trim(),
-
-status:
-dados.status,
-
-idEmpresa:
-(
-    (dados.perfil || "").toLowerCase() ===
-    "administrador"
-)
-    ? obterEmpresaAtiva()
-    : (dados.idEmpresa || ""),
-
-permissoes:
-dados.permissoes || {}
-
-};
-
-
-
-localStorage.setItem(
-
-"usuarioFoodSync",
-
-JSON.stringify(perfil)
-
-);
-
-
-
-console.log(
-"PERFIL CARREGADO:",
-perfil
-);
-
-
-
-return perfil;
-
-
-
-}
-catch(error){
-
-
-console.error(
-"Erro perfil:",
-error
-);
-
-
-return null;
-
-
-}
-
-
-}
-// =======================================
-// ATUALIZAR USUÁRIO NA SIDEBAR
-// =======================================
-
-function atualizarUsuarioTela(usuario){
-
-    const nome =
-    document.getElementById("nomeUsuarioLogado");
-
-
-    const perfil =
-    document.getElementById("perfilUsuarioLogado");
-
-
-    if(nome){
-        nome.innerText =
-        usuario.nome || "Usuário";
     }
 
 
-    if(perfil){
+    return data;
 
-        let textoPerfil =
-        usuario.perfil || "";
-
-        textoPerfil =
-        textoPerfil.charAt(0).toUpperCase()
-        +
-        textoPerfil.slice(1);
+}
 
 
-        perfil.innerText =
-        textoPerfil;
+// =======================================
+// INICIAR
+// =======================================
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    () => {
+
+        carregarRelatorios();
 
     }
 
-}
-// =======================================
-// PÁGINAS PROTEGIDAS
-// =======================================
-
-
-const paginasProtegidas = {
-
-
-"produtos.html":
-"produtos",
-
-
-"producao.html":
-"producao",
-
-
-"etiquetas.html":
-"etiquetas",
-
-
-"estoque.html":
-"estoque",
-
-
-"relatorios.html":
-"relatorios",
-
-
-"auditoria.html":
-"auditoria",
-
-
-"usuario.html":
-"usuarios",
-
-
-"configuracoes.html":
-"configuracoes",
-
-
-"sac.html":
-"sac",
-
-"sac-admin.html":
-"sacAdmin"
-
-
-};
-
-
-
-
-
-
-
-
-// =======================================
-// VERIFICAÇÃO DE LOGIN
-// =======================================
-
-
-onAuthStateChanged(
-
-auth,
-
-async(user)=>{
-
-if(user){
-
-console.log("UID ATUAL:", user.uid);
-console.log("EMAIL ATUAL:", user.email);
-
-}
-
-const pagina =
-window.location.pathname
-.split("/")
-.pop();
-
-
-
-
-if(user){
-
-
-
-const usuario =
-await carregarPerfil(user);
-
-
-if(usuario){
-
-
-    atualizarUsuarioTela(usuario);
-
-    mostrarEmpresaAtiva(usuario);
-
-    if(
-    !sessionStorage.getItem(
-    "loginAuditoriaRegistrado"
-    )
-    ){
-
-
-        sessionStorage.setItem(
-        "loginAuditoriaRegistrado",
-        "true"
-        );
-
-
-        await registrarAuditoria(
-
-            "Sistema",
-
-            "LOGIN",
-
-            "Usuário realizou login no sistema"
-
-        );
-
-
-    }
-
-
-
-
-    const permissao =
-    paginasProtegidas[pagina];
-
-
-
-if(permissao){
-
-
-
-// administrador libera tudo
-
-
-if(
-
-(usuario.perfil || "").toLowerCase()
-!==
-"administrador"
-
-){
-
-
-
-if(
-
-usuario.permissoes[permissao]
-!==
-true
-
-){
-
-
-
-alert(
-"Sem permissão para acessar esta página."
 );
 
 
-
-window.location.href =
-"dashboard.html";
-
-
-return;
-
-
-}
-
-
-
-}
-
-
-
-}
-
-
-
-
-controlarMenu(usuario);
-
-
-
-}
-
-
-
-
-if(
-
-pagina === "index.html"
-
-||
-
-pagina === ""
-
-){
-
-
-window.location.href =
-"dashboard.html";
-
-
-}
-
-
-
-
-}
-else{
-
-
-
-if(
-
-pagina !== "index.html"
-
-&&
-
-pagina !== ""
-
-){
-
-
-window.location.href =
-"index.html";
-
-
-}
-
-
-
-}
-
-
-
-}
-
-);
-
-
-
-
-
-
-
-
-
 // =======================================
-// CONTROLAR MENU
+// EXPORTAR EXCEL
 // =======================================
 
+window.exportarExcel = function () {
 
-function controlarMenu(usuario){
+    const tabela =
+        document.querySelector("table");
 
 
+    if (!tabela) {
 
-const mapa = {
-
-
-"dashboard.html":
-"dashboard",
-
-
-"produtos.html":
-"produtos",
-
-
-"producao.html":
-"producao",
-
-
-"etiquetas.html":
-"etiquetas",
-
-
-"estoque.html":
-"estoque",
-
-
-"relatorios.html":
-"relatorios",
-
-
-"auditoria.html":
-"auditoria",
-
-
-"usuario.html":
-"usuarios",
-
-
-"configuracoes.html":
-"configuracoes",
-
-"sac.html":
-"sac",
-
-"sac-admin.html":
-"sacAdmin"
-
-};
-
-
-
-
-document
-.querySelectorAll(".menu a")
-.forEach(link=>{
-
-
-const pagina =
-link.getAttribute("href");
-
-
-
-const permissao =
-mapa[pagina];
-
-
-
-if(!permissao)
-return;
-
-
-
-
-// administrador vê tudo
-
-
-if(
-
-usuario.perfil.toLowerCase()
-===
-"administrador"
-
-){
-
-
-link.style.display="block";
-
-
-return;
-
-
-}
-
-
-
-
-if(
-
-usuario.permissoes
-&&
-
-usuario.permissoes[permissao]
-===true
-
-){
-
-
-link.style.display="block";
-
-
-}
-
-else{
-
-
-link.style.display="none";
-
-
-}
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =======================================
-// LOGOUT
-// =======================================
-
-
-window.logout = async function(){
-
-
-try{
-
-
-await signOut(auth);
-
-
-
-
-
-localStorage.removeItem(
-"usuarioFoodSync"
-);
-
-
-
-console.log(
-"Logout realizado"
-);
-
-
-
-window.location.href =
-"index.html";
-
-
-
-}
-catch(error){
-
-
-console.error(
-"Erro logout:",
-error
-);
-
-
-
-}
-
-
-
-};
-// =======================================
-// BOTÃO SAIR
-// =======================================
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    const btnLogout =
-        document.getElementById("btnLogout");
-
-    if (!btnLogout) {
-
-        console.log(
-            "BOTÃO SAIR NÃO ENCONTRADO NESTA PÁGINA"
+        alert(
+            "Tabela não encontrada."
         );
 
         return;
 
     }
 
-    btnLogout.addEventListener(
-        "click",
-        async () => {
 
-            console.log(
-                "BOTÃO SAIR CLICADO"
+    if (
+        typeof XLSX === "undefined"
+    ) {
+
+        alert(
+            "A biblioteca XLSX não foi carregada."
+        );
+
+        return;
+
+    }
+
+
+    const workbook =
+        XLSX.utils.table_to_book(
+            tabela
+        );
+
+
+    XLSX.writeFile(
+
+        workbook,
+
+        "relatorio-foodsync.xlsx"
+
+    );
+
+};
+
+
+// =======================================
+// EXPORTAR CSV
+// =======================================
+
+window.exportarCSV = function () {
+
+    const tabela =
+        document.querySelector("table");
+
+
+    if (!tabela) {
+
+        alert(
+            "Tabela não encontrada."
+        );
+
+        return;
+
+    }
+
+
+    let csv = [];
+
+
+    tabela
+        .querySelectorAll("tr")
+        .forEach(linha => {
+
+            let dados = [];
+
+
+            linha
+                .querySelectorAll(
+                    "th, td"
+                )
+                .forEach(coluna => {
+
+                    const texto =
+                        coluna.innerText
+                            .replace(
+                                /"/g,
+                                '""'
+                            );
+
+
+                    dados.push(
+                        `"${texto}"`
+                    );
+
+                });
+
+
+            csv.push(
+                dados.join(";")
             );
 
-            await window.logout();
+        });
 
-        }
+
+    const arquivo =
+        csv.join("\n");
+
+
+    const blob =
+        new Blob(
+
+            [arquivo],
+
+            {
+
+                type:
+                    "text/csv;charset=utf-8;"
+
+            }
+
+        );
+
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    link.download =
+        "relatorio-foodsync.csv";
+
+
+    link.click();
+
+
+    URL.revokeObjectURL(
+        link.href
     );
 
-    console.log(
-        "BOTÃO SAIR CONFIGURADO"
-    );
+};
 
-});
+
+// =======================================
+// IMPRIMIR RELATÓRIO
+// =======================================
+
+window.imprimirRelatorio = function () {
+
+    window.print();
+
+};
+
+
+// =======================================
+// FIM
+// =======================================
+
+console.log(
+    "RELATORIOS.JS V2 MULTIEMPRESA PRONTO"
+);

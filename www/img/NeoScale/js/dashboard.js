@@ -131,7 +131,7 @@ const frasesNeoScale = [
     {
 
         texto:
-        "Tudo vale a pena quando a alma n?o ? pequena.",
+        "Tudo vale a pena quando a alma não é pequena.",
 
         autor:
         "Fernando Pessoa"

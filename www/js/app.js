@@ -11,7 +11,7 @@ import {
 
 
 // =======================================
-// USU?RIO LOGADO
+// USUÁRIO LOGADO
 // =======================================
 
 onAuthStateChanged(auth,(user)=>{
@@ -26,7 +26,7 @@ onAuthStateChanged(auth,(user)=>{
 
 
         console.log(
-            "Usu?rio conectado:",
+            "Usuário conectado:",
             user.email
         );
 
@@ -47,7 +47,7 @@ if(usuarioSalvo?.nome){
 
 
     nomeUsuario.innerText =
-    "Bem-vindo, " + usuarioSalvo.nome + " ??";
+    "Bem-vindo, " + usuarioSalvo.nome + " 👋";
 
 
 }
@@ -55,7 +55,7 @@ else{
 
 
     nomeUsuario.innerText =
-    "Bem-vindo, usu?rio";
+    "Bem-vindo, usuário";
 
 
 }
@@ -144,7 +144,7 @@ window.mostrarMensagem = function(
 
 
 // =======================================
-// CONFIRMA??O
+// CONFIRMAÇÃO
 // =======================================
 
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -6,14 +6,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Lotrix - Administra??o SAC</title>
-
-<link rel="icon" href="img/favicon.png">
+<title>Lotrix - Administração SAC</title>
 
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/sidebar.css">
 <link rel="stylesheet" href="css/tabela.css">
-
+<link rel="icon" href="img/favicon.png">
 </head>
 
 
@@ -23,432 +21,202 @@
 <div class="layout">
 
 
-<!-- ==========================================
-     SIDEBAR
-=========================================== -->
-
-<aside class="sidebar" id="sidebar">
-
-
-    <!-- LOGO -->
+<aside class="sidebar">
 
     <div class="logo-area">
-
-        <img
-            src="img/logo.png"
-            alt="Lotrix">
-
-        <h2>
-            LOTRIX
-        </h2>
-
-        <small>
-            Food Safety Platform
-        </small>
-
+        <img src="img/logo.png" alt="Lotrix">
+        <h2>LOTRIX</h2>
+        <small>Food Safety Platform</small>
     </div>
-
-
-
-    <!-- MENU -->
 
     <nav class="menu">
 
-
-        <!-- GERAL -->
-
         <div class="menu-section">
+            <span class="menu-title">GERAL</span>
 
-            <span class="menu-title">
-                GERAL
-            </span>
-
-
-            <a href="dashboard.html">
-
-                <span>
-                    ??
-                </span>
-
-                <span class="nav-label">
-                    Dashboard
-                </span>
-
+            <a href="dashboard.html" class="active">
+                <span>🏠</span>
+                <span class="nav-label">Dashboard</span>
             </a>
-
         </div>
 
-
-
-        <!-- OPERA??O -->
-
         <div class="menu-section">
-
-            <span class="menu-title">
-                OPERA??O
-            </span>
-
+            <span class="menu-title">OPERAÇÃO</span>
 
             <a href="producao.html">
-
-                <span>
-                    ??
-                </span>
-
-                <span class="nav-label">
-                    Produ??o
-                </span>
-
+                <span>⚙️</span>
+                <span class="nav-label">Produção</span>
             </a>
-
 
             <a href="produtos.html">
-
-                <span>
-                    ??
-                </span>
-
-                <span class="nav-label">
-                    Produtos
-                </span>
-
+                <span>📦</span>
+                <span class="nav-label">Produtos</span>
             </a>
-
 
             <a href="etiquetas.html">
-
-                <span>
-                    ???
-                </span>
-
-                <span class="nav-label">
-                    Etiquetas
-                </span>
-
+                <span>🏷️</span>
+                <span class="nav-label">Etiquetas</span>
             </a>
-
 
             <a href="estoque.html">
-
-                <span>
-                    ??
-                </span>
-
-                <span class="nav-label">
-                    Estoque
-                </span>
-
+                <span>📚</span>
+                <span class="nav-label">Estoque</span>
             </a>
-
         </div>
 
-
-
-        <!-- GEST?O -->
-
         <div class="menu-section">
-
-            <span class="menu-title">
-                GEST?O
-            </span>
-
+            <span class="menu-title">GESTÃO</span>
 
             <a href="relatorios.html">
-
-                <span>
-                    ??
-                </span>
-
-                <span class="nav-label">
-                    Relat?rios
-                </span>
-
+                <span>📈</span>
+                <span class="nav-label">Relatórios</span>
             </a>
-
 
             <a href="auditoria.html">
-
-                <span>
-                    ??
-                </span>
-
-                <span class="nav-label">
-                    Auditoria
-                </span>
-
+                <span>📝</span>
+                <span class="nav-label">Auditoria</span>
             </a>
-
 
             <a href="usuario.html">
-
-                <span>
-                    ??
-                </span>
-
-                <span class="nav-label">
-                    Usu?rios
-                </span>
-
+                <span>👥</span>
+                <span class="nav-label">Usuários</span>
             </a>
-
         </div>
-
-
-
-        <!-- SISTEMA -->
 
         <div class="menu-section">
-
-            <span class="menu-title">
-                SISTEMA
-            </span>
-
+            <span class="menu-title">SISTEMA</span>
 
             <a href="configuracoes.html">
-
-                <span>
-                    ??
-                </span>
-
-                <span class="nav-label">
-                    Configura??es
-                </span>
-
+                <span>⚙️</span>
+                <span class="nav-label">Configurações</span>
             </a>
-
 
             <a href="ajuda.html">
-
-                <span>
-                    ?
-                </span>
-
-                <span class="nav-label">
-                    Ajuda
-                </span>
-
+                <span>❓</span>
+                <span class="nav-label">Ajuda</span>
             </a>
 
-
-            <!-- SAC ATIVO -->
-
-            <a
-                href="sac.html"
-                class="active">
-
-                <span>
-                    ??
-                </span>
-
-                <span class="nav-label">
-                    SAC
-                </span>
-
+            <a href="sac.html">
+                <span>🎧</span>
+                <span class="nav-label">SAC</span>
             </a>
-
-
         </div>
-
 
     </nav>
 
-
-
-    <!-- USU?RIO -->
-
     <div class="sidebar-footer">
 
+       <div class="user-card">
 
-        <div class="user-card">
-
-
-            <div class="avatar">
-                ??
-            </div>
-
-
-            <div>
-
-                <strong id="nomeUsuarioLogado">
-                    Usu?rio
-                </strong>
-
-
-                <small id="perfilUsuarioLogado">
-                    Carregando...
-                </small>
-
-            </div>
-
-
-        </div>
-
-
-        <button onclick="logout()">
-
-            ??
-            <span class="nav-label">
-                Sair
-            </span>
-
-        </button>
-
-
+    <div class="avatar">
+        👤
     </div>
 
+    <div>
+        <strong id="nomeUsuarioLogado">
+            Usuário
+        </strong>
+
+        <small id="perfilUsuarioLogado">
+            Carregando...
+        </small>
+    </div>
+
+</div>
+
+        <button onclick="logout()">
+            🚪 Sair
+        </button>
+
+    </div>
 
 </aside>
 
 
 
-<!-- ==========================================
-     CONTE?DO
-=========================================== -->
-
 <main class="content">
 
 
-    <!-- BOT?O MENU -->
+<header class="top-header">
 
-    <button
-        type="button"
-        class="menu-toggle"
-        id="menuToggle"
-        aria-label="Abrir menu"
-        aria-expanded="true">
+<h1>
+🎧 Atendimento SAC
+</h1>
 
-        ?
+<p>
+Gerenciamento de chamados
+</p>
 
-    </button>
-
-
-
-    <!-- HEADER -->
-
-    <header class="top-header">
-
-
-        <div>
-
-            <span class="header-kicker">
-                SISTEMA
-            </span>
-
-
-            <h1>
-                ?? Atendimento SAC
-            </h1>
-
-
-            <p>
-                Gerenciamento de chamados e atendimento aos usu?rios.
-            </p>
-
-        </div>
-
-
-    </header>
+</header>
 
 
 
-    <!-- CHAMADOS -->
-
-    <section class="table-box">
+<section class="table-box">
 
 
-        <div class="table-header">
-
-
-            <div>
-
-                <span class="panel-eyebrow">
-                    SUPORTE
-                </span>
-
-
-                <h2>
-                    Chamados recebidos
-                </h2>
-
-            </div>
-
-
-        </div>
+<h2>
+Chamados recebidos
+</h2>
 
 
 
-        <div
-            style="
-                width:100%;
-                overflow-x:auto;
-            ">
+<table>
 
 
-            <table>
+<thead>
+
+<tr>
+
+<th>
+Data
+</th>
+
+<th>
+Tipo
+</th>
+
+<th>
+Assunto
+</th>
+
+<th>
+Prioridade
+</th>
+
+<th>
+Status
+</th>
+
+<th>
+Ação
+</th>
 
 
-                <thead>
+</tr>
 
-                    <tr>
-
-                        <th>
-                            Data
-                        </th>
-
-                        <th>
-                            Tipo
-                        </th>
-
-                        <th>
-                            Assunto
-                        </th>
-
-                        <th>
-                            Prioridade
-                        </th>
-
-                        <th>
-                            Status
-                        </th>
-
-                        <th>
-                            A??o
-                        </th>
-
-                    </tr>
-
-                </thead>
+</thead>
 
 
-                <tbody id="listaSACAdmin">
+<tbody id="listaSACAdmin">
 
 
-                    <tr>
+<tr>
 
-                        <td
-                            colspan="6"
-                            style="
-                                padding:30px;
-                                text-align:center;
-                            ">
+<td colspan="6">
+Carregando...
+</td>
 
-                            Carregando chamados...
-
-                        </td>
-
-                    </tr>
+</tr>
 
 
-                </tbody>
+</tbody>
 
 
-            </table>
+</table>
 
 
-        </div>
+</section>
 
-
-    </section>
 
 
 </main>
@@ -457,184 +225,89 @@
 </div>
 
 
+<!-- MODAL ATENDIMENTO SAC -->
 
-<!-- ==========================================
-     MODAL ATENDIMENTO SAC
-=========================================== -->
-
-<div
-    id="modalSAC"
-    class="modal">
-
+<div id="modalSAC" class="modal">
 
     <div class="modal-content">
 
-
-        <!-- CABE?ALHO -->
-
         <div class="modal-header">
 
-
             <h2>
-                ?? Atendimento SAC
+            🎧 Atendimento SAC
             </h2>
 
-
-            <button
-                type="button"
-                onclick="fecharModalSAC()">
-
-                ?
-
+            <button onclick="fecharModalSAC()">
+            ✖
             </button>
-
 
         </div>
 
-
-
-        <!-- DADOS DO CHAMADO -->
 
         <div id="dadosChamado"></div>
 
 
-
-        <!-- RESPOSTA -->
-
         <div class="campo">
 
-
-            <label for="respostaSAC">
-
-                Resposta do suporte
-
+            <label>
+            Resposta do suporte
             </label>
 
-
-            <textarea
-                id="respostaSAC"
-                rows="5"
-                placeholder="Digite a resposta para o usu?rio..."></textarea>
-
+            <textarea 
+            id="respostaSAC"
+            rows="5">
+            </textarea>
 
         </div>
 
 
-
-        <!-- STATUS -->
-
         <div class="campo">
 
-
-            <label for="statusSAC">
-
-                Status
-
-            </label>
-
+            <label>Status</label>
 
             <select id="statusSAC">
 
-
                 <option value="Aberto">
-                    Aberto
+                Aberto
                 </option>
 
-
-                <option value="Em an?lise">
-                    Em an?lise
+                <option value="Em análise">
+                Em análise
                 </option>
-
 
                 <option value="Resolvido">
-                    Resolvido
+                Resolvido
                 </option>
 
-
             </select>
-
 
         </div>
 
 
-
-        <!-- SALVAR -->
-
         <button
-            type="button"
-            class="btn-primary"
-            onclick="salvarAtendimentoSAC()">
+        class="btn-primary"
+        onclick="salvarAtendimentoSAC()">
 
-            ??
-            Salvar atendimento
+        💾 Salvar atendimento
 
         </button>
 
 
     </div>
 
-
 </div>
 
 
+<!-- SCRIPTS NO FINAL -->
 
-<!-- ==========================================
-     SCRIPTS
-=========================================== -->
+<script type="module" src="js/firebase.js"></script>
 
-<script
-    type="module"
-    src="js/firebase.js">
-</script>
+<script type="module" src="js/sac-admin.js"></script>
 
+<script type="module" src="js/auth.js"></script>
 
-<script
-    type="module"
-    src="js/sac-admin.js">
-</script>
-
-
-<script
-    type="module"
-    src="js/auth.js">
-</script>
-
-
-
-<!-- MENU LATERAL -->
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const sidebar = document.getElementById("sidebar");
-    const menuToggle = document.getElementById("menuToggle");
-
-    if (!sidebar || !menuToggle) return;
-
-
-    menuToggle.addEventListener("click", function () {
-
-        sidebar.classList.toggle("collapsed");
-
-        const fechado =
-            sidebar.classList.contains("collapsed");
-
-        menuToggle.setAttribute(
-            "aria-expanded",
-            String(!fechado)
-        );
-
-        menuToggle.innerHTML =
-            fechado ? "?" : "?";
-
-    });
-
-});
-
-</script>
-
+<script src="js/sidebar.js"></script>
 
 </body>
-
 </html>
+

@@ -131,7 +131,7 @@ function falar(texto){
 
 
         console.log(
-            "Voz n?o dispon?vel neste navegador"
+            "Voz não disponível neste navegador"
         );
 
 
@@ -218,7 +218,7 @@ function iniciarAtendimento(){
 
     falar(
 
-        "Bem vindo ao NeoScale. Coloque seu prato na balan?a."
+        "Bem vindo ao NeoScale. Coloque seu prato na balança."
 
     );
 
@@ -243,7 +243,7 @@ function vozAguardandoPeso(){
 
     falar(
 
-        "Coloque seu prato na balan?a."
+        "Coloque seu prato na balança."
 
     );
 
@@ -273,7 +273,7 @@ function vozPesoIdentificado(
 
 `Peso identificado.
 ${peso} quilogramas.
-O valor da sua refei??o ? ${valor}.`
+O valor da sua refeição ? ${valor}.`
 
     );
 
@@ -298,7 +298,7 @@ function vozComanda(){
 
     falar(
 
-        "Sua comanda foi impressa. Obrigado pela prefer?ncia. Tenha uma excelente refei??o."
+        "Sua comanda foi impressa. Obrigado pela prefer?ncia. Tenha uma excelente refeição."
 
     );
 
@@ -320,7 +320,7 @@ function vozErro(){
 
     falar(
 
-        "N?o foi poss?vel realizar a pesagem. Por favor tente novamente."
+        "Não foi possível realizar a pesagem. Por favor tente novamente."
 
     );
 
