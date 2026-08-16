@@ -1438,7 +1438,7 @@ function gerarZPL(
     // ===================================
 
     zpl += "^FO16,338\n";
-    zpl += "^A0N,24,24\n";
+    zpl += "^A0N,20,20\n";
     zpl += "^FB290,1,0,L,0\n";
     zpl += `^FD${nomeEmpresa}^FS\n`;
 
@@ -1450,7 +1450,7 @@ function gerarZPL(
     if (cnpj) {
 
         zpl += "^FO16,368\n";
-        zpl += "^A0N,21,21\n";
+        zpl += "^A0N,18,18\n";
         zpl += "^FB290,1,0,L,0\n";
         zpl += `^FDCNPJ: ${cnpj}^FS\n`;
 
@@ -1464,7 +1464,7 @@ function gerarZPL(
     if (endereco) {
 
         zpl += "^FO16,394\n";
-        zpl += "^A0N,20,20\n";
+        zpl += "^A0N,15,15\n";
         zpl += "^FB305,2,0,L,0\n";
         zpl += `^FD${endereco}^FS\n`;
 
