@@ -495,7 +495,9 @@ function atualizarInformacoesEmpresa() {
     if (cnpjElemento) {
 
         cnpjElemento.textContent =
-            cnpj;
+            cnpj
+                ? `CNPJ: ${cnpj}`
+                : "--";
 
     }
 
@@ -1356,21 +1358,12 @@ function gerarZPL(
     zpl += "^LL480\n";
 
     // ===================================
-    // BORDA EXTERNA
-    // ===================================
-
-    zpl += "^FO8,8\n";
-    zpl += "^GB464,464,3\n";
-    zpl += "^FS\n";
-
-
-    // ===================================
     // PRODUTO
     // ===================================
 
-    zpl += "^FO25,24\n";
-    zpl += "^A0N,30,30\n";
-    zpl += "^FB430,1,0,L,0\n";
+    zpl += "^FO16,16\n";
+    zpl += "^A0N,34,34\n";
+    zpl += "^FB448,1,0,L,0\n";
     zpl += `^FD${nome}^FS\n`;
 
 
@@ -1378,17 +1371,17 @@ function gerarZPL(
     // TEMPERATURA
     // ===================================
 
-    zpl += "^FO25,57\n";
-    zpl += "^A0N,20,20\n";
-    zpl += "^FB430,1,0,L,0\n";
-    zpl += `^FD${temp}^FS\n`;
+    zpl += "^FO16,64\n";
+    zpl += "^A0N,25,25\n";
+    zpl += "^FB448,1,0,L,0\n";
+    zpl += `^FDTEMP. ${temp}^FS\n`;
 
 
     // ===================================
     // PRIMEIRA LINHA
     // ===================================
 
-    zpl += "^FO20,86\n";
+    zpl += "^FO16,102\n";
     zpl += "^GB440,2,2\n";
     zpl += "^FS\n";
 
@@ -1397,12 +1390,13 @@ function gerarZPL(
     // PRODUZIDO
     // ===================================
 
-    zpl += "^FO25,104\n";
-    zpl += "^A0N,21,21\n";
-    zpl += "^FDPRODUZIDO:^FS\n";
+    zpl += "^FO16,144\n";
+    zpl += "^A0N,25,25\n";
+    zpl += "^FDFABRICADO:^FS\n";
 
-    zpl += "^FO275,102\n";
-    zpl += "^A0N,24,24\n";
+    zpl += "^FO300,140\n";
+    zpl += "^A0N,25,25\n";
+    zpl += "^FB164,1,0,R,0\n";
     zpl += `^FD${dataProduzido}^FS\n`;
 
 
@@ -1410,12 +1404,13 @@ function gerarZPL(
     // VALIDADE
     // ===================================
 
-    zpl += "^FO25,136\n";
-    zpl += "^A0N,21,21\n";
+    zpl += "^FO16,174\n";
+    zpl += "^A0N,25,25\n";
     zpl += "^FDVALIDADE:^FS\n";
 
-    zpl += "^FO275,134\n";
-    zpl += "^A0N,24,24\n";
+    zpl += "^FO300,170\n";
+    zpl += "^A0N,25,25\n";
+    zpl += "^FB164,1,0,R,0\n";
     zpl += `^FD${dataValidade}^FS\n`;
 
 
@@ -1423,7 +1418,7 @@ function gerarZPL(
     // SEGUNDA LINHA
     // ===================================
 
-    zpl += "^FO20,168\n";
+    zpl += "^FO16,288\n";
     zpl += "^GB440,2,2\n";
     zpl += "^FS\n";
 
@@ -1432,9 +1427,9 @@ function gerarZPL(
     // RESPONSÁVEL
     // ===================================
 
-    zpl += "^FO25,184\n";
-    zpl += "^A0N,20,20\n";
-    zpl += "^FB430,1,0,L,0\n";
+    zpl += "^FO16,310\n";
+    zpl += "^A0N,22,22\n";
+    zpl += "^FB290,1,0,L,0\n";
     zpl += `^FDRESP.: ${resp}^FS\n`;
 
 
@@ -1442,9 +1437,9 @@ function gerarZPL(
     // NOME FANTASIA
     // ===================================
 
-    zpl += "^FO25,211\n";
-    zpl += "^A0N,22,22\n";
-    zpl += "^FB430,1,0,L,0\n";
+    zpl += "^FO16,338\n";
+    zpl += "^A0N,24,24\n";
+    zpl += "^FB290,1,0,L,0\n";
     zpl += `^FD${nomeEmpresa}^FS\n`;
 
 
@@ -1454,9 +1449,9 @@ function gerarZPL(
 
     if (cnpj) {
 
-        zpl += "^FO25,239\n";
-        zpl += "^A0N,18,18\n";
-        zpl += "^FB430,1,0,L,0\n";
+        zpl += "^FO16,368\n";
+        zpl += "^A0N,21,21\n";
+        zpl += "^FB290,1,0,L,0\n";
         zpl += `^FDCNPJ: ${cnpj}^FS\n`;
 
     }
@@ -1468,8 +1463,8 @@ function gerarZPL(
 
     if (endereco) {
 
-        zpl += "^FO25,264\n";
-        zpl += "^A0N,17,17\n";
+        zpl += "^FO16,394\n";
+        zpl += "^A0N,20,20\n";
         zpl += "^FB305,2,0,L,0\n";
         zpl += `^FD${endereco}^FS\n`;
 
@@ -1482,10 +1477,10 @@ function gerarZPL(
     // CANTO INFERIOR ESQUERDO
     // ===================================
 
-    zpl += "^FO25,385\n";
-    zpl += "^A0N,19,19\n";
+    zpl += "^FO16,450\n";
+    zpl += "^A0N,23,23\n";
     zpl += "^FB300,1,0,L,0\n";
-    zpl += `^FDLOTE: ${loteLimpo}^FS\n`;
+    zpl += `^FD${loteLimpo}^FS\n`;
 
 
 // ===================================
@@ -1494,21 +1489,15 @@ function gerarZPL(
 // ===================================
 
 const urlConsulta =
-    new URL(
-        "consulta.html",
-        window.location.href
+    gerarURLConsultaEtiqueta(
+        codigo
     );
 
-urlConsulta.searchParams.set(
-    "codigo",
-    codigo
-);
+if (codigo && urlConsulta) {
 
-if (codigo) {
-
-    zpl += "^FO350,335\n";
-    zpl += "^BQN,3,3\n";
-    zpl += `^FDLA,${urlConsulta.href}^FS\n`;
+    zpl += "^FO320,308\n";
+    zpl += "^BQN,2,4\n";
+    zpl += `^FDLA,${urlConsulta}^FS\n`;
 
 }
 
