@@ -108,5 +108,7 @@ www/*.bak
 .gradle/
 .gradle-user/
 
+
+
 # Projeto iOS local
 ios/
