@@ -112,3 +112,7 @@ www/*.bak
 
 # Projeto iOS local
 ios/
+
+# Chave de assinatura Android - NUNCA enviar ao GitHub
+keystore/
+keystore/keystore.properties
