@@ -101,3 +101,10 @@ printer-service/*-key.pem
 firestore.rules.backup
 www/js/*.backup_corrupcao
 www/*.bak
+
+# Capacitor iOS
+ios/
+.android/
+.android-user/
+.gradle/
+.gradle-user/

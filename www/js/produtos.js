@@ -1,9 +1,21 @@
-console.log("PRODUTOS.JS V6 MULTIEMPRESA CARREGADO");
+console.log("PRODUTOS.JS V9 MULTIEMPRESA CARREGADO");
 
 // =======================================
-// LOTRIX V6
+// FOODSYNC V9
 // PRODUTOS - FIRESTORE
-// SEPARAÇÃO TOTAL POR EMPRESA
+// MULTIEMPRESA
+//
+// Estrutura:
+// empresas: ["empresa1"]
+// empresas: ["empresa1", "empresa2"]
+// empresas: ["empresa1", "empresa2", "empresa3", "empresa4"]
+//
+// IMPORTANTE:
+// - Produto pode pertencer a várias empresas
+// - Cada empresa vê somente seus produtos
+// - Editar preserva todas as empresas
+// - Excluir remove somente a empresa atual
+// - Produto só é apagado quando não houver empresas
 // =======================================
 
 import { db } from "./firebase.js";
@@ -21,12 +33,13 @@ import {
     updateDoc,
     serverTimestamp,
     query,
-    where
+    where,
+    arrayRemove
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 // =======================================
-// USUÁRIO / EMPRESA LOGADA
+// USUÁRIO LOGADO
 // =======================================
 
 function obterUsuarioLogado() {
@@ -37,15 +50,28 @@ function obterUsuarioLogado() {
             localStorage.getItem("usuarioFoodSync");
 
         if (!dados) {
+
+            console.warn(
+                "USUÁRIO NÃO ENCONTRADO NO LOCALSTORAGE"
+            );
+
             return null;
         }
 
-        return JSON.parse(dados);
+        const usuario =
+            JSON.parse(dados);
+
+        console.log(
+            "USUÁRIO LOCALSTORAGE:",
+            usuario
+        );
+
+        return usuario;
 
     } catch (error) {
 
         console.error(
-            "Erro ao carregar usuário:",
+            "ERRO AO LER USUÁRIO:",
             error
         );
 
@@ -63,42 +89,29 @@ function obterIdEmpresa() {
     const usuario =
         obterUsuarioLogado();
 
-    const idEmpresa =
+    const empresa =
         usuario?.idEmpresa || "";
 
     console.log(
-        "USUÁRIO LOGADO:",
-        usuario
+        "ID EMPRESA OBTIDO DO LOCALSTORAGE:",
+        empresa
     );
 
-    console.log(
-        "EMPRESA ATUAL:",
-        idEmpresa
-    );
-
-    return idEmpresa;
+    return empresa;
 }
 
 
 // =======================================
-// ID DA EMPRESA
+// VARIÁVEIS
 // =======================================
 
-const idEmpresa =
-    obterIdEmpresa();
+let idEmpresa = "";
 
+let paginaPronta = false;
 
-// =======================================
-// VALIDAR EMPRESA
-// =======================================
+let produtos = [];
 
-if (!idEmpresa) {
-
-    console.error(
-        "ERRO: usuário não possui idEmpresa."
-    );
-
-}
+let produtoEditando = null;
 
 
 // =======================================
@@ -110,19 +123,10 @@ const formulario =
         "produtoForm"
     );
 
-const tabela =
-    document.getElementById(
-        "listaProdutos"
-    );
-
 const pesquisa =
     document.getElementById(
         "pesquisaProduto"
     );
-
-let produtos = [];
-
-let produtoEditando = null;
 
 
 // =======================================
@@ -136,12 +140,18 @@ window.abrirModalProduto = function () {
             "modalProduto"
         );
 
-    if (modal) {
+    if (!modal) {
 
-        modal.classList.add(
-            "active"
+        console.error(
+            "MODAL PRODUTO NÃO ENCONTRADO"
         );
+
+        return;
     }
+
+    modal.classList.add(
+        "active"
+    );
 };
 
 
@@ -173,17 +183,75 @@ window.fecharModalProduto = function () {
 
 
 // =======================================
+// NORMALIZAR EMPRESAS
+// =======================================
+
+function obterEmpresasProduto(produto) {
+
+    if (
+        Array.isArray(
+            produto?.empresas
+        )
+    ) {
+
+        return [
+            ...new Set(
+                produto.empresas
+            )
+        ];
+    }
+
+    return [];
+}
+
+
+// =======================================
+// VERIFICAR PRODUTO DA EMPRESA
+// =======================================
+
+function produtoPertenceEmpresa(
+    produto
+) {
+
+    const empresasProduto =
+        obterEmpresasProduto(
+            produto
+        );
+
+    return empresasProduto.includes(
+        idEmpresa
+    );
+}
+
+
+// =======================================
 // CARREGAR PRODUTOS
 // SOMENTE EMPRESA ATUAL
 // =======================================
 
 async function carregarProdutos() {
 
+    console.log(
+        "======================================="
+    );
+
+    console.log(
+        "CARREGANDO PRODUTOS"
+    );
+
+    console.log(
+        "EMPRESA:",
+        idEmpresa
+    );
+
+
     if (!idEmpresa) {
 
         console.error(
-            "Não foi possível carregar produtos: empresa não identificada."
+            "EMPRESA NÃO IDENTIFICADA"
         );
+
+        produtos = [];
 
         mostrarProdutos([]);
 
@@ -193,23 +261,24 @@ async function carregarProdutos() {
 
     try {
 
-        console.log(
-            "CARREGANDO PRODUTOS DA EMPRESA:",
-            idEmpresa
-        );
-
+        // =================================
+        // CONSULTA MULTIEMPRESA
+        // =================================
 
         const consulta =
             query(
+
                 collection(
                     db,
                     "produtos"
                 ),
+
                 where(
-                    "idEmpresa",
-                    "==",
+                    "empresas",
+                    "array-contains",
                     idEmpresa
                 )
+
             );
 
 
@@ -220,7 +289,7 @@ async function carregarProdutos() {
 
 
         console.log(
-            "PRODUTOS ENCONTRADOS PARA EMPRESA:",
+            "PRODUTOS ENCONTRADOS:",
             snapshot.size
         );
 
@@ -249,7 +318,7 @@ async function carregarProdutos() {
 
 
         console.log(
-            "PRODUTOS DA EMPRESA ATUAL:",
+            "PRODUTOS DA EMPRESA:",
             produtos
         );
 
@@ -262,21 +331,34 @@ async function carregarProdutos() {
     } catch (error) {
 
         console.error(
-            "Erro ao carregar produtos:",
+            "ERRO AO CARREGAR PRODUTOS:",
             error
         );
 
 
-        mostrarToast(
-            "Erro ao carregar produtos.",
-            "erro"
-        );
+        if (
+            error?.code ===
+            "permission-denied"
+        ) {
+
+            mostrarToast(
+                "Sem permissão para acessar os produtos desta empresa.",
+                "erro"
+            );
+
+        } else {
+
+            mostrarToast(
+                "Erro ao carregar produtos.",
+                "erro"
+            );
+        }
     }
 }
 
 
 // =======================================
-// MOSTRAR NA TABELA
+// MOSTRAR PRODUTOS
 // =======================================
 
 function mostrarProdutos(lista) {
@@ -290,7 +372,7 @@ function mostrarProdutos(lista) {
     if (!tabela) {
 
         console.error(
-            "Tabela listaProdutos não encontrada."
+            "TABELA listaProdutos NÃO ENCONTRADA"
         );
 
         return;
@@ -380,6 +462,7 @@ function mostrarProdutos(lista) {
                         <button
                             type="button"
                             onclick="editarProduto('${p.id}')"
+                            title="Editar produto"
                         >
                             ✏️
                         </button>
@@ -387,6 +470,7 @@ function mostrarProdutos(lista) {
                         <button
                             type="button"
                             onclick="excluirProduto('${p.id}')"
+                            title="Excluir produto"
                         >
                             🗑️
                         </button>
@@ -398,6 +482,30 @@ function mostrarProdutos(lista) {
             `;
         }
     );
+}
+
+
+// =======================================
+// LER VALOR DE ELEMENTO
+// EVITA ERRO SE CAMPO NÃO EXISTIR
+// =======================================
+
+function obterValor(id) {
+
+    const elemento =
+        document.getElementById(id);
+
+    if (!elemento) {
+
+        console.warn(
+            "CAMPO NÃO ENCONTRADO:",
+            id
+        );
+
+        return "";
+    }
+
+    return elemento.value;
 }
 
 
@@ -433,134 +541,75 @@ if (formulario) {
             );
 
 
+            // =================================
+            // DADOS DO PRODUTO
+            // =================================
+
             const dados = {
 
-                // =================================
-                // EMPRESA
-                // =================================
-
-                idEmpresa:
-
-
-                    idEmpresa,
-
-
-                // =================================
-                // DADOS DO PRODUTO
-                // =================================
-
                 codigo:
-
-                    document
-                        .getElementById(
-                            "codigoProduto"
-                        )
-                        .value
-                        .trim(),
-
+                    obterValor(
+                        "codigoProduto"
+                    )
+                    .trim(),
 
                 nome:
-
-                    document
-                        .getElementById(
-                            "nomeProduto"
-                        )
-                        .value
-                        .trim(),
-
+                    obterValor(
+                        "nomeProduto"
+                    )
+                    .trim(),
 
                 categoria:
-
-                    document
-                        .getElementById(
-                            "categoriaProduto"
-                        )
-                        .value,
-
+                    obterValor(
+                        "categoriaProduto"
+                    ),
 
                 grupo:
-
-                    document
-                        .getElementById(
-                            "grupoProduto"
-                        )
-                        .value,
-
+                    obterValor(
+                        "grupoProduto"
+                    ),
 
                 unidade:
-
-                    document
-                        .getElementById(
-                            "unidadeProduto"
-                        )
-                        .value,
-
+                    obterValor(
+                        "unidadeProduto"
+                    ),
 
                 validadeDias:
-
                     Number(
-
-                        document
-                            .getElementById(
-                                "validadeProduto"
-                            )
-                            .value
-
-                    ),
-
+                        obterValor(
+                            "validadeProduto"
+                        )
+                    ) || 0,
 
                 temperatura:
-
-                    document
-                        .getElementById(
-                            "temperaturaProduto"
-                        )
-                        .value,
-
-
-                setor:
-
-                    document
-                        .getElementById(
-                            "setorProduto"
-                        )
-                        .value,
-
-
-                estoqueMinimo:
-
-                    Number(
-
-                        document
-                            .getElementById(
-                                "estoqueMinimoProduto"
-                            )
-                            .value
-
+                    obterValor(
+                        "temperaturaProduto"
                     ),
 
+                setor:
+                    obterValor(
+                        "setorProduto"
+                    ),
+
+                estoqueMinimo:
+                    Number(
+                        obterValor(
+                            "estoqueMinimoProduto"
+                        )
+                    ) || 0,
 
                 status:
-
-                    document
-                        .getElementById(
-                            "statusProduto"
-                        )
-                        .value,
-
+                    obterValor(
+                        "statusProduto"
+                    ) || "ativo",
 
                 observacao:
-
-                    document
-                        .getElementById(
-                            "observacaoProduto"
-                        )
-                        .value
-                        .trim(),
-
+                    obterValor(
+                        "observacaoProduto"
+                    )
+                    .trim(),
 
                 atualizadoEm:
-
                     serverTimestamp()
 
             };
@@ -569,7 +618,7 @@ if (formulario) {
             try {
 
                 // =================================
-                // EDITAR
+                // EDITAR PRODUTO
                 // =================================
 
                 if (produtoEditando) {
@@ -598,8 +647,9 @@ if (formulario) {
                     // =================================
 
                     if (
-                        produto.idEmpresa !==
-                        idEmpresa
+                        !produtoPertenceEmpresa(
+                            produto
+                        )
                     ) {
 
                         mostrarToast(
@@ -609,6 +659,33 @@ if (formulario) {
 
                         return;
                     }
+
+
+                    // =================================
+                    // PRESERVAR EMPRESAS
+                    // =================================
+
+                    const empresasProduto =
+                        obterEmpresasProduto(
+                            produto
+                        );
+
+
+                    if (
+                        empresasProduto.length === 0
+                    ) {
+
+                        mostrarToast(
+                            "Produto sem empresas vinculadas.",
+                            "erro"
+                        );
+
+                        return;
+                    }
+
+
+                    dados.empresas =
+                        empresasProduto;
 
 
                     await updateDoc(
@@ -624,6 +701,12 @@ if (formulario) {
                     );
 
 
+                    console.log(
+                        "PRODUTO ATUALIZADO:",
+                        produtoEditando
+                    );
+
+
                     mostrarToast(
                         "Produto atualizado com sucesso!"
                     );
@@ -636,6 +719,12 @@ if (formulario) {
                 // =================================
 
                 else {
+
+                    dados.empresas =
+                        [
+                            idEmpresa
+                        ];
+
 
                     dados.criadoEm =
                         serverTimestamp();
@@ -654,8 +743,11 @@ if (formulario) {
 
 
                     console.log(
-                        "NOVO PRODUTO CRIADO PARA EMPRESA:",
-                        idEmpresa
+                        "NOVO PRODUTO CRIADO:"
+                    );
+
+                    console.log(
+                        dados
                     );
 
 
@@ -665,8 +757,16 @@ if (formulario) {
                 }
 
 
+                // =================================
+                // FECHAR MODAL
+                // =================================
+
                 fecharModalProduto();
 
+
+                // =================================
+                // RECARREGAR
+                // =================================
 
                 await carregarProdutos();
 
@@ -674,15 +774,28 @@ if (formulario) {
             } catch (error) {
 
                 console.error(
-                    "Erro ao salvar produto:",
+                    "ERRO AO SALVAR PRODUTO:",
                     error
                 );
 
 
-                mostrarToast(
-                    "Erro ao salvar produto.",
-                    "erro"
-                );
+                if (
+                    error?.code ===
+                    "permission-denied"
+                ) {
+
+                    mostrarToast(
+                        "Sem permissão para salvar este produto.",
+                        "erro"
+                    );
+
+                } else {
+
+                    mostrarToast(
+                        "Erro ao salvar produto.",
+                        "erro"
+                    );
+                }
             }
         }
     );
@@ -713,13 +826,14 @@ window.editarProduto = function (id) {
     }
 
 
-    // =======================================
+    // =================================
     // SEGURANÇA MULTIEMPRESA
-    // =======================================
+    // =================================
 
     if (
-        produto.idEmpresa !==
-        idEmpresa
+        !produtoPertenceEmpresa(
+            produto
+        )
     ) {
 
         mostrarToast(
@@ -735,70 +849,140 @@ window.editarProduto = function (id) {
         id;
 
 
-    document.getElementById(
-        "codigoProduto"
-    ).value =
-        produto.codigo || "";
+    // =================================
+    // PREENCHER FORMULÁRIO
+    // =================================
+
+    const codigo =
+        document.getElementById(
+            "codigoProduto"
+        );
+
+    if (codigo) {
+
+        codigo.value =
+            produto.codigo || "";
+    }
 
 
-    document.getElementById(
-        "nomeProduto"
-    ).value =
-        produto.nome || "";
+    const nome =
+        document.getElementById(
+            "nomeProduto"
+        );
+
+    if (nome) {
+
+        nome.value =
+            produto.nome || "";
+    }
 
 
-    document.getElementById(
-        "categoriaProduto"
-    ).value =
-        produto.categoria || "";
+    const categoria =
+        document.getElementById(
+            "categoriaProduto"
+        );
+
+    if (categoria) {
+
+        categoria.value =
+            produto.categoria || "";
+    }
 
 
-    document.getElementById(
-        "grupoProduto"
-    ).value =
-        produto.grupo || "";
+    const grupo =
+        document.getElementById(
+            "grupoProduto"
+        );
+
+    if (grupo) {
+
+        grupo.value =
+            produto.grupo || "";
+    }
 
 
-    document.getElementById(
-        "unidadeProduto"
-    ).value =
-        produto.unidade || "";
+    const unidade =
+        document.getElementById(
+            "unidadeProduto"
+        );
+
+    if (unidade) {
+
+        unidade.value =
+            produto.unidade || "";
+    }
 
 
-    document.getElementById(
-        "validadeProduto"
-    ).value =
-        produto.validadeDias || 1;
+    const validade =
+        document.getElementById(
+            "validadeProduto"
+        );
+
+    if (validade) {
+
+        validade.value =
+            produto.validadeDias || 1;
+    }
 
 
-    document.getElementById(
-        "temperaturaProduto"
-    ).value =
-        produto.temperatura || "";
+    const temperatura =
+        document.getElementById(
+            "temperaturaProduto"
+        );
+
+    if (temperatura) {
+
+        temperatura.value =
+            produto.temperatura || "";
+    }
 
 
-    document.getElementById(
-        "setorProduto"
-    ).value =
-        produto.setor || "";
+    const setor =
+        document.getElementById(
+            "setorProduto"
+        );
+
+    if (setor) {
+
+        setor.value =
+            produto.setor || "";
+    }
 
 
-    document.getElementById(
-        "estoqueMinimoProduto"
-    ).value =
-        produto.estoqueMinimo || 1;
+    const estoqueMinimo =
+        document.getElementById(
+            "estoqueMinimoProduto"
+        );
+
+    if (estoqueMinimo) {
+
+        estoqueMinimo.value =
+            produto.estoqueMinimo || 1;
+    }
 
 
-    document.getElementById(
-        "statusProduto"
-    ).value =
-        produto.status || "ativo";
+    const status =
+        document.getElementById(
+            "statusProduto"
+        );
+
+    if (status) {
+
+        status.value =
+            produto.status || "ativo";
+    }
 
 
-    document.getElementById(
-        "observacaoProduto"
-    ).value =
-        produto.observacao || "";
+    const observacao =
+        document.getElementById(
+            "observacaoProduto"
+        );
+
+    if (observacao) {
+
+        observacao.value =
+            produto.observacao || "";
+    }
 
 
     abrirModalProduto();
@@ -807,15 +991,40 @@ window.editarProduto = function (id) {
 
 // =======================================
 // EXCLUIR PRODUTO
+//
+// IMPORTANTE:
+// Se produto:
+// empresas: ["empresa1", "empresa2"]
+//
+// Empresa1 exclui:
+// empresas: ["empresa2"]
+//
+// O produto continua para empresa2.
+//
+// Se ficar:
+// empresas: []
+//
+// aí o documento é excluído.
 // =======================================
 
 window.excluirProduto = async function (id) {
 
     if (
         !confirm(
-            "Deseja excluir este produto?"
+            "Deseja remover este produto da empresa atual?"
         )
     ) {
+
+        return;
+    }
+
+
+    if (!idEmpresa) {
+
+        mostrarToast(
+            "Empresa atual não identificada.",
+            "erro"
+        );
 
         return;
     }
@@ -839,13 +1048,14 @@ window.excluirProduto = async function (id) {
     }
 
 
-    // =======================================
-    // SEGURANÇA MULTIEMPRESA
-    // =======================================
+    // =================================
+    // SEGURANÇA
+    // =================================
 
     if (
-        produto.idEmpresa !==
-        idEmpresa
+        !produtoPertenceEmpresa(
+            produto
+        )
     ) {
 
         mostrarToast(
@@ -859,20 +1069,105 @@ window.excluirProduto = async function (id) {
 
     try {
 
-        await deleteDoc(
+        const empresasProduto =
+            obterEmpresasProduto(
+                produto
+            );
 
-            doc(
-                db,
-                "produtos",
+
+        // =================================
+        // REMOVER EMPRESA ATUAL
+        // =================================
+
+        const novasEmpresas =
+            empresasProduto.filter(
+                empresa =>
+                    empresa !==
+                    idEmpresa
+            );
+
+
+        console.log(
+            "EMPRESAS ANTES:",
+            empresasProduto
+        );
+
+
+        console.log(
+            "EMPRESAS DEPOIS:",
+            novasEmpresas
+        );
+
+
+        // =================================
+        // SE NÃO SOBROU EMPRESA
+        // =================================
+
+        if (
+            novasEmpresas.length === 0
+        ) {
+
+            await deleteDoc(
+
+                doc(
+                    db,
+                    "produtos",
+                    id
+                )
+
+            );
+
+
+            console.log(
+                "PRODUTO EXCLUÍDO DEFINITIVAMENTE:",
                 id
-            )
-
-        );
+            );
 
 
-        mostrarToast(
-            "Produto excluído com sucesso!"
-        );
+            mostrarToast(
+                "Produto excluído com sucesso!"
+            );
+
+        }
+
+
+        // =================================
+        // AINDA EXISTEM EMPRESAS
+        // =================================
+
+        else {
+
+            await updateDoc(
+
+                doc(
+                    db,
+                    "produtos",
+                    id
+                ),
+
+                {
+
+                    empresas:
+                        novasEmpresas,
+
+                    atualizadoEm:
+                        serverTimestamp()
+
+                }
+
+            );
+
+
+            console.log(
+                "EMPRESA REMOVIDA DO PRODUTO:",
+                idEmpresa
+            );
+
+
+            mostrarToast(
+                "Produto removido da empresa atual."
+            );
+        }
 
 
         await carregarProdutos();
@@ -881,15 +1176,28 @@ window.excluirProduto = async function (id) {
     } catch (error) {
 
         console.error(
-            "Erro ao excluir produto:",
+            "ERRO AO EXCLUIR PRODUTO:",
             error
         );
 
 
-        mostrarToast(
-            "Erro ao excluir produto.",
-            "erro"
-        );
+        if (
+            error?.code ===
+            "permission-denied"
+        ) {
+
+            mostrarToast(
+                "Sem permissão para remover este produto.",
+                "erro"
+            );
+
+        } else {
+
+            mostrarToast(
+                "Erro ao excluir produto.",
+                "erro"
+            );
+        }
     }
 };
 
@@ -907,13 +1215,14 @@ if (pesquisa) {
         () => {
 
             const texto =
-
                 pesquisa.value
                     .trim()
                     .toLowerCase();
 
 
-            if (texto === "") {
+            if (
+                texto === ""
+            ) {
 
                 mostrarProdutos(
                     produtos
@@ -924,33 +1233,52 @@ if (pesquisa) {
 
 
             const resultado =
-
                 produtos.filter(
                     p => {
 
                         return (
 
                             (
-                                p.nome || ""
+                                p.nome ||
+                                ""
                             )
                             .toLowerCase()
-                            .includes(texto)
+                            .includes(
+                                texto
+                            )
 
                             ||
 
                             (
-                                p.codigo || ""
+                                p.codigo ||
+                                ""
                             )
                             .toLowerCase()
-                            .includes(texto)
+                            .includes(
+                                texto
+                            )
 
                             ||
 
                             (
-                                p.categoria || ""
+                                p.categoria ||
+                                ""
                             )
                             .toLowerCase()
-                            .includes(texto)
+                            .includes(
+                                texto
+                            )
+
+                            ||
+
+                            (
+                                p.grupo ||
+                                ""
+                            )
+                            .toLowerCase()
+                            .includes(
+                                texto
+                            )
 
                         );
 
@@ -967,7 +1295,7 @@ if (pesquisa) {
 
 
 // =======================================
-// INICIAR
+// INICIALIZAÇÃO
 // =======================================
 
 document.addEventListener(
@@ -976,26 +1304,151 @@ document.addEventListener(
 
     () => {
 
+        paginaPronta = true;
+
+
         console.log(
-            "INICIANDO PRODUTOS V6..."
+            "PRODUTOS: DOM CARREGADO"
+        );
+
+
+        // =================================
+        // OBTER EMPRESA DO LOCALSTORAGE
+        // =================================
+
+        idEmpresa =
+            obterIdEmpresa();
+
+
+        console.log(
+            "EMPRESA NO INÍCIO:",
+            idEmpresa
+        );
+
+
+        if (
+            idEmpresa
+        ) {
+
+            console.log(
+                "EMPRESA ENCONTRADA:",
+                idEmpresa
+            );
+
+
+            carregarProdutos();
+
+        } else {
+
+            console.log(
+                "AGUARDANDO PERFIL..."
+            );
+
+
+            mostrarProdutos([]);
+        }
+    }
+);
+
+
+// =======================================
+// EVENTO DO AUTH
+// =======================================
+
+window.addEventListener(
+
+    "foodsync:perfil-carregado",
+
+    (event) => {
+
+        window.foodsyncPerfilPronto =
+            true;
+
+
+        const empresaEvento =
+            event.detail?.idEmpresa || "";
+
+
+        if (
+            empresaEvento
+        ) {
+
+            idEmpresa =
+                empresaEvento;
+
+        } else {
+
+            idEmpresa =
+                obterIdEmpresa();
+
+        }
+
+
+        console.log(
+            "EMPRESA RECEBIDA DO AUTH:",
+            idEmpresa
         );
 
 
         if (!idEmpresa) {
 
+            console.error(
+                "EMPRESA NÃO IDENTIFICADA"
+            );
+
+
             mostrarProdutos([]);
+
 
             return;
         }
 
 
-        carregarProdutos();
+        if (
+            paginaPronta
+        ) {
 
+            carregarProdutos();
+        }
     }
-
 );
 
 
+// =======================================
+// DEBUG GLOBAL
+// =======================================
+
+window.debugProdutos = function () {
+
+    console.log(
+        "======================================="
+    );
+
+    console.log(
+        "DEBUG PRODUTOS"
+    );
+
+    console.log(
+        "EMPRESA ATUAL:",
+        idEmpresa
+    );
+
+    console.log(
+        "TOTAL PRODUTOS:",
+        produtos.length
+    );
+
+    console.log(
+        "PRODUTOS:",
+        produtos
+    );
+
+    console.log(
+        "======================================="
+    );
+};
+
+
 console.log(
-    "PRODUTOS.JS V6 PRONTO"
+    "PRODUTOS.JS V9 PRONTO"
 );

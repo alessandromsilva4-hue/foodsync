@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -20,6 +20,57 @@
 
 <link rel="stylesheet" href="css/tabela.css">
 
+<style>
+/* Ajuste específico do Relatório */
+body .content {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1 !important;
+    min-height: 100vh !important;
+    color: #1e293b !important;
+    background: #f1f5f9 !important;
+}
+
+/* Mantém o relatório ancorado no topo, mesmo após os scripts da tela serem carregados. */
+body .content.relatorios-page {
+    position: relative !important;
+    top: 0 !important;
+    inset: auto !important;
+    margin-top: 0 !important;
+    transform: none !important;
+}
+
+body .content.relatorios-page > * {
+    position: relative;
+    top: 0;
+    transform: none;
+}
+
+/* No celular, isola a página do fluxo externo para impedir que o WebView a alinhe no rodapé. */
+@media (max-width: 640px) {
+    body .content.relatorios-page {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100% !important;
+        height: 100dvh !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 72px 16px 32px !important;
+        overflow-y: auto !important;
+        z-index: 0 !important;
+    }
+}
+
+.content .top-header,
+.content .acoes-relatorio,
+.content .cards,
+.content .table-box {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+</style>
+
 
 </head>
 
@@ -35,7 +86,7 @@
 <aside class="sidebar">
 
     <div class="logo-area">
-        <img src="img/logo.jpg" alt="Lotrix">
+        <img src="img/logo.png" alt="Lotrix">
         <h2>LOTRIX</h2>
         <small>Food Safety Platform</small>
     </div>
@@ -149,7 +200,7 @@
 
 
 
-<main class="content">
+<main class="content relatorios-page">
 
 
 
@@ -458,7 +509,11 @@ Sem dados
 <script type="module" src="js/auth.js"></script>
 
 
+<script src="js/sidebar.js"></script>
+
 
 </body>
 
 </html>
+
+
