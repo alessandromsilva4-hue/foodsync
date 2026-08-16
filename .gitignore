@@ -101,3 +101,11 @@ printer-service/*-key.pem
 firestore.rules.backup
 www/js/*.backup_corrupcao
 www/*.bak
+
+# Pastas locais Android/Gradle
+.android/
+.android-user/
+.gradle/
+.gradle-user/
+# Projeto iOS local
+ios/
