@@ -52,8 +52,43 @@ serverTimestamp
 // CONFIGURAÇÃO DA IMPRESSORA
 // =======================================
 
-const PRINTER_SERVICE_URL =
-    "https://192.168.0.109:9100/print";
+async function obterUrlPrinterService() {
+
+    const idEmpresa = empresaAtual();
+
+    if (!idEmpresa) {
+
+        throw new Error("Empresa não identificada para impressão.");
+
+    }
+
+    const configuracao = await getDoc(
+        doc(db, "configuracoes", idEmpresa)
+    );
+
+    const dados = configuracao.exists()
+        ? configuracao.data()
+        : {};
+
+    const host = String(dados.printerServiceIp || "")
+        .trim()
+        .replace(/^https?:\/\//i, "")
+        .replace(/\/.*$/, "")
+        .replace(/:\d+$/, "");
+
+    const porta = Number(dados.printerServicePort || 9100);
+
+    if (!host || !Number.isInteger(porta) || porta < 1 || porta > 65535) {
+
+        throw new Error(
+            "Configure o IP e a porta do Lotrix Printer Service em Configurações antes de imprimir."
+        );
+
+    }
+
+    return `https://${host}:${porta}/print`;
+
+}
 
 // =======================================
 // VARIÁVEIS
@@ -1605,9 +1640,12 @@ async function imprimirEtiquetaDireto(
         "bytes"
     );
 
+    const printerServiceUrl =
+        await obterUrlPrinterService();
+
     console.log(
         "ENVIANDO PARA:",
-        PRINTER_SERVICE_URL
+        printerServiceUrl
     );
 
     let resposta;
@@ -1616,7 +1654,7 @@ async function imprimirEtiquetaDireto(
 
         resposta =
             await fetch(
-                PRINTER_SERVICE_URL,
+                printerServiceUrl,
                 {
 
                     method:
@@ -3111,9 +3149,12 @@ window.testarImpressoraLotrix =
 
                 );
 
+            const printerServiceUrl =
+                await obterUrlPrinterService();
+
             const resposta =
                 await fetch(
-                    PRINTER_SERVICE_URL,
+                    printerServiceUrl,
                     {
 
                         method:
@@ -3432,7 +3473,7 @@ if (btnLimparHistorico) {
 
             console.log(
                 "PRINTER SERVICE:",
-                PRINTER_SERVICE_URL
+                "Configurado por empresa"
             );
 
             console.log("=======================================");

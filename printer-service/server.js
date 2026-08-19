@@ -380,7 +380,7 @@ const server = https.createServer(
 
             res.setHeader(
                 "Access-Control-Allow-Methods",
-                "POST, OPTIONS"
+                "GET, POST, OPTIONS"
             );
 
             res.setHeader(
@@ -398,6 +398,33 @@ const server = https.createServer(
             res.writeHead(204);
 
             res.end();
+
+            return;
+        }
+
+        // Permite ao Lotrix validar a conexão sem enviar uma etiqueta.
+        if (
+            req.method === "GET" &&
+            req.url === "/health"
+        ) {
+
+            res.writeHead(
+                200,
+                {
+                    "Content-Type":
+                        "application/json; charset=utf-8"
+                }
+            );
+
+            res.end(
+                JSON.stringify(
+                    {
+                        status: "ok",
+                        printer: PRINTER,
+                        port: PORT
+                    }
+                )
+            );
 
             return;
         }

@@ -345,6 +345,36 @@ service cloud.firestore {
 
 
     // =====================================
+    // CONFIGURAÇÕES DA EMPRESA
+    // =====================================
+
+    match /configuracoes/{empresaId} {
+
+      allow read: if
+        usuarioAtivo()
+        &&
+        empresaId == idEmpresaUsuario();
+
+      allow create: if
+        usuarioAtivo()
+        &&
+        empresaId == idEmpresaUsuario()
+        &&
+        request.resource.data.idEmpresa == idEmpresaUsuario();
+
+      allow update: if
+        usuarioAtivo()
+        &&
+        empresaId == idEmpresaUsuario()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario()
+        &&
+        request.resource.data.idEmpresa == idEmpresaUsuario();
+
+      allow delete: if false;
+    }
+
+    // =====================================
     // BLOQUEAR TODO O RESTANTE
     // =====================================
 

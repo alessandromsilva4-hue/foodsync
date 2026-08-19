@@ -487,7 +487,7 @@
             <div class="input-group">
 
                 <label for="impressora">
-                    Impressora
+                    Impressora padrão
                 </label>
 
 
@@ -495,6 +495,43 @@
                     type="text"
                     id="impressora"
                     placeholder="Nome da impressora">
+
+            </div>
+
+
+            <!-- PRINTER SERVICE -->
+
+            <div class="input-group">
+
+                <label for="printerServiceIp">
+                    IP do Lotrix Printer Service
+                </label>
+
+                <input
+                    type="text"
+                    id="printerServiceIp"
+                    inputmode="decimal"
+                    placeholder="Ex.: 192.168.1.50">
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label for="printerServicePort">
+                    Porta do Printer Service
+                </label>
+
+                <input
+                    type="number"
+                    id="printerServicePort"
+                    value="9100"
+                    min="1"
+                    max="65535">
+
+                <small class="input-help">
+                    O serviço padrão utiliza a porta 9100.
+                </small>
 
             </div>
 
@@ -525,6 +562,16 @@
 
 
         </div>
+
+        <button
+            type="button"
+            id="testarPrinterService">
+
+            🔄 Testar conexão com o Printer Service
+
+        </button>
+
+        <p id="statusPrinterService" aria-live="polite"></p>
 
 
 
