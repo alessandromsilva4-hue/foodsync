@@ -42,8 +42,10 @@ console.log("=======================================");
 
 function enviarParaImpressora(zpl, callback) {
 
+    // ^CI28 informa à Zebra que o conteúdo está em UTF-8. Não converta o
+    // texto para ASCII aqui: isso substitui acentos e demais caracteres.
     const zplBase64 = Buffer
-        .from(zpl, "ascii")
+        .from(zpl, "utf8")
         .toString("base64");
 
     const psScript = `
@@ -453,7 +455,7 @@ const server = https.createServer(
             return;
         }
 
-        let body = "";
+        const bodyChunks = [];
 
         // =======================================
         // RECEBER ZPL
@@ -463,7 +465,10 @@ const server = https.createServer(
             "data",
             chunk => {
 
-                body += chunk.toString();
+                // Mantenha os bytes até o fim da requisição. Converter cada
+                // chunk separadamente pode corromper um caractere UTF-8 que
+                // tenha sido dividido entre dois chunks.
+                bodyChunks.push(chunk);
 
             }
         );
@@ -475,6 +480,10 @@ const server = https.createServer(
         req.on(
             "end",
             () => {
+
+                const body = Buffer
+                    .concat(bodyChunks)
+                    .toString("utf8");
 
                 console.log(
                     "======================================="
@@ -488,7 +497,7 @@ const server = https.createServer(
                     "Tamanho:",
                     Buffer.byteLength(
                         body,
-                        "ascii"
+                        "utf8"
                     ),
                     "bytes"
                 );

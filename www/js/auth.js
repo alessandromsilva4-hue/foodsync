@@ -124,128 +124,24 @@ function obterEmpresaAtiva() {
 // =======================================
 // DEFINIR EMPRESA ATIVA
 // =======================================
+// ADMINISTRADOR NÃO PODE TROCAR DE LOJA
+// A empresa é definida pelo perfil Firestore.
 
 window.definirEmpresaAtiva =
-function(idEmpresa) {
+function() {
 
-    try {
-
-        const usuario =
-            JSON.parse(
-                localStorage.getItem(
-                    "usuarioFoodSync"
-                )
-            );
-
-
-        if (!usuario) {
-
-            alert(
-                "Usuário não encontrado."
-            );
-
-            return;
-        }
-
-
-        const perfil =
-            (usuario.perfil || "")
-                .trim()
-                .toLowerCase();
-
-
-        if (
-            perfil !==
-            "administrador"
-        ) {
-
-            alert(
-                "Somente administradores podem trocar de empresa."
-            );
-
-            return;
-        }
-
-
-        const empresa =
-            obterDadosEmpresa(
-                idEmpresa
-            );
-
-
-        if (!empresa) {
-
-            alert(
-                "Empresa inválida."
-            );
-
-            return;
-        }
-
-
-        // =================================
-        // SALVAR EMPRESA ATIVA
-        // =================================
-
-        localStorage.setItem(
-            "empresaAtivaLotrix",
-            empresa.idEmpresa
-        );
-
-
-        // =================================
-        // ATUALIZAR USUÁRIO LOCAL
-        // =================================
-
-        usuario.idEmpresa =
-            empresa.idEmpresa;
-
-        usuario.nomeEmpresa =
-            empresa.nome;
-
-        usuario.nomeFantasia =
-            empresa.nomeFantasia;
-
-        usuario.razaoSocial =
-            empresa.razaoSocial;
-
-        usuario.cnpj =
-            empresa.cnpj;
-
-
-        localStorage.setItem(
-            "usuarioFoodSync",
-            JSON.stringify(usuario)
-        );
-
-
-        console.log(
-            "EMPRESA ATIVA ALTERADA:",
-            empresa
-        );
-
-
-        // =================================
-        // RECARREGAR
-        // =================================
-
-        window.location.reload();
-
-
-    } catch (error) {
-
-        console.error(
-            "ERRO AO ALTERAR EMPRESA:",
-            error
-        );
-
-    }
+    console.warn(
+        "ALTERAÇÃO DE EMPRESA BLOQUEADA."
+    );
 
 };
 
-
 // =======================================
-// MOSTRAR EMPRESA ATIVA
+// MOSTRAR EMPRESA DO USUÁRIO
+// =======================================
+// Cada usuário, inclusive administrador,
+// fica vinculado somente à sua empresa.
+// Não existe troca de empresa pela tela.
 // =======================================
 
 function mostrarEmpresaAtiva(usuario) {
@@ -254,7 +150,6 @@ function mostrarEmpresaAtiva(usuario) {
         document.getElementById(
             "seletorEmpresaLotrix"
         );
-
 
     if (existente) {
 
@@ -276,44 +171,37 @@ function mostrarEmpresaAtiva(usuario) {
         );
 
         return;
-    }
-
-
-    const perfil =
-        (usuario.perfil || "")
-            .trim()
-            .toLowerCase();
-
-
-    // =================================
-    // ADMINISTRADOR
-    // =================================
-
-    let empresaAtiva;
-
-
-    if (
-        perfil ===
-        "administrador"
-    ) {
-
-        empresaAtiva =
-            obterEmpresaAtiva();
-
-    } else {
-
-        // Usuário comum:
-        // SEMPRE usa sua própria empresa
-
-        empresaAtiva =
-            usuario.idEmpresa || "";
 
     }
 
+
+    // =================================
+    // EMPRESA VEM DO PERFIL
+    // =================================
+
+    const idEmpresa =
+        usuario.idEmpresa || "";
+
+
+    if (!idEmpresa) {
+
+        console.error(
+            "USUÁRIO SEM ID EMPRESA:",
+            usuario
+        );
+
+        return;
+
+    }
+
+
+    // =================================
+    // BUSCAR EMPRESA
+    // =================================
 
     const empresa =
         obterDadosEmpresa(
-            empresaAtiva
+            idEmpresa
         );
 
 
@@ -321,12 +209,17 @@ function mostrarEmpresaAtiva(usuario) {
 
         console.error(
             "EMPRESA NÃO ENCONTRADA:",
-            empresaAtiva
+            idEmpresa
         );
 
         return;
+
     }
 
+
+    // =================================
+    // CRIAR ÁREA DA EMPRESA
+    // =================================
 
     const container =
         document.createElement(
@@ -354,128 +247,40 @@ function mostrarEmpresaAtiva(usuario) {
         "rgba(255,255,255,0.08)";
 
 
-    // =================================
-    // ADMIN
-    // =================================
+    container.innerHTML = `
 
-    if (
-        perfil ===
-        "administrador"
-    ) {
+        <div style="
+            font-size:10px;
+            opacity:.65;
+            margin-bottom:3px;
+            letter-spacing:.5px;
+        ">
+            EMPRESA
+        </div>
 
-        container.innerHTML = `
+        <strong style="
+            font-size:13px;
+        ">
+            ${empresa.nomeFantasia || empresa.nome}
+        </strong>
 
-            <div style="
-                font-size:10px;
-                opacity:.65;
-                margin-bottom:4px;
-                letter-spacing:.5px;
-            ">
-                EMPRESA ATIVA
-            </div>
-
-            <select
-                id="empresaAtivaSelect"
-                style="
-                    width:100%;
-                    box-sizing:border-box;
-                    padding:7px 8px;
-                    border-radius:6px;
-                    border:none;
-                    outline:none;
-                    background:#fff;
-                    color:#111827;
-                    font-size:13px;
-                    cursor:pointer;
-                "
-            >
-
-                ${EMPRESAS_LOTRIX.map(item => `
-
-                    <option
-                        value="${item.idEmpresa}"
-                        ${
-                            item.idEmpresa ===
-                            empresaAtiva
-                                ? "selected"
-                                : ""
-                        }
-                    >
-                        ${item.nome}
-                    </option>
-
-                `).join("")}
-
-            </select>
-
-        `;
+    `;
 
 
-        logoArea.after(
-            container
-        );
-
-
-        const select =
-            document.getElementById(
-                "empresaAtivaSelect"
-            );
-
-
-        if (select) {
-
-            select.addEventListener(
-                "change",
-                function() {
-
-                    definirEmpresaAtiva(
-                        this.value
-                    );
-
-                }
-            );
-
-        }
-
-
-    }
-
-    // =================================
-    // OPERADOR / COLABORADOR
-    // =================================
-
-    else {
-
-        container.innerHTML = `
-
-            <div style="
-                font-size:10px;
-                opacity:.65;
-                margin-bottom:3px;
-                letter-spacing:.5px;
-            ">
-                EMPRESA
-            </div>
-
-            <strong style="
-                font-size:13px;
-            ">
-                ${empresa.nomeFantasia || empresa.nome}
-            </strong>
-
-        `;
-
-
-        logoArea.after(
-            container
-        );
-
-    }
+    logoArea.after(
+        container
+    );
 
 
     console.log(
-        "EMPRESA EXIBIDA:",
+        "EMPRESA DO USUÁRIO:",
         empresa.nome
+    );
+
+
+    console.log(
+        "ID EMPRESA DO USUÁRIO:",
+        usuario.idEmpresa
     );
 
 }
@@ -1140,30 +945,17 @@ async function carregarPerfil(user) {
                 .toLowerCase();
 
 
-        // =================================
-        // DEFINIR EMPRESA
-        // =================================
+     // =================================
+// DEFINIR EMPRESA
+// =================================
+// TODOS os usuários, inclusive
+// administradores, usam a empresa
+// gravada no próprio perfil.
+// Nunca usar localStorage para
+// escolher a empresa do administrador.
 
-        let idEmpresa =
-            "";
-
-
-        if (
-            perfilTipo ===
-            "administrador"
-        ) {
-
-            idEmpresa =
-                obterEmpresaAtiva();
-
-        } else {
-
-            idEmpresa =
-                dados.idEmpresa ||
-                "";
-
-        }
-
+const idEmpresa =
+    dados.idEmpresa || "";
 
         // =================================
         // BUSCAR EMPRESA
@@ -1570,7 +1362,7 @@ onAuthStateChanged(
 
 
 // =======================================
-// CONTROLAR MENU
+// CONTROLAR MENU POR PERMISSÃO
 // =======================================
 
 function controlarMenu(
@@ -1610,10 +1402,90 @@ function controlarMenu(
             "sac",
 
         "sac-admin.html":
-            "sacAdmin"
+            "sacAdmin",
+
+        "ajuda.html":
+            "ajuda"
 
     };
 
+
+    const perfil =
+        (
+            usuario?.perfil ||
+            ""
+        )
+            .trim()
+            .toLowerCase();
+
+
+    // =======================================
+    // ADMINISTRADOR
+    // VÊ TODO O MENU
+    // =======================================
+
+    if (
+        perfil ===
+        "administrador"
+    ) {
+
+        document
+            .querySelectorAll(
+                ".menu a"
+            )
+            .forEach(
+                link => {
+
+                    link.hidden =
+                        false;
+
+                    link.style.removeProperty(
+                        "display"
+                    );
+
+                }
+            );
+
+
+        document
+            .querySelectorAll(
+                ".menu-section"
+            )
+            .forEach(
+                section => {
+
+                    section.hidden =
+                        false;
+
+                    section.style.removeProperty(
+                        "display"
+                    );
+
+                }
+            );
+
+
+        console.log(
+            "MENU ADMINISTRADOR: TUDO LIBERADO"
+        );
+
+        return;
+
+    }
+
+
+    // =======================================
+    // USUÁRIO / COLABORADOR
+    // =======================================
+
+    const permissoes =
+        usuario?.permissoes ||
+        {};
+
+
+    // =======================================
+    // CONTROLAR LINKS
+    // =======================================
 
     document
         .querySelectorAll(
@@ -1622,65 +1494,203 @@ function controlarMenu(
         .forEach(
             link => {
 
-                const pagina =
+                const href =
                     link.getAttribute(
                         "href"
                     );
+
+
+                const pagina =
+                    href
+                        ?.split("/")
+                        .pop()
+                        .split("?")[0]
+                        .split("#")[0];
 
 
                 const permissao =
                     mapa[pagina];
 
 
+                // --------------------------------
+                // LINK NÃO MAPEADO
+                // --------------------------------
+
                 if (!permissao) {
+
+                    link.hidden =
+                        false;
+
+                    link.style.removeProperty(
+                        "display"
+                    );
+
                     return;
+
                 }
 
 
-                const perfil =
-                    (
-                        usuario.perfil ||
-                        ""
-                    )
-                        .toLowerCase();
-
+                // --------------------------------
+                // AJUDA LIBERADA PARA TODOS
+                // --------------------------------
 
                 if (
-                    perfil ===
-                    "administrador"
+                    permissao ===
+                    "ajuda"
                 ) {
 
-                    link.style.display =
-                        "block";
+                    link.hidden =
+                        false;
+
+                    link.style.removeProperty(
+                        "display"
+                    );
 
                     return;
 
                 }
 
 
-                if (
-                    usuario.permissoes &&
-                    usuario.permissoes[
+                // --------------------------------
+                // VERIFICAR PERMISSÃO
+                // --------------------------------
+
+                const temPermissao =
+                    permissoes[
                         permissao
-                    ] === true
+                    ] === true;
+
+
+                if (
+                    temPermissao
                 ) {
 
-                    link.style.display =
-                        "block";
+                    link.hidden =
+                        false;
+
+                    link.style.removeProperty(
+                        "display"
+                    );
 
                 } else {
 
-                    link.style.display =
-                        "none";
+                    link.hidden =
+                        true;
+
+                    link.style.setProperty(
+                        "display",
+                        "none",
+                        "important"
+                    );
 
                 }
 
             }
         );
 
+
+    // =======================================
+    // GESTÃO
+    // SOMENTE ADMINISTRADOR
+    // =======================================
+
+    document
+        .querySelectorAll(
+            ".menu-section"
+        )
+        .forEach(
+            section => {
+
+                const titulo =
+                    section
+                        .querySelector(
+                            ".menu-title"
+                        )
+                        ?.textContent
+                        .trim()
+                        .toLowerCase();
+
+
+                if (
+                    titulo &&
+                    titulo.includes(
+                        "gest"
+                    )
+                ) {
+
+                    section.hidden =
+                        true;
+
+                    section.style.setProperty(
+                        "display",
+                        "none",
+                        "important"
+                    );
+
+                }
+
+            }
+        );
+
+
+    // =======================================
+    // ESCONDER SEÇÕES VAZIAS
+    // =======================================
+
+    document
+        .querySelectorAll(
+            ".menu-section"
+        )
+        .forEach(
+            section => {
+
+                if (
+                    section.hidden
+                ) {
+
+                    return;
+
+                }
+
+
+                const links =
+                    section.querySelectorAll(
+                        "a"
+                    );
+
+
+                const linksVisiveis =
+                    section.querySelectorAll(
+                        "a:not([hidden])"
+                    );
+
+
+                if (
+                    links.length > 0 &&
+                    linksVisiveis.length === 0
+                ) {
+
+                    section.hidden =
+                        true;
+
+                    section.style.setProperty(
+                        "display",
+                        "none",
+                        "important"
+                    );
+
+                }
+
+            }
+        );
+
+
+    console.log(
+        "MENU FILTRADO POR PERMISSÕES:",
+        permissoes
+    );
+
 }
-
-
 // =======================================
 // LOGOUT
 // =======================================

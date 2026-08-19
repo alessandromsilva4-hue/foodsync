@@ -1,8 +1,8 @@
-﻿// =======================================
+// =======================================
 // FOODSYNC - SAC
 // =======================================
 
-console.log("SAC.JS VERSÃƒO FINAL");
+console.log("SAC.JS VERSÃO FINAL");
 
 
 // FIREBASE
@@ -77,24 +77,24 @@ function respostaAssistente(pergunta) {
     const texto = normalizarTexto(pergunta);
 
     if (texto.includes("etiqueta") || texto.includes("imprimir")) {
-        return "Para gerar uma etiqueta, abra Etiquetas, selecione o produto, informe a data de produÃ§Ã£o e a quantidade. Depois, clique em Gerar Etiqueta e em Imprimir. A validade Ã© calculada conforme o cadastro do produto.";
+        return "Para gerar uma etiqueta, abra Etiquetas, selecione o produto, informe a data de produção e a quantidade. Depois, clique em Gerar Etiqueta e em Imprimir. A validade é calculada conforme o cadastro do produto.";
     }
     if (texto.includes("producao") || texto.includes("produzir")) {
-        return "Abra ProduÃ§Ã£o, escolha o produto e preencha quantidade, data/hora e responsÃ¡vel. Confira a validade sugerida e finalize o registro. Em seguida, vocÃª pode emitir as etiquetas da produÃ§Ã£o.";
+        return "Abra Produção, escolha o produto e preencha quantidade, data/hora e responsável. Confira a validade sugerida e finalize o registro. Em seguida, você pode emitir as etiquetas da produção.";
     }
     if (texto.includes("produto") || texto.includes("cadastrar")) {
-        return "Em Produtos, clique para cadastrar um item e informe nome, categoria, unidade, temperatura de conservaÃ§Ã£o e validade em dias. Esses dados sÃ£o usados no controle e nas etiquetas.";
+        return "Em Produtos, clique para cadastrar um item e informe nome, categoria, unidade, temperatura de conservação e validade em dias. Esses dados são usados no controle e nas etiquetas.";
     }
     if (texto.includes("estoque") || texto.includes("entrada") || texto.includes("saida")) {
-        return "No mÃ³dulo Estoque, registre entradas e saÃ­das do item. Mantenha a quantidade atualizada para que o sistema destaque itens com estoque baixo.";
+        return "No módulo Estoque, registre entradas e saídas do item. Mantenha a quantidade atualizada para que o sistema destaque itens com estoque baixo.";
     }
     if (texto.includes("relatorio") || texto.includes("auditoria")) {
-        return "Use RelatÃ³rios para acompanhar os dados consolidados e Auditoria para consultar as aÃ§Ãµes registradas no sistema.";
+        return "Use Relatórios para acompanhar os dados consolidados e Auditoria para consultar as ações registradas no sistema.";
     }
     if (texto.includes("senha") || texto.includes("login") || texto.includes("acesso")) {
-        return "Para questÃµes de acesso, confirme o e-mail e tente redefinir sua senha na tela de login. Se o problema continuar, abra um chamado para a equipe verificar seu usuÃ¡rio.";
+        return "Para questões de acesso, confirme o e-mail e tente redefinir sua senha na tela de login. Se o problema continuar, abra um chamado para a equipe verificar seu usuário.";
     }
-    return "Ainda nÃ£o encontrei uma orientaÃ§Ã£o especÃ­fica. Posso ajudar com produtos, produÃ§Ã£o, etiquetas, estoque, relatÃ³rios ou acesso. Se preferir, clique em â€œAbrir chamadoâ€ abaixo e eu preparo a solicitaÃ§Ã£o.";
+    return "Ainda não encontrei uma orientação específica. Posso ajudar com produtos, produção, etiquetas, estoque, relatórios ou acesso. Se preferir, clique em “Abrir chamado” abaixo e eu preparo a solicitação.";
 }
 
 function adicionarMensagemAssistente(texto, tipo) {
@@ -109,7 +109,7 @@ function adicionarMensagemAssistente(texto, tipo) {
 function abrirChamadoAssistente(pergunta) {
     const assunto = document.getElementById("assunto");
     const descricao = document.getElementById("descricao");
-    if (assunto && !assunto.value) assunto.value = "SolicitaÃ§Ã£o de suporte";
+    if (assunto && !assunto.value) assunto.value = "Solicitação de suporte";
     if (descricao && !descricao.value) descricao.value = pergunta;
     document.getElementById("formSac")?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -147,7 +147,7 @@ if (formAssistente) {
 
 
 // =======================================
-// CARREGAR CHAMADOS DO USUÃRIO
+// CARREGAR CHAMADOS DO USUÁRIO
 // =======================================
 
 
@@ -352,7 +352,7 @@ mostrarToast(
 
 
 // =======================================
-// LOGIN DO USUÃRIO
+// LOGIN DO USUÁRIO
 // =======================================
 
 
@@ -367,7 +367,7 @@ usuarioAtual = user;
 
 console.log(
 
-"UsuÃ¡rio SAC:",
+"Usuário SAC:",
 
 usuarioAtual.email
 
@@ -385,7 +385,7 @@ else{
 
 
 console.log(
-"Nenhum usuÃ¡rio logado"
+"Nenhum usuário logado"
 );
 
 
@@ -426,7 +426,7 @@ if(!usuarioAtual){
 
 mostrarToast(
 
-"UsuÃ¡rio nÃ£o autenticado.",
+"Usuário não autenticado.",
 
 "erro"
 
@@ -522,15 +522,11 @@ usuarioId:
 
 usuarioAtual.uid,
 
-idEmpresa:
-
-JSON.parse(localStorage.getItem("usuarioFoodSync"))?.idEmpresa || "",
-
 
 
 usuarioNome:
 
-usuarioAtual.displayName || "UsuÃ¡rio",
+usuarioAtual.displayName || "Usuário",
 
 
 
@@ -663,5 +659,3 @@ mostrarToast(
 
 
 }
-
-

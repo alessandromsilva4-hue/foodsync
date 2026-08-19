@@ -52,43 +52,8 @@ serverTimestamp
 // CONFIGURAÇÃO DA IMPRESSORA
 // =======================================
 
-async function obterUrlPrinterService() {
-
-    const idEmpresa = empresaAtual();
-
-    if (!idEmpresa) {
-
-        throw new Error("Empresa não identificada para impressão.");
-
-    }
-
-    const configuracao = await getDoc(
-        doc(db, "configuracoes", idEmpresa)
-    );
-
-    const dados = configuracao.exists()
-        ? configuracao.data()
-        : {};
-
-    const host = String(dados.printerServiceIp || "")
-        .trim()
-        .replace(/^https?:\/\//i, "")
-        .replace(/\/.*$/, "")
-        .replace(/:\d+$/, "");
-
-    const porta = Number(dados.printerServicePort || 9100);
-
-    if (!host || !Number.isInteger(porta) || porta < 1 || porta > 65535) {
-
-        throw new Error(
-            "Configure o IP e a porta do Lotrix Printer Service em Configurações antes de imprimir."
-        );
-
-    }
-
-    return `https://${host}:${porta}/print`;
-
-}
+const PRINTER_SERVICE_URL =
+    "https://192.168.0.109:9100/print";
 
 // =======================================
 // VARIÁVEIS
@@ -1302,7 +1267,7 @@ function gerarLote() {
 
 function atualizarResponsavelPrevia() {
 
-    const campo =
+    const select =
         obterElemento(
             "responsavelSelect"
         );
@@ -1315,12 +1280,33 @@ function atualizarResponsavelPrevia() {
     if (!elemento) {
 
         return;
+
     }
 
-    elemento.textContent =
-        campo?.value?.trim() ||
+    if (!select || !select.value) {
+
+        elemento.textContent =
+            "--";
+
+        return;
+
+    }
+
+    const opcao =
+        select.options[
+            select.selectedIndex
+        ];
+
+    const nome =
+        opcao?.dataset?.nome ||
+        opcao?.textContent ||
         "--";
+
+    elemento.textContent =
+        nome;
+
 }
+
 // =======================================
 // ATUALIZAR TEMPERATURA NA PRÉVIA
 // =======================================
@@ -1560,9 +1546,7 @@ function gerarZPL(
     // PRODUTO
     // ===================================
 
-    // Mantém uma margem superior maior para evitar que o cabeçalho do
-    // produto seja cortado pela área não-imprimível da ZD220.
-    zpl += "^FO16,28\n";
+    zpl += "^FO16,16\n";
     zpl += "^A0N,34,34\n";
     zpl += "^FB448,1,0,L,0\n";
     zpl += `^FD${nome}^FS\n`;
@@ -1665,7 +1649,7 @@ function gerarZPL(
     if (endereco) {
 
         zpl += "^FO16,394\n";
-        zpl += "^A0N,18,18\n";
+        zpl += "^A0N,15,15\n";
         zpl += "^FB305,2,0,L,0\n";
         zpl += `^FD${endereco}^FS\n`;
 
@@ -1804,12 +1788,9 @@ async function imprimirEtiquetaDireto(
         "bytes"
     );
 
-    const printerServiceUrl =
-        await obterUrlPrinterService();
-
     console.log(
         "ENVIANDO PARA:",
-        printerServiceUrl
+        PRINTER_SERVICE_URL
     );
 
     let resposta;
@@ -1818,7 +1799,7 @@ async function imprimirEtiquetaDireto(
 
         resposta =
             await fetch(
-                printerServiceUrl,
+                PRINTER_SERVICE_URL,
                 {
 
                     method:
@@ -2061,25 +2042,39 @@ async function salvarEtiqueta() {
 // RESPONSÁVEL
 // ===================================
 
-const responsavelCampo =
+const responsavelSelect =
     obterElemento(
         "responsavelSelect"
     );
 
-const responsavel =
-    responsavelCampo?.value?.trim() ||
-    "";
-
-if (!responsavel) {
+if (
+    !responsavelSelect ||
+    !responsavelSelect.value
+) {
 
     alert(
-        "Digite o nome do responsável pela etiqueta."
+        "Selecione o responsável pela etiqueta."
     );
 
-    responsavelCampo?.focus();
+    responsavelSelect?.focus();
 
     return;
+
 }
+
+const responsavelId =
+    responsavelSelect.value;
+
+const opcaoResponsavel =
+    responsavelSelect.options[
+        responsavelSelect.selectedIndex
+    ];
+
+const responsavel =
+    opcaoResponsavel?.dataset?.nome ||
+    opcaoResponsavel?.textContent ||
+    "Não informado";
+
         // ===================================
         // UNIDADE
         // ===================================
@@ -3328,12 +3323,9 @@ window.testarImpressoraLotrix =
 
                 );
 
-            const printerServiceUrl =
-                await obterUrlPrinterService();
-
             const resposta =
                 await fetch(
-                    printerServiceUrl,
+                    PRINTER_SERVICE_URL,
                     {
 
                         method:
@@ -3473,12 +3465,6 @@ document.addEventListener(
 
             await carregarProdutos();
 
-                        // ===================================
-            // RESPONSÁVEIS
-            // ===================================
-
-            await carregarResponsaveis();
-
             // ===================================
             // PRÉVIA
             // ===================================
@@ -3543,29 +3529,6 @@ document.addEventListener(
 
                         calcularValidadeProduto();
 
-                        atualizarPrevia();
-
-                    }
-                );
-
-            }
-
-                        // ===================================
-            // RESPONSÁVEL ALTERADO
-            // ===================================
-
-            const responsavelSelect =
-                obterElemento(
-                    "responsavelSelect"
-                );
-
-            if (responsavelSelect) {
-
-                responsavelSelect.addEventListener(
-                    "change",
-                    () => {
-
-                        atualizarResponsavelPrevia();
                         atualizarPrevia();
 
                     }
@@ -3681,7 +3644,7 @@ if (btnLimparHistorico) {
 
             console.log(
                 "PRINTER SERVICE:",
-                "Configurado por empresa"
+                PRINTER_SERVICE_URL
             );
 
             console.log("=======================================");
@@ -3698,5 +3661,3 @@ if (btnLimparHistorico) {
     }
 
 );
-
-

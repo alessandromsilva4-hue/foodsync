@@ -274,7 +274,36 @@ service cloud.firestore {
         resource.data.idEmpresa == idEmpresaUsuario();
     }
 
+    // =====================================
+    // SAC
+    // =====================================
 
+    match /sac/{chamadoId} {
+
+      // ADMINISTRADOR PODE VISUALIZAR TODOS OS CHAMADOS
+      allow read: if
+        usuarioAtivo()
+        &&
+        perfilUsuario().data.perfil == "administrador";
+
+
+      // USUÁRIO ATIVO PODE ABRIR CHAMADO
+      allow create: if
+        usuarioAtivo()
+        &&
+        request.resource.data.idEmpresa == idEmpresaUsuario();
+
+
+      // ADMINISTRADOR PODE ATENDER CHAMADOS
+      allow update: if
+        usuarioAtivo()
+        &&
+        perfilUsuario().data.perfil == "administrador";
+
+
+      // NÃO PERMITIR EXCLUSÃO
+      allow delete: if false;
+    }
     // =====================================
     // USUÁRIOS
     // MULTIEMPRESA
@@ -343,7 +372,6 @@ service cloud.firestore {
       allow create, update, delete: if false;
     }
 
-
     // =====================================
     // CONFIGURAÇÕES DA EMPRESA
     // =====================================
@@ -373,6 +401,65 @@ service cloud.firestore {
 
       allow delete: if false;
     }
+// =====================================
+// SAC
+// MULTIEMPRESA
+// =====================================
+
+match /sac/{chamadoId} {
+
+  // Ler chamados
+  allow read: if
+    usuarioAtivo()
+    &&
+    (
+      (
+        perfilUsuario().data.perfil.lower() == "administrador"
+        &&
+        (
+          resource.data.idEmpresa == idEmpresaUsuario()
+          ||
+          !("idEmpresa" in resource.data)
+        )
+      )
+      ||
+      (
+        resource.data.idEmpresa == idEmpresaUsuario()
+      )
+    );
+
+
+  // Criar chamado
+  allow create: if
+    usuarioAtivo()
+    &&
+    request.resource.data.idEmpresa == idEmpresaUsuario()
+    &&
+    request.resource.data.usuarioId == request.auth.uid;
+
+
+  // Atualizar chamado
+  allow update: if
+    usuarioAtivo()
+    &&
+    perfilUsuario().data.perfil == "administrador"
+    &&
+    (
+      resource.data.idEmpresa == idEmpresaUsuario()
+      ||
+      !("idEmpresa" in resource.data)
+    );
+
+
+  // Excluir chamado
+  allow delete: if
+    usuarioAtivo()
+    &&
+    perfilUsuario().data.perfil == "administrador"
+    &&
+    resource.data.idEmpresa == idEmpresaUsuario();
+
+}
 
     // =====================================
     // BLOQUEAR TODO O RESTANTE
