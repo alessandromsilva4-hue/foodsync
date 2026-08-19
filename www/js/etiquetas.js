@@ -1361,7 +1361,9 @@ function gerarZPL(
     // PRODUTO
     // ===================================
 
-    zpl += "^FO16,16\n";
+    // Mantém uma margem superior maior para evitar que o cabeçalho do
+    // produto seja cortado pela área não-imprimível da ZD220.
+    zpl += "^FO16,28\n";
     zpl += "^A0N,34,34\n";
     zpl += "^FB448,1,0,L,0\n";
     zpl += `^FD${nome}^FS\n`;
