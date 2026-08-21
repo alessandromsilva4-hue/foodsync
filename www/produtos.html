@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -421,534 +421,287 @@ Novo Produto
 
 <form id="produtoForm">
 
+    <!-- =========================
+         INFORMAÇÕES PRINCIPAIS
+    ========================== -->
 
-<div class="campo">
+    <div class="form-grid">
 
-<label for="grupoProduto">
-Grupo
-</label>
+        <div class="input-group">
 
+            <label for="grupoProduto">
+                Grupo
+            </label>
 
-<select id="grupoProduto">
+            <select id="grupoProduto">
 
+                <option value="">
+                    Selecione o grupo
+                </option>
 
-<option value="">
-Selecione o grupo
-</option>
+                <option value="PROTEÍNAS">PROTEÍNAS</option>
+                <option value="GRÃOS">GRÃOS</option>
+                <option value="MOLHOS">MOLHOS</option>
+                <option value="COMPLEMENTOS">COMPLEMENTOS</option>
+                <option value="BEBIDAS">BEBIDAS</option>
+                <option value="SOBREMESAS">SOBREMESAS</option>
+                <option value="HORTFRUIT">HORTFRUIT</option>
+                <option value="EMBALAGENS">EMBALAGENS</option>
+                <option value="OUTROS">OUTROS</option>
 
+            </select>
 
-<option value="PROTEÍNAS">
-PROTEÍNAS
-</option>
+        </div>
 
 
-<option value="GRÃOS">
-GRÃOS
-</option>
+        <div class="input-group">
 
+            <label for="categoriaProduto">
+                Categoria
+            </label>
 
-<option value="MOLHOS">
-MOLHOS
-</option>
+            <select id="categoriaProduto">
 
+                <option value="">
+                    Selecione a categoria
+                </option>
 
-<option value="COMPLEMENTOS">
-COMPLEMENTOS
-</option>
+                <option value="SECO">SECO</option>
+                <option value="RESFRIADO">RESFRIADO</option>
+                <option value="CONGELADO">CONGELADO</option>
+                <option value="BEBIDA">BEBIDA</option>
+                <option value="EMBALAGEM">EMBALAGEM</option>
+                <option value="MOLHO">MOLHO</option>
+                <option value="SOBREMESA">SOBREMESA</option>
+                <option value="HORTFRUIT">HORTFRUIT</option>
+                <option value="COMPLEMENTO">COMPLEMENTO</option>
+                <option value="DESCARTÁVEL">DESCARTÁVEL</option>
+                <option value="LIMPEZA">LIMPEZA</option>
+                <option value="OUTROS">OUTROS</option>
 
+            </select>
 
-<option value="BEBIDAS">
-BEBIDAS
-</option>
+        </div>
 
 
-<option value="SOBREMESAS">
-SOBREMESAS
-</option>
+        <div class="input-group campo-completo">
 
+            <label for="nomeProduto">
+                Nome do Produto
+            </label>
 
-<option value="HORTFRUIT">
-HORTFRUIT
-</option>
+            <input
+                type="text"
+                id="nomeProduto"
+                placeholder="Digite o nome do produto"
+                required>
 
+        </div>
 
-<option value="EMBALAGENS">
-EMBALAGENS
-</option>
 
+        <div class="input-group">
 
-<option value="OUTROS">
-OUTROS
-</option>
+            <label for="unidadeProduto">
+                Unidade
+            </label>
 
+            <select id="unidadeProduto">
 
-</select>
+                <option value="KG">KG</option>
+                <option value="UN">UN</option>
+                <option value="L">L</option>
 
-</div>
-<div class="campo">
+            </select>
 
-<label for="categoriaProduto">
-Categoria
-</label>
+        </div>
 
 
-<select id="categoriaProduto">
+        <div class="input-group">
 
+            <label for="validadeProduto">
+                Validade padrão (dias)
+            </label>
 
-<option value="">
-Selecione a categoria
-</option>
+            <input
+                type="number"
+                id="validadeProduto"
+                value="1"
+                min="1">
 
+        </div>
 
-<option value="SECO">
-SECO
-</option>
 
+        <div class="input-group campo-completo">
 
-<option value="RESFRIADO">
-RESFRIADO
-</option>
+            <label for="temperaturaProduto">
+                Temperatura de armazenamento
+            </label>
 
+            <select id="temperaturaProduto">
 
-<option value="CONGELADO">
-CONGELADO
-</option>
+                <option value="Refrigerado 0°C a 5°C">
+                    Refrigerado 0°C a 5°C
+                </option>
 
+                <option value="Congelado -18°C">
+                    Congelado -18°C
+                </option>
 
-<option value="BEBIDA">
-BEBIDA
-</option>
+                <option value="Ambiente">
+                    Ambiente
+                </option>
 
+            </select>
 
-<option value="EMBALAGEM">
-EMBALAGEM
-</option>
+        </div>
 
+    </div>
 
-<option value="MOLHO">
-MOLHO
-</option>
 
+    <!-- =========================
+         INFORMAÇÕES ADICIONAIS
+    ========================== -->
 
-<option value="SOBREMESA">
-SOBREMESA
-</option>
+    <div class="informacoes-adicionais">
 
+        <button
+            type="button"
+            class="btn-info-adicional"
+            onclick="toggleInformacoesProduto()">
 
-<option value="HORTFRUIT">
-HORTFRUIT
-</option>
+            <span id="iconeInfoProduto">▼</span>
+            Informações adicionais
 
+        </button>
 
-<option value="COMPLEMENTO">
-COMPLEMENTO
-</option>
 
+        <div
+            id="camposAdicionaisProduto"
+            class="campos-adicionais-produto">
 
-<option value="DESCARTÁVEL">
-DESCARTÁVEL
-</option>
+            <div class="form-grid">
 
+                <div class="input-group">
 
-<option value="LIMPEZA">
-LIMPEZA
-</option>
+                    <label for="codigoProduto">
+                        Código do Produto
+                    </label>
 
+                    <input
+                        type="text"
+                        id="codigoProduto"
+                        placeholder="Ex: SAL001">
 
-<option value="OUTROS">
-OUTROS
-</option>
+                </div>
 
 
-</select>
+                <div class="input-group">
 
-</div>
+                    <label for="setorProduto">
+                        Setor
+                    </label>
 
+                    <select id="setorProduto">
 
+                        <option value="Cozinha">
+                            Cozinha
+                        </option>
 
+                        <option value="Sushi">
+                            Sushi
+                        </option>
 
-<div class="campo">
+                        <option value="Estoque">
+                            Estoque
+                        </option>
 
+                        <option value="Expedição">
+                            Expedição
+                        </option>
 
-<label for="codigoProduto">
+                    </select>
 
-Código do Produto
+                </div>
 
-</label>
 
+                <div class="input-group">
 
-<input
+                    <label for="estoqueMinimoProduto">
+                        Estoque Mínimo
+                    </label>
 
-type="text"
+                    <input
+                        type="number"
+                        id="estoqueMinimoProduto"
+                        value="1"
+                        min="0">
 
-id="codigoProduto"
+                </div>
 
-placeholder="Ex: SAL001"
 
->
+                <div class="input-group">
 
+                    <label for="statusProduto">
+                        Status
+                    </label>
 
-</div>
+                    <select id="statusProduto">
 
+                        <option value="ativo">
+                            Ativo
+                        </option>
 
+                        <option value="inativo">
+                            Inativo
+                        </option>
 
+                    </select>
 
+                </div>
 
 
-<div class="form-grid">
+                <div class="input-group campo-completo">
 
+                    <label for="observacaoProduto">
+                        Observação
+                    </label>
 
+                    <textarea
+                        id="observacaoProduto"
+                        rows="3"></textarea>
 
-<div class="input-group">
+                </div>
 
+            </div>
 
-<label>
+        </div>
 
-Nome do Produto
+    </div>
 
-</label>
 
+    <!-- BOTÕES -->
 
-<input
+    <div class="modal-footer">
 
-type="text"
+        <button
+            type="button"
+            class="btn-secondary"
+            onclick="fecharModalProduto()">
 
-id="nomeProduto"
+            Cancelar
 
-placeholder="Digite o nome do produto"
+        </button>
 
-required
 
->
+        <button
+            type="submit"
+            class="btn-primary">
 
+            💾 Salvar Produto
 
-</div>
+        </button>
 
-
-
-
-
-
-<div class="input-group">
-
-
-<label>
-
-Unidade
-
-</label>
-
-
-<select id="unidadeProduto">
-
-
-<option value="KG">
-
-KG
-
-</option>
-
-
-<option value="UN">
-
-UN
-
-</option>
-
-
-<option value="L">
-
-L
-
-</option>
-
-
-</select>
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="input-group">
-
-
-<label>
-
-Validade padrão (dias)
-
-</label>
-
-
-<input
-
-type="number"
-
-id="validadeProduto"
-
-value="1"
-
-min="1"
-
->
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="input-group">
-
-
-<label>
-
-Temperatura de armazenamento
-
-</label>
-
-
-<select id="temperaturaProduto">
-
-
-<option value="Refrigerado 0°C a 5°C">
-
-Refrigerado 0°C a 5°C
-
-</option>
-
-
-<option value="Congelado -18°C">
-
-Congelado -18°C
-
-</option>
-
-
-<option value="Ambiente">
-
-Ambiente
-
-</option>
-
-
-</select>
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="input-group">
-
-
-<label>
-
-Setor
-
-</label>
-
-
-<select id="setorProduto">
-
-
-<option value="Cozinha">
-
-Cozinha
-
-</option>
-
-
-<option value="Sushi">
-
-Sushi
-
-</option>
-
-
-<option value="Estoque">
-
-Estoque
-
-</option>
-
-
-<option value="Expedição">
-
-Expedição
-
-</option>
-
-
-</select>
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="input-group">
-
-
-<label>
-
-Estoque Mínimo
-
-</label>
-
-
-<input
-
-type="number"
-
-id="estoqueMinimoProduto"
-
-value="1"
-
-min="0"
-
->
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="input-group">
-
-
-<label>
-
-Status
-
-</label>
-
-
-<select id="statusProduto">
-
-
-<option value="ativo">
-
-Ativo
-
-</option>
-
-
-<option value="inativo">
-
-Inativo
-
-</option>
-
-
-</select>
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="input-group campo-completo">
-
-
-<label>
-
-Observação
-
-</label>
-
-
-<textarea
-
-id="observacaoProduto"
-
-rows="3"
-
-></textarea>
-
-
-</div>
-
-
-
-
-
-</div>
-
-
-
-
-
-<div class="modal-footer">
-
-
-
-<button
-
-type="button"
-
-class="btn-secondary"
-
-onclick="fecharModalProduto()"
-
->
-
-Cancelar
-
-</button>
-
-
-
-
-
-<button
-
-type="submit"
-
-class="btn-primary"
-
->
-
-💾 Salvar Produto
-
-</button>
-
-
-
-
-
-</div>
-
-
+    </div>
 
 </form>
 
@@ -997,3 +750,4 @@ class="btn-primary"
 
 
 </html>
+

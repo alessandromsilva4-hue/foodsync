@@ -1,4 +1,4 @@
-/* ==========================================
+﻿/* ==========================================
    LOTRIX v2 - PRODUTOS
 ========================================== */
 
@@ -475,3 +475,42 @@
 
 
 }
+
+/* =========================================================
+   NOVO PRODUTO - INFORMAÇÕES ADICIONAIS
+========================================================= */
+
+.informacoes-adicionais {
+    margin-top: 18px;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 14px;
+}
+
+.btn-info-adicional {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 14px;
+    border: 1px solid #dbe3ec;
+    border-radius: 9px;
+    background: #f8fafc;
+    color: #1f2937;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.btn-info-adicional:hover {
+    background: #f1f5f9;
+}
+
+.campos-adicionais-produto {
+    display: none;
+    margin-top: 14px;
+}
+
+.campos-adicionais-produto.aberto {
+    display: block;
+}
+
