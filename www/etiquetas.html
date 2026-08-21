@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -25,127 +25,126 @@
     <!-- SIDEBAR -->
     <aside class="sidebar">
 
-    <div class="logo-area">
-        <img src="img/logo.png" alt="Lotrix">
-        <h2>LOTRIX</h2>
-        <small>Food Safety Platform</small>
-    </div>
-
-    <nav class="menu">
-
-        <div class="menu-section">
-            <span class="menu-title">GERAL</span>
-
-            <a href="dashboard.html" class="active">
-                <span>🏠</span>
-                <span class="nav-label">Dashboard</span>
-            </a>
+        <div class="logo-area">
+            <img src="img/logo.png" alt="Lotrix">
+            <h2>LOTRIX</h2>
+            <small>Food Safety Platform</small>
         </div>
 
-        <div class="menu-section">
-            <span class="menu-title">OPERAÇÃO</span>
+        <nav class="menu">
 
-            <a href="producao.html">
-                <span>⚙️</span>
-                <span class="nav-label">Produção</span>
-            </a>
+            <div class="menu-section">
+                <span class="menu-title">GERAL</span>
 
-            <a href="produtos.html">
-                <span>📦</span>
-                <span class="nav-label">Produtos</span>
-            </a>
+                <a href="dashboard.html">
+                    <span>⌂</span>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+            </div>
 
-            <a href="etiquetas.html">
-                <span>🏷️</span>
-                <span class="nav-label">Etiquetas</span>
-            </a>
+            <div class="menu-section">
+                <span class="menu-title">OPERAÇÃO</span>
 
-            <a href="estoque.html">
-                <span>📚</span>
-                <span class="nav-label">Estoque</span>
-            </a>
+                <a href="producao.html">
+                    <span>⚙</span>
+                    <span class="nav-label">Produção</span>
+                </a>
+
+                <a href="produtos.html">
+                    <span>▣</span>
+                    <span class="nav-label">Produtos</span>
+                </a>
+
+                <a href="etiquetas.html" class="active">
+                    <span>🏷</span>
+                    <span class="nav-label">Etiquetas</span>
+                </a>
+
+                <a href="estoque.html">
+                    <span>▤</span>
+                    <span class="nav-label">Estoque</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <span class="menu-title">GESTÃO</span>
+
+                <a href="relatorios.html">
+                    <span>▥</span>
+                    <span class="nav-label">Relatórios</span>
+                </a>
+
+                <a href="auditoria.html">
+                    <span>◉</span>
+                    <span class="nav-label">Auditoria</span>
+                </a>
+
+                <a href="usuario.html">
+                    <span>●</span>
+                    <span class="nav-label">Usuários</span>
+                </a>
+
+                <a href="sac-admin.html">
+                    <span>◉</span>
+                    <span class="nav-label">SAC Admin</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <span class="menu-title">SISTEMA</span>
+
+                <a href="configuracoes.html">
+                    <span>⚙</span>
+                    <span class="nav-label">Configurações</span>
+                </a>
+
+                <a href="ajuda.html">
+                    <span>?</span>
+                    <span class="nav-label">Ajuda</span>
+                </a>
+
+                <a href="sac.html">
+                    <span>◉</span>
+                    <span class="nav-label">SAC</span>
+                </a>
+
+            </div>
+
+        </nav>
+
+        <div class="sidebar-footer">
+
+            <div class="user-card">
+
+                <div class="avatar">
+                    👤
+                </div>
+
+                <div>
+                    <strong id="nomeUsuarioLogado">
+                        Usuário
+                    </strong>
+
+                    <small id="perfilUsuarioLogado">
+                        Carregando...
+                    </small>
+                </div>
+
+            </div>
+
+            <button onclick="logout()">
+                🚪 Sair
+            </button>
+
         </div>
 
-        <div class="menu-section">
-            <span class="menu-title">GESTÃO</span>
+    </aside>
 
-            <a href="relatorios.html">
-                <span>📈</span>
-                <span class="nav-label">Relatórios</span>
-            </a>
-
-            <a href="auditoria.html">
-                <span>📝</span>
-                <span class="nav-label">Auditoria</span>
-            </a>
-
-            <a href="usuario.html">
-                <span>👥</span>
-                <span class="nav-label">Usuários</span>
-            </a>
-        
-            <a href="sac-admin.html">
-
-                <span>🎧</span>
-
-                <span class="nav-label">
-                    SAC Admin
-                </span>
-
-            </a>
-</div>
-
-        <div class="menu-section">
-            <span class="menu-title">SISTEMA</span>
-
-            <a href="configuracoes.html">
-                <span>⚙️</span>
-                <span class="nav-label">Configurações</span>
-            </a>
-
-            <a href="ajuda.html">
-                <span>❓</span>
-                <span class="nav-label">Ajuda</span>
-            </a>
-
-            <a href="sac.html">
-                <span>🎧</span>
-                <span class="nav-label">SAC</span>
-            </a>
-        </div>
-
-    </nav>
-
-    <div class="sidebar-footer">
-
- <div class="user-card">
-
-    <div class="avatar">
-        👤
-    </div>
-
-    <div>
-        <strong id="nomeUsuarioLogado">
-            Usuário
-        </strong>
-
-        <small id="perfilUsuarioLogado">
-            Carregando...
-        </small>
-    </div>
-
-</div>
-        <button onclick="logout()">
-            🚪 Sair
-        </button>
-
-    </div>
-
-</aside>
 
     <!-- CONTEÚDO -->
-
     <main class="content">
+
+        <!-- CABEÇALHO -->
 
         <header class="top-header">
 
@@ -153,249 +152,414 @@
 
                 <h1>Etiquetas</h1>
 
-                <p>Gerenciamento de etiquetas de validade</p>
+                <p>
+                    Gere e imprima etiquetas de validade
+                </p>
 
             </div>
 
         </header>
 
-        <!-- FORMULÁRIO -->
 
-        <section class="form-box">
+        <!-- ÁREA PRINCIPAL -->
 
-            <h2>Nova Etiqueta</h2>
+        <section class="etiqueta-workspace">
 
-            <form id="etiquetaForm">
 
-                <div class="form-grid">
+            <!-- PRÉVIA -->
 
-                    <div class="input-group">
+            <div class="preview-panel">
 
-    <label>Produto</label>
+                <div class="panel-title">
 
-    <select id="produtoEtiqueta" required>
+                    <div>
 
-        <option value="">Selecione o produto</option>
+                        <span class="panel-kicker">
+                            PRÉVIA
+                        </span>
 
-    </select>
-
-</div>
-
-                    <div class="input-group">
-
-                        <label>Data Produção</label>
-
-                        <input
-                            type="date"
-                            id="dataProducao"
-                            required>
+                        <h2>
+                            Etiqueta
+                        </h2>
 
                     </div>
 
-                    <div class="input-group">
-
-                        <label>Quantidade</label>
-
-                        <input
-                            type="number"
-                            id="quantidadeProducao"
-                            value="1"
-                            min="1">
-
-                    </div>
-<div class="input-group">
-
-    <label>Responsável</label>
-<input
-    type="text"
-    id="responsavelSelect"
-    name="responsavel"
-    placeholder="Digite o nome do responsável"
-    autocomplete="off"
->
-
-</div>
                 </div>
 
-                <button type="submit">
 
-                    🏷️ Gerar Etiqueta
+                <div class="preview-stage">
 
-                </button>
+                    <div
+                        id="etiquetaGerada"
+                        class="etiqueta">
 
-            </form>
+
+                        <!-- PRODUTO -->
+
+                        <h3 id="nomeEtiqueta">
+                            PRODUTO
+                        </h3>
+
+
+                        <!-- TEMPERATURA -->
+
+                        <div class="temperatura-destaque">
+
+                            <span id="temperaturaEtiqueta">
+                                --
+                            </span>
+
+                        </div>
+
+
+                        <div class="linha-etiqueta linha-topo"></div>
+
+
+                        <!-- DATAS -->
+
+                        <div class="datas-etiqueta">
+
+                            <p>
+
+                                <strong>
+                                    MANIPULAÇÃO:
+                                </strong>
+
+                                <span id="dataEtiqueta">
+                                    --
+                                </span>
+
+                            </p>
+
+                            <p>
+
+                                <strong>
+                                    VALIDADE:
+                                </strong>
+
+                                <span id="validadeEtiqueta">
+                                    --
+                                </span>
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="linha-etiqueta linha-inferior"></div>
+
+
+                        <!-- RESPONSÁVEL -->
+
+                        <div class="info-etiqueta">
+
+                            <p>
+
+                                <strong>
+                                    RESP.:
+                                </strong>
+
+                                <span id="responsavelEtiqueta">
+                                    --
+                                </span>
+
+                            </p>
+
+                            <p>
+
+                                <strong>
+                                    LOTE:
+                                </strong>
+
+                                <span id="loteEtiqueta">
+                                    --
+                                </span>
+
+                            </p>
+
+                        </div>
+
+
+                        <!-- EMPRESA -->
+
+                        <div class="empresa-etiqueta">
+
+                            <h2 id="nomeEmpresaEtiqueta">
+                                EMPRESA
+                            </h2>
+
+                            <span id="razaoSocialEmpresaEtiqueta">
+                                --
+                            </span>
+
+                            <small id="cnpjEmpresaEtiqueta">
+                                --
+                            </small>
+
+                            <small id="enderecoEmpresaEtiqueta">
+                                --
+                            </small>
+
+                        </div>
+
+
+                        <!-- QR CODE -->
+
+                        <div id="qrcodeEtiqueta"></div>
+
+
+                    </div>
+
+                </div>
+
+
+                <div class="preview-caption">
+                    Pré-visualização da etiqueta 60 × 60 mm
+                </div>
+
+            </div>
+
+
+            <!-- FORMULÁRIO -->
+
+            <div class="print-panel">
+
+                <div class="panel-title">
+
+                    <div>
+
+                        <span class="panel-kicker">
+                            CONFIGURAÇÃO
+                        </span>
+
+                        <h2>
+                            Imprimir etiqueta
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <p class="panel-description">
+
+                    Sua etiqueta está pronta para ser impressa.
+                    Se preferir, adicione informações complementares.
+
+                </p>
+
+
+                <form id="etiquetaForm">
+
+
+                    <!-- PRODUTO -->
+
+                    <div class="field field-full">
+
+                        <label for="produtoEtiqueta">
+                            Produto
+                        </label>
+
+                        <select
+                            id="produtoEtiqueta"
+                            required>
+
+                            <option value="">
+                                Selecione o produto
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- DATA + RESPONSÁVEL -->
+
+                    <div class="field-grid">
+
+                        <div class="field">
+
+                            <label for="dataProducao">
+                                Data de produção
+                            </label>
+
+                            <input
+                                type="date"
+                                id="dataProducao"
+                                required>
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="responsavelSelect">
+                                Responsável
+                            </label>
+
+                            <input
+                                type="text"
+                                id="responsavelSelect"
+                                name="responsavel"
+                                placeholder="Digite o nome do responsável"
+                                autocomplete="off">
+
+                        </div>
+
+                    </div>
+                    <!-- QUANTIDADE -->
+
+
+                    <div class="quantity-print-row">
+
+                        <div class="quantity-box">
+
+                            <label for="quantidadeProducao">
+                                Quantidade de etiquetas
+                            </label>
+
+                            <div class="quantity-control">
+
+                                <button
+                                    type="button"
+                                    class="quantity-btn"
+                                    onclick="alterarQuantidade(-1)">
+                                    −
+                                </button>
+
+                                <input
+                                    type="number"
+                                    id="quantidadeProducao"
+                                    value="1"
+                                    min="1">
+
+                                <button
+                                    type="button"
+                                    class="quantity-btn"
+                                    onclick="alterarQuantidade(1)">
+                                    +
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="btn-print">
+
+                            🖨 Imprimir
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- BOTÃO ORIGINAL, MANTIDO PARA O JS -->
+
+                    <button
+                        type="button"
+                        class="btn-generate"
+                        onclick="document.getElementById('etiquetaForm').requestSubmit()">
+
+                        Atualizar etiqueta
+
+                    </button>
+
+                </form>
+
+            </div>
 
         </section>
 
-        <!-- PRÉVIA -->
-
-        <section class="etiqueta-preview">
-
-            <h2>Pré-visualização</h2>
-
-            <div
-id="etiquetaGerada"
-class="etiqueta">
-
- <div class="empresa-etiqueta">
-
-    <h2 id="nomeEmpresaEtiqueta">
-        EMPRESA
-    </h2>
-
-    <span id="razaoSocialEmpresaEtiqueta">
-        --
-    </span>
-
-    <small id="cnpjEmpresaEtiqueta">
-        --
-    </small>
-
-    <small id="enderecoEmpresaEtiqueta">
-        --
-    </small>
-
-</div>
-
-
-<div class="linha-etiqueta"></div>
-
-
-<h3 id="nomeEtiqueta">
-    PRODUTO
-</h3>
-
-
-<div class="temperatura-destaque">
-    <span id="temperaturaEtiqueta">
-        --
-    </span>
-
-</div>
-
-
-    <div class="linha-etiqueta"></div>
-
-
-    <div class="datas-etiqueta">
-
-        <p>
-            <strong>FABRICADO:</strong>
-            <span id="dataEtiqueta">
-                --
-            </span>
-        </p>
-
-
-        <p>
-            <strong>VALIDADE</strong>
-            <span id="validadeEtiqueta">
-                --
-            </span>
-        </p>
-
-    </div>
-
-
-    <div class="linha-etiqueta"></div>
-
-
-    <div class="info-etiqueta">
-
-
-       <p>
-
-<strong>
-RESP.:
-</strong>
-
-<span id="responsavelEtiqueta">
---
-</span>
-
-</p>
-
-       
-
-        <p>
-            <span id="loteEtiqueta">
-                --
-            </span>
-        </p>
-
-
-    </div>
-
-
-    <div id="qrcodeEtiqueta"></div>
-
-
-</div>
-
-            <button
-                type="button"
-                onclick="imprimirEtiqueta()">
-
-                🖨️ Imprimir
-
-            </button>
-
-        </section>
 
         <!-- HISTÓRICO -->
 
-        <section class="table-box">
+        <section class="table-box etiqueta-history">
 
-    <div class="historico-header">
+            <div class="historico-header">
 
-        <h2>
-            Histórico de Etiquetas
-        </h2>
+                <div>
 
-        <button
-            type="button"
-            id="btnLimparHistorico"
-            class="btn-limpar-historico">
+                    <span class="panel-kicker">
+                        HISTÓRICO
+                    </span>
 
-            🗑️ Limpar histórico
+                    <h2>
+                        Histórico de Etiquetas
+                    </h2>
 
-        </button>
+                </div>
 
-    </div>
+                <button
+                    type="button"
+                    id="btnLimparHistorico"
+                    class="btn-limpar-historico">
 
-            <table>
+                    🗑 Limpar histórico
 
-                <thead>
+                </button>
 
-                    <tr>
+            </div>
 
-                        <th>Código</th>
-                        <th>Produto</th>
-                        <th>Quantidade</th>
-                        <th>Produção</th>
-                        <th>Validade</th>
-                        <th>Responsável</th>
-                        <th>Ações</th>
 
-                    </tr>
+            <div class="table-scroll">
 
-                </thead>
+                <table>
 
-                <tbody id="listaEtiquetas">
+                    <thead>
 
-                    <tr>
+                        <tr>
 
-                        <td colspan="7">
+                            <th>
+                                Código
+                            </th>
 
-                            Nenhuma etiqueta gerada.
+                            <th>
+                                Produto
+                            </th>
 
-                        </td>
+                            <th>
+                                Quantidade
+                            </th>
 
-                    </tr>
+                            <th>
+                                Produção
+                            </th>
 
-                </tbody>
+                            <th>
+                                Validade
+                            </th>
 
-            </table>
+                            <th>
+                                Responsável
+                            </th>
+
+                            <th>
+                                Ações
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="listaEtiquetas">
+
+                        <tr>
+
+                            <td colspan="7">
+                                Nenhuma etiqueta gerada.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </section>
 
@@ -403,18 +567,74 @@ RESP.:
 
 </div>
 
+
+<!-- FIREBASE -->
+
 <script type="module" src="js/firebase.js"></script>
+
 <script type="module" src="js/app.js"></script>
+
+
+<!-- QR CODE -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
+
+<!-- ETIQUETAS -->
+
 <script type="module" src="js/etiquetas.js"></script>
+
+
+<!-- AUTENTICAÇÃO -->
 
 <script type="module" src="js/auth.js"></script>
 
+
+<!-- SIDEBAR -->
+
 <script src="js/sidebar.js"></script>
+
+
+<!-- CONTROLE DE QUANTIDADE -->
+
+<script>
+
+function alterarQuantidade(delta) {
+
+    const campo =
+        document.getElementById("quantidadeProducao");
+
+    if (!campo) return;
+
+    let valor =
+        parseInt(campo.value || "1", 10);
+
+    valor += delta;
+
+    if (valor < 1) {
+        valor = 1;
+    }
+
+    campo.value = valor;
+
+    campo.dispatchEvent(
+        new Event("input", {
+            bubbles: true
+        })
+    );
+
+    campo.dispatchEvent(
+        new Event("change", {
+            bubbles: true
+        })
+    );
+
+}
+
+</script>
 
 </body>
 
 </html>
+
 

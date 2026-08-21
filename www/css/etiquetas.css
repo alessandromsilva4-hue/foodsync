@@ -1,102 +1,549 @@
-/* ==========================================
-   LOTRIX — ETIQUETAS
+﻿/* =========================================================
+   LOTRIX - ETIQUETAS
+   NOVO LAYOUT
    Tela + Impressão Zebra ZD220
-   Etiqueta: 60 x 60 mm
-========================================== */
+   Etiqueta física: 60 x 60 mm
+========================================================= */
 
 
-/* ==========================================
-   CONFIGURAÇÃO GERAL DA TELA
-========================================== */
-
-html,
-body {
-    width: 100%;
-    min-height: 100%;
-    margin: 0;
-    padding: 0;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-}
-
-
-/* ==========================================
-   PÁGINA DE ETIQUETAS
-========================================== */
+/* =========================================================
+   BASE
+========================================================= */
 
 .etiquetas-page {
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    padding-bottom: 40px;
 }
 
 
-/* ==========================================
+/* =========================================================
    CABEÇALHO
-========================================== */
+========================================================= */
 
-.etiquetas-page .dashboard-header {
-    width: 100%;
-    margin-bottom: 28px;
+.content > .top-header {
+    margin-bottom: 24px;
+}
+
+.top-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.top-header p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 14px;
 }
 
 
-/* ==========================================
+/* =========================================================
    ÁREA PRINCIPAL
-========================================== */
+========================================================= */
 
-.etiquetas-grid {
-
-    width: 100%;
+.etiqueta-workspace {
 
     display: grid;
 
     grid-template-columns:
-        minmax(360px, 1fr)
-        minmax(300px, 420px);
+        minmax(420px, 1fr)
+        minmax(460px, 1fr);
 
     gap: 24px;
 
-    align-items: start;
+    width: 100%;
+
+    margin-bottom: 24px;
+
 }
 
 
-/* ==========================================
+/* =========================================================
    PAINÉIS
-========================================== */
+========================================================= */
 
-.etiquetas-page .dashboard-panel {
+.preview-panel,
+.print-panel {
 
-    width: 100%;
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 14px;
+
+    padding: 22px;
 
     box-sizing: border-box;
 
-    overflow: hidden;
+    box-shadow:
+        0 5px 18px rgba(15, 23, 42, .06);
+
 }
 
 
-/* ==========================================
-   FORMULÁRIO
-========================================== */
+/* =========================================================
+   TÍTULOS DOS PAINÉIS
+========================================================= */
 
-.etiquetas-form {
+.panel-title {
 
-    display: grid;
+    display: flex;
 
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+    align-items: flex-start;
 
-    gap: 18px;
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+
+}
+
+.panel-title h2 {
+
+    margin: 3px 0 0;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    color: #0f172a;
+
+}
+
+.panel-kicker {
+
+    display: block;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: .08em;
+
+    color: #94a3b8;
+
+}
+
+
+/* =========================================================
+   DESCRIÇÃO
+========================================================= */
+
+.panel-description {
+
+    margin: -6px 0 20px;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================================================
+   ÁREA DA PRÉVIA
+========================================================= */
+
+.preview-stage {
 
     width: 100%;
+
+    min-height: 470px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    box-sizing: border-box;
+
+    padding: 24px;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8fafc,
+            #eef2f7
+        );
+
+    border: 1px solid #e2e8f0;
+
+    overflow: auto;
+
 }
 
 
-.etiquetas-form .campo {
+/* =========================================================
+   TEXTO ABAIXO DA PRÉVIA
+========================================================= */
+
+.preview-caption {
+
+    text-align: center;
+
+    margin-top: 10px;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+
+}
+
+
+/* =========================================================
+   ETIQUETA
+   60 x 60 MM
+========================================================= */
+
+.etiqueta {
+
+    position: relative;
+
+    display: block;
+
+    width: 60mm;
+
+    height: 60mm;
+
+    min-width: 60mm;
+
+    min-height: 60mm;
+
+    padding: 0;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    color: #000000;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 3px;
+
+    box-shadow:
+        0 12px 28px rgba(15, 23, 42, .18);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+}
+
+
+/* =========================================================
+   PRODUTO
+========================================================= */
+
+#nomeEtiqueta {
+
+    position: absolute;
+
+    top: 2.5mm;
+
+    left: 2.5mm;
+
+    right: 2.5mm;
+
+    margin: 0;
+
+    font-size: 17px;
+
+    line-height: 1.05;
+
+    font-weight: 900;
+
+    text-align: left;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+}
+
+
+/* =========================================================
+   TEMPERATURA
+========================================================= */
+
+.temperatura-destaque {
+
+    position: absolute;
+
+    top: 8mm;
+
+    left: 2.5mm;
+
+    right: 2.5mm;
+
+    font-size: 9px;
+
+    line-height: 1;
+
+    text-align: left;
+
+}
+
+.temperatura-destaque::before {
+
+    content: "TEMP. ";
+
+}
+
+#temperaturaEtiqueta {
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+}
+
+
+/* =========================================================
+   LINHAS
+========================================================= */
+
+.linha-etiqueta {
+
+    position: absolute;
+
+    left: 2.5mm;
+
+    right: 2.5mm;
+
+    width: auto;
+
+    height: 0;
+
+    border: 0;
+
+    border-top: .25mm solid #000;
+
+    margin: 0;
+
+}
+
+.linha-topo {
+
+    top: 12.5mm;
+
+}
+
+.linha-inferior {
+
+    top: 36mm;
+
+}
+
+
+/* =========================================================
+   DATAS
+========================================================= */
+
+.datas-etiqueta {
+
+    position: absolute;
+
+    top: 17mm;
+
+    left: 2.5mm;
+
+    right: 2.5mm;
+
+    width: auto;
+
+    text-align: left;
+
+}
+
+.datas-etiqueta p {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: baseline;
+
+    margin: 1.5mm 0;
+
+    font-size: 11px;
+
+    line-height: 1;
+
+}
+
+.datas-etiqueta strong,
+.datas-etiqueta span {
+
+    display: inline;
+
+    font-size: inherit;
+
+    font-weight: 700;
+
+}
+
+
+/* =========================================================
+   INFORMAÇÕES
+========================================================= */
+
+.info-etiqueta {
+
+    position: absolute;
+
+    top: 38.5mm;
+
+    left: 2.5mm;
+
+    right: 23mm;
+
+    width: auto;
+
+    text-align: left;
+
+}
+
+.info-etiqueta p {
+
+    margin: 0 0 2mm;
+
+    font-size: 9px;
+
+    line-height: 1.1;
+
+}
+
+.info-etiqueta strong,
+.info-etiqueta span {
+
+    display: inline;
+
+    font-size: inherit;
+
+    font-weight: 700;
+
+}
+
+.info-etiqueta p:nth-child(2) {
+
+    margin-top: 1mm;
+
+}
+
+
+/* =========================================================
+   EMPRESA
+========================================================= */
+
+.empresa-etiqueta {
+
+    position: absolute;
+
+    left: 2.5mm;
+
+    right: 23mm;
+
+    bottom: 2mm;
+
+    width: auto;
+
+    margin: 0;
+
+    text-align: left;
+
+}
+
+.empresa-etiqueta h2,
+.empresa-etiqueta small {
+
+    display: block;
+
+    margin: 0 0 .7mm;
+
+    font-size: 7.5px;
+
+    line-height: 1;
+
+    font-weight: 700;
+
+    overflow-wrap: anywhere;
+
+}
+
+.empresa-etiqueta h2 {
+
+    font-size: 8px;
+
+    font-weight: 900;
+
+}
+
+.empresa-etiqueta span {
+
+    display: none;
+
+}
+
+
+/* =========================================================
+   QR CODE
+========================================================= */
+
+#qrcodeEtiqueta {
+
+    position: absolute;
+
+    right: 2.5mm;
+
+    bottom: 2.5mm;
+
+    width: 19mm;
+
+    height: 19mm;
+
+    margin: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+#qrcodeEtiqueta img,
+#qrcodeEtiqueta canvas {
+
+    display: block;
+
+    width: 19mm !important;
+
+    height: 19mm !important;
+
+}
+
+
+/* =========================================================
+   CAMPOS
+========================================================= */
+
+.field {
 
     display: flex;
 
@@ -105,27 +552,44 @@ body {
     gap: 7px;
 
     min-width: 0;
+
 }
 
+.field-full {
 
-.etiquetas-form .campo-full {
+    width: 100%;
 
-    grid-column: 1 / -1;
+    margin-bottom: 16px;
+
 }
 
+.field-grid {
 
-.etiquetas-form label {
+    display: grid;
 
-    font-size: 13px;
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+
+    gap: 14px;
+
+    margin-bottom: 16px;
+
+}
+
+.field label,
+.quantity-box label {
+
+    font-size: 12px;
 
     font-weight: 700;
 
     color: #475569;
+
 }
 
-
-.etiquetas-form input,
-.etiquetas-form select {
+.field input,
+.field select {
 
     width: 100%;
 
@@ -150,479 +614,397 @@ body {
     transition:
         border-color .2s ease,
         box-shadow .2s ease;
+
 }
 
-
-.etiquetas-form input:focus,
-.etiquetas-form select:focus {
+.field input:focus,
+.field select:focus {
 
     border-color: #2563eb;
 
     box-shadow:
         0 0 0 3px
-        rgba(37, 99, 235, .12);
+        rgba(37, 99, 235, .10);
+
 }
 
 
-/* ==========================================
-   BOTÕES
-========================================== */
+/* =========================================================
+   MEDIDA
+========================================================= */
 
-.etiquetas-form button {
+.measure-control {
 
-    grid-column: 1 / -1;
+    display: grid;
+
+    grid-template-columns: 1fr 92px;
+
+    width: 100%;
+
+}
+
+.measure-control input {
+
+    border-radius: 9px 0 0 9px;
+
+}
+
+.measure-control select {
+
+    border-left: 0;
+
+    border-radius: 0 9px 9px 0;
+
+}
+
+
+/* =========================================================
+   QUANTIDADE + IMPRIMIR
+========================================================= */
+
+.quantity-print-row {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        minmax(190px, 1.2fr);
+
+    gap: 14px;
+
+    align-items: end;
+
+    margin-top: 4px;
+
+}
+
+.quantity-box {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+}
+
+.quantity-control {
+
+    display: grid;
+
+    grid-template-columns:
+        42px
+        1fr
+        42px;
 
     min-height: 44px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 9px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+}
+
+.quantity-control input {
+
+    width: 100%;
+
+    border: 0;
+
+    outline: 0;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    color: #0f172a;
+
+}
+
+.quantity-btn {
+
+    border: 0;
+
+    background: #f8fafc;
+
+    color: #334155;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+}
+
+.quantity-btn:hover {
+
+    background: #f1f5f9;
+
+}
+
+
+/* =========================================================
+   BOTÃO IMPRIMIR
+========================================================= */
+
+.btn-print {
+
+    min-height: 50px;
 
     border: 0;
 
     border-radius: 9px;
 
-    padding: 11px 18px;
-
     background: #2563eb;
 
-    color: white;
+    color: #ffffff;
 
-    font-size: 14px;
+    font-size: 15px;
 
-    font-weight: 700;
+    font-weight: 800;
 
     cursor: pointer;
 
     transition:
         transform .15s ease,
-        opacity .15s ease,
-        box-shadow .15s ease;
+        box-shadow .15s ease,
+        opacity .15s ease;
+
 }
 
-
-.etiquetas-form button:hover {
-
-    opacity: .94;
+.btn-print:hover {
 
     transform: translateY(-1px);
 
     box-shadow:
-        0 6px 18px
-        rgba(37, 99, 235, .18);
+        0 8px 18px rgba(37, 99, 235, .20);
+
+}
+
+.btn-print:active {
+
+    transform: translateY(0);
+
 }
 
 
-/* ==========================================
-   PRÉ-VISUALIZAÇÃO
-========================================== */
+/* =========================================================
+   BOTÃO ATUALIZAR
+========================================================= */
 
-.etiqueta-preview {
+.btn-generate {
 
-    display: flex;
+    width: auto;
 
-    flex-direction: column;
+    margin-top: 12px;
 
-    align-items: center;
+    min-height: 38px;
 
-    justify-content: flex-start;
-
-    width: 100%;
-}
-
-
-.etiqueta-preview-area {
-
-    width: 100%;
-
-    min-height: 380px;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    padding: 20px;
-
-    box-sizing: border-box;
-
-    border-radius: 12px;
-
-    background:
-        #f1f5f9;
-
-    border: 1px dashed #cbd5e1;
-
-    overflow: auto;
-}
-
-
-/* ==========================================
-   ETIQUETA NA PRÉ-VISUALIZAÇÃO
-========================================== */
-
-.etiqueta {
-
-    width: 60mm;
-
-    height: 60mm;
-
-    min-width: 60mm;
-
-    min-height: 60mm;
-
-    box-sizing: border-box;
-
-    padding: 2mm;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    overflow: hidden;
-
-    background: white;
-
-    color: #000;
+    padding: 8px 14px;
 
     border: 1px solid #cbd5e1;
 
-    box-shadow:
-        0 8px 24px
-        rgba(15, 23, 42, .16);
+    border-radius: 8px;
 
-    transform-origin: center center;
-}
+    background: #f8fafc;
 
+    color: #475569;
 
-/* ==========================================
-   EMPRESA
-========================================== */
-
-.empresa-etiqueta {
-
-    text-align: center;
-
-    width: 100%;
-
-    margin-bottom: 1mm;
-}
-
-
-.empresa-etiqueta h2 {
-
-    font-size: 16px;
-
-    font-weight: 900;
-
-    margin: 0;
-
-    line-height: 1;
-}
-
-
-.empresa-etiqueta span {
-
-    font-size: 9px;
-
-    font-weight: bold;
-
-    letter-spacing: 1px;
-}
-
-
-/* ==========================================
-   LINHA
-========================================== */
-
-.linha-etiqueta {
-
-    width: 100%;
-
-    border-bottom: 1px solid #000;
-
-    margin: 1mm 0;
-}
-
-
-/* ==========================================
-   PRODUTO
-========================================== */
-
-#nomeEtiqueta {
-
-    font-size: 18px;
-
-    font-weight: 900;
-
-    text-align: center;
-
-    margin: 1mm 0;
-
-    text-transform: uppercase;
-
-    max-width: 100%;
-
-    overflow: hidden;
-}
-
-
-/* ==========================================
-   TEMPERATURA
-========================================== */
-
-.temperatura-destaque {
-
-    text-align: center;
-
-    font-size: 9px;
-}
-
-
-.temperatura-destaque strong {
-
-    display: block;
-
-    font-size: 9px;
-}
-
-
-#temperaturaEtiqueta {
-
-    font-size: 10px;
-
-    font-weight: bold;
-}
-
-
-/* ==========================================
-   DATAS
-========================================== */
-
-.datas-etiqueta {
-
-    width: 100%;
-
-    text-align: center;
-}
-
-
-.datas-etiqueta p {
-
-    margin: 1mm 0;
-}
-
-
-.datas-etiqueta strong {
-
-    display: block;
-
-    font-size: 9px;
-}
-
-
-.datas-etiqueta span {
-
-    font-size: 10px;
-
-    font-weight: bold;
-}
-
-
-/* ==========================================
-   RESPONSÁVEL / LOTE
-========================================== */
-
-.info-etiqueta {
-
-    width: 100%;
-
-    text-align: center;
-}
-
-
-.info-etiqueta p {
-
-    margin: 1mm 0;
-}
-
-
-.info-etiqueta strong {
-
-    display: block;
-
-    font-size: 9px;
-}
-
-
-.info-etiqueta span {
-
-    font-size: 10px;
-
-    font-weight: bold;
-}
-
-
-/* ==========================================
-   QR CODE
-========================================== */
-
-#qrcodeEtiqueta {
-
-    margin-top: auto;
-
-    height: 14mm;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-}
-
-
-#qrcodeEtiqueta img,
-#qrcodeEtiqueta canvas {
-
-    width: 13mm !important;
-
-    height: 13mm !important;
-}
-
-
-/* ==========================================
-   BOTÃO IMPRIMIR
-========================================== */
-
-.etiqueta-preview button {
-
-    margin-top: 16px;
-
-    min-height: 42px;
-
-    padding: 10px 20px;
-
-    border: 0;
-
-    border-radius: 9px;
-
-    background: #2563eb;
-
-    color: white;
-
-    font-size: 14px;
+    font-size: 12px;
 
     font-weight: 700;
 
     cursor: pointer;
+
+}
+
+.btn-generate:hover {
+
+    background: #f1f5f9;
+
 }
 
 
-/* ==========================================
+/* =========================================================
    HISTÓRICO
-========================================== */
+========================================================= */
 
-.etiquetas-historico {
+.etiqueta-history {
 
-    width: 100%;
+    margin-top: 0;
 
-    margin-top: 24px;
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 14px;
+
+    padding: 22px;
+
+    box-sizing: border-box;
+
+    box-shadow:
+        0 5px 18px rgba(15, 23, 42, .05);
+
 }
 
+.historico-header {
 
-.etiquetas-historico .table-wrap {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 16px;
+
+    margin-bottom: 18px;
+
+}
+
+.historico-header h2 {
+
+    margin: 3px 0 0;
+
+    font-size: 18px;
+
+    color: #0f172a;
+
+}
+
+.btn-limpar-historico {
+
+    min-height: 38px;
+
+    padding: 8px 14px;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+}
+
+.table-scroll {
 
     width: 100%;
 
     overflow-x: auto;
+
 }
 
-
-.etiquetas-historico table {
+.etiqueta-history table {
 
     width: 100%;
 
+    min-width: 760px;
+
     border-collapse: collapse;
 
-    min-width: 700px;
 }
 
+.etiqueta-history th,
+.etiqueta-history td {
 
-.etiquetas-historico th,
-.etiquetas-historico td {
-
-    padding: 13px 14px;
+    padding: 13px 12px;
 
     text-align: left;
 
     border-bottom: 1px solid #e2e8f0;
 
     white-space: nowrap;
+
 }
 
+.etiqueta-history th {
 
-.etiquetas-historico th {
-
-    font-size: 12px;
-
-    text-transform: uppercase;
-
-    letter-spacing: .04em;
+    background: #f8fafc;
 
     color: #64748b;
 
-    font-weight: 700;
+    font-size: 10px;
 
-    background: #f8fafc;
+    text-transform: uppercase;
+
+    letter-spacing: .05em;
+
 }
 
-
-.etiquetas-historico td {
-
-    font-size: 13px;
+.etiqueta-history td {
 
     color: #334155;
+
+    font-size: 12px;
+
 }
 
 
-/* ==========================================
-   RESPONSIVIDADE
-========================================== */
+/* =========================================================
+   RESPONSIVO
+========================================================= */
 
-@media (max-width: 1000px) {
+@media (max-width: 1100px) {
 
-    .etiquetas-grid {
+    .etiqueta-workspace {
 
         grid-template-columns: 1fr;
+
+    }
+
+    .preview-stage {
+
+        min-height: 430px;
+
     }
 
 }
 
+@media (max-width: 650px) {
 
-@media (max-width: 700px) {
-
-    .etiquetas-form {
+    .field-grid {
 
         grid-template-columns: 1fr;
+
     }
 
-    .etiquetas-form .campo-full {
+    .quantity-print-row {
 
-        grid-column: auto;
+        grid-template-columns: 1fr;
+
     }
 
-    .etiqueta-preview-area {
+    .historico-header {
 
-        min-height: 350px;
+        align-items: flex-start;
 
-        padding: 12px;
+        flex-direction: column;
+
+    }
+
+    .preview-stage {
+
+        padding: 14px;
+
     }
 
 }
 
 
-/* ==========================================
-   IMPRESSÃO — ZEBRA ZD220
-========================================== */
+/* =========================================================
+   IMPRESSÃO ZEBRA
+========================================================= */
 
 @media print {
 
@@ -631,8 +1013,8 @@ body {
         size: 60mm 60mm;
 
         margin: 0;
-    }
 
+    }
 
     html,
     body {
@@ -645,22 +1027,22 @@ body {
 
         padding: 0;
 
-        background: white;
-    }
+        background: #ffffff;
 
+    }
 
     body * {
 
         visibility: hidden;
-    }
 
+    }
 
     #etiquetaGerada,
     #etiquetaGerada * {
 
         visibility: visible;
-    }
 
+    }
 
     #etiquetaGerada {
 
@@ -674,25 +1056,19 @@ body {
 
         height: 60mm;
 
-        padding: 2mm;
-
         margin: 0;
 
-        box-sizing: border-box;
+        padding: 0;
 
-        border: none;
+        border: 0;
+
+        border-radius: 0;
 
         box-shadow: none;
 
-        background: white;
+        background: #ffffff;
+
     }
-
-
-    .etiqueta-preview button {
-
-        display: none !important;
-    }
-
 
     .etiqueta {
 
@@ -704,15 +1080,26 @@ body {
 
         min-height: 60mm;
 
-        padding: 2mm;
+        margin: 0;
 
-        border: none;
+        padding: 0;
+
+        border: 0;
+
+        border-radius: 0;
 
         box-shadow: none;
 
-        transform: none;
     }
 
+    .preview-panel,
+    .print-panel,
+    .etiqueta-history,
+    .preview-caption {
+
+        display: none !important;
+
+    }
 
     * {
 
@@ -721,150 +1108,8 @@ body {
         page-break-before: avoid !important;
 
         page-break-inside: avoid !important;
+
     }
+
 }
 
-/* Layout de impressão: referência 60 x 60 mm. */
-#etiquetaGerada {
-    padding: 0;
-}
-
-.etiqueta {
-    position: relative;
-    display: block;
-    width: 60mm;
-    height: 60mm;
-    min-width: 60mm;
-    min-height: 60mm;
-    padding: 0;
-    overflow: hidden;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-#nomeEtiqueta {
-    position: absolute;
-    top: 2mm;
-    right: 2mm;
-    left: 2mm;
-    margin: 0;
-    font-size: 15px;
-    line-height: 1.1;
-    text-align: left;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.temperatura-destaque {
-    position: absolute;
-    top: 8mm;
-    right: 2mm;
-    left: 2mm;
-    font-size: 11px;
-    line-height: 1;
-    text-align: left;
-}
-
-.temperatura-destaque::before { content: "TEMP. "; }
-
-.linha-etiqueta {
-    position: absolute;
-    top: 12.5mm;
-    right: 2mm;
-    left: 2mm;
-    width: auto;
-    margin: 0;
-    border: 0;
-    border-top: .25mm solid #000;
-}
-
-.datas-etiqueta + .linha-etiqueta { top: 36mm; }
-
-.datas-etiqueta {
-    position: absolute;
-    top: 17.5mm;
-    right: 2mm;
-    left: 2mm;
-    width: auto;
-    text-align: left;
-}
-
-.datas-etiqueta p {
-    display: flex;
-    justify-content: space-between;
-    margin: 1mm 0;
-    font-size: 12px;
-    line-height: 1;
-}
-
-.datas-etiqueta strong, .datas-etiqueta span {
-    display: inline;
-    font-size: inherit;
-    font-weight: 700;
-}
-
-.info-etiqueta {
-    position: absolute;
-    top: 39mm;
-    right: 24mm;
-    left: 2mm;
-    width: auto;
-    text-align: left;
-}
-
-.info-etiqueta p {
-    margin: 0 0 3.5mm;
-    font-size: 11px;
-    line-height: 1;
-}
-
-.info-etiqueta p:nth-child(2) {
-    position: absolute;
-    top: 15mm;
-    left: 0;
-    right: 0;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.info-etiqueta strong, .info-etiqueta span {
-    display: inline;
-    font-size: inherit;
-    font-weight: 700;
-}
-
-.empresa-etiqueta {
-    position: absolute;
-    top: 43mm;
-    right: 24mm;
-    left: 2mm;
-    width: auto;
-    margin: 0;
-    text-align: left;
-}
-
-.empresa-etiqueta h2, .empresa-etiqueta small {
-    display: block;
-    margin: 0 0 .6mm;
-    font-size: 9px;
-    font-weight: 700;
-    line-height: 1;
-    overflow-wrap: anywhere;
-}
-
-.empresa-etiqueta span { display: none; }
-
-#qrcodeEtiqueta {
-    position: absolute;
-    right: 2mm;
-    bottom: 2mm;
-    width: 19mm;
-    height: 19mm;
-    margin: 0;
-}
-
-#qrcodeEtiqueta img, #qrcodeEtiqueta canvas {
-    width: 19mm !important;
-    height: 19mm !important;
-}
