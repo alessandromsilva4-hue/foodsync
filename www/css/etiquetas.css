@@ -1126,3 +1126,107 @@
     order: 2;
 }
 
+
+/* =========================================================
+   TABLET - 800 PX
+   Layout compacto: impressão + prévia lado a lado
+========================================================= */
+
+@media (min-width: 700px) and (max-width: 900px) {
+
+    .etiqueta-workspace {
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(0, 1fr);
+
+        gap: 12px;
+
+        align-items: start;
+
+    }
+
+    .etiqueta-workspace .print-panel {
+        order: 1;
+        padding: 14px;
+    }
+
+    .etiqueta-workspace .preview-panel {
+        order: 2;
+        padding: 14px;
+    }
+
+    .panel-title {
+        margin-bottom: 10px;
+    }
+
+    .panel-title h2 {
+        font-size: 16px;
+    }
+
+    .panel-description {
+        margin-bottom: 12px;
+        font-size: 12px;
+    }
+
+    .field-grid {
+        gap: 8px;
+    }
+
+    .field {
+        gap: 4px;
+    }
+
+    .field label {
+        font-size: 11px;
+    }
+
+    .field input,
+    .field select {
+        min-height: 38px;
+        padding: 7px 9px;
+        font-size: 12px;
+    }
+
+    .quantity-print-row {
+        gap: 8px;
+    }
+
+    .quantity-box label {
+        font-size: 11px;
+    }
+
+    .quantity-control {
+        height: 38px;
+    }
+
+    .quantity-btn {
+        width: 32px;
+    }
+
+    .quantity-control input {
+        font-size: 13px;
+    }
+
+    .btn-print {
+        min-height: 42px;
+        font-size: 13px;
+    }
+
+    .btn-generate {
+        min-height: 38px;
+        font-size: 12px;
+        margin-top: 8px;
+    }
+
+    .preview-stage {
+        min-height: 390px;
+        padding: 12px;
+    }
+
+    .preview-caption {
+        font-size: 10px;
+        margin-top: 6px;
+    }
+
+}
