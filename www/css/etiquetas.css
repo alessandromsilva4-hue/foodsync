@@ -43,7 +43,7 @@
    ÁREA PRINCIPAL
 ========================================================= */
 
-.etiqueta-workspace {
+.etiqueta-workspace {`r`n`r`n    grid-template-columns: 1fr;
 
     display: grid;
 
@@ -955,7 +955,7 @@
 
 @media (max-width: 1100px) {
 
-    .etiqueta-workspace {
+    .etiqueta-workspace {`r`n`r`n    grid-template-columns: 1fr;
 
         grid-template-columns: 1fr;
 
@@ -1111,4 +1111,18 @@
 
 }
 
+
+
+    
+/* =========================================================
+   ORDEM NO APP
+========================================================= */
+
+.etiqueta-workspace .print-panel {
+    order: 1;
+}
+
+.etiqueta-workspace .preview-panel {
+    order: 2;
+}
 
