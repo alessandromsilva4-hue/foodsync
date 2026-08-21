@@ -1,6 +1,6 @@
 // =======================================
-// FOODSYNC - AUTENTICAÇÃO E PERMISSÕES
-// V10 - MULTIEMPRESA 4 EMPRESAS
+// LOTRIX - AUTENTICAÇÃO E PERMISSÕES
+// V11 - MULTIEMPRESA 4 EMPRESAS
 // =======================================
 
 import "./design-system.js";
@@ -27,11 +27,14 @@ import {
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-console.log("AUTH.JS V10 MULTIEMPRESA CARREGADO");
+console.log("=======================================");
+console.log("AUTH.JS V11 LOTRIX CARREGADO");
+console.log("MULTIEMPRESA - 4 EMPRESAS");
+console.log("=======================================");
 
 
 // =======================================
-// EMPRESAS FOODSYNC
+// EMPRESAS LOTRIX
 // =======================================
 
 const EMPRESAS_LOTRIX = [
@@ -88,47 +91,11 @@ function obterDadosEmpresa(idEmpresa) {
 // =======================================
 // EMPRESA ATIVA
 // =======================================
-
-function obterEmpresaAtiva() {
-
-    const empresaSalva =
-        localStorage.getItem(
-            "empresaAtivaLotrix"
-        );
-
-
-    const empresaValida =
-        EMPRESAS_LOTRIX.some(
-            empresa =>
-                empresa.idEmpresa === empresaSalva
-        );
-
-
-    if (empresaValida) {
-
-        return empresaSalva;
-
-    }
-
-
-    localStorage.setItem(
-        "empresaAtivaLotrix",
-        "empresa1"
-    );
-
-
-    return "empresa1";
-}
-
-
+// A empresa NÃO pode ser trocada pela tela.
+// Ela vem do perfil salvo no Firestore.
 // =======================================
-// DEFINIR EMPRESA ATIVA
-// =======================================
-// ADMINISTRADOR NÃO PODE TROCAR DE LOJA
-// A empresa é definida pelo perfil Firestore.
 
-window.definirEmpresaAtiva =
-function() {
+window.definirEmpresaAtiva = function () {
 
     console.warn(
         "ALTERAÇÃO DE EMPRESA BLOQUEADA."
@@ -136,12 +103,9 @@ function() {
 
 };
 
+
 // =======================================
 // MOSTRAR EMPRESA DO USUÁRIO
-// =======================================
-// Cada usuário, inclusive administrador,
-// fica vinculado somente à sua empresa.
-// Não existe troca de empresa pela tela.
 // =======================================
 
 function mostrarEmpresaAtiva(usuario) {
@@ -152,9 +116,7 @@ function mostrarEmpresaAtiva(usuario) {
         );
 
     if (existente) {
-
         existente.remove();
-
     }
 
 
@@ -162,7 +124,6 @@ function mostrarEmpresaAtiva(usuario) {
         document.querySelector(
             ".logo-area"
         );
-
 
     if (!logoArea) {
 
@@ -175,12 +136,8 @@ function mostrarEmpresaAtiva(usuario) {
     }
 
 
-    // =================================
-    // EMPRESA VEM DO PERFIL
-    // =================================
-
     const idEmpresa =
-        usuario.idEmpresa || "";
+        usuario?.idEmpresa || "";
 
 
     if (!idEmpresa) {
@@ -194,10 +151,6 @@ function mostrarEmpresaAtiva(usuario) {
 
     }
 
-
-    // =================================
-    // BUSCAR EMPRESA
-    // =================================
 
     const empresa =
         obterDadosEmpresa(
@@ -216,10 +169,6 @@ function mostrarEmpresaAtiva(usuario) {
 
     }
 
-
-    // =================================
-    // CRIAR ÁREA DA EMPRESA
-    // =================================
 
     const container =
         document.createElement(
@@ -291,7 +240,7 @@ function mostrarEmpresaAtiva(usuario) {
 // =======================================
 
 window.registrarAuditoria =
-async function(
+async function (
     modulo,
     acao,
     detalhes = ""
@@ -420,6 +369,34 @@ if (loginForm) {
                     );
 
 
+                // =================================
+                // PERFIL NÃO ENCONTRADO
+                // =================================
+
+                if (!perfilLogin) {
+
+                    await signOut(
+                        auth
+                    );
+
+
+                    mensagem.style.color =
+                        "#dc2626";
+
+
+                    mensagem.textContent =
+                        "Perfil do usuário não encontrado.";
+
+
+                    return;
+
+                }
+
+
+                // =================================
+                // CADASTRO PENDENTE
+                // =================================
+
                 if (
                     perfilLogin?.status
                         ?.toLowerCase() ===
@@ -440,8 +417,39 @@ if (loginForm) {
 
 
                     return;
+
                 }
 
+
+                // =================================
+                // USUÁRIO SEM EMPRESA
+                // =================================
+
+                if (
+                    !perfilLogin.idEmpresa
+                ) {
+
+                    await signOut(
+                        auth
+                    );
+
+
+                    mensagem.style.color =
+                        "#dc2626";
+
+
+                    mensagem.textContent =
+                        "Usuário sem empresa vinculada. Procure o administrador.";
+
+
+                    return;
+
+                }
+
+
+                // =================================
+                // AUDITORIA LOGIN
+                // =================================
 
                 await addDoc(
                     collection(
@@ -451,14 +459,14 @@ if (loginForm) {
                     {
 
                         usuario:
-                            perfilLogin?.nome ||
+                            perfilLogin.nome ||
                             email,
 
                         email:
                             email,
 
                         idEmpresa:
-                            perfilLogin?.idEmpresa ||
+                            perfilLogin.idEmpresa ||
                             "",
 
                         modulo:
@@ -511,8 +519,42 @@ if (loginForm) {
                     "#dc2626";
 
 
-                mensagem.innerHTML =
-                    "Usuário ou senha inválidos.";
+                if (
+                    error.code ===
+                    "auth/invalid-credential"
+                ) {
+
+                    mensagem.textContent =
+                        "Usuário ou senha inválidos.";
+
+                }
+
+                else if (
+                    error.code ===
+                    "auth/user-not-found"
+                ) {
+
+                    mensagem.textContent =
+                        "Usuário ou senha inválidos.";
+
+                }
+
+                else if (
+                    error.code ===
+                    "auth/wrong-password"
+                ) {
+
+                    mensagem.textContent =
+                        "Usuário ou senha inválidos.";
+
+                }
+
+                else {
+
+                    mensagem.textContent =
+                        "Não foi possível realizar o login.";
+
+                }
 
             }
 
@@ -523,7 +565,7 @@ if (loginForm) {
 
 
 // =======================================
-// SENHA
+// MOSTRAR / OCULTAR SENHA
 // =======================================
 
 document
@@ -612,14 +654,18 @@ function exibirCadastro(
 ) {
 
     if (loginForm) {
+
         loginForm.hidden =
             exibir;
+
     }
 
 
     if (cadastroForm) {
+
         cadastroForm.hidden =
             !exibir;
+
     }
 
 }
@@ -680,6 +726,7 @@ alterarSenha?.addEventListener(
 
 
             return;
+
         }
 
 
@@ -731,6 +778,10 @@ cadastroForm?.addEventListener(
         evento.preventDefault();
 
 
+        // =================================
+        // CAMPOS
+        // =================================
+
         const nome =
             document
                 .getElementById(
@@ -765,11 +816,105 @@ cadastroForm?.addEventListener(
                 .value;
 
 
+        const campoEmpresaCadastro =
+            document.getElementById(
+                "empresaCadastro"
+            );
+
+
+        const idEmpresaCadastro =
+            campoEmpresaCadastro?.value ||
+            "";
+
+
         const mensagem =
             document.getElementById(
                 "mensagemCadastro"
             );
 
+
+        // =================================
+        // VALIDAR NOME
+        // =================================
+
+        if (!nome) {
+
+            mensagem.style.color =
+                "#dc2626";
+
+
+            mensagem.textContent =
+                "Informe seu nome.";
+
+
+            document
+                .getElementById(
+                    "nomeCadastro"
+                )
+                .focus();
+
+
+            return;
+
+        }
+
+
+        // =================================
+        // VALIDAR EMPRESA
+        // =================================
+
+        if (!idEmpresaCadastro) {
+
+            mensagem.style.color =
+                "#dc2626";
+
+
+            mensagem.textContent =
+                "Selecione a empresa para continuar.";
+
+
+            campoEmpresaCadastro?.focus();
+
+
+            return;
+
+        }
+
+
+        // =================================
+        // VALIDAR EMPRESA EXISTENTE
+        // =================================
+
+        const empresaCadastro =
+            obterDadosEmpresa(
+                idEmpresaCadastro
+            );
+
+
+        if (!empresaCadastro) {
+
+            console.error(
+                "EMPRESA INVÁLIDA:",
+                idEmpresaCadastro
+            );
+
+
+            mensagem.style.color =
+                "#dc2626";
+
+
+            mensagem.textContent =
+                "A empresa selecionada não é válida.";
+
+
+            return;
+
+        }
+
+
+        // =================================
+        // VALIDAR SENHAS
+        // =================================
 
         if (
             senha !==
@@ -785,14 +930,83 @@ cadastroForm?.addEventListener(
 
 
             return;
+
         }
 
 
-        let credencial;
-        let perfilCriado = false;
+        // =================================
+        // VALIDAR SENHA
+        // =================================
+
+        if (
+            senha.length < 6
+        ) {
+
+            mensagem.style.color =
+                "#dc2626";
+
+
+            mensagem.textContent =
+                "A senha deve ter pelo menos 6 caracteres.";
+
+
+            return;
+
+        }
+
+
+        console.log(
+            "======================================="
+        );
+
+
+        console.log(
+            "NOVO CADASTRO"
+        );
+
+
+        console.log(
+            "NOME:",
+            nome
+        );
+
+
+        console.log(
+            "E-MAIL:",
+            email
+        );
+
+
+        console.log(
+            "EMPRESA:",
+            empresaCadastro.nome
+        );
+
+
+        console.log(
+            "ID EMPRESA:",
+            idEmpresaCadastro
+        );
+
+
+        console.log(
+            "======================================="
+        );
+
+
+        let credencial =
+            null;
+
+
+        let perfilCriado =
+            false;
 
 
         try {
+
+            // =================================
+            // CRIAR AUTENTICAÇÃO
+            // =================================
 
             credencial =
                 await createUserWithEmailAndPassword(
@@ -802,31 +1016,64 @@ cadastroForm?.addEventListener(
                 );
 
 
+            const uid =
+                credencial.user.uid;
+
+
+            console.log(
+                "UID NOVO USUÁRIO:",
+                uid
+            );
+
+
+            // =================================
+            // CRIAR PERFIL FIRESTORE
+            // =================================
+
             await setDoc(
+
                 doc(
                     db,
                     "usuarios",
-                    credencial.user.uid
+                    uid
                 ),
+
                 {
 
-                    nome,
+                    nome:
+                        nome,
 
-                    email,
+                    email:
+                        email,
 
+                    // NOVO USUÁRIO
+                    // SEMPRE COLABORADOR
                     perfil:
                         "colaborador",
 
+                    // AGUARDA APROVAÇÃO
                     status:
                         "pendente",
 
                     permissoes:
                         {},
 
+                    // EMPRESA ESCOLHIDA NO CADASTRO
+                    idEmpresa:
+                        idEmpresaCadastro,
+
+                    // INFORMAÇÕES DA EMPRESA
+                    nomeEmpresa:
+                        empresaCadastro.nome,
+
+                    nomeFantasia:
+                        empresaCadastro.nomeFantasia,
+
                     criadoEm:
                         serverTimestamp()
 
                 }
+
             );
 
 
@@ -834,10 +1081,41 @@ cadastroForm?.addEventListener(
                 true;
 
 
+            console.log(
+                "USUÁRIO CRIADO COM SUCESSO"
+            );
+
+
+            console.log(
+                "UID:",
+                uid
+            );
+
+
+            console.log(
+                "EMPRESA:",
+                empresaCadastro.nome
+            );
+
+
+            console.log(
+                "ID EMPRESA:",
+                idEmpresaCadastro
+            );
+
+
+            // =================================
+            // SAIR APÓS CADASTRO
+            // =================================
+
             await signOut(
                 auth
             );
 
+
+            // =================================
+            // MENSAGEM
+            // =================================
 
             mensagem.style.color =
                 "#16a34a";
@@ -857,6 +1135,10 @@ cadastroForm?.addEventListener(
                 error
             );
 
+
+            // =================================
+            // CANCELAR AUTH SE FIRESTORE FALHAR
+            // =================================
 
             if (
                 credencial?.user &&
@@ -879,17 +1161,60 @@ cadastroForm?.addEventListener(
             }
 
 
+            // =================================
+            // MENSAGENS DE ERRO
+            // =================================
+
             mensagem.style.color =
                 "#dc2626";
 
 
-            mensagem.textContent =
+            if (
                 error.code ===
                 "auth/email-already-in-use"
+            ) {
 
-                    ? "Este e-mail já possui cadastro."
+                mensagem.textContent =
+                    "Este e-mail já possui cadastro.";
 
-                    : "Não foi possível concluir o cadastro. Tente novamente.";
+            }
+
+            else if (
+                error.code ===
+                "auth/invalid-email"
+            ) {
+
+                mensagem.textContent =
+                    "E-mail inválido.";
+
+            }
+
+            else if (
+                error.code ===
+                "auth/weak-password"
+            ) {
+
+                mensagem.textContent =
+                    "A senha deve ter pelo menos 6 caracteres.";
+
+            }
+
+            else if (
+                error.code ===
+                "permission-denied"
+            ) {
+
+                mensagem.textContent =
+                    "Sem permissão para criar o perfil. Procure o administrador.";
+
+            }
+
+            else {
+
+                mensagem.textContent =
+                    "Não foi possível concluir o cadastro. Tente novamente.";
+
+            }
 
         }
 
@@ -901,9 +1226,16 @@ cadastroForm?.addEventListener(
 // CARREGAR PERFIL FIRESTORE
 // =======================================
 
-async function carregarPerfil(user) {
+async function carregarPerfil(
+    user
+) {
 
     try {
+
+        if (!user) {
+            return null;
+        }
+
 
         const referencia =
             doc(
@@ -929,6 +1261,7 @@ async function carregarPerfil(user) {
 
 
             return null;
+
         }
 
 
@@ -945,17 +1278,14 @@ async function carregarPerfil(user) {
                 .toLowerCase();
 
 
-     // =================================
-// DEFINIR EMPRESA
-// =================================
-// TODOS os usuários, inclusive
-// administradores, usam a empresa
-// gravada no próprio perfil.
-// Nunca usar localStorage para
-// escolher a empresa do administrador.
+        // =================================
+        // EMPRESA VEM DO FIRESTORE
+        // =================================
 
-const idEmpresa =
-    dados.idEmpresa || "";
+        const idEmpresa =
+            dados.idEmpresa ||
+            "";
+
 
         // =================================
         // BUSCAR EMPRESA
@@ -972,8 +1302,6 @@ const idEmpresa =
         // =================================
 
         if (
-            perfilTipo !==
-            "administrador" &&
             !empresa
         ) {
 
@@ -1007,7 +1335,8 @@ const idEmpresa =
                     .trim(),
 
             status:
-                dados.status,
+                dados.status ||
+                "pendente",
 
             idEmpresa:
                 idEmpresa,
@@ -1036,7 +1365,7 @@ const idEmpresa =
 
 
         // =================================
-        // SALVAR PERFIL
+        // SALVAR PERFIL LOCAL
         // =================================
 
         localStorage.setItem(
@@ -1044,6 +1373,11 @@ const idEmpresa =
             JSON.stringify(
                 perfil
             )
+        );
+
+
+        console.log(
+            "======================================="
         );
 
 
@@ -1066,14 +1400,25 @@ const idEmpresa =
 
 
         console.log(
-            "RAZÃO SOCIAL:",
-            perfil.razaoSocial
+            "NOME FANTASIA:",
+            perfil.nomeFantasia
         );
 
 
         console.log(
-            "NOME FANTASIA:",
-            perfil.nomeFantasia
+            "PERFIL:",
+            perfil.perfil
+        );
+
+
+        console.log(
+            "STATUS:",
+            perfil.status
+        );
+
+
+        console.log(
+            "======================================="
         );
 
 
@@ -1133,7 +1478,7 @@ function atualizarUsuarioTela(
 
         textoPerfil =
             textoPerfil.charAt(0)
-            .toUpperCase()
+                .toUpperCase()
             +
             textoPerfil.slice(1);
 
@@ -1193,6 +1538,22 @@ onAuthStateChanged(
     auth,
     async (user) => {
 
+        const pagina =
+            window.location.pathname
+                .split("/")
+                .pop();
+
+
+        console.log(
+            "PÁGINA ATUAL:",
+            pagina
+        );
+
+
+        // =================================
+        // USUÁRIO LOGADO
+        // =================================
+
         if (user) {
 
             console.log(
@@ -1206,16 +1567,6 @@ onAuthStateChanged(
                 user.email
             );
 
-        }
-
-
-        const pagina =
-            window.location.pathname
-                .split("/")
-                .pop();
-
-
-        if (user) {
 
             const usuario =
                 await carregarPerfil(
@@ -1223,109 +1574,214 @@ onAuthStateChanged(
                 );
 
 
-            if (usuario) {
+            // =================================
+            // PERFIL NÃO ENCONTRADO
+            // =================================
 
-                atualizarUsuarioTela(
-                    usuario
+            if (!usuario) {
+
+                console.error(
+                    "PERFIL DO USUÁRIO NÃO ENCONTRADO."
                 );
 
 
-                mostrarEmpresaAtiva(
-                    usuario
+                await signOut(
+                    auth
                 );
 
 
-                // =================================
-                // EVENTO PARA OUTROS MÓDULOS
-                // =================================
-
-                window.dispatchEvent(
-                    new CustomEvent(
-                        "foodsync:perfil-carregado",
-                        {
-                            detail:
-                                usuario
-                        }
-                    )
+                localStorage.removeItem(
+                    "usuarioFoodSync"
                 );
 
-
-                // =================================
-                // AUDITORIA
-                // =================================
 
                 if (
-                    !sessionStorage.getItem(
-                        "loginAuditoriaRegistrado"
-                    )
+                    pagina !==
+                    "index.html" &&
+                    pagina !==
+                    ""
                 ) {
 
-                    sessionStorage.setItem(
-                        "loginAuditoriaRegistrado",
-                        "true"
-                    );
-
-
-                    await registrarAuditoria(
-                        "Sistema",
-                        "LOGIN",
-                        "Usuário realizou login no sistema"
-                    );
+                    window.location.href =
+                        "index.html";
 
                 }
 
 
-                // =================================
-                // PERMISSÕES
-                // =================================
+                return;
 
-                const permissao =
-                    paginasProtegidas[
-                        pagina
-                    ];
+            }
 
 
-                if (permissao) {
+            // =================================
+            // CADASTRO PENDENTE
+            // =================================
+
+            if (
+                (
+                    usuario.status ||
+                    ""
+                )
+                    .toLowerCase() ===
+                "pendente"
+            ) {
+
+                console.warn(
+                    "USUÁRIO PENDENTE."
+                );
+
+
+                await signOut(
+                    auth
+                );
+
+
+                localStorage.removeItem(
+                    "usuarioFoodSync"
+                );
+
+
+                if (
+                    pagina !==
+                    "index.html" &&
+                    pagina !==
+                    ""
+                ) {
+
+                    window.location.href =
+                        "index.html";
+
+                }
+
+
+                return;
+
+            }
+
+
+            // =================================
+            // ATUALIZAR TELA
+            // =================================
+
+            atualizarUsuarioTela(
+                usuario
+            );
+
+
+            mostrarEmpresaAtiva(
+                usuario
+            );
+
+
+            // =================================
+            // EVENTO PERFIL CARREGADO
+            // =================================
+
+            window.dispatchEvent(
+                new CustomEvent(
+                    "foodsync:perfil-carregado",
+                    {
+                        detail:
+                            usuario
+                    }
+                )
+            );
+
+
+            // =================================
+            // AUDITORIA
+            // =================================
+
+            if (
+                !sessionStorage.getItem(
+                    "loginAuditoriaRegistrado"
+                )
+            ) {
+
+                sessionStorage.setItem(
+                    "loginAuditoriaRegistrado",
+                    "true"
+                );
+
+
+                await registrarAuditoria(
+                    "Sistema",
+                    "LOGIN",
+                    "Usuário realizou login no sistema"
+                );
+
+            }
+
+
+            // =================================
+            // PERMISSÕES
+            // =================================
+
+            const permissao =
+                paginasProtegidas[
+                    pagina
+                ];
+
+
+            if (permissao) {
+
+                const perfil =
+                    (
+                        usuario.perfil ||
+                        ""
+                    )
+                        .trim()
+                        .toLowerCase();
+
+
+                // ADMINISTRADOR
+                // ACESSO TOTAL
+
+                if (
+                    perfil !==
+                    "administrador"
+                ) {
+
+                    const temPermissao =
+                        usuario.permissoes?.[
+                            permissao
+                        ] === true;
+
 
                     if (
-                        (
-                            usuario.perfil ||
-                            ""
-                        )
-                            .toLowerCase()
-                        !==
-                        "administrador"
+                        !temPermissao
                     ) {
 
-                        if (
-                            usuario.permissoes[
-                                permissao
-                            ] !== true
-                        ) {
-
-                            alert(
-                                "Sem permissão para acessar esta página."
-                            );
+                        alert(
+                            "Sem permissão para acessar esta página."
+                        );
 
 
-                            window.location.href =
-                                "dashboard.html";
+                        window.location.href =
+                            "dashboard.html";
 
 
-                            return;
-                        }
+                        return;
 
                     }
 
                 }
 
-
-                controlarMenu(
-                    usuario
-                );
-
             }
 
+
+            // =================================
+            // CONTROLAR MENU
+            // =================================
+
+            controlarMenu(
+                usuario
+            );
+
+
+            // =================================
+            // INDEX → DASHBOARD
+            // =================================
 
             if (
                 pagina ===
@@ -1340,7 +1796,19 @@ onAuthStateChanged(
 
             }
 
-        } else {
+
+        }
+
+        // =================================
+        // USUÁRIO NÃO LOGADO
+        // =================================
+
+        else {
+
+            localStorage.removeItem(
+                "usuarioFoodSync"
+            );
+
 
             if (
                 pagina !==
@@ -1419,10 +1887,9 @@ function controlarMenu(
             .toLowerCase();
 
 
-    // =======================================
+    // =================================
     // ADMINISTRADOR
-    // VÊ TODO O MENU
-    // =======================================
+    // =================================
 
     if (
         perfil ===
@@ -1469,23 +1936,24 @@ function controlarMenu(
             "MENU ADMINISTRADOR: TUDO LIBERADO"
         );
 
+
         return;
 
     }
 
 
-    // =======================================
-    // USUÁRIO / COLABORADOR
-    // =======================================
+    // =================================
+    // COLABORADOR / USUÁRIO
+    // =================================
 
     const permissoes =
         usuario?.permissoes ||
         {};
 
 
-    // =======================================
+    // =================================
     // CONTROLAR LINKS
-    // =======================================
+    // =================================
 
     document
         .querySelectorAll(
@@ -1512,10 +1980,7 @@ function controlarMenu(
                     mapa[pagina];
 
 
-                // --------------------------------
                 // LINK NÃO MAPEADO
-                // --------------------------------
-
                 if (!permissao) {
 
                     link.hidden =
@@ -1530,9 +1995,8 @@ function controlarMenu(
                 }
 
 
-                // --------------------------------
-                // AJUDA LIBERADA PARA TODOS
-                // --------------------------------
+                // AJUDA LIBERADA
+                // PARA TODOS
 
                 if (
                     permissao ===
@@ -1551,10 +2015,6 @@ function controlarMenu(
                 }
 
 
-                // --------------------------------
-                // VERIFICAR PERMISSÃO
-                // --------------------------------
-
                 const temPermissao =
                     permissoes[
                         permissao
@@ -1572,7 +2032,9 @@ function controlarMenu(
                         "display"
                     );
 
-                } else {
+                }
+
+                else {
 
                     link.hidden =
                         true;
@@ -1589,10 +2051,10 @@ function controlarMenu(
         );
 
 
-    // =======================================
+    // =================================
     // GESTÃO
     // SOMENTE ADMINISTRADOR
-    // =======================================
+    // =================================
 
     document
         .querySelectorAll(
@@ -1633,9 +2095,9 @@ function controlarMenu(
         );
 
 
-    // =======================================
+    // =================================
     // ESCONDER SEÇÕES VAZIAS
-    // =======================================
+    // =================================
 
     document
         .querySelectorAll(
@@ -1691,12 +2153,14 @@ function controlarMenu(
     );
 
 }
+
+
 // =======================================
 // LOGOUT
 // =======================================
 
 window.logout =
-async function() {
+async function () {
 
     try {
 
@@ -1790,5 +2254,13 @@ document.addEventListener(
 
 
 console.log(
-    "AUTH.JS V10 PRONTO"
+    "======================================="
+);
+
+console.log(
+    "AUTH.JS V11 PRONTO"
+);
+
+console.log(
+    "======================================="
 );

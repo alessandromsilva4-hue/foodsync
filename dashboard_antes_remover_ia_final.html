@@ -539,6 +539,126 @@
             </article>
 
 
+            <!-- ==================================
+                 LOTRIX AI
+            =================================== -->
+
+            <article class="dashboard-panel panel-wide">
+
+                <div class="panel-heading">
+
+                    <div>
+
+                        <p class="panel-eyebrow">
+                            Inteligência operacional
+                        </p>
+
+
+                        <h2>
+                            🤖 Lotrix AI
+                        </h2>
+
+                    </div>
+
+
+                    <span class="panel-badge">
+                        ● Online
+                    </span>
+
+                </div>
+
+
+                <p
+                    style="
+                        margin:0 0 10px;
+                        color:var(--text-light);
+                        font-size:13px;
+                    "
+                >
+                    Consulte informações sobre estoque,
+                    produções, etiquetas e operação.
+                </p>
+
+
+                <input
+                    id="mensagemIA"
+                    type="text"
+                    autocomplete="off"
+                    placeholder="Ex: Qual o estoque atual dos produtos?"
+                >
+
+
+                <div class="ia-botoes">
+
+                    <button
+                        type="button"
+                        onclick="perguntarIAPergunta('Qual o estoque atual dos produtos?')"
+                    >
+                        Estoque
+                    </button>
+
+
+                    <button
+                        type="button"
+                        onclick="perguntarIAPergunta('Quais produtos estão próximos do vencimento?')"
+                    >
+                        Vencimentos
+                    </button>
+
+
+                    <button
+                        type="button"
+                        onclick="perguntarIAPergunta('Quais foram as últimas produções?')"
+                    >
+                        Produções
+                    </button>
+
+
+                    <button
+                        type="button"
+                        onclick="perguntarIAPergunta('Quais etiquetas foram emitidas recentemente?')"
+                    >
+                        Etiquetas
+                    </button>
+
+                </div>
+
+
+                <button
+                    class="button"
+                    type="button"
+                    onclick="perguntarIA()"
+                    style="margin-top:12px;"
+                >
+                    Perguntar ao Lotrix AI
+                </button>
+
+
+                <div
+                    id="respostaIA"
+                    class="ia-resposta"
+                    aria-live="polite"
+                >
+
+                    <div class="ia-titulo">
+                        Lotrix AI
+                    </div>
+
+
+                    <div class="ia-texto">
+
+                        Olá, Alessandro! 👋
+
+                        Posso ajudar você com estoque,
+                        produções, etiquetas e informações
+                        operacionais.
+
+                    </div>
+
+                </div>
+
+            </article>
+
         </section>
 
     </main>
@@ -582,6 +702,74 @@
     src="js/dashboard.js"
 ></script>
 
+
+<script src="js/ia.js"></script>
+
+
+<script>
+
+    /*
+     * Atalhos dos botões rápidos da IA.
+     * Mantém compatibilidade com ia.js existente.
+     */
+
+    function perguntarIAPergunta(pergunta) {
+
+        const campo =
+            document.getElementById("mensagemIA");
+
+        if (!campo) return;
+
+        campo.value = pergunta;
+
+        if (typeof window.perguntarIA === "function") {
+
+            window.perguntarIA();
+
+        }
+
+    }
+
+
+    /*
+     * Permite pressionar ENTER no campo da IA.
+     */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        () => {
+
+            const campo =
+                document.getElementById("mensagemIA");
+
+            if (!campo) return;
+
+            campo.addEventListener(
+                "keydown",
+                event => {
+
+                    if (event.key === "Enter") {
+
+                        event.preventDefault();
+
+                        if (
+                            typeof window.perguntarIA ===
+                            "function"
+                        ) {
+
+                            window.perguntarIA();
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+</script>
 
 </body>
 

@@ -5,17 +5,12 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // =====================================
-    // USUÁRIO LOGADO
+    // FUNÇÕES GERAIS
     // =====================================
 
     function usuarioLogado() {
       return request.auth != null;
     }
-
-
-    // =====================================
-    // PERFIL DO USUÁRIO
-    // =====================================
 
     function perfilUsuario() {
       return get(
@@ -23,21 +18,21 @@ service cloud.firestore {
       );
     }
 
-
-    // =====================================
-    // USUÁRIO ATIVO
-    // =====================================
-
     function usuarioAtivo() {
       return usuarioLogado()
         &&
         perfilUsuario().data.status == "ativo";
     }
 
-
-    // =====================================
-    // EMPRESA DO USUÁRIO
-    // =====================================
+    function administrador() {
+      return usuarioAtivo()
+        &&
+        (
+          perfilUsuario().data.perfil == "administrador"
+          ||
+          perfilUsuario().data.perfil == "Administrador"
+        );
+    }
 
     function idEmpresaUsuario() {
       return perfilUsuario().data.idEmpresa;
@@ -46,32 +41,20 @@ service cloud.firestore {
 
     // =====================================
     // PRODUTOS
-    // MULTIEMPRESA
     // =====================================
 
     match /produtos/{produtoId} {
 
-      // Ler somente produtos pertencentes
-      // à empresa do usuário.
       allow read: if
         usuarioAtivo()
         &&
         idEmpresaUsuario() in resource.data.empresas;
 
-
-      // Criar somente produtos vinculados
-      // à empresa do usuário.
       allow create: if
         usuarioAtivo()
         &&
         idEmpresaUsuario() in request.resource.data.empresas;
 
-
-      // Atualizar somente produtos que
-      // pertencem à empresa do usuário.
-      //
-      // Também impede remover a empresa atual
-      // do array durante a edição.
       allow update: if
         usuarioAtivo()
         &&
@@ -79,10 +62,8 @@ service cloud.firestore {
         &&
         idEmpresaUsuario() in request.resource.data.empresas;
 
-
-      // Excluir somente produtos da empresa.
       allow delete: if
-        usuarioAtivo()
+        administrador()
         &&
         idEmpresaUsuario() in resource.data.empresas;
     }
@@ -99,12 +80,10 @@ service cloud.firestore {
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
 
-
       allow create: if
         usuarioAtivo()
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
-
 
       allow update: if
         usuarioAtivo()
@@ -113,9 +92,8 @@ service cloud.firestore {
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
 
-
       allow delete: if
-        usuarioAtivo()
+        administrador()
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
     }
@@ -132,12 +110,10 @@ service cloud.firestore {
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
 
-
       allow create: if
         usuarioAtivo()
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
-
 
       allow update: if
         usuarioAtivo()
@@ -146,9 +122,8 @@ service cloud.firestore {
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
 
-
       allow delete: if
-        usuarioAtivo()
+        administrador()
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
     }
@@ -165,12 +140,10 @@ service cloud.firestore {
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
 
-
       allow create: if
         usuarioAtivo()
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
-
 
       allow update: if
         usuarioAtivo()
@@ -179,9 +152,8 @@ service cloud.firestore {
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
 
-
       allow delete: if
-        usuarioAtivo()
+        administrador()
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
     }
@@ -198,12 +170,10 @@ service cloud.firestore {
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
 
-
       allow create: if
         usuarioAtivo()
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
-
 
       allow update: if
         usuarioAtivo()
@@ -212,32 +182,26 @@ service cloud.firestore {
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
 
-
       allow delete: if
-        usuarioAtivo()
+        administrador()
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
     }
 
 
     // =====================================
-    // CONSULTAS PÚBLICAS DE ETIQUETAS
+    // CONSULTAS PÚBLICAS
     // =====================================
 
     match /consultasPublicas/{codigoEtiqueta} {
 
-      // QR Code pode consultar publicamente.
       allow read: if true;
 
-
-      // Somente usuário ativo pode criar.
       allow create: if
         usuarioAtivo()
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
 
-
-      // Nunca permitir alteração pública.
       allow update, delete: if false;
     }
 
@@ -253,26 +217,24 @@ service cloud.firestore {
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
 
-
       allow create: if
         usuarioAtivo()
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
 
-
       allow update: if
-        usuarioAtivo()
+        administrador()
         &&
         resource.data.idEmpresa == idEmpresaUsuario()
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
 
-
       allow delete: if
-        usuarioAtivo()
+        administrador()
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
     }
+
 
     // =====================================
     // SAC
@@ -280,41 +242,39 @@ service cloud.firestore {
 
     match /sac/{chamadoId} {
 
-      // ADMINISTRADOR PODE VISUALIZAR TODOS OS CHAMADOS
       allow read: if
         usuarioAtivo()
         &&
-        perfilUsuario().data.perfil == "administrador";
+        resource.data.idEmpresa == idEmpresaUsuario();
 
-
-      // USUÁRIO ATIVO PODE ABRIR CHAMADO
       allow create: if
         usuarioAtivo()
         &&
+        request.resource.data.idEmpresa == idEmpresaUsuario()
+        &&
+        request.resource.data.usuarioId == request.auth.uid;
+
+      allow update: if
+        administrador()
+        &&
+        resource.data.idEmpresa == idEmpresaUsuario()
+        &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
 
-
-      // ADMINISTRADOR PODE ATENDER CHAMADOS
-      allow update: if
-        usuarioAtivo()
-        &&
-        perfilUsuario().data.perfil == "administrador";
-
-
-      // NÃO PERMITIR EXCLUSÃO
       allow delete: if false;
     }
+
+
     // =====================================
     // USUÁRIOS
-    // MULTIEMPRESA
     // =====================================
 
     match /usuarios/{userId} {
 
-      // Usuário pode ler o próprio perfil.
-      //
-      // Administradores/usuários ativos também
-      // podem ler usuários da própria empresa.
+      // -----------------------------------
+      // LEITURA
+      // -----------------------------------
+
       allow read: if
         usuarioLogado()
         &&
@@ -329,27 +289,82 @@ service cloud.firestore {
         );
 
 
-      // Criar usuário somente na própria empresa.
+      // -----------------------------------
+      // CRIAÇÃO PELO PRÓPRIO USUÁRIO
+      // -----------------------------------
+
       allow create: if
-        usuarioAtivo()
+        usuarioLogado()
         &&
-        request.resource.data.idEmpresa == idEmpresaUsuario();
+        userId == request.auth.uid
+        &&
+        request.resource.data.status == "pendente"
+        &&
+        request.resource.data.perfil == "colaborador"
+        &&
+        request.resource.data.idEmpresa is string
+        &&
+        request.resource.data.idEmpresa != "";
 
 
-      // Editar usuário da própria empresa.
+      // -----------------------------------
+      // ADMIN CRIA USUÁRIO
+      //
+      // V7 - SEM CLOUD FUNCTIONS
+      // -----------------------------------
+
+      allow create: if
+        administrador()
+        &&
+        request.resource.data.idEmpresa == idEmpresaUsuario()
+        &&
+        request.resource.data.perfil != "administrador"
+        &&
+        request.resource.data.perfil != "Administrador";
+
+
+      // -----------------------------------
+      // ATUALIZAÇÃO
+      // -----------------------------------
+
       allow update: if
-        usuarioAtivo()
-        &&
-        resource.data.idEmpresa == idEmpresaUsuario()
-        &&
-        request.resource.data.idEmpresa == idEmpresaUsuario();
+        (
+          usuarioLogado()
+          &&
+          userId == request.auth.uid
+          &&
+          resource.data.idEmpresa ==
+            request.resource.data.idEmpresa
+          &&
+          resource.data.status ==
+            request.resource.data.status
+          &&
+          resource.data.perfil ==
+            request.resource.data.perfil
+        )
+
+        ||
+
+        (
+          administrador()
+          &&
+          resource.data.idEmpresa ==
+            idEmpresaUsuario()
+          &&
+          request.resource.data.idEmpresa ==
+            idEmpresaUsuario()
+        );
 
 
-      // Excluir usuário da própria empresa.
+      // -----------------------------------
+      // EXCLUSÃO
+      // -----------------------------------
+
       allow delete: if
-        usuarioAtivo()
+        administrador()
         &&
-        resource.data.idEmpresa == idEmpresaUsuario();
+        resource.data.idEmpresa ==
+          idEmpresaUsuario();
     }
 
 
@@ -359,21 +374,17 @@ service cloud.firestore {
 
     match /empresas/{empresaId} {
 
-      // Usuário somente pode visualizar
-      // sua própria empresa.
       allow read: if
         usuarioAtivo()
         &&
         empresaId == idEmpresaUsuario();
 
-
-      // Empresas não podem ser alteradas
-      // pelo cliente.
       allow create, update, delete: if false;
     }
 
+
     // =====================================
-    // CONFIGURAÇÕES DA EMPRESA
+    // CONFIGURAÇÕES
     // =====================================
 
     match /configuracoes/{empresaId} {
@@ -401,73 +412,16 @@ service cloud.firestore {
 
       allow delete: if false;
     }
-// =====================================
-// SAC
-// MULTIEMPRESA
-// =====================================
 
-match /sac/{chamadoId} {
-
-  // Ler chamados
-  allow read: if
-    usuarioAtivo()
-    &&
-    (
-      (
-        perfilUsuario().data.perfil.lower() == "administrador"
-        &&
-        (
-          resource.data.idEmpresa == idEmpresaUsuario()
-          ||
-          !("idEmpresa" in resource.data)
-        )
-      )
-      ||
-      (
-        resource.data.idEmpresa == idEmpresaUsuario()
-      )
-    );
-
-
-  // Criar chamado
-  allow create: if
-    usuarioAtivo()
-    &&
-    request.resource.data.idEmpresa == idEmpresaUsuario()
-    &&
-    request.resource.data.usuarioId == request.auth.uid;
-
-
-  // Atualizar chamado
-  allow update: if
-    usuarioAtivo()
-    &&
-    perfilUsuario().data.perfil == "administrador"
-    &&
-    (
-      resource.data.idEmpresa == idEmpresaUsuario()
-      ||
-      !("idEmpresa" in resource.data)
-    );
-
-
-  // Excluir chamado
-  allow delete: if
-    usuarioAtivo()
-    &&
-    perfilUsuario().data.perfil == "administrador"
-    &&
-    resource.data.idEmpresa == idEmpresaUsuario();
-
-}
 
     // =====================================
-    // BLOQUEAR TODO O RESTANTE
+    // BLOQUEIO PADRÃO
     // =====================================
 
     match /{document=**} {
 
       allow read, write: if false;
     }
+
   }
 }
