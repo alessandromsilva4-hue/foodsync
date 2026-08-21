@@ -1230,3 +1230,99 @@
     }
 
 }
+
+/* =========================================================
+   TABLET 800x1340 - FORÇAR DOIS PAINÉIS LADO A LADO
+========================================================= */
+
+@media screen and (min-width: 700px) and (max-width: 900px) {
+
+    .etiqueta-workspace {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        grid-template-rows: auto !important;
+        gap: 12px !important;
+        width: 100% !important;
+        align-items: start !important;
+    }
+
+    .etiqueta-workspace .print-panel {
+        order: 1 !important;
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .etiqueta-workspace .preview-panel {
+        order: 2 !important;
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+}
+
+/* =========================================================
+   APP FOODSYNC - TABLET 800x1340
+   PAINÉIS LADO A LADO
+========================================================= */
+
+@media screen and (min-width: 700px) and (max-width: 900px) and (min-height: 1000px) {
+
+    .content .etiqueta-workspace {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 12px !important;
+        width: 100% !important;
+    }
+
+    .content .etiqueta-workspace > .print-panel {
+        order: 1 !important;
+        flex: 1 1 0 !important;
+        width: 50% !important;
+        min-width: 0 !important;
+        max-width: 50% !important;
+    }
+
+    .content .etiqueta-workspace > .preview-panel {
+        order: 2 !important;
+        flex: 1 1 0 !important;
+        width: 50% !important;
+        min-width: 0 !important;
+        max-width: 50% !important;
+    }
+
+}
+
+/* =========================================================
+   ETIQUETAS APP - VERTICAL
+   IMPRESSÃO E PRÉVIA LADO A LADO
+========================================================= */
+
+.etiqueta-workspace {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+    width: 100% !important;
+}
+
+.etiqueta-workspace > .print-panel {
+    order: 1 !important;
+    flex: 1 1 50% !important;
+    width: 50% !important;
+    max-width: 50% !important;
+    min-width: 0 !important;
+}
+
+.etiqueta-workspace > .preview-panel {
+    order: 2 !important;
+    flex: 1 1 50% !important;
+    width: 50% !important;
+    max-width: 50% !important;
+    min-width: 0 !important;
+}
+
