@@ -1456,22 +1456,23 @@ console.log(
    INFORMAÇÕES ADICIONAIS - MODAL PRODUTO
 ========================================================= */
 
-function toggleInformacoesProduto() {
+window.toggleInformacoesProduto = function() {
 
-    const campos =
-        document.getElementById("camposAdicionaisProduto");
+    const campos = document.getElementById("camposAdicionaisProduto");
+    const icone = document.getElementById("iconeInfoProduto");
 
-    const icone =
-        document.getElementById("iconeInfoProduto");
+    if (!campos) {
+        console.error("camposAdicionaisProduto não encontrado");
+        return;
+    }
 
-    if (!campos) return;
-
-    const aberto =
-        campos.classList.toggle("aberto");
+    const aberto = campos.classList.toggle("aberto");
 
     if (icone) {
         icone.textContent = aberto ? "▲" : "▼";
     }
 
 }
+
+
 

@@ -506,11 +506,16 @@
 }
 
 .campos-adicionais-produto {
-    display: none;
+    display: none !important;
     margin-top: 14px;
+}
+
+.campos-adicionais-produto.aberto {
+    display: block !important;
 }
 
 .campos-adicionais-produto.aberto {
     display: block;
 }
+
 
