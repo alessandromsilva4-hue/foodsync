@@ -730,3 +730,65 @@ body {
     margin-left: 0 !important;
     width: 100% !important;
 }
+/* =========================================================
+   POSIÇÃO FINAL DO BOTÃO MENU
+========================================================= */
+
+.menu-toggle {
+    position: fixed !important;
+    top: 14px !important;
+    left: 14px !important;
+
+    width: 38px !important;
+    height: 38px !important;
+
+    display: grid !important;
+    place-items: center !important;
+
+    z-index: 2147483647 !important;
+}
+
+/* Espaço para o menu no cabeçalho */
+@media (max-width: 900px) {
+
+    .content .dashboard-header {
+        padding-top: 58px !important;
+    }
+
+}
+/* =========================================================
+   MENU TOGGLE — POSIÇÃO DEFINITIVA
+========================================================= */
+
+.menu-toggle {
+    position: fixed !important;
+
+    top: 18px !important;
+    left: 18px !important;
+
+    width: 40px !important;
+    height: 40px !important;
+
+    display: grid !important;
+    place-items: center !important;
+
+    z-index: 2147483647 !important;
+
+    transform: none !important;
+}
+
+/* O conteúdo começa abaixo do botão */
+.content {
+    padding-top: 70px !important;
+}
+
+/* Evita espaço duplicado no mobile */
+@media (max-width: 768px) {
+    .content {
+        padding-top: 82px !important;
+    }
+
+    .dashboard-page {
+        padding-top: 0 !important;
+    }
+}

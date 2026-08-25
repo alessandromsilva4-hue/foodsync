@@ -341,6 +341,18 @@ service cloud.firestore {
           &&
           resource.data.perfil ==
             request.resource.data.perfil
+          &&
+          resource.data.permissoes ==
+            request.resource.data.permissoes
+          &&
+          request.resource.data
+            .diff(resource.data)
+            .affectedKeys()
+            .hasOnly([
+              "nome",
+              "email",
+              "atualizadoEm"
+            ])
         )
 
         ||

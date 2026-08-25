@@ -1,1682 +1,1528 @@
-/* ==========================================
-   LOTRIX DASHBOARD 2026
-   TEMA AZUL ROYAL
-========================================== */
+/* =========================================================
+   LOTRIX / FOODSYNC — DASHBOARD 2026
+   DESIGN NOVO — LIMPO / MODERNO / AZUL ROYAL
+   ========================================================= */
 
 
-/* ANIMAÇÃO INICIAL */
+/* =========================================================
+   PÁGINA
+   ========================================================= */
 
-.dashboard-page{
-
-    animation:
-    page-enter .48s cubic-bezier(.2,.8,.2,1) both;
-
+.dashboard-page {
+    animation: dashboardEnter .35s ease both;
 }
 
 
+/* =========================================================
+   CABEÇALHO
+   ========================================================= */
 
-
-.header-kicker,
-.panel-eyebrow{
-
-    margin:0 0 6px;
-
-    color:var(--primary);
-
-    font-size:11px;
-
-    font-weight:700;
-
-    letter-spacing:.08em;
-
-    text-transform:uppercase;
-
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
 }
 
-/* Data e saudação alinhadas à direita no cabeçalho. */
+.dashboard-header h1 {
+    margin: 0;
+    color: var(--text);
+    font-size: 28px;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: -.03em;
+}
+
 .dashboard-header > div:first-child {
-    margin-left: auto;
-    text-align: right;
+    margin-left: 0;
+    text-align: left;
+}
+
+.dashboard-header p {
+    margin: 6px 0 0;
+    color: var(--text-light);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.header-kicker {
+    margin: 0 0 5px !important;
+    color: var(--primary) !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-actions .button,
+.header-actions button {
+    min-height: 40px;
+    padding: 9px 15px;
+    font-size: 12px;
+    font-weight: 700;
 }
 
 
-.header-actions{
+/* =========================================================
+   CARDS DE MÉTRICAS
+   ========================================================= */
 
-    display:flex;
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+}
 
-    gap:10px;
+.metric-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
 
+    min-width: 0;
+    min-height: 104px;
+
+    padding: 17px 18px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    box-shadow: var(--shadow);
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+
+    animation: cardEnter .4s ease both;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+}
+
+.metric-card:nth-child(2) {
+    animation-delay: .05s;
+}
+
+.metric-card:nth-child(3) {
+    animation-delay: .1s;
+}
+
+.metric-card:nth-child(4) {
+    animation-delay: .15s;
 }
 
 
+/* Linha lateral de status */
 
-.button-secondary{
+.metric-card:has(.metric-icon.success) {
+    border-left: 4px solid #22c55e;
+}
 
-    background:var(--surface);
+.metric-card:has(.metric-icon.info) {
+    border-left: 4px solid #2563eb;
+}
 
-    border:1px solid var(--border-strong);
+.metric-card:has(.metric-icon.warning) {
+    border-left: 4px solid #f59e0b;
+}
 
-    color:var(--text);
-
-    box-shadow:none;
-
+.metric-card:has(.metric-icon.danger) {
+    border-left: 4px solid #ef4444;
 }
 
 
-.button-secondary:hover{
+/* Ícone */
 
-    background:var(--surface-subtle);
+.metric-icon {
+    display: grid;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border-radius: 11px;
+}
 
+.metric-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2.2;
+}
+
+.metric-icon.success {
+    color: #16a34a;
+    background: #dcfce7;
+}
+
+.metric-icon.info {
+    color: #2563eb;
+    background: #dbeafe;
+}
+
+.metric-icon.warning {
+    color: #d97706;
+    background: #fef3c7;
+}
+
+.metric-icon.danger {
+    color: #dc2626;
+    background: #fee2e2;
 }
 
 
+/* Conteúdo */
 
-/* ==========================================
-   MÉTRICAS
-========================================== */
+.metric-card p {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 12px;
+    line-height: 1.3;
+    font-weight: 700;
+}
 
+.metric-card strong {
+    display: block;
+    margin: 4px 0 3px;
+    color: var(--text);
+    font-size: 30px;
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -.04em;
+}
 
-.metric-grid{
-
-    display:grid;
-
-    grid-template-columns:
-    repeat(4,minmax(0,1fr));
-
-    gap:16px;
-
-    margin-bottom:24px;
-
+.metric-card small {
+    display: block;
+    color: #94a3b8;
+    font-size: 10px;
+    line-height: 1.25;
 }
 
 
+/* =========================================================
+   GRID PRINCIPAL
+   ========================================================= */
 
-.metric-card{
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
 
-    display:flex;
-
-    align-items:center;
-
-    gap:14px;
-
-    min-height:132px;
-
-    padding:20px;
-
-    border:
-
-    1px solid var(--border);
-
-    border-radius:16px;
-
-    background:var(--surface);
-
-    box-shadow:var(--shadow);
-
-    animation:
-
-    card-enter .45s both;
-
-    transition:.25s;
-
+.panel-wide {
+    grid-column: span 2;
 }
 
 
+/* =========================================================
+   PAINÉIS
+   ========================================================= */
 
-.metric-card:hover{
+.dashboard-panel {
+    min-width: 0;
+    padding: 20px;
 
-    transform:translateY(-3px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
 
+    box-shadow: var(--shadow);
+
+    animation: cardEnter .45s ease both;
+}
+
+.panel-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+
+    margin-bottom: 16px;
+}
+
+.panel-heading h2 {
+    margin: 0;
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.25;
+    font-weight: 750;
+    letter-spacing: -.02em;
+}
+
+.panel-eyebrow {
+    margin: 0 0 5px;
+    color: var(--primary);
+    font-size: 10px;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+}
+
+.panel-heading a {
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.panel-heading a:hover {
+    text-decoration: underline;
+}
+
+.panel-badge {
+    padding: 5px 8px;
+    border-radius: 999px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-size: 10px;
+    font-weight: 700;
 }
 
 
+/* =========================================================
+   GRÁFICO
+   ========================================================= */
 
-.metric-card:nth-child(2){
+.chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 210px;
+    min-height: 210px;
+}
 
-    animation-delay:.06s;
-
+.chart-wrap canvas {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 
-.metric-card:nth-child(3){
+/* =========================================================
+   ATIVIDADES
+   ========================================================= */
 
-    animation-delay:.12s;
+.activity-list,
+.attention-list {
+    display: flex;
+    flex-direction: column;
+}
 
+.activity-item,
+.attention-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    min-height: 57px;
+    padding: 9px 0;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.activity-item:last-child,
+.attention-item:last-child {
+    border-bottom: 0;
+}
+
+.activity-icon {
+    display: grid;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+
+    border-radius: 9px;
+    background: #eff6ff;
+    color: var(--primary);
+}
+
+.activity-icon svg {
+    width: 17px;
+    height: 17px;
+}
+
+.activity-item > div,
+.attention-item > div {
+    min-width: 0;
+}
+
+.activity-item strong,
+.attention-item strong {
+    display: block;
+    overflow: hidden;
+
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.3;
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.activity-item small,
+.attention-item small {
+    display: block;
+    margin-top: 3px;
+
+    color: #94a3b8;
+    font-size: 11px;
+    line-height: 1.3;
+}
+
+.attention-item {
+    justify-content: space-between;
+}
+
+.attention-item > div {
+    flex: 1;
 }
 
 
-.metric-card:nth-child(4){
+/* =========================================================
+   STATUS
+   ========================================================= */
 
-    animation-delay:.18s;
+.status-pill {
+    flex: 0 0 auto;
 
+    padding: 5px 8px;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+    line-height: 1;
+    font-weight: 800;
+}
+
+.status-pill.soon {
+    color: #1d4ed8;
+    background: #dbeafe;
+}
+
+.status-pill.urgent {
+    color: #b45309;
+    background: #fef3c7;
+}
+
+.status-pill.critical {
+    color: #b91c1c;
+    background: #fee2e2;
 }
 
 
+/* =========================================================
+   RANKING
+   ========================================================= */
 
-.metric-card p{
+.rank-list {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
 
-    margin:0 0 3px;
+    margin: 0;
+    padding: 0;
 
-    color:var(--text-light);
+    list-style: none;
+}
 
-    font-size:13px;
+.rank-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-    font-weight:500;
+.rank-number {
+    display: grid;
+    flex: 0 0 24px;
 
+    width: 24px;
+    height: 24px;
+
+    place-items: center;
+
+    border-radius: 7px;
+    background: #f1f5f9;
+    color: #64748b;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.rank-list li > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.rank-list strong {
+    display: block;
+
+    overflow: hidden;
+
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rank-list b {
+    color: var(--text-light);
+    font-size: 13px;
+}
+
+.rank-bar {
+    display: block;
+
+    height: 5px;
+    margin-top: 6px;
+
+    overflow: hidden;
+
+    border-radius: 99px;
+    background: #e2e8f0;
+}
+
+.rank-bar i {
+    display: block;
+
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: linear-gradient(
+        90deg,
+        #60a5fa,
+        #2563eb
+    );
 }
 
 
+/* =========================================================
+   ESTADOS VAZIOS
+   ========================================================= */
 
-.metric-card strong{
+.empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 
-    display:block;
+    min-height: 130px;
 
-    color:var(--text);
+    color: #94a3b8;
 
-    font-size:30px;
+    font-size: 12px;
+    text-align: center;
+}
 
-    letter-spacing:-.04em;
-
-    line-height:1.1;
-
+.empty-state svg {
+    width: 18px;
+    height: 18px;
 }
 
 
-
-.metric-card small{
-
-    color:#94A3B8;
-
-    font-size:11px;
-
-}
-
-
-
-/* ÍCONES */
-
-.metric-icon{
-
-    display:grid;
-
-    flex:
-
-    0 0 44px;
-
-    width:44px;
-
-    height:44px;
-
-    place-items:center;
-
-    border-radius:12px;
-
-}
-
-
-
-.metric-icon svg{
-
-    width:21px;
-
-    height:21px;
-
-    stroke-width:2;
-
-}
-
-
-/* Azul principal */
-
-.metric-icon.success{
-
-    color:#2563EB;
-
-    background:#DBEAFE;
-
-}
-
-
-.metric-icon.info{
-
-    color:#1D4ED8;
-
-    background:#EFF6FF;
-
-}
-
-
-/* Avisos continuam */
-
-.metric-icon.warning{
-
-    color:#B45309;
-
-    background:#FEF3C7;
-
-}
-
-
-.metric-icon.danger{
-
-    color:#B91C1C;
-
-    background:#FEE2E2;
-
-}
-
-
-
-/* LOADING */
+/* =========================================================
+   LOADING
+   ========================================================= */
 
 .metric-card.is-loading strong,
 .metric-card.is-loading p,
-.metric-card.is-loading small{
+.metric-card.is-loading small {
+    color: transparent;
 
+    border-radius: 5px;
 
-    color:transparent;
-
-    border-radius:5px;
-
-    background:
-
-    linear-gradient(
+    background: linear-gradient(
         90deg,
-        #E2E8F0 25%,
-        #F8FAFC 50%,
-        #E2E8F0 75%
+        #e2e8f0 25%,
+        #f8fafc 50%,
+        #e2e8f0 75%
     );
 
-    background-size:200% 100%;
+    background-size: 200% 100%;
 
-    animation:
+    animation: shimmer 1.4s infinite;
+}
 
-    shimmer 1.4s infinite;
+.metric-card.is-loading strong {
+    width: 54px;
+}
 
+.metric-card.is-loading p {
+    width: 110px;
+}
+
+.metric-card.is-loading small {
+    width: 100px;
 }
 
 
+/* =========================================================
+   MONITORIA DE VALIDADES
+   ========================================================= */
 
-.metric-card.is-loading strong{
+.monitoria-validade {
+    grid-column: 1 / -1;
 
-    width:54px;
+    margin-top: 16px;
+    padding: 24px;
 
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    box-shadow: var(--shadow);
+}
+
+.monitoria-topo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.monitoria-titulo {
+    flex: 1;
+    text-align: center;
+}
+
+.monitoria-titulo h2 {
+    margin: 0;
+
+    color: var(--text);
+
+    font-size: 24px;
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+.monitoria-titulo p {
+    margin: 10px 0 0;
+
+    color: var(--text-light);
+
+    font-size: 13px;
+}
+
+.monitoria-acoes {
+    min-width: 190px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-monitoria-excluir {
+    height: 48px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: #f3b0ac;
+    color: #fff;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: not-allowed;
+    opacity: .9;
+}
+
+.btn-monitoria-excluir i {
+    width: 15px;
+    height: 15px;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.monitoria-indisponivel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    min-height: 28px;
+
+    border: 1px solid #f3c8c5;
+    border-radius: 999px;
+
+    color: #d95d55;
+
+    font-size: 11px;
+}
+
+.monitoria-indisponivel i {
+    width: 14px;
+    height: 14px;
+}
+
+.monitoria-filtros {
+    margin-top: 22px;
+}
+
+.btn-monitoria-filtro {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    min-height: 44px;
+
+    padding: 0 17px;
+
+    background: transparent;
+    color: var(--text);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.btn-monitoria-filtro i {
+    width: 17px;
+    height: 17px;
+}
+
+.monitoria-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 14px;
+
+    margin-top: 30px;
+}
+
+.monitoria-card {
+    min-height: 120px;
+
+    padding: 17px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    box-shadow: 0 2px 5px rgba(15, 23, 42, .08);
+}
+
+.monitoria-periodo {
+    display: block;
+
+    color: var(--text);
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.monitoria-numero {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+
+    margin-top: 8px;
+}
+
+.monitoria-numero strong {
+    color: var(--text);
+
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.monitoria-numero span {
+    color: var(--text-light);
+    font-size: 12px;
+}
+
+.monitoria-data {
+    display: inline-block;
+
+    margin-top: 7px;
+    padding: 6px 9px;
+
+    border-radius: 6px;
+
+    color: #fff;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.monitoria-card.ontem .monitoria-data {
+    background: #f47c76;
+}
+
+.monitoria-card.hoje .monitoria-data {
+    background: #f5a145;
+}
+
+.monitoria-card.amanha .monitoria-data {
+    background: #39b89b;
 }
 
 
-.metric-card.is-loading p{
+/* =========================================================
+   LISTA DA MONITORIA
+   ========================================================= */
 
-    width:110px;
+.lista-monitoria-validades {
+    display: none;
 
+    width: 100%;
+    margin-top: 16px;
+}
+
+.monitoria-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 14px;
+
+    padding: 12px 14px;
+    margin-bottom: 8px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: 9px;
+}
+
+.monitoria-item-produto {
+    min-width: 0;
+
+    overflow: hidden;
+
+    color: var(--text);
+
+    font-size: 13px;
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.monitoria-item-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    color: var(--text-light);
+
+    font-size: 11px;
+
+    white-space: nowrap;
+}
+
+.monitoria-lista-vazia {
+    padding: 16px;
+
+    text-align: center;
+
+    color: var(--text-light);
+
+    background: var(--surface);
+
+    border: 1px dashed var(--border);
+    border-radius: 9px;
+
+    font-size: 12px;
 }
 
 
-.metric-card.is-loading small{
+/* =========================================================
+   LOTRIX AI
+   ========================================================= */
 
-    display:block;
+.ia-botoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 
-    width:100px;
-
+    margin-top: 14px;
 }
 
+.ia-botoes button,
+.ia-acoes button {
+    padding: 9px 14px;
 
+    border: 0;
+    border-radius: 8px;
 
-/* ==========================================
-   GRID DASHBOARD
-========================================== */
+    background: var(--primary);
+    color: #fff;
 
+    font-size: 13px;
+    font-weight: 700;
 
-.dashboard-grid{
+    cursor: pointer;
 
-    display:grid;
-
-    grid-template-columns:
-
-    repeat(2,minmax(0,1fr));
-
-    gap:20px;
-
+    transition: .18s;
 }
 
-
-
-.dashboard-panel{
-
-    min-width:0;
-
-    padding:22px;
-
-    border:
-
-    1px solid var(--border);
-
-    border-radius:16px;
-
-    background:var(--surface);
-
-    box-shadow:var(--shadow);
-
-    animation:
-
-    card-enter .5s .1s both;
-
+.ia-botoes button:hover,
+.ia-acoes button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
 }
 
+.ia-resposta {
+    margin-top: 14px;
+    padding: 16px;
 
+    background: var(--surface);
 
-.panel-wide{
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
 
-    grid-column:span 2;
+    border-radius: 10px;
 
+    box-shadow: var(--shadow);
+
+    animation: fadeIA .25s ease;
 }
 
+.ia-titulo {
+    margin-bottom: 9px;
 
+    color: var(--primary);
 
-.panel-heading{
-
-    display:flex;
-
-    align-items:flex-start;
-
-    justify-content:space-between;
-
-    gap:16px;
-
-    margin-bottom:20px;
-
+    font-size: 16px;
+    font-weight: 800;
 }
 
+.ia-texto {
+    color: var(--text);
 
+    font-size: 13px;
+    line-height: 1.65;
 
-.panel-heading h2{
-
-    margin:0;
-
-    color:var(--text);
-
-    font-size:16px;
-
-    letter-spacing:-.02em;
-
+    white-space: pre-wrap;
 }
 
+.ia-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 
-
-.panel-heading a{
-
-    color:var(--primary);
-
-    font-size:12px;
-
-    font-weight:600;
-
+    margin: 14px 0;
 }
 
+#mensagemIA {
+    width: 100%;
 
+    margin-top: 8px;
+    padding: 11px 12px;
 
-.panel-heading a:hover{
+    background: var(--surface);
+    color: var(--text);
 
-    text-decoration:underline;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
 
+    outline: none;
+
+    font-size: 13px;
 }
 
-
-
-.panel-badge{
-
-    padding:5px 8px;
-
-    border-radius:999px;
-
-    background:#DBEAFE;
-
-    color:#1E40AF;
-
-    font-size:11px;
-
-    font-weight:600;
-
-}
-
-
-
-.chart-wrap{
-
-    height:300px;
-
-    position:relative;
-
-}
-
-
-.chart-wrap canvas{
-
-    width:100% !important;
-
-    height:100% !important;
-
-}
-/* ==========================================
-   ATIVIDADES
-========================================== */
-
-
-.activity-list,
-.attention-list{
-
-    display:flex;
-
-    flex-direction:column;
-
-}
-
-
-
-.activity-item,
-.attention-item{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
-    min-height:59px;
-
-    padding:10px 0;
-
-    border-bottom:
-
-    1px solid var(--border);
-
-}
-
-
-
-.activity-item:last-child,
-.attention-item:last-child{
-
-    border-bottom:0;
-
-}
-
-
-
-.activity-icon{
-
-    display:grid;
-
-    width:34px;
-
-    height:34px;
-
-    place-items:center;
-
-    border-radius:10px;
-
-    background:#EFF6FF;
-
-    color:var(--primary);
-
-}
-
-
-
-.activity-icon svg{
-
-    width:17px;
-
-    height:17px;
-
-}
-
-
-
-.activity-item strong,
-.attention-item strong{
-
-    display:block;
-
-    color:var(--text);
-
-    font-size:13px;
-
-    font-weight:600;
-
-}
-
-
-
-.activity-item small,
-.attention-item small{
-
-    display:block;
-
-    margin-top:2px;
-
-    color:#94A3B8;
-
-    font-size:11px;
-
-}
-
-
-
-.attention-item{
-
-    justify-content:space-between;
-
-    gap:10px;
-
-}
-
-
-
-.attention-item > div{
-
-    min-width:0;
-
-}
-
-
-
-/* ==========================================
-   STATUS PILLS
-========================================== */
-
-
-.status-pill{
-
-    flex:
-
-    0 0 auto;
-
-    padding:4px 7px;
-
-    border-radius:999px;
-
-    font-size:10px;
-
-    font-weight:700;
-
-}
-
-
-
-.status-pill.soon{
-
-    color:#1D4ED8;
-
-    background:#DBEAFE;
-
-}
-
-
-
-.status-pill.urgent{
-
-    color:#B45309;
-
-    background:#FEF3C7;
-
-}
-
-
-
-.status-pill.critical{
-
-    color:#B91C1C;
-
-    background:#FEE2E2;
-
-}
-
-
-
-/* ==========================================
-   RANKING
-========================================== */
-
-
-.rank-list{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:14px;
-
-    margin:0;
-
-    padding:0;
-
-    list-style:none;
-
-}
-
-
-
-.rank-list li{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-}
-
-
-
-.rank-number{
-
-    display:grid;
-
-    flex:
-
-    0 0 22px;
-
-    width:22px;
-
-    height:22px;
-
-    place-items:center;
-
-    border-radius:7px;
-
-    background:#F1F5F9;
-
-    color:#64748B;
-
-    font-size:11px;
-
-    font-weight:700;
-
-}
-
-
-
-.rank-list li > div{
-
-    flex:1;
-
-    min-width:0;
-
-}
-
-
-
-.rank-list strong{
-
-    display:block;
-
-    overflow:hidden;
-
-    color:var(--text);
-
-    font-size:12px;
-
-    font-weight:600;
-
-    text-overflow:ellipsis;
-
-    white-space:nowrap;
-
-}
-
-
-
-.rank-list b{
-
-    color:var(--text-light);
-
-    font-size:12px;
-
-}
-
-
-
-.rank-bar{
-
-    display:block;
-
-    height:5px;
-
-    margin-top:6px;
-
-    overflow:hidden;
-
-    border-radius:99px;
-
-    background:#E2E8F0;
-
-}
-
-
-
-.rank-bar i{
-
-    display:block;
-
-    height:100%;
-
-    border-radius:inherit;
-
-    background:
-
-    linear-gradient(
-        90deg,
-        #60A5FA,
-        #2563EB
-    );
-
-}
-
-
-
-/* ==========================================
-   ESTADOS
-========================================== */
-
-
-.skeleton-row{
-
-    height:38px;
-
-    border-radius:8px;
-
-    background:
-
-    linear-gradient(
-        90deg,
-        #E2E8F0 25%,
-        #F8FAFC 50%,
-        #E2E8F0 75%
-    );
-
-    background-size:200% 100%;
-
-    animation:
-
-    shimmer 1.4s infinite;
-
-}
-
-
-
-.empty-state{
-
-    display:flex;
-
-    min-height:150px;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:8px;
-
-    color:#94A3B8;
-
-    font-size:12px;
-
-    text-align:center;
-
-}
-
-
-
-.empty-state svg{
-
-    width:18px;
-
-    height:18px;
-
-}
-
-
-
-/* ==========================================
-   LOTRIX AI AZUL ROYAL
-========================================== */
-
-
-.ia-botoes{
-
-    display:flex;
-
-    flex-wrap:wrap;
-
-    gap:10px;
-
-    margin-top:15px;
-
-}
-
-
-
-.ia-botoes button{
-
-
-    border:none;
-
-    padding:10px 15px;
-
-    border-radius:8px;
-
-    cursor:pointer;
-
-    background:
-
-    var(--primary);
-
-    color:white;
-
-    font-size:14px;
-
-    transition:.2s;
-
-}
-
-
-
-.ia-botoes button:hover{
-
-    background:
-
-    var(--primary-hover);
-
-    transform:translateY(-2px);
-
-}
-
-
-
-/* RESPOSTA IA */
-
-
-.ia-resposta{
-
-    margin-top:15px;
-
-    padding:18px;
-
-    border-radius:12px;
-
-    background:var(--surface);
-
-    border:
-
-    1px solid var(--border);
-
-    border-left:
-
-    5px solid var(--primary);
-
-    box-shadow:var(--shadow);
-
-    animation:
-
-    fadeIA .25s ease;
-
-}
-
-
-
-.ia-titulo{
-
-    font-size:18px;
-
-    font-weight:700;
-
-    color:var(--primary);
-
-    margin-bottom:12px;
-
-}
-
-
-
-.ia-texto{
-
-    color:var(--text);
-
-    line-height:1.7;
-
-    white-space:pre-wrap;
-
-}
-
-
-
-.ia-acoes{
-
-    display:flex;
-
-    flex-wrap:wrap;
-
-    gap:10px;
-
-    margin:15px 0;
-
-}
-
-
-
-.ia-acoes button{
-
-    background:
-
-    var(--primary);
-
-    color:#fff;
-
-    border:none;
-
-    border-radius:8px;
-
-    padding:10px 15px;
-
-    cursor:pointer;
-
-    transition:.2s;
-
-    font-size:14px;
-
-}
-
-
-
-.ia-acoes button:hover{
-
-    background:
-
-    var(--primary-hover);
-
-    transform:translateY(-2px);
-
-}
-
-
-
-/* CAMPO IA */
-
-
-#mensagemIA{
-
-    width:100%;
-
-    padding:12px;
-
-    border-radius:8px;
-
-    border:
-
-    1px solid var(--border-strong);
-
-    outline:none;
-
-    font-size:15px;
-
-    margin-top:10px;
-
-    background:var(--surface);
-
-    color:var(--text);
-
-}
-
-
-
-#mensagemIA:focus{
-
-    border-color:
-
-    var(--primary);
+#mensagemIA:focus {
+    border-color: var(--primary);
 
     box-shadow:
-
-    0 0 0 3px rgba(37,99,235,.15);
-
-}
-/* ==========================================
-   DARK MODE LOTRIX DASHBOARD
-========================================== */
-
-
-/* PAINÉIS E CARDS */
-
-[data-theme="dark"] .dashboard-panel,
-[data-theme="dark"] .metric-card{
-
-    background:var(--surface);
-
-    border-color:var(--border);
-
+        0 0 0 3px rgba(37, 99, 235, .12);
 }
 
 
-[data-theme="dark"] .metric-card p,
-[data-theme="dark"] .metric-card small{
+/* =========================================================
+   DARK MODE
+   ========================================================= */
 
-    color:var(--text-light);
-
+[data-theme="dark"] .metric-icon.success {
+    background: #123524;
+    color: #4ade80;
 }
 
-
-[data-theme="dark"] .metric-card strong,
-[data-theme="dark"] .panel-heading h2{
-
-    color:var(--text);
-
+[data-theme="dark"] .metric-icon.info {
+    background: #172554;
+    color: #60a5fa;
 }
 
-
-/* ==========================================
-   ÍCONES
-========================================== */
-
-
-[data-theme="dark"] .metric-icon.success{
-
-    background:#123524;
-
-    color:#4ADE80;
-
+[data-theme="dark"] .metric-icon.warning {
+    background: #422006;
+    color: #fbbf24;
 }
 
-
-[data-theme="dark"] .metric-icon.info{
-
-    background:#172554;
-
-    color:#60A5FA;
-
+[data-theme="dark"] .metric-icon.danger {
+    background: #450a0a;
+    color: #f87171;
 }
 
-
-[data-theme="dark"] .metric-icon.warning{
-
-    background:#422006;
-
-    color:#FBBF24;
-
+[data-theme="dark"] .activity-icon {
+    background: #172554;
+    color: #60a5fa;
 }
 
-
-[data-theme="dark"] .metric-icon.danger{
-
-    background:#450A0A;
-
-    color:#F87171;
-
+[data-theme="dark"] .rank-number {
+    background: #334155;
+    color: #cbd5e1;
 }
 
-
-
-/* ==========================================
-   ATIVIDADES
-========================================== */
-
-
-[data-theme="dark"] .activity-item,
-[data-theme="dark"] .attention-item{
-
-    border-color:var(--border);
-
+[data-theme="dark"] .rank-bar {
+    background: #334155;
 }
-
-
-[data-theme="dark"] .activity-item strong,
-[data-theme="dark"] .attention-item strong{
-
-    color:#F8FAFC;
-
-}
-
-
-[data-theme="dark"] .activity-item small,
-[data-theme="dark"] .attention-item small{
-
-    color:#94A3B8;
-
-}
-
-
-[data-theme="dark"] .activity-icon{
-
-    background:#172554;
-
-    color:#60A5FA;
-
-}
-
-
-
-/* ==========================================
-   RANKING
-========================================== */
-
-
-[data-theme="dark"] .rank-number{
-
-    background:#334155;
-
-    color:#CBD5E1;
-
-}
-
-
-[data-theme="dark"] .rank-list strong{
-
-    color:#F8FAFC;
-
-}
-
-
-[data-theme="dark"] .rank-bar{
-
-    background:#334155;
-
-}
-
-
-
-/* ==========================================
-   LOTRIX AI
-========================================== */
-
 
 [data-theme="dark"] .ia-resposta,
-[data-theme="dark"] #respostaIA{
-
-    background:#111827;
-
-    border-color:#334155;
-
-    border-left-color:#60A5FA;
-
+[data-theme="dark"] #respostaIA {
+    background: #111827;
+    border-color: #334155;
+    border-left-color: #60a5fa;
 }
 
-
-[data-theme="dark"] .ia-texto{
-
-    color:#E2E8F0;
-
+[data-theme="dark"] #mensagemIA {
+    background: #111827;
+    color: #fff;
+    border-color: #475569;
 }
 
-
-[data-theme="dark"] #mensagemIA{
-
-    background:#111827;
-
-    color:white;
-
-    border-color:#475569;
-
+[data-theme="dark"] #mensagemIA::placeholder {
+    color: #94a3b8;
 }
 
-
-[data-theme="dark"] #mensagemIA::placeholder{
-
-    color:#94A3B8;
-
-}
-
-
-[data-theme="dark"] #mensagemIA:focus{
-
-    border-color:#60A5FA;
-
-    box-shadow:
-
-    0 0 0 3px rgba(96,165,250,.15);
-
-}
-
-
-
-/* BOTÕES IA */
-
-[data-theme="dark"] .ia-acoes button,
-[data-theme="dark"] .ia-botoes button{
-
-    background:#2563EB;
-
-    color:white;
-
-}
-
-
-[data-theme="dark"] .ia-acoes button:hover,
-[data-theme="dark"] .ia-botoes button:hover{
-
-    background:#1D4ED8;
-
-}
-
-
-
-/* ==========================================
-   GRÁFICO
-========================================== */
-
-
-[data-theme="dark"] .chart-wrap{
-
-    background:#111827;
-
-    border-radius:12px;
-
-}
-
-
-
-/* ==========================================
-   SKELETON LOADING
-========================================== */
-
-
-[data-theme="dark"] .skeleton-row,
 [data-theme="dark"] .metric-card.is-loading strong,
 [data-theme="dark"] .metric-card.is-loading p,
-[data-theme="dark"] .metric-card.is-loading small{
-
-    background:
-
-    linear-gradient(
+[data-theme="dark"] .metric-card.is-loading small {
+    background: linear-gradient(
         90deg,
-        #1E293B 25%,
+        #1e293b 25%,
         #334155 50%,
-        #1E293B 75%
+        #1e293b 75%
     );
 
-    background-size:200% 100%;
-
+    background-size: 200% 100%;
 }
 
-/* ==========================================
+
+/* =========================================================
    TABLET
-========================================== */
+   ========================================================= */
 
+@media (max-width: 1200px) {
 
-@media(max-width:1200px){
-
-
-    .metric-grid{
-
-        grid-template-columns:
-
-        repeat(2,minmax(0,1fr));
-
+    .metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-
-    .dashboard-grid{
-
-        grid-template-columns:1fr;
-
+    .dashboard-grid {
+        grid-template-columns: 1fr;
     }
 
-
-    .panel-wide{
-
-        grid-column:auto;
-
+    .panel-wide {
+        grid-column: auto;
     }
-
-
 }
 
 
-
-
-/* ==========================================
+/* =========================================================
    MOBILE
-========================================== */
+   ========================================================= */
 
+@media (max-width: 768px) {
 
-@media(max-width:768px){
-
-
-    .dashboard-page{
-
-        padding:72px 0 0;
-
+    .dashboard-page {
+        padding-top: 68px;
     }
 
-
-
-    .dashboard-header{
-
-        flex-direction:column;
-
-        align-items:flex-start;
-
-        gap:15px;
-
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 13px;
     }
 
-    .dashboard-header > div:first-child{
-
-        width:100%;
-
+    .dashboard-header h1 {
+        font-size: 24px;
     }
 
-
-
-    .header-actions{
-
-        width:100%;
-
-        flex-direction:column;
-
+    .dashboard-header > div:first-child {
+        width: 100%;
+        margin-left: 0;
+        text-align: left;
     }
 
-
+    .header-actions {
+        width: 100%;
+        flex-direction: column;
+    }
 
     .header-actions .button,
-    .header-actions button{
-
-        width:100%;
-
+    .header-actions button {
+        width: 100%;
     }
 
-
-
-    .metric-grid{
-
-        grid-template-columns:
-
-        1fr;
-
-        gap:14px;
-
+    .metric-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
     }
 
-
-
-    .metric-card{
-
-        min-height:100px;
-
-        padding:18px;
-
+    .metric-card {
+        min-height: 82px;
+        padding: 13px 14px;
     }
 
-
-
-    .metric-card strong{
-
-        font-size:26px;
-
+    .metric-card strong {
+        font-size: 26px;
     }
 
-
-
-    .dashboard-panel{
-
-        padding:18px;
-
-        border-radius:14px;
-
+    .dashboard-panel {
+        padding: 16px;
+        border-radius: 12px;
     }
 
-
-
-    .panel-heading{
-
-        flex-direction:column;
-
-        gap:8px;
-
+    .panel-heading {
+        flex-direction: column;
+        gap: 7px;
     }
 
-
-
-    .chart-wrap{
-
-        height:220px;
-
+    .chart-wrap {
+        height: 180px;
+        min-height: 180px;
     }
 
+    .monitoria-validade {
+        padding: 18px;
+    }
 
+    .monitoria-topo {
+        flex-direction: column;
+    }
+
+    .monitoria-titulo {
+        width: 100%;
+    }
+
+    .monitoria-titulo h2 {
+        font-size: 21px;
+    }
+
+    .monitoria-acoes {
+        width: 100%;
+    }
+
+    .monitoria-cards {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 22px;
+    }
+
+    .monitoria-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .monitoria-item-info {
+        flex-wrap: wrap;
+        gap: 6px 12px;
+        white-space: normal;
+    }
 
     .ia-acoes,
-    .ia-botoes{
-
-        flex-direction:column;
-
+    .ia-botoes {
+        flex-direction: column;
     }
-
-
 
     .ia-acoes button,
-    .ia-botoes button{
-
-        width:100%;
-
+    .ia-botoes button {
+        width: 100%;
     }
-
-
 }
 
 
+/* =========================================================
+   CELULAR PEQUENO
+   ========================================================= */
 
-/* ==========================================
-   PEQUENAS TELAS
-========================================== */
+@media (max-width: 480px) {
 
-
-@media(max-width:480px){
-
-
-    .metric-icon{
-
-        width:40px;
-
-        height:40px;
-
+    .dashboard-page {
+        padding-top: 62px;
     }
 
-
-    .metric-icon svg{
-
-        width:18px;
-
-        height:18px;
-
+    .dashboard-header h1 {
+        font-size: 21px;
     }
 
-
-
-    .dashboard-panel{
-
-        padding:15px;
-
+    .dashboard-header p {
+        font-size: 13px;
     }
 
-
-
-    .panel-heading h2{
-
-        font-size:15px;
-
+    .metric-card {
+        min-height: 76px;
+        padding: 11px 12px;
+        gap: 10px;
     }
 
+    .metric-card .metric-icon {
+        flex-basis: 36px;
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
+    }
 
+    .metric-card .metric-icon svg {
+        width: 18px;
+        height: 18px;
+    }
 
+    .metric-card p {
+        font-size: 11px;
+    }
+
+    .metric-card strong {
+        font-size: 23px;
+    }
+
+    .metric-card small {
+        font-size: 9px;
+    }
+
+    .dashboard-panel {
+        padding: 14px;
+    }
+
+    .panel-heading h2 {
+        font-size: 15px;
+    }
+
+    .chart-wrap {
+        height: 160px;
+        min-height: 160px;
+    }
 }
 
 
-
-/* ==========================================
+/* =========================================================
    ANIMAÇÕES
-========================================== */
+   ========================================================= */
 
+@keyframes dashboardEnter {
 
-@keyframes page-enter{
-
-    from{
-
-        opacity:0;
-
-        transform:
-
-        translateY(12px);
-
+    from {
+        opacity: 0;
+        transform: translateY(8px);
     }
 
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-    to{
+@keyframes cardEnter {
 
-        opacity:1;
-
-        transform:
-
-        translateY(0);
-
+    from {
+        opacity: 0;
+        transform: translateY(10px);
     }
 
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shimmer {
+
+    from {
+        background-position: 200% 0;
+    }
+
+    to {
+        background-position: -200% 0;
+    }
+}
+
+@keyframes fadeIA {
+
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 
-
-@keyframes card-enter{
-
-
-    from{
-
-        opacity:0;
-
-        transform:
-
-        translateY(15px);
-
-    }
-
-
-    to{
-
-        opacity:1;
-
-        transform:
-
-        translateY(0);
-
-    }
-
-
-}
-
-
-
-@keyframes shimmer{
-
-
-    from{
-
-        background-position:
-
-        200% 0;
-
-    }
-
-
-    to{
-
-        background-position:
-
-        -200% 0;
-
-    }
-
-
-}
-
-
-
-@keyframes fadeIA{
-
-
-    from{
-
-        opacity:0;
-
-        transform:
-
-        translateY(10px);
-
-    }
-
-
-    to{
-
-        opacity:1;
-
-        transform:
-
-        translateY(0);
-
-    }
-
-
-}
-
-
-
-/* ==========================================
+/* =========================================================
    ACESSIBILIDADE
-========================================== */
+   ========================================================= */
 
-
-@media(prefers-reduced-motion:reduce){
-
+@media (prefers-reduced-motion: reduce) {
 
     *,
     *::before,
-    *::after{
+    *::after {
 
-
-        animation-duration:.01ms!important;
-
-        animation-iteration-count:1!important;
-
-        transition-duration:.01ms!important;
-
-
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
     }
-
-
 }
 
 
-
-/* ==========================================
-   AJUSTE FINAL LOTRIX
-========================================== */
-
-
-.dashboard-page,
-.dashboard-panel,
-.metric-card,
-.ia-resposta{
-
-    overflow:hidden;
-
-}
-
+/* =========================================================
+   FINAL
+   ========================================================= */
 
 button,
-.button{
+.button {
+    user-select: none;
+}
 
-    user-select:none;
+svg {
+    pointer-events: none;
+}
+/* =========================================================
+   ALERTAS DE ETIQUETAS
+   ========================================================= */
 
+.etiqueta-alertas {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.etiqueta-alerta-card {
+    width: 100%;
+    min-height: 82px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 14px 16px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow: var(--shadow);
+
+    cursor: pointer;
+    text-align: left;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+}
+
+.etiqueta-alerta-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(15, 23, 42, .10);
+}
+
+.etiqueta-alerta-card.active {
+    box-shadow:
+        0 0 0 2px currentColor,
+        0 8px 22px rgba(15, 23, 42, .10);
+}
+
+.etiqueta-alerta-icon {
+    display: grid;
+    flex: 0 0 42px;
+
+    width: 42px;
+    height: 42px;
+
+    place-items: center;
+    border-radius: 10px;
+}
+
+.etiqueta-alerta-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.etiqueta-alerta-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.etiqueta-alerta-content strong {
+    display: block;
+
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.etiqueta-alerta-content small {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+.etiqueta-alerta-card > b {
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.etiqueta-alerta-arrow {
+    width: 17px;
+    height: 17px;
 }
 
 
-svg{
+/* AMARELO */
 
-    pointer-events:none;
+.etiqueta-alerta-card.alerta-prestes {
+    color: #d97706;
+    border-left: 4px solid #f59e0b;
+}
+
+.alerta-prestes .etiqueta-alerta-icon {
+    color: #d97706;
+    background: #fef3c7;
+}
+
+
+/* VERDE */
+
+.etiqueta-alerta-card.alerta-dias {
+    color: #16a34a;
+    border-left: 4px solid #22c55e;
+}
+
+.alerta-dias .etiqueta-alerta-icon {
+    color: #16a34a;
+    background: #dcfce7;
+}
+
+
+/* VERMELHO */
+
+.etiqueta-alerta-card.alerta-vencida {
+    color: #dc2626;
+    border-left: 4px solid #ef4444;
+}
+
+.alerta-vencida .etiqueta-alerta-icon {
+    color: #dc2626;
+    background: #fee2e2;
+}
+
+
+/* =========================================================
+   LISTA ABERTA
+   ========================================================= */
+
+.lista-alertas-etiquetas {
+    margin-top: 12px;
+    margin-bottom: 18px;
+
+    padding: 10px 14px;
+
+    background: #f8fafc;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.lista-alertas-etiquetas[hidden] {
+    display: none;
+}
+
+.alerta-etiqueta-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 12px 4px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.alerta-etiqueta-item:last-child {
+    border-bottom: 0;
+}
+
+.alerta-etiqueta-produto {
+    min-width: 0;
+    flex: 1;
+}
+
+.alerta-etiqueta-produto strong {
+    display: block;
+
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.alerta-etiqueta-produto small {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.alerta-etiqueta-status {
+    flex: 0 0 auto;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.alerta-etiqueta-status.amarelo {
+    color: #b45309;
+    background: #fef3c7;
+}
+
+.alerta-etiqueta-status.verde {
+    color: #15803d;
+    background: #dcfce7;
+}
+
+.alerta-etiqueta-status.vermelho {
+    color: #b91c1c;
+    background: #fee2e2;
+}
+
+
+@media (max-width: 850px) {
+
+    .etiqueta-alertas {
+        grid-template-columns: 1fr;
+    }
 
 }
