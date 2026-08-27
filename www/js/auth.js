@@ -119,6 +119,9 @@ function mostrarEmpresaAtiva(usuario) {
         existente.remove();
     }
 
+    // A empresa permanece vinculada à sessão, mas não é exibida no menu lateral.
+    return;
+
 
     const logoArea =
         document.querySelector(

@@ -41,171 +41,74 @@
 
 
     <!-- =====================================================
-         SIDEBAR LOTRIX
+         SIDEBAR
     ====================================================== -->
 
     <aside class="sidebar">
 
         <div class="logo-area">
 
-            <div class="brand-lockup">
-                <img
-                    class="brand-logo"
-                    src="img/logo.png"
-                    alt=""
-                >
-
-                <div>
-                    <h2>Lotrix</h2>
-                    <small>Food Safety Platform</small>
-                </div>
-            </div>
-
-            <button
-                type="button"
-                class="sidebar-close"
-                aria-label="Fechar menu"
+            <img
+                src="img/logo.png"
+                alt="Lotrix"
             >
-                ×
-            </button>
 
         </div>
 
 
         <nav class="menu">
 
-            <!-- GERAL -->
+            <a
+                href="dashboard.html"
+                class="active"
+            >
+                Dashboard
+            </a>
 
-            <div class="menu-section">
+            <a href="producao.html">
+                Produção
+            </a>
 
-                <div class="menu-title">
-                    Geral
-                </div>
+            <a href="produtos.html">
+                Produtos
+            </a>
 
-                <a
-                    href="dashboard.html"
-                    class="active"
-                >
-                    Dashboard
-                </a>
+            <a href="etiquetas.html">
+                Etiquetas
+            </a>
 
-            </div>
+            <a href="estoque.html">
+                Estoque
+            </a>
 
+            <a href="relatorios.html">
+                Relatórios
+            </a>
 
-            <!-- OPERAÇÃO -->
+            <a href="auditoria.html">
+                Auditoria
+            </a>
 
-            <div class="menu-section">
+            <a href="usuario.html">
+                Usuários
+            </a>
 
-                <div class="menu-title">
-                    Operação
-                </div>
+            <a href="configuracoes.html">
+                Configurações
+            </a>
 
-                <a href="producao.html">
-                    Produção
-                </a>
+            <a href="ajuda.html">
+                Ajuda
+            </a>
 
-                <a href="produtos.html">
-                    Produtos
-                </a>
-
-                <a href="etiquetas.html">
-                    Etiquetas
-                </a>
-
-                <a href="estoque.html">
-                    Estoque
-                </a>
-
-            </div>
-
-
-            <!-- GESTÃO -->
-
-            <div class="menu-section">
-
-                <div class="menu-title">
-                    Gestão
-                </div>
-
-                <a href="relatorios.html">
-                    Relatórios
-                </a>
-
-                <a href="auditoria.html">
-                    Auditoria
-                </a>
-
-                <a href="usuario.html">
-                    Usuários
-                </a>
-
-                <a href="sac-admin.html">
-                    SAC Admin
-                </a>
-
-            </div>
-
-
-            <!-- SISTEMA -->
-
-            <div class="menu-section">
-
-                <div class="menu-title">
-                    Sistema
-                </div>
-
-                <a href="configuracoes.html">
-                    Configurações
-                </a>
-
-                <a href="ajuda.html">
-                    Ajuda
-                </a>
-
-                <a href="sac.html">
-                    SAC
-                </a>
-
-            </div>
+            <a href="sac.html">
+                SAC
+            </a>
 
         </nav>
 
 
         <div class="sidebar-footer">
-
-            <div class="user-card">
-
-                <div class="avatar">
-                    <i data-lucide="user-round" aria-hidden="true"></i>
-                </div>
-
-                <div>
-
-                    <strong>
-                        Alessandro
-                    </strong>
-
-                    <small>
-                        Administrador
-                    </small>
-
-                </div>
-
-            </div>
-
-
-            <div class="company-card">
-
-                <span class="company-label">
-                    EMPRESA
-                </span>
-
-                <strong class="company-name">
-                    Izu Oeste
-                </strong>
-
-            </div>
-
 
             <button
                 type="button"
@@ -218,20 +121,6 @@
 
     </aside>
 
-
-    <div
-        class="sidebar-overlay"
-        aria-hidden="true"
-    ></div>
-
-
-    <button
-        type="button"
-        class="menu-toggle"
-        aria-label="Abrir menu"
-    >
-        <i data-lucide="menu" aria-hidden="true"></i>
-    </button>
 
     <!-- =====================================================
          CONTEÚDO PRINCIPAL
@@ -1192,8 +1081,6 @@
     src="js/dashboard.js"
 ></script>
 
-<script src="js/design-system.js"></script>
-
 <script src="js/sidebar.js"></script>
 
 <!-- =====================================================
@@ -1225,6 +1112,3 @@
 </body>
 
 </html>
-
-
-

@@ -10,15 +10,6 @@ const sidebarIcons = {
 
 const cardIcons = ["package-check", "calendar-clock", "badge-alert", "chart-no-axes-combined"];
 
-function loadAppShell() {
-    if (document.querySelector('script[data-app-shell]')) return;
-    const script = document.createElement("script");
-    script.src = "js/app-shell.js";
-    script.defer = true;
-    script.dataset.appShell = "true";
-    document.head.appendChild(script);
-}
-
 function themePreference() {
     const preference = localStorage.getItem("lotrix-theme-preference");
     return ["auto", "light", "dark"].includes(preference) ? preference : "light";
@@ -86,7 +77,6 @@ function enableMicroInteractions() {
 }
 
 applyTheme(currentTheme());
-loadAppShell();
 window.setLotrixThemePreference = setThemePreference;
 window.getLotrixThemePreference = themePreference;
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {

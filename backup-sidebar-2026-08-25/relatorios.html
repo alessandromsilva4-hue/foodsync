@@ -7,20 +7,81 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Lotrix - Ajuda</title>
+
+<title>Lotrix - Relatórios</title>
+
 
 <link rel="icon" href="img/favicon.png">
 
+
 <link rel="stylesheet" href="css/style.css">
+
 <link rel="stylesheet" href="css/sidebar.css">
+
 <link rel="stylesheet" href="css/tabela.css">
-<link rel="stylesheet" href="css/formulario.css">
+
+<style>
+/* Ajuste específico do Relatório */
+body .content {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1 !important;
+    min-height: 100vh !important;
+    color: #1e293b !important;
+    background: #f1f5f9 !important;
+}
+
+/* Mantém o relatório ancorado no topo, mesmo após os scripts da tela serem carregados. */
+body .content.relatorios-page {
+    position: relative !important;
+    top: 0 !important;
+    inset: auto !important;
+    margin-top: 0 !important;
+    transform: none !important;
+}
+
+body .content.relatorios-page > * {
+    position: relative;
+    top: 0;
+    transform: none;
+}
+
+/* No celular, isola a página do fluxo externo para impedir que o WebView a alinhe no rodapé. */
+@media (max-width: 640px) {
+    body .content.relatorios-page {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100% !important;
+        height: 100dvh !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 72px 16px 32px !important;
+        overflow-y: auto !important;
+        z-index: 0 !important;
+    }
+}
+
+.content .top-header,
+.content .acoes-relatorio,
+.content .cards,
+.content .table-box {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+</style>
+
 
 </head>
 
+
+
 <body>
 
+
 <div class="layout">
+
+
 
 <aside class="sidebar">
 
@@ -115,9 +176,7 @@
 
     </nav>
 
-    <div class="sidebar-footer">
-
- <div class="user-card">
+    <div class="user-card">
 
     <div class="avatar">
         👤
@@ -134,6 +193,7 @@
     </div>
 
 </div>
+
         <button onclick="logout()">
             🚪 Sair
         </button>
@@ -142,165 +202,328 @@
 
 </aside>
 
-<main class="content">
+
+
+
+
+
+
+
+
+<main class="content relatorios-page">
+
+
 
 <header class="top-header">
 
+
 <div>
 
-<h1>❓ Central de Ajuda</h1>
+
+<h1>
+Relatórios
+</h1>
+
 
 <p>
-Encontre orientações sobre todos os recursos do Lotrix.
+Análise dos dados do Lotrix
 </p>
 
+
 </div>
+
 
 </header>
 
-<section class="table-box">
 
-<h2>🍱 Produção</h2>
+<div class="acoes-relatorio">
 
-<ul>
-<li>Registrar uma nova produção.</li>
-<li>Selecionar o produto e informar a quantidade.</li>
-<li>Calcular automaticamente a validade.</li>
-<li>Gerar etiquetas ao finalizar a produção.</li>
-</ul>
+<button onclick="exportarExcel()">
+📊 Exportar Excel
+</button>
 
-</section>
 
-<section class="table-box">
+<button onclick="exportarCSV()">
+📄 Exportar CSV
+</button>
 
-<h2>📦 Produtos</h2>
 
-<ul>
-<li>Cadastrar novos produtos.</li>
-<li>Editar informações cadastradas.</li>
-<li>Excluir produtos quando necessário.</li>
-<li>Definir validade padrão.</li>
-</ul>
-
-</section>
-
-<section class="table-box">
-
-<h2>🏷️ Etiquetas</h2>
-
-<ul>
-<li>Gerar etiquetas automaticamente.</li>
-<li>Imprimir etiquetas de validade.</li>
-<li>Utilizar QR Code para rastreabilidade.</li>
-<li>Consultar o histórico de etiquetas.</li>
-</ul>
-
-</section>
-
-<section class="table-box">
-
-<h2>📋 Estoque</h2>
-
-<ul>
-<li>Registrar entradas de produtos.</li>
-<li>Registrar saídas de estoque.</li>
-<li>Consultar movimentações.</li>
-<li>Acompanhar o saldo disponível.</li>
-</ul>
-
-</section>
-
-<section class="table-box">
-
-<h2>📈 Relatórios</h2>
-
-<ul>
-<li>Visualizar indicadores do sistema.</li>
-<li>Acompanhar produção e estoque.</li>
-<li>Exportar informações para análise.</li>
-</ul>
-
-</section>
-
-<section class="table-box">
-
-<h2>📝 Auditoria</h2>
-
-<ul>
-<li>Consultar o histórico de ações.</li>
-<li>Verificar quem realizou cada operação.</li>
-<li>Exportar registros de auditoria.</li>
-</ul>
-
-</section>
-
-<section class="table-box">
-
-<h2>⚙️ Configurações</h2>
-
-<ul>
-<li>Definir a validade padrão.</li>
-<li>Configurar o tamanho das etiquetas.</li>
-<li>Ativar ou desativar o QR Code.</li>
-<li>Definir a impressora utilizada.</li>
-</ul>
-
-</section>
-
-<section class="table-box">
-
-<h2>❓ Perguntas Frequentes</h2>
-
-<p><strong>Como cadastrar um produto?</strong></p>
-<p>Acesse o menu <strong>Produtos</strong>, clique em <strong>Novo Produto</strong>, preencha os dados e salve.</p>
-
-<hr>
-
-<p><strong>Como registrar uma produção?</strong></p>
-<p>Abra o menu <strong>Produção</strong>, selecione o produto, informe a quantidade e clique em <strong>Registrar Produção</strong>.</p>
-
-<hr>
-
-<p><strong>Como imprimir uma etiqueta?</strong></p>
-<p>Após gerar a etiqueta, utilize o botão <strong>Imprimir</strong>.</p>
-
-<hr>
-
-<p><strong>Onde vejo o histórico de alterações?</strong></p>
-<p>Acesse o módulo <strong>Auditoria</strong> para consultar todas as ações registradas no sistema.</p>
-
-</section>
-
-<section class="table-box">
-
-<h2>🎧 Precisa de mais ajuda?</h2>
-
-<p>
-Caso sua dúvida não esteja respondida nesta página, acesse o SAC para falar com o suporte.
-</p>
-
-<p>
-
-<a href="sac.html">
-
-🎧 Abrir SAC
-
-</a>
-
-</p>
-
-</section>
-
-</main>
+<button onclick="imprimirRelatorio()">
+🖨️ Imprimir
+</button>
 
 </div>
 
+
+
+
+
+<section class="cards">
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+🍱
+
+</div>
+
+
+<div>
+
+
+<h3>
+Produções
+</h3>
+
+
+<strong id="totalProducoes">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+🏷️
+
+</div>
+
+
+<div>
+
+
+<h3>
+Etiquetas
+</h3>
+
+
+<strong id="totalEtiquetas">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+📦
+
+</div>
+
+
+<div>
+
+
+<h3>
+Produtos
+</h3>
+
+
+<strong id="totalProdutos">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+⚠️
+
+</div>
+
+
+<div>
+
+
+<h3>
+Estoque Baixo
+</h3>
+
+
+<strong id="totalEstoqueBaixo">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+</section>
+
+<section class="table-box">
+
+<h2>
+📊 Produção por Produto
+</h2>
+
+<canvas id="graficoProducao"></canvas>
+
+</section>
+
+
+
+
+
+
+<section class="table-box">
+
+
+<h2>
+Últimas Produções
+</h2>
+
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+Produto
+</th>
+
+
+<th>
+Quantidade
+</th>
+
+
+<th>
+Responsável
+</th>
+
+
+<th>
+Data
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+<tbody id="relatorioProducao">
+
+
+<tr>
+
+<td colspan="4">
+
+Sem dados
+
+</td>
+
+
+</tr>
+
+
+</tbody>
+
+
+
+
+</table>
+
+
+</section>
+
+
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+<script type="module" src="js/firebase.js"></script>
+
+<script type="module" src="js/app.js"></script>
+
+<script type="module" src="js/relatorios.js"></script>
+
 <script type="module" src="js/auth.js"></script>
 
-<script src="js/design-system.js"></script>
+
 <script src="js/sidebar.js"></script>
+
 
 </body>
 
 </html>
+
 

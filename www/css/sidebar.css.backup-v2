@@ -25,7 +25,7 @@
     margin: 0 !important;
     padding: 0 !important;
 
-    background: linear-gradient(180deg, #243f91 0%, #193782 52%, #152f71 100%) !important;
+    background: #064e3b !important;
     color: #ffffff !important;
 
     z-index: 99999 !important;
@@ -44,7 +44,7 @@
 }
 
 /* =========================================================
-   CABEÇALHO / LOGO LOTRIX
+   CABEÇALHO / LOGO
 ========================================================= */
 
 .sidebar > .logo-area {
@@ -54,87 +54,48 @@
 
     width: 100% !important;
 
-    min-height: 104px !important;
+    min-height: 86px !important;
 
     margin: 0 !important;
+    padding: 18px 58px 14px 20px !important;
 
-    padding: 16px 52px 16px 20px !important;
+    text-align: left !important;
 
-    display: flex !important;
-    flex-direction: column !important;
-
-    align-items: flex-start !important;
-    justify-content: center !important;
-
-    border-bottom: 1px solid rgba(255, 255, 255, .13) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, .08) !important;
 
     overflow: hidden !important;
 }
 
-/* Garante a renderização do conteúdo em todas as páginas legadas. */
-.sidebar > .logo-area,
-.sidebar > .menu,
-.sidebar > .sidebar-footer {
-    position: relative !important;
-    z-index: 1 !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-.brand-lockup {
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-}
-
-.brand-logo {
-    display: block !important;
-    width: 42px !important;
-    height: 42px !important;
-    flex: 0 0 42px !important;
-    object-fit: contain !important;
-    border-radius: 11px !important;
-    background: #ffffff !important;
-    box-shadow: 0 8px 18px rgba(8, 25, 80, .20) !important;
+.sidebar > .logo-area img {
+    display: none !important;
 }
 
 .sidebar > .logo-area h2 {
-    display: block !important;
     margin: 0 !important;
+
     color: #ffffff !important;
-    font-size: 19px !important;
+
+    font-size: 21px !important;
+    line-height: 24px !important;
+
     font-weight: 800 !important;
-    letter-spacing: -.5px !important;
-    line-height: 22px !important;
+
+    letter-spacing: .5px !important;
 }
 
 .sidebar > .logo-area small {
     display: block !important;
-    margin: 2px 0 0 !important;
-    color: #bfdbfe !important;
-    font-size: 9px !important;
-    font-weight: 600 !important;
+
+    margin-top: 3px !important;
+
+    color: #bbf7d0 !important;
+
+    font-size: 10px !important;
+    line-height: 13px !important;
+
+    font-weight: 500 !important;
+
     letter-spacing: .2px !important;
-}
-
-/* Mantém o cabeçalho íntegro nas telas que ainda usam o logo legado. */
-.sidebar > .logo-area:not(:has(.brand-lockup)) {
-    align-items: center !important;
-    padding-right: 20px !important;
-    text-align: center !important;
-}
-
-.sidebar > .logo-area > img {
-    display: block !important;
-    width: 42px !important;
-    height: 42px !important;
-    margin: 0 0 6px !important;
-    object-fit: contain !important;
-}
-
-.sidebar > .logo-area:not(:has(.brand-lockup)) h2 {
-    font-size: 16px !important;
-    line-height: 18px !important;
 }
 
 /* =========================================================
@@ -144,11 +105,11 @@
 .sidebar-close {
     position: absolute !important;
 
-    top: 14px !important;
-    right: 13px !important;
+    top: 17px !important;
+    right: 15px !important;
 
-    width: 30px !important;
-    height: 30px !important;
+    width: 34px !important;
+    height: 34px !important;
 
     display: grid !important;
     place-items: center !important;
@@ -156,7 +117,7 @@
     padding: 0 !important;
 
     border: 1px solid rgba(255, 255, 255, .14) !important;
-    border-radius: 8px !important;
+    border-radius: 9px !important;
 
     background: rgba(255, 255, 255, .07) !important;
 
@@ -188,7 +149,6 @@
 ========================================================= */
 
 .sidebar > .menu {
-    display: block !important;
     flex: 1 1 auto !important;
 
     width: 100% !important;
@@ -197,7 +157,7 @@
 
     margin: 0 !important;
 
-    padding: 18px 12px 14px !important;
+    padding: 16px 12px !important;
 
     overflow-x: hidden !important;
     overflow-y: auto !important;
@@ -208,10 +168,9 @@
 ========================================================= */
 
 .sidebar .menu-section {
-    display: block !important;
     width: 100% !important;
 
-    margin: 0 0 19px !important;
+    margin: 0 0 17px !important;
     padding: 0 !important;
 }
 
@@ -228,11 +187,11 @@
 
     width: 100% !important;
 
-    margin: 0 0 7px !important;
+    margin: 0 0 6px !important;
 
     padding: 0 10px !important;
 
-    color: #a5c7ff !important;
+    color: #86efac !important;
 
     font-size: 9px !important;
     line-height: 12px !important;
@@ -257,8 +216,8 @@
 
     width: 100% !important;
 
-    min-height: 40px !important;
-    height: 40px !important;
+    min-height: 38px !important;
+    height: 38px !important;
 
     margin: 0 0 3px !important;
 
@@ -266,18 +225,18 @@
 
     gap: 11px !important;
 
-    border-radius: 9px !important;
+    border-radius: 8px !important;
 
     background: transparent !important;
 
-    color: #ffffff !important;
+    color: #ecfdf5 !important;
 
     text-decoration: none !important;
 
     font-size: 13px !important;
     line-height: 18px !important;
 
-    font-weight: 600 !important;
+    font-weight: 500 !important;
 
     transition:
         background .18s ease,
@@ -298,23 +257,11 @@
 
     stroke-width: 1.9 !important;
 
-    color: #bfdbfe !important;
+    color: #bbf7d0 !important;
 
     transition:
         color .18s ease,
         transform .18s ease !important;
-}
-
-/* Ícones das páginas que usam a navegação legada com spans. */
-.sidebar .menu a > span:first-child:not(.nav-label) {
-    display: grid !important;
-    flex: 0 0 18px !important;
-    width: 18px !important;
-    height: 18px !important;
-    place-items: center !important;
-    color: #bfdbfe !important;
-    font-size: 14px !important;
-    line-height: 1 !important;
 }
 
 .sidebar .menu a .nav-label {
@@ -338,7 +285,7 @@
 ========================================================= */
 
 .sidebar .menu a:hover {
-    background: rgba(255, 255, 255, .10) !important;
+    background: rgba(255, 255, 255, .075) !important;
 
     color: #ffffff !important;
 
@@ -357,20 +304,19 @@
 ========================================================= */
 
 .sidebar .menu a.active {
-    background: linear-gradient(90deg, rgba(59, 130, 246, .42), rgba(37, 99, 235, .24)) !important;
+    background: rgba(74, 222, 128, .17) !important;
 
     color: #ffffff !important;
 
     font-weight: 700 !important;
 
     box-shadow:
-        inset 3px 0 0 #ffffff !important,
-        0 5px 12px rgba(8, 31, 102, .16) !important;
+        inset 3px 0 0 #4ade80 !important;
 }
 
 .sidebar .menu a.active > i,
 .sidebar .menu a.active > svg {
-    color: #ffffff !important;
+    color: #4ade80 !important;
 }
 
 /* =========================================================
@@ -391,15 +337,15 @@
 
     width: 100% !important;
 
-    min-height: 106px !important;
+    min-height: 91px !important;
 
     margin: 0 !important;
 
-    padding: 13px 12px 11px !important;
+    padding: 12px 12px !important;
 
     border-top: 1px solid rgba(255, 255, 255, .09) !important;
 
-    background: rgba(6, 20, 70, .20) !important;
+    background: rgba(0, 0, 0, .07) !important;
 
     overflow: hidden !important;
 }
@@ -439,7 +385,7 @@
 
     border-radius: 50% !important;
 
-    background: linear-gradient(135deg, #60a5fa, #2563eb) !important;
+    background: rgba(255, 255, 255, .12) !important;
 
     color: #ffffff !important;
 
@@ -484,7 +430,7 @@
 
     margin: 1px 0 0 !important;
 
-    color: #dbeafe !important;
+    color: #bbf7d0 !important;
 
     font-size: 9px !important;
     line-height: 12px !important;
@@ -508,19 +454,19 @@
 
     width: 100% !important;
 
-    height: 32px !important;
+    height: 30px !important;
 
-    margin: 9px 0 0 !important;
+    margin: 8px 0 0 !important;
 
     padding: 0 8px !important;
 
-    border: 1px solid rgba(147, 197, 253, .22) !important;
+    border: 0 !important;
 
     border-radius: 7px !important;
 
-    background: rgba(255, 255, 255, .08) !important;
+    background: rgba(255, 255, 255, .055) !important;
 
-    color: #ffffff !important;
+    color: #d1fae5 !important;
 
     font-size: 10px !important;
 
@@ -530,7 +476,7 @@
 }
 
 .sidebar .sidebar-footer > button:hover {
-    background: rgba(255, 255, 255, .16) !important;
+    background: rgba(255, 255, 255, .11) !important;
 
     color: #ffffff !important;
 }
@@ -556,7 +502,7 @@
     border: 0 !important;
     border-radius: 10px !important;
 
-    background: #2563eb !important;
+    background: #15803d !important;
 
     color: #ffffff !important;
 
@@ -572,7 +518,7 @@
 }
 
 .menu-toggle:hover {
-    background: #1d4ed8 !important;
+    background: #166534 !important;
 }
 
 /* =========================================================
@@ -736,7 +682,7 @@
 .sidebar a:focus-visible,
 .sidebar button:focus-visible,
 .menu-toggle:focus-visible {
-    outline: 2px solid #93c5fd !important;
+    outline: 2px solid #86efac !important;
 
     outline-offset: 2px !important;
 }
@@ -750,54 +696,3 @@
 .menu-toggle {
     -webkit-tap-highlight-color: transparent;
 }
-
-/* =========================================================
-   EMPRESA
-========================================================= */
-
-.sidebar .company-card {
-    width: 100%;
-
-    margin: 10px 0 0;
-
-    padding: 8px 10px;
-
-    border-top: 1px solid rgba(255, 255, 255, .07);
-
-    overflow: hidden;
-}
-
-.sidebar .company-label {
-    display: block;
-
-    margin: 0 0 2px;
-
-    color: #93c5fd;
-
-    font-size: 8px;
-    line-height: 11px;
-
-    font-weight: 700;
-
-    letter-spacing: 1.1px;
-
-    text-transform: uppercase;
-}
-
-.sidebar .company-name {
-    display: block;
-
-    color: #ffffff;
-
-    font-size: 11px;
-    line-height: 15px;
-
-    font-weight: 600;
-
-    white-space: nowrap;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-}
-

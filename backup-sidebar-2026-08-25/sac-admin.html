@@ -4,23 +4,22 @@
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Lotrix - Ajuda</title>
-
-<link rel="icon" href="img/favicon.png">
+<title>Lotrix - Administração SAC</title>
 
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/sidebar.css">
 <link rel="stylesheet" href="css/tabela.css">
-<link rel="stylesheet" href="css/formulario.css">
-
+<link rel="icon" href="img/favicon.png">
 </head>
+
 
 <body>
 
+
 <div class="layout">
+
 
 <aside class="sidebar">
 
@@ -117,7 +116,7 @@
 
     <div class="sidebar-footer">
 
- <div class="user-card">
+       <div class="user-card">
 
     <div class="avatar">
         👤
@@ -134,6 +133,7 @@
     </div>
 
 </div>
+
         <button onclick="logout()">
             🚪 Sair
         </button>
@@ -142,165 +142,182 @@
 
 </aside>
 
+
+
 <main class="content">
+
 
 <header class="top-header">
 
-<div>
-
-<h1>❓ Central de Ajuda</h1>
+<h1>
+🎧 Atendimento SAC
+</h1>
 
 <p>
-Encontre orientações sobre todos os recursos do Lotrix.
+Gerenciamento de chamados
 </p>
-
-</div>
 
 </header>
 
-<section class="table-box">
 
-<h2>🍱 Produção</h2>
-
-<ul>
-<li>Registrar uma nova produção.</li>
-<li>Selecionar o produto e informar a quantidade.</li>
-<li>Calcular automaticamente a validade.</li>
-<li>Gerar etiquetas ao finalizar a produção.</li>
-</ul>
-
-</section>
 
 <section class="table-box">
 
-<h2>📦 Produtos</h2>
 
-<ul>
-<li>Cadastrar novos produtos.</li>
-<li>Editar informações cadastradas.</li>
-<li>Excluir produtos quando necessário.</li>
-<li>Definir validade padrão.</li>
-</ul>
+<h2>
+Chamados recebidos
+</h2>
 
-</section>
 
-<section class="table-box">
 
-<h2>🏷️ Etiquetas</h2>
+<table>
 
-<ul>
-<li>Gerar etiquetas automaticamente.</li>
-<li>Imprimir etiquetas de validade.</li>
-<li>Utilizar QR Code para rastreabilidade.</li>
-<li>Consultar o histórico de etiquetas.</li>
-</ul>
 
-</section>
+<thead>
 
-<section class="table-box">
+<tr>
 
-<h2>📋 Estoque</h2>
+<th>
+Data
+</th>
 
-<ul>
-<li>Registrar entradas de produtos.</li>
-<li>Registrar saídas de estoque.</li>
-<li>Consultar movimentações.</li>
-<li>Acompanhar o saldo disponível.</li>
-</ul>
+<th>
+Tipo
+</th>
 
-</section>
+<th>
+Assunto
+</th>
 
-<section class="table-box">
+<th>
+Prioridade
+</th>
 
-<h2>📈 Relatórios</h2>
+<th>
+Status
+</th>
 
-<ul>
-<li>Visualizar indicadores do sistema.</li>
-<li>Acompanhar produção e estoque.</li>
-<li>Exportar informações para análise.</li>
-</ul>
+<th>
+Ação
+</th>
 
-</section>
 
-<section class="table-box">
+</tr>
 
-<h2>📝 Auditoria</h2>
+</thead>
 
-<ul>
-<li>Consultar o histórico de ações.</li>
-<li>Verificar quem realizou cada operação.</li>
-<li>Exportar registros de auditoria.</li>
-</ul>
 
-</section>
+<tbody id="listaSACAdmin">
 
-<section class="table-box">
 
-<h2>⚙️ Configurações</h2>
+<tr>
 
-<ul>
-<li>Definir a validade padrão.</li>
-<li>Configurar o tamanho das etiquetas.</li>
-<li>Ativar ou desativar o QR Code.</li>
-<li>Definir a impressora utilizada.</li>
-</ul>
+<td colspan="6">
+Carregando...
+</td>
+
+</tr>
+
+
+</tbody>
+
+
+</table>
+
 
 </section>
 
-<section class="table-box">
 
-<h2>❓ Perguntas Frequentes</h2>
-
-<p><strong>Como cadastrar um produto?</strong></p>
-<p>Acesse o menu <strong>Produtos</strong>, clique em <strong>Novo Produto</strong>, preencha os dados e salve.</p>
-
-<hr>
-
-<p><strong>Como registrar uma produção?</strong></p>
-<p>Abra o menu <strong>Produção</strong>, selecione o produto, informe a quantidade e clique em <strong>Registrar Produção</strong>.</p>
-
-<hr>
-
-<p><strong>Como imprimir uma etiqueta?</strong></p>
-<p>Após gerar a etiqueta, utilize o botão <strong>Imprimir</strong>.</p>
-
-<hr>
-
-<p><strong>Onde vejo o histórico de alterações?</strong></p>
-<p>Acesse o módulo <strong>Auditoria</strong> para consultar todas as ações registradas no sistema.</p>
-
-</section>
-
-<section class="table-box">
-
-<h2>🎧 Precisa de mais ajuda?</h2>
-
-<p>
-Caso sua dúvida não esteja respondida nesta página, acesse o SAC para falar com o suporte.
-</p>
-
-<p>
-
-<a href="sac.html">
-
-🎧 Abrir SAC
-
-</a>
-
-</p>
-
-</section>
 
 </main>
 
+
 </div>
+
+
+<!-- MODAL ATENDIMENTO SAC -->
+
+<div id="modalSAC" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>
+            🎧 Atendimento SAC
+            </h2>
+
+            <button onclick="fecharModalSAC()">
+            ✖
+            </button>
+
+        </div>
+
+
+        <div id="dadosChamado"></div>
+
+
+        <div class="campo">
+
+            <label>
+            Resposta do suporte
+            </label>
+
+            <textarea 
+            id="respostaSAC"
+            rows="5">
+            </textarea>
+
+        </div>
+
+
+        <div class="campo">
+
+            <label>Status</label>
+
+            <select id="statusSAC">
+
+                <option value="Aberto">
+                Aberto
+                </option>
+
+                <option value="Em análise">
+                Em análise
+                </option>
+
+                <option value="Resolvido">
+                Resolvido
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <button
+        class="btn-primary"
+        onclick="salvarAtendimentoSAC()">
+
+        💾 Salvar atendimento
+
+        </button>
+
+
+    </div>
+
+</div>
+
+
+<!-- SCRIPTS NO FINAL -->
+
+<script type="module" src="js/firebase.js"></script>
+
+<script type="module" src="js/sac-admin.js"></script>
 
 <script type="module" src="js/auth.js"></script>
 
-<script src="js/design-system.js"></script>
 <script src="js/sidebar.js"></script>
 
 </body>
-
 </html>
 

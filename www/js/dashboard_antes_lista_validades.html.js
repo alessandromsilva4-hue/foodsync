@@ -1,8 +1,6 @@
 ﻿// =======================================
-// LOTRIX - DASHBOARD
+// LOTRIX - DASHBOARD V2
 // FIRESTORE + MULTIEMPRESA ISOLADO
-//
-// VERSÃO CORRIGIDA
 //
 // PRODUÇÃO:
 // SOMENTE EMPRESA ATUAL
@@ -25,10 +23,12 @@ import {
     where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+
 console.log("=================================");
-console.log("LOTRIX DASHBOARD CARREGADO");
+console.log("LOTRIX DASHBOARD V2 CARREGADO");
 console.log("FIRESTORE: MULTIEMPRESA ISOLADO");
 console.log("=================================");
+
 
 let productionChart = null;
 
@@ -56,15 +56,7 @@ function usuarioAtual() {
 
         }
 
-        const usuario =
-            JSON.parse(dados);
-
-        console.log(
-            "USUÁRIO ATUAL:",
-            usuario
-        );
-
-        return usuario;
+        return JSON.parse(dados);
 
     } catch (error) {
 
@@ -105,7 +97,7 @@ function empresaAtual() {
     if (!idEmpresa) {
 
         console.error(
-            "ID DA EMPRESA NÃO ENCONTRADO NO USUÁRIO:",
+            "ID DA EMPRESA NÃO ENCONTRADO:",
             usuario
         );
 
@@ -114,7 +106,7 @@ function empresaAtual() {
     }
 
     console.log(
-        "EMPRESA ATUAL:",
+        "🏢 EMPRESA ATUAL:",
         idEmpresa
     );
 
@@ -129,20 +121,7 @@ function empresaAtual() {
 
 function verificarEmpresa() {
 
-    const idEmpresa =
-        empresaAtual();
-
-    if (!idEmpresa) {
-
-        console.error(
-            "Não foi possível identificar a empresa."
-        );
-
-        return false;
-
-    }
-
-    return true;
+    return !!empresaAtual();
 
 }
 
@@ -156,13 +135,9 @@ function startOfDay(
 ) {
 
     return new Date(
-
         date.getFullYear(),
-
         date.getMonth(),
-
         date.getDate()
-
     );
 
 }
@@ -181,8 +156,6 @@ function toDate(value) {
     }
 
 
-    // Firestore Timestamp
-
     if (
         typeof value.toDate ===
         "function"
@@ -193,11 +166,9 @@ function toDate(value) {
     }
 
 
-    // Firestore Timestamp serializado
-
     if (
         typeof value === "object" &&
-        value.seconds
+        value.seconds !== undefined
     ) {
 
         return new Date(
@@ -206,8 +177,6 @@ function toDate(value) {
 
     }
 
-
-    // String YYYY-MM-DD
 
     if (
         typeof value === "string"
@@ -221,13 +190,9 @@ function toDate(value) {
         if (match) {
 
             return new Date(
-
                 Number(match[1]),
-
                 Number(match[2]) - 1,
-
                 Number(match[3])
-
             );
 
         }
@@ -271,18 +236,15 @@ function isToday(value) {
     }
 
     return (
-
         startOfDay(date).getTime() ===
-
         startOfDay().getTime()
-
     );
 
 }
 
 
 // =======================================
-// VERIFICAR DATA ESPECÍFICA
+// VERIFICAR DATA
 // =======================================
 
 function isTodayFor(
@@ -300,11 +262,8 @@ function isTodayFor(
     }
 
     return (
-
         startOfDay(date).getTime() ===
-
         startOfDay(target).getTime()
-
     );
 
 }
@@ -326,17 +285,57 @@ function dateText(value) {
     }
 
     return date.toLocaleDateString(
-
         "pt-BR",
-
         {
-
             day: "2-digit",
-
             month: "short"
-
         }
+    ).replace(".", "");
 
+}
+
+
+// =======================================
+// HORA FORMATADA
+// =======================================
+
+function timeText(value) {
+
+    const date =
+        toDate(value);
+
+    if (!date) {
+
+        return "";
+
+    }
+
+    const hours =
+        date.getHours();
+
+    const minutes =
+        date.getMinutes();
+
+    /*
+     * Evita mostrar 00:00 quando
+     * o banco não possui horário real.
+     */
+
+    if (
+        hours === 0 &&
+        minutes === 0
+    ) {
+
+        return "";
+
+    }
+
+    return date.toLocaleTimeString(
+        "pt-BR",
+        {
+            hour: "2-digit",
+            minute: "2-digit"
+        }
     );
 
 }
@@ -351,21 +350,15 @@ function escapeHtml(
 ) {
 
     return String(value).replace(
-
         /[&<>'"]/g,
-
         char => {
 
             const map = {
 
                 "&": "&amp;",
-
                 "<": "&lt;",
-
                 ">": "&gt;",
-
                 "'": "&#39;",
-
                 '"': "&quot;"
 
             };
@@ -373,7 +366,6 @@ function escapeHtml(
             return map[char];
 
         }
-
     );
 
 }
@@ -457,6 +449,27 @@ function renderEmpty(
 
     `;
 
+    createIcons();
+
+}
+
+
+// =======================================
+// ÍCONES
+// =======================================
+
+function createIcons() {
+
+    if (
+        window.lucide &&
+        typeof window.lucide.createIcons ===
+        "function"
+    ) {
+
+        window.lucide.createIcons();
+
+    }
+
 }
 
 
@@ -478,11 +491,8 @@ function daysUntil(value) {
     return Math.round(
 
         (
-
             startOfDay(date).getTime() -
-
             startOfDay().getTime()
-
         ) / 86400000
 
     );
@@ -490,331 +500,6 @@ function daysUntil(value) {
 }
 
 
-// =======================================
-// ALERTAS DE VALIDADE
-// =======================================
-
-function renderLabelAlerts(labels) {
-
-    const list =
-        document.getElementById(
-            "listaAlertasEtiquetas"
-        );
-
-    const cards =
-        document.querySelectorAll(
-            ".etiqueta-alerta-card[data-alerta]"
-        );
-
-    const sortByValidity = items =>
-        [...items].sort(
-            (first, second) =>
-                daysUntil(first.validade) -
-                daysUntil(second.validade)
-        );
-
-    const alerts = {
-        prestes: sortByValidity(labels.filter(item => {
-
-            const days = daysUntil(item.validade);
-
-            return days >= 0 && days <= 7;
-
-        })),
-
-        dias: sortByValidity(
-            labels.filter(item => daysUntil(item.validade) > 7)
-        ),
-
-        vencida: sortByValidity(
-            labels.filter(item => daysUntil(item.validade) < 0)
-        )
-    };
-
-    const vencendoHoje =
-        alerts.prestes.filter(item =>
-            daysUntil(item.validade) === 0
-        ).length;
-
-    setValue(
-        "alertaEtiquetasPrestes",
-        alerts.prestes.length
-    );
-
-    setValue(
-        "alertaEtiquetasDias",
-        alerts.dias.length
-    );
-
-    setValue(
-        "alertaEtiquetasVencidas",
-        alerts.vencida.length
-    );
-
-    setValue(
-        "vencendoHojeDescricao",
-        vencendoHoje > 0
-            ? `${vencendoHoje} etiqueta(s) vencem hoje`
-            : "Nenhuma etiqueta vence hoje"
-    );
-
-    setValue(
-        "resumoOperacional",
-        alerts.vencida.length > 0
-            ? `${alerts.vencida.length} etiqueta(s) vencida(s) precisam de ação imediata.`
-            : alerts.prestes.length > 0
-                ? `${alerts.prestes.length} etiqueta(s) vencem em até 7 dias.`
-                : "Nenhum vencimento previsto para os próximos 7 dias."
-    );
-
-    if (!list || !cards.length) {
-
-        return;
-
-    }
-
-    let activeAlert = null;
-
-    const statusFor = (type, days) => {
-
-        if (type === "vencida") {
-
-            const elapsed = Math.abs(days);
-
-            return elapsed === 1
-                ? "Venceu ontem"
-                : `Vencida há ${elapsed} dias`;
-
-        }
-
-        if (days === 0) {
-
-            return "Vence hoje";
-
-        }
-
-        if (days === 1) {
-
-            return "Vence amanhã";
-
-        }
-
-        return `Vence em ${days} dias`;
-
-    };
-
-    const colorFor = type => ({
-        prestes: "amarelo",
-        dias: "verde",
-        vencida: "vermelho"
-    })[type];
-
-    const showAlert = type => {
-
-        const items = alerts[type] || [];
-
-        if (activeAlert === type) {
-
-            activeAlert = null;
-            list.hidden = true;
-            list.innerHTML = "";
-
-        } else {
-
-            activeAlert = type;
-            list.hidden = false;
-
-            if (!items.length) {
-
-                list.innerHTML = `
-
-                    <div class="empty-state">
-                        Nenhuma etiqueta nesta categoria.
-                    </div>
-
-                `;
-
-            } else {
-
-                const title = {
-                    prestes: "Etiquetas que vencem em até 7 dias",
-                    dias: "Etiquetas com mais de 7 dias de validade",
-                    vencida: "Etiquetas vencidas"
-                }[type];
-
-                list.innerHTML = `
-
-                    <div class="alerta-etiqueta-resumo">
-                        <strong>${title}</strong>
-                        <span>${items.length} etiqueta(s)</span>
-                    </div>
-
-                ` + items
-                    .slice(0, 10)
-                    .map(item => {
-
-                        const days = daysUntil(item.validade);
-
-                        return `
-
-                            <div class="alerta-etiqueta-item">
-                                <div class="alerta-etiqueta-produto">
-                                    <strong>${escapeHtml(
-                                        item.produto ||
-                                        item.nomeProduto ||
-                                        "Produto sem nome"
-                                    )}</strong>
-                                    <small>Lote ${escapeHtml(
-                                        item.lote ||
-                                        item.codigo ||
-                                        "—"
-                                    )} · ${dateText(item.validade)}</small>
-                                </div>
-                                <span class="alerta-etiqueta-status ${colorFor(type)}">
-                                    ${statusFor(type, days)}
-                                </span>
-                            </div>
-
-                        `;
-
-                    })
-                    .join("") + (
-                        items.length > 10
-                            ? `
-
-                                <a class="alerta-etiqueta-rodape" href="etiquetas.html">
-                                    Ver todas as ${items.length} etiquetas
-                                </a>
-
-                            `
-                            : ""
-                    );
-
-            }
-
-        }
-
-        cards.forEach(card => {
-
-            const isActive =
-                card.dataset.alerta === activeAlert;
-
-            card.classList.toggle(
-                "active",
-                isActive
-            );
-
-            card.setAttribute(
-                "aria-expanded",
-                String(isActive)
-            );
-
-        });
-
-        if (
-            window.lucide &&
-            typeof window.lucide.createIcons === "function"
-        ) {
-
-            window.lucide.createIcons();
-
-        }
-
-    };
-
-    cards.forEach(card => {
-
-        card.setAttribute(
-            "aria-expanded",
-            "false"
-        );
-
-        card.onclick = () => showAlert(card.dataset.alerta);
-
-    });
-
-}
-
-// =======================================
-// ABRIR DETALHE DA ETIQUETA
-// =======================================
-
-function abrirDetalheEtiqueta(id, labels = []) {
-
-    console.log("=================================");
-    console.log("🏷️ ABRINDO ETIQUETA");
-    console.log("ID:", id);
-    console.log("=================================");
-
-    // -------------------------------
-    // VERIFICAR ID
-    // -------------------------------
-
-    if (!id) {
-
-        console.error(
-            "❌ ID DA ETIQUETA AUSENTE."
-        );
-
-        return;
-
-    }
-
-    // -------------------------------
-    // PROCURAR ETIQUETA
-    // -------------------------------
-
-    const etiqueta = labels.find(
-        item =>
-            String(item.id) ===
-            String(id)
-    );
-
-    if (!etiqueta) {
-
-        console.error(
-            "❌ ETIQUETA NÃO ENCONTRADA:",
-            id
-        );
-
-        console.log(
-            "ETIQUETAS DISPONÍVEIS:",
-            labels
-        );
-
-        return;
-
-    }
-
-    console.log(
-        "✅ ETIQUETA ENCONTRADA:",
-        etiqueta
-    );
-
-    // -------------------------------
-    // SALVAR ID
-    // -------------------------------
-
-    sessionStorage.setItem(
-        "etiquetaSelecionada",
-        JSON.stringify(etiqueta)
-    );
-
-    // -------------------------------
-    // ABRIR PÁGINA
-    // -------------------------------
-
-    const url =
-        `etiquetas.html?id=${encodeURIComponent(id)}`;
-
-    console.log(
-        "➡️ REDIRECIONANDO PARA:",
-        url
-    );
-
-    window.location.href = url;
-
-}
 // =======================================
 // ATIVIDADES
 // =======================================
@@ -865,7 +550,6 @@ function renderActivity(
                 const name =
 
                     item.produto ||
-                    item.produtoNome ||
                     item.nomeProduto ||
                     "Produto sem nome";
 
@@ -884,6 +568,14 @@ function renderActivity(
                             item.dataEtiqueta ||
                             item.dataProducao
                         );
+
+
+                const formattedDate =
+                    dateText(date);
+
+
+                const formattedTime =
+                    timeText(date);
 
 
                 let detail;
@@ -905,7 +597,13 @@ function renderActivity(
 
                         ·
 
-                        ${dateText(date)}
+                        ${formattedDate}
+
+                        ${
+                            formattedTime
+                                ? ` · ${formattedTime}`
+                                : ""
+                        }
 
                     `;
 
@@ -923,7 +621,7 @@ function renderActivity(
 
                         ·
 
-                        ${dateText(date)}
+                        ${formattedDate}
 
                     `;
 
@@ -937,47 +635,9 @@ function renderActivity(
                         : "tag";
 
 
-                /*
-                 * ETIQUETA:
-                 * torna o item clicável.
-                 */
-
-                const clickAttribute =
-
-                    type === "etiqueta"
-
-                        ? `data-etiqueta-id="${escapeHtml(
-                            item.id || ""
-                        )}"`
-
-                        : "";
-
-
-                const clickableClass =
-
-                    type === "etiqueta"
-
-                        ? " activity-item-clickable"
-
-                        : "";
-
-
                 return `
 
-                    <div
-                        class="activity-item${clickableClass}"
-                        ${clickAttribute}
-                        role="${
-                            type === "etiqueta"
-                                ? "button"
-                                : ""
-                        }"
-                        tabindex="${
-                            type === "etiqueta"
-                                ? "0"
-                                : "-1"
-                        }"
-                    >
+                    <div class="activity-item">
 
                         <span class="activity-icon">
 
@@ -1006,95 +666,10 @@ function renderActivity(
                 `;
 
             })
-
             .join("");
 
 
-    /*
-     * ÍCONES
-     */
-
-    if (
-
-        window.lucide &&
-
-        typeof window.lucide.createIcons ===
-        "function"
-
-    ) {
-
-        window.lucide.createIcons();
-
-    }
-
-
-    /*
-     * CLIQUE NAS ETIQUETAS
-     */
-
-    if (
-        type === "etiqueta"
-    ) {
-
-        container
-            .querySelectorAll(
-                "[data-etiqueta-id]"
-            )
-            .forEach(element => {
-
-                element.addEventListener(
-                    "click",
-                    () => {
-
-                        const id =
-                            element.dataset.etiquetaId;
-
-
-                        console.log(
-                            "🏷️ ETIQUETA CLICADA:",
-                            id
-                        );
-
-
-                        abrirDetalheEtiqueta(
-                            id,
-                            items
-                        );
-
-                    }
-                );
-
-
-                /*
-                 * Permite ENTER no teclado
-                 */
-
-                element.addEventListener(
-                    "keydown",
-                    event => {
-
-                        if (
-                            event.key ===
-                            "Enter"
-                        ) {
-
-                            const id =
-                                element.dataset.etiquetaId;
-
-
-                            abrirDetalheEtiqueta(
-                                id,
-                                items
-                            );
-
-                        }
-
-                    }
-                );
-
-            });
-
-    }
+    createIcons();
 
 }
 
@@ -1122,13 +697,9 @@ function renderExpiring(
     if (!items.length) {
 
         renderEmpty(
-
             container,
-
             "Nenhum produto próximo do vencimento.",
-
             "circle-check"
-
         );
 
         return;
@@ -1139,9 +710,7 @@ function renderExpiring(
     container.innerHTML =
 
         items
-
             .slice(0, 5)
-
             .map(item => {
 
                 const days =
@@ -1151,45 +720,33 @@ function renderExpiring(
 
 
                 let urgency;
-
-
-                if (days <= 0) {
-
-                    urgency = "critical";
-
-                } else if (days <= 3) {
-
-                    urgency = "urgent";
-
-                } else {
-
-                    urgency = "soon";
-
-                }
-
-
                 let label;
 
 
                 if (days < 0) {
 
-                    label =
-                        "Vencido";
+                    urgency = "critical";
+                    label = "Vencido";
 
                 } else if (days === 0) {
 
-                    label =
-                        "Vence hoje";
+                    urgency = "critical";
+                    label = "Vence hoje";
 
                 } else if (days === 1) {
 
-                    label =
-                        "Vence amanhã";
+                    urgency = "urgent";
+                    label = "Amanhã";
+
+                } else if (days <= 3) {
+
+                    urgency = "urgent";
+                    label = `${days} dias`;
 
                 } else {
 
-                    label =
-                        `${days} dias`;
+                    urgency = "soon";
+                    label = `${days} dias`;
 
                 }
 
@@ -1209,6 +766,7 @@ function renderExpiring(
                                 )}
 
                             </strong>
+
 
                             <small>
 
@@ -1230,8 +788,10 @@ function renderExpiring(
 
                         </div>
 
+
                         <span
-                            class="status-pill ${urgency}">
+                            class="status-pill ${urgency}"
+                        >
 
                             ${label}
 
@@ -1242,8 +802,10 @@ function renderExpiring(
                 `;
 
             })
-
             .join("");
+
+
+    createIcons();
 
 }
 
@@ -1271,13 +833,9 @@ function renderStock(
     if (!items.length) {
 
         renderEmpty(
-
             container,
-
             "Estoque dentro do nível mínimo.",
-
             "circle-check"
-
         );
 
         return;
@@ -1285,13 +843,68 @@ function renderStock(
     }
 
 
+    const sorted =
+        [...items].sort(
+            (a, b) => {
+
+                const qa =
+                    Number(a.quantidade || 0);
+
+                const ma =
+                    Number(a.minimo || 0);
+
+                const qb =
+                    Number(b.quantidade || 0);
+
+                const mb =
+                    Number(b.minimo || 0);
+
+                const ratioA =
+                    ma > 0 ? qa / ma : 999;
+
+                const ratioB =
+                    mb > 0 ? qb / mb : 999;
+
+                return ratioA - ratioB;
+
+            }
+        );
+
+
     container.innerHTML =
 
-        items
-
+        sorted
             .slice(0, 5)
-
             .map(item => {
+
+                const quantidade =
+                    Number(
+                        item.quantidade || 0
+                    );
+
+                const minimo =
+                    Number(
+                        item.minimo || 0
+                    );
+
+
+                const zerado =
+                    quantidade <= 0;
+
+
+                const percentual =
+                    minimo > 0
+                        ? Math.round(
+                            (quantidade / minimo) * 100
+                        )
+                        : 100;
+
+
+                const status =
+                    zerado
+                        ? "Zerado"
+                        : "Repor";
+
 
                 return `
 
@@ -1309,11 +922,10 @@ function renderStock(
 
                             </strong>
 
+
                             <small>
 
-                                ${Number(
-                                    item.quantidade || 0
-                                )}
+                                ${quantidade}
 
                                 ${escapeHtml(
                                     item.unidade || "UN"
@@ -1323,18 +935,20 @@ function renderStock(
 
                                 · mínimo
 
-                                ${Number(
-                                    item.minimo || 0
-                                )}
+                                ${minimo}
+
+                                · ${percentual}%
 
                             </small>
 
                         </div>
 
-                        <span
-                            class="status-pill critical">
 
-                            Repor
+                        <span
+                            class="status-pill critical"
+                        >
+
+                            ${status}
 
                         </span>
 
@@ -1343,8 +957,10 @@ function renderStock(
                 `;
 
             })
-
             .join("");
+
+
+    createIcons();
 
 }
 
@@ -1377,24 +993,25 @@ function renderTopProducts(
                 const name =
 
                     item.produto ||
-
                     item.nomeProduto ||
-
                     "Produto sem nome";
 
 
                 const quantidade =
-
                     Number(
                         item.quantidade || 1
                     );
 
 
                 acc[name] =
-
                     (acc[name] || 0) +
-
-                    quantidade;
+                    (
+                        Number.isFinite(
+                            quantidade
+                        )
+                            ? quantidade
+                            : 1
+                    );
 
 
                 return acc;
@@ -1421,13 +1038,9 @@ function renderTopProducts(
     if (!ranking.length) {
 
         renderEmpty(
-
             container,
-
             "Ainda não há produções registradas.",
-
             "package"
-
         );
 
         return;
@@ -1442,21 +1055,17 @@ function renderTopProducts(
     container.innerHTML =
 
         ranking
-
             .map(
                 ([name, quantity], index) => {
 
                     const width =
 
                         Math.max(
-
                             12,
-
                             (
                                 quantity /
                                 largest
                             ) * 100
-
                         );
 
 
@@ -1464,33 +1073,33 @@ function renderTopProducts(
 
                         <li>
 
-                            <span class="rank-number">
+                            <span
+                                class="rank-number"
+                                title="Posição ${index + 1}"
+                            >
 
                                 ${index + 1}
 
                             </span>
 
+
                             <div>
 
                                 <strong>
-
-                                    ${escapeHtml(
-                                        name
-                                    )}
-
+                                    ${escapeHtml(name)}
                                 </strong>
+
 
                                 <span class="rank-bar">
 
                                     <i
-                                        style="
-                                            width:${width}%
-                                        ">
-                                    </i>
+                                        style="width:${width}%"
+                                    ></i>
 
                                 </span>
 
                             </div>
+
 
                             <b>
 
@@ -1504,8 +1113,8 @@ function renderTopProducts(
 
                 }
             )
-
             .join("");
+
 
 }
 
@@ -1545,7 +1154,6 @@ function renderChart(
 
 
     const labels = [];
-
     const values = [];
 
 
@@ -1567,18 +1175,16 @@ function renderChart(
         labels.push(
 
             date
-
                 .toLocaleDateString(
-
                     "pt-BR",
-
                     {
                         weekday: "short"
                     }
-
                 )
-
                 .replace(".", "")
+                .replace(/^./, char =>
+                    char.toUpperCase()
+                )
 
         );
 
@@ -1615,9 +1221,7 @@ function renderChart(
     productionChart =
 
         new Chart(
-
             canvas,
-
             {
 
                 type: "line",
@@ -1630,7 +1234,11 @@ function renderChart(
 
                         {
 
-                            data: values,
+                            label:
+                                "Produções",
+
+                            data:
+                                values,
 
                             borderColor:
                                 "#2563EB",
@@ -1638,18 +1246,26 @@ function renderChart(
                             backgroundColor:
                                 "rgba(37,99,235,.10)",
 
-                            fill: true,
+                            fill:
+                                true,
 
-                            tension: .4,
+                            tension:
+                                .4,
 
-                            borderWidth: 3,
+                            borderWidth:
+                                3,
 
-                            pointRadius: 4,
+                            pointRadius:
+                                4,
+
+                            pointHoverRadius:
+                                6,
 
                             pointBackgroundColor:
                                 "#FFFFFF",
 
-                            pointBorderWidth: 3,
+                            pointBorderWidth:
+                                3,
 
                             pointBorderColor:
                                 "#2563EB"
@@ -1660,20 +1276,36 @@ function renderChart(
 
                 },
 
+
                 options: {
 
-                    responsive: true,
+                    responsive:
+                        true,
 
                     maintainAspectRatio:
                         false,
+
+
+                    interaction: {
+
+                        intersect:
+                            false,
+
+                        mode:
+                            "index"
+
+                    },
+
 
                     plugins: {
 
                         legend: {
 
-                            display: false
+                            display:
+                                false
 
                         },
+
 
                         tooltip: {
 
@@ -1683,11 +1315,21 @@ function renderChart(
                             backgroundColor:
                                 "#182230",
 
-                            padding: 10
+                            padding:
+                                10,
+
+                            callbacks: {
+
+                                label:
+                                    context =>
+                                        ` ${context.parsed.y} produção(ões)`
+
+                            }
 
                         }
 
                     },
+
 
                     scales: {
 
@@ -1695,33 +1337,40 @@ function renderChart(
 
                             grid: {
 
-                                display: false
+                                display:
+                                    false
 
                             },
 
                             border: {
 
-                                display: false
+                                display:
+                                    false
 
                             }
 
                         },
 
+
                         y: {
 
-                            beginAtZero: true,
+                            beginAtZero:
+                                true,
 
                             ticks: {
 
-                                precision: 0,
+                                precision:
+                                    0,
 
-                                stepSize: 1
+                                stepSize:
+                                    1
 
                             },
 
                             border: {
 
-                                display: false
+                                display:
+                                    false
 
                             }
 
@@ -1732,7 +1381,6 @@ function renderChart(
                 }
 
             }
-
         );
 
 }
@@ -1770,12 +1418,14 @@ function updateGreeting() {
         usuarioAtual() || {};
 
 
+    const nome =
+        user.nome ||
+        "gestor";
+
+
     setValue(
-
         "saudacao",
-
-        `${period}, ${user.nome || "gestor"} 👋`
-
+        `${period}, ${nome} 👋`
     );
 
 
@@ -1790,9 +1440,7 @@ function updateGreeting() {
             {
 
                 weekday: "long",
-
                 day: "numeric",
-
                 month: "long"
 
             }
@@ -1817,16 +1465,6 @@ async function loadCollection(
 
     try {
 
-        console.log(
-            `📥 CARREGANDO ${collectionName}`
-        );
-
-        console.log(
-            "🏢 EMPRESA:",
-            idEmpresa
-        );
-
-
         if (!idEmpresa) {
 
             console.error(
@@ -1836,6 +1474,11 @@ async function loadCollection(
             return [];
 
         }
+
+
+        console.log(
+            `📥 CARREGANDO ${collectionName} — EMPRESA ${idEmpresa}`
+        );
 
 
         const consulta =
@@ -1857,16 +1500,11 @@ async function loadCollection(
 
 
         const snapshot =
-
-            await getDocs(
-                consulta
-            );
+            await getDocs(consulta);
 
 
         const data =
-
             snapshot.docs.map(
-
                 document => ({
 
                     id:
@@ -1875,16 +1513,11 @@ async function loadCollection(
                     ...document.data()
 
                 })
-
             );
 
 
         console.log(
-
-            `✅ ${collectionName.toUpperCase()} DA EMPRESA ${idEmpresa}:`,
-
-            data.length
-
+            `✅ ${collectionName.toUpperCase()}: ${data.length}`
         );
 
 
@@ -1893,27 +1526,68 @@ async function loadCollection(
     } catch (error) {
 
         console.error(
-
-            `❌ ERRO AO CARREGAR ${collectionName.toUpperCase()}:`,
-
+            `❌ ERRO ${collectionName}:`,
             error
-
         );
-
-
-        console.error(
-            "Código do erro:",
-            error?.code
-        );
-
-
-        console.error(
-            "Mensagem:",
-            error?.message
-        );
-
 
         return [];
+
+    }
+
+}
+
+
+// =======================================
+// ATUALIZAR DESCRIÇÕES DOS CARDS
+// =======================================
+
+function updateMetricDescriptions(
+    vencidos,
+    estoqueZerado
+) {
+
+    const vencimentoDescricao =
+        document.getElementById(
+            "vencendoHojeDescricao"
+        );
+
+
+    if (vencimentoDescricao) {
+
+        if (vencidos > 0) {
+
+            vencimentoDescricao.textContent =
+                `${vencidos} etiqueta(s) vencida(s)`;
+
+        } else {
+
+            vencimentoDescricao.textContent =
+                "Produtos para revisar";
+
+        }
+
+    }
+
+
+    const estoqueDescricao =
+        document.getElementById(
+            "estoqueCriticoDescricao"
+        );
+
+
+    if (estoqueDescricao) {
+
+        if (estoqueZerado > 0) {
+
+            estoqueDescricao.textContent =
+                `${estoqueZerado} produto(s) zerado(s)`;
+
+        } else {
+
+            estoqueDescricao.textContent =
+                "Abaixo do mínimo";
+
+        }
 
     }
 
@@ -1931,17 +1605,13 @@ async function loadDashboard() {
     );
 
     console.log(
-        "CARREGANDO DASHBOARD..."
+        "CARREGANDO DASHBOARD V2..."
     );
 
     console.log(
         "================================="
     );
 
-
-    // =================================
-    // EMPRESA
-    // =================================
 
     const idEmpresa =
         empresaAtual();
@@ -1952,6 +1622,7 @@ async function loadDashboard() {
         console.error(
             "DASHBOARD BLOQUEADO: EMPRESA NÃO IDENTIFICADA."
         );
+
 
         setValue(
             "producoesHoje",
@@ -1973,6 +1644,7 @@ async function loadDashboard() {
             "0"
         );
 
+
         removeLoading();
 
         return;
@@ -1980,105 +1652,53 @@ async function loadDashboard() {
     }
 
 
-    console.log(
-        "================================="
-    );
-
-    console.log(
-        "DASHBOARD MULTIEMPRESA"
-    );
-
-    console.log(
-        "EMPRESA:",
-        idEmpresa
-    );
-
-    console.log(
-        "================================="
-    );
-
-
     updateGreeting();
 
 
-    let productions = [];
-
-    let labels = [];
-
-    let stock = [];
-
-
     // =================================
-    // PRODUÇÕES
+    // CARREGAR DADOS
     // =================================
 
-    productions =
+    const [
 
-        await loadCollection(
+        productions,
 
+        labels,
+
+        stock
+
+    ] = await Promise.all([
+
+        loadCollection(
             "producoes",
-
             idEmpresa
+        ),
 
-        );
-
-
-    // =================================
-    // ETIQUETAS
-    // =================================
-
-    labels =
-
-        await loadCollection(
-
+        loadCollection(
             "etiquetas",
-
             idEmpresa
+        ),
 
-        );
-
-
-    // =================================
-    // ESTOQUE
-    // =================================
-
-    stock =
-
-        await loadCollection(
-
+        loadCollection(
             "estoque",
-
             idEmpresa
+        )
 
-        );
+    ]);
 
-
-    // =================================
-    // RESUMO
-    // =================================
 
     console.log(
         "================================="
     );
 
     console.log(
-        "RESUMO DA EMPRESA:",
-        idEmpresa
-    );
-
-    console.log(
-        "TOTAL PRODUÇÕES:",
-        productions.length
-    );
-
-    console.log(
-        "TOTAL ETIQUETAS:",
-        labels.length
-    );
-
-    console.log(
-        "TOTAL ESTOQUE:",
-        stock.length
+        "RESUMO:",
+        {
+            empresa: idEmpresa,
+            producoes: productions.length,
+            etiquetas: labels.length,
+            estoque: stock.length
+        }
     );
 
     console.log(
@@ -2095,28 +1715,36 @@ async function loadDashboard() {
         stock.filter(item => {
 
             const quantidade =
-
                 Number(
                     item.quantidade || 0
                 );
 
 
             const minimo =
-
                 Number(
                     item.minimo || 0
                 );
 
 
             return (
-
                 minimo > 0 &&
-
                 quantidade <= minimo
-
             );
 
         });
+
+
+    const estoqueZerado =
+
+        stock.filter(item => {
+
+            return (
+                Number(
+                    item.quantidade || 0
+                ) <= 0
+            );
+
+        }).length;
 
 
     // =================================
@@ -2130,18 +1758,14 @@ async function loadDashboard() {
             .filter(item => {
 
                 const days =
-
                     daysUntil(
                         item.validade
                     );
 
 
                 return (
-
-                    days >= 0 &&
-
-                    days <= 30
-
+                    days <= 30 &&
+                    days !== Infinity
                 );
 
             })
@@ -2161,192 +1785,217 @@ async function loadDashboard() {
             );
 
 
+    const vencidos =
+
+        labels.filter(item => {
+
+            return (
+                daysUntil(
+                    item.validade
+                ) < 0
+            );
+
+        }).length;
+
+
     // =================================
-    // MÉTRICAS
+    // PRODUÇÕES HOJE
     // =================================
 
     const producoesHoje =
 
-        productions.filter(
+        productions.filter(item => {
 
-            item =>
+            return isToday(
 
-                isToday(
+                item.dataProducao ||
+                item.criadoEm
 
-                    item.dataProducao ||
+            );
 
-                    item.criadoEm
+        }).length;
 
-                )
 
-        ).length;
-
+    // =================================
+    // ETIQUETAS HOJE
+    // =================================
 
     const etiquetasHoje =
 
-        labels.filter(
+        labels
 
-            item =>
+            .filter(item => {
 
-                isToday(
+                return isToday(
 
                     item.criadoEm ||
-
                     item.dataEtiqueta ||
-
                     item.dataProducao
 
-                )
+                );
 
-        ).length;
+            })
 
+            .reduce(
+
+                (total, item) => {
+
+                    const quantidade =
+                        Number(
+                            item.quantidade
+                        );
+
+
+                    return total +
+
+                        (
+                            Number.isFinite(
+                                quantidade
+                            ) &&
+                            quantidade > 0
+
+                                ? quantidade
+
+                                : 1
+                        );
+
+                },
+
+                0
+
+            );
+
+
+    // =================================
+    // VENCENDO HOJE
+    // =================================
 
     const vencendoHoje =
 
-        labels.filter(
+        labels.filter(item => {
 
-            item =>
-
+            return (
                 daysUntil(
-
                     item.validade
-
                 ) === 0
+            );
 
-        ).length;
+        }).length;
 
 
     // =================================
-    // ATUALIZAR CARDS
+    // CARDS
     // =================================
 
     setValue(
-
         "producoesHoje",
-
         producoesHoje
-
     );
 
 
     setValue(
-
         "etiquetasHoje",
-
         etiquetasHoje
-
     );
 
 
     setValue(
-
         "vencendoHoje",
-
         vencendoHoje
-
     );
 
 
     setValue(
-
         "estoqueCritico",
-
         criticalStock.length
+    );
 
+
+    updateMetricDescriptions(
+        vencidos,
+        estoqueZerado
     );
 
 
     // =================================
-    // LISTA DE PRODUÇÕES
+    // PRODUÇÕES
     // =================================
 
-    renderActivity(
-
-        "listaProducao",
+    const sortedProductions =
 
         [...productions].sort(
 
             (a, b) => {
 
                 const dateA =
-
                     toDate(
-
                         a.dataProducao ||
-
                         a.criadoEm
-
-                    ) || 0;
-
+                    );
 
                 const dateB =
-
                     toDate(
-
                         b.dataProducao ||
-
                         b.criadoEm
+                    );
 
-                    ) || 0;
 
-
-                return dateB - dateA;
+                return (
+                    (dateB?.getTime() || 0) -
+                    (dateA?.getTime() || 0)
+                );
 
             }
 
-        ),
+        );
 
+
+    renderActivity(
+        "listaProducao",
+        sortedProductions,
         "produção"
-
     );
 
 
     // =================================
-    // LISTA DE ETIQUETAS
+    // ETIQUETAS
     // =================================
 
-    renderActivity(
-
-        "listaEtiquetas",
+    const sortedLabels =
 
         [...labels].sort(
 
             (a, b) => {
 
                 const dateA =
-
                     toDate(
-
                         a.criadoEm ||
-
                         a.dataEtiqueta ||
-
                         a.dataProducao
-
-                    ) || 0;
-
+                    );
 
                 const dateB =
-
                     toDate(
-
                         b.criadoEm ||
-
                         b.dataEtiqueta ||
-
                         b.dataProducao
+                    );
 
-                    ) || 0;
 
-
-                return dateB - dateA;
+                return (
+                    (dateB?.getTime() || 0) -
+                    (dateA?.getTime() || 0)
+                );
 
             }
 
-        ),
+        );
 
+
+    renderActivity(
+        "listaEtiquetas",
+        sortedLabels,
         "etiqueta"
-
     );
 
 
@@ -2358,8 +2007,7 @@ async function loadDashboard() {
         expiring
     );
 
-
-    renderLabelAlerts(
+    renderMonitoriaValidades(
         labels
     );
 
@@ -2395,18 +2043,7 @@ async function loadDashboard() {
     // ÍCONES
     // =================================
 
-    if (
-
-        window.lucide &&
-
-        typeof window.lucide.createIcons ===
-        "function"
-
-    ) {
-
-        window.lucide.createIcons();
-
-    }
+    createIcons();
 
 
     // =================================
@@ -2421,7 +2058,7 @@ async function loadDashboard() {
     );
 
     console.log(
-        "✅ DASHBOARD FINALIZADO"
+        "✅ DASHBOARD V2 FINALIZADO"
     );
 
     console.log(
@@ -2430,18 +2067,28 @@ async function loadDashboard() {
     );
 
     console.log(
-        "PRODUÇÕES:",
-        productions.length
+        "PRODUÇÕES HOJE:",
+        producoesHoje
     );
 
     console.log(
-        "ETIQUETAS:",
-        labels.length
+        "ETIQUETAS HOJE:",
+        etiquetasHoje
     );
 
     console.log(
-        "ESTOQUE:",
-        stock.length
+        "VENCENDO HOJE:",
+        vencendoHoje
+    );
+
+    console.log(
+        "VENCIDOS:",
+        vencidos
+    );
+
+    console.log(
+        "ESTOQUE CRÍTICO:",
+        criticalStock.length
     );
 
     console.log(
@@ -2452,7 +2099,7 @@ async function loadDashboard() {
 
 
 // =======================================
-// INICIALIZAR DASHBOARD
+// INICIALIZAR
 // =======================================
 
 async function initDashboard() {
@@ -2462,7 +2109,7 @@ async function initDashboard() {
     );
 
     console.log(
-        "INICIANDO LOTRIX DASHBOARD"
+        "INICIANDO LOTRIX DASHBOARD V2"
     );
 
     console.log(
@@ -2471,10 +2118,6 @@ async function initDashboard() {
 
 
     try {
-
-        // =================================
-        // VERIFICAR EMPRESA
-        // =================================
 
         if (
             !verificarEmpresa()
@@ -2505,25 +2148,9 @@ async function initDashboard() {
 
     } finally {
 
-        // =================================
-        // NUNCA DEIXAR LOADING PRESO
-        // =================================
-
         removeLoading();
 
-
-        if (
-
-            window.lucide &&
-
-            typeof window.lucide.createIcons ===
-            "function"
-
-        ) {
-
-            window.lucide.createIcons();
-
-        }
+        createIcons();
 
     }
 
@@ -2531,22 +2158,17 @@ async function initDashboard() {
 
 
 // =======================================
-// INICIAR QUANDO HTML ESTIVER PRONTO
+// INICIAR
 // =======================================
 
 if (
-
     document.readyState ===
     "loading"
-
 ) {
 
     document.addEventListener(
-
         "DOMContentLoaded",
-
         initDashboard
-
     );
 
 } else {
@@ -2554,3 +2176,140 @@ if (
     initDashboard();
 
 }
+
+
+// =======================================
+// DISPONIBILIZAR PARA DEBUG
+// =======================================
+
+window.lotrixDashboard = {
+
+    recarregar: loadDashboard,
+
+    empresaAtual,
+
+    usuarioAtual
+
+};
+// =======================================
+// MONITORIA DE VALIDADES
+// =======================================
+
+function renderMonitoriaValidades(labels) {
+
+    const hoje = new Date();
+
+    hoje.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+    const ontem = new Date(hoje);
+    ontem.setDate(
+        hoje.getDate() - 1
+    );
+
+    const amanha = new Date(hoje);
+    amanha.setDate(
+        hoje.getDate() + 1
+    );
+
+    function mesmaData(data1, data2) {
+
+        return (
+            data1.getFullYear() === data2.getFullYear() &&
+            data1.getMonth() === data2.getMonth() &&
+            data1.getDate() === data2.getDate()
+        );
+
+    }
+
+    function contarPorData(dataAlvo) {
+
+        return labels.filter(item => {
+
+            const validade =
+                toDate(item.validade);
+
+            if (!validade) {
+                return false;
+            }
+
+            validade.setHours(
+                0,
+                0,
+                0,
+                0
+            );
+
+            return mesmaData(
+                validade,
+                dataAlvo
+            );
+
+        }).length;
+
+    }
+
+    function formatarData(data) {
+
+        return data.toLocaleDateString(
+            "pt-BR",
+            {
+                day:"2-digit",
+                month:"2-digit",
+                year:"2-digit"
+            }
+        );
+
+    }
+
+    setValue(
+        "validadeOntem",
+        contarPorData(ontem)
+    );
+
+    setValue(
+        "validadeHoje",
+        contarPorData(hoje)
+    );
+
+    setValue(
+        "validadeAmanha",
+        contarPorData(amanha)
+    );
+
+    const dataOntem =
+        document.getElementById(
+            "dataValidadeOntem"
+        );
+
+    const dataHoje =
+        document.getElementById(
+            "dataValidadeHoje"
+        );
+
+    const dataAmanha =
+        document.getElementById(
+            "dataValidadeAmanha"
+        );
+
+    if (dataOntem) {
+        dataOntem.textContent =
+            formatarData(ontem);
+    }
+
+    if (dataHoje) {
+        dataHoje.textContent =
+            formatarData(hoje);
+    }
+
+    if (dataAmanha) {
+        dataAmanha.textContent =
+            formatarData(amanha);
+    }
+
+}
+

@@ -40,7 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
         sidebar.classList.add("open");
         sidebarOverlay.classList.add("active");
         menuToggle.setAttribute("aria-expanded", "true");
-        document.body.style.overflow = "hidden";
         sidebarClose.focus();
     }
 
@@ -48,8 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
         sidebar.classList.remove("open");
         sidebarOverlay.classList.remove("active");
         menuToggle.setAttribute("aria-expanded", "false");
-        document.body.style.overflow = "";
-        menuToggle.focus();
     }
 
     menuToggle.setAttribute("aria-controls", sidebar.id);
@@ -63,6 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && sidebar.classList.contains("open")) fecharMenu();
+        if (event.key === "Escape") fecharMenu();
     });
 });

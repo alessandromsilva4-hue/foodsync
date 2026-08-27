@@ -1,4 +1,5 @@
 const {onCall, HttpsError} = require("firebase-functions/v2/https");
+const {onSchedule} = require("firebase-functions/v2/scheduler");
 const {initializeApp} = require("firebase-admin/app");
 const {getAuth} = require("firebase-admin/auth");
 const {
@@ -10,6 +11,101 @@ initializeApp();
 
 const adminAuth = getAuth();
 const db = getFirestore();
+
+
+// =======================================
+// LIMPEZA AUTOMÁTICA DE ETIQUETAS VENCIDAS
+// =======================================
+
+const DIAS_PARA_RETER_ETIQUETA_VENCIDA = 3;
+const TAMANHO_LOTE_LIMPEZA = 200;
+
+/**
+ * Retorna a data atual no fuso horário usado pela operação.
+ * @return {string} Data no formato AAAA-MM-DD.
+ */
+function dataNoFusoDeSaoPaulo() {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+
+  const values = Object.fromEntries(
+      parts
+          .filter((part) => part.type !== "literal")
+          .map((part) => [part.type, part.value]),
+  );
+
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+/**
+ * Calcula a primeira data que ainda deve ser mantida.
+ * @return {string} Data limite no formato AAAA-MM-DD.
+ */
+function dataLimiteParaLimpeza() {
+  const hoje = new Date(`${dataNoFusoDeSaoPaulo()}T00:00:00Z`);
+
+  hoje.setUTCDate(
+      hoje.getUTCDate() - DIAS_PARA_RETER_ETIQUETA_VENCIDA,
+  );
+
+  return hoje.toISOString().slice(0, 10);
+}
+
+exports.limparEtiquetasVencidas = onSchedule(
+    {
+      schedule: "20 0 * * *",
+      timeZone: "America/Sao_Paulo",
+      maxInstances: 1,
+    },
+    async () => {
+      const dataLimite = dataLimiteParaLimpeza();
+      let quantidadeRemovida = 0;
+      let continuar = true;
+
+      while (continuar) {
+        const etiquetas = await db
+            .collection("etiquetas")
+            .where("validade", "<", dataLimite)
+            .limit(TAMANHO_LOTE_LIMPEZA)
+            .get();
+
+        if (etiquetas.empty) {
+          break;
+        }
+
+        const batch = db.batch();
+
+        etiquetas.docs.forEach((etiqueta) => {
+          const dados = etiqueta.data();
+
+          batch.delete(etiqueta.ref);
+
+          if (dados.codigo) {
+            batch.delete(
+                db.collection("consultasPublicas").doc(dados.codigo),
+            );
+          }
+        });
+
+        await batch.commit();
+
+        quantidadeRemovida += etiquetas.size;
+        continuar = etiquetas.size === TAMANHO_LOTE_LIMPEZA;
+      }
+
+      console.log(
+          "Limpeza de etiquetas concluída.",
+          {
+            dataLimite,
+            quantidadeRemovida,
+          },
+      );
+    },
+);
 
 
 // =======================================
