@@ -11,7 +11,7 @@ console.log("NEOSCALE BALANCA CARREGADA");
 
 
 // ==========================================
-// CONFIGURAÇÃO
+// CONFIGURA??O
 // ==========================================
 
 
@@ -35,7 +35,7 @@ const balanca = {
 
 
 // ==========================================
-// CONECTAR BALANÇA SERIAL
+// CONECTAR BALAN?A SERIAL
 // ==========================================
 
 
@@ -49,7 +49,7 @@ async function conectarSerial(){
 
 
             alert(
-            "Navegador sem suporte à balança."
+            "Navegador sem suporte ? balan?a."
             );
 
 
@@ -82,7 +82,7 @@ async function conectarSerial(){
 
 
         console.log(
-        "Balança conectada"
+        "Balan?a conectada"
         );
 
 
@@ -98,7 +98,7 @@ async function conectarSerial(){
 
 
         console.error(
-            "Erro conexão:",
+            "Erro conex?o:",
             error
         );
 
@@ -115,7 +115,7 @@ async function conectarSerial(){
 
 
 // ==========================================
-// LER DADOS DA BALANÇA
+// LER DADOS DA BALAN?A
 // ==========================================
 
 
@@ -230,7 +230,7 @@ function processarPeso(valor){
 
     console.log(
 
-        "Dados balança:",
+        "Dados balan?a:",
 
         valor
 
@@ -311,7 +311,7 @@ function processarPeso(valor){
 
 
 // ==========================================
-// SIMULAÇÃO
+// SIMULA??O
 // ==========================================
 
 
@@ -319,7 +319,7 @@ function iniciarSimulacao(){
 
 
 console.log(
-"Modo simulação ativo"
+"Modo simula??o ativo"
 );
 
 
@@ -363,7 +363,7 @@ peso.toFixed(3)
 
 
 // ==========================================
-// INÍCIO
+// IN?CIO
 // ==========================================
 
 

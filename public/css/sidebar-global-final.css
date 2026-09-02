@@ -1,0 +1,30 @@
+/* LOTRIX — camada final da Sidebar. Carregada por último para vencer estilos específicos de cada tela. */
+:root{--lotrix-sidebar-width:264px}
+.sidebar{position:fixed!important;left:0!important;top:0!important;bottom:0!important;width:var(--lotrix-sidebar-width)!important;height:100vh!important;height:100dvh!important;z-index:10000!important;display:flex!important;flex-direction:column!important;overflow:visible!important;transform:translateX(0)!important}
+.sidebar-header{flex:0 0 70px!important;width:100%!important;display:grid!important;grid-template-columns:38px minmax(0,1fr) 38px!important;align-items:center!important}
+.sidebar>.menu{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important}
+.sidebar-footer{flex:0 0 auto!important}
+.sidebar .menu a{display:flex!important;align-items:center!important}
+.sidebar .menu a.active{background:linear-gradient(90deg,rgba(55,122,236,.95),rgba(48,103,213,.68))!important}
+.content,.main-content,.conteudo{margin-left:var(--lotrix-sidebar-width)!important;width:calc(100% - var(--lotrix-sidebar-width))!important;min-height:100vh!important;transition:margin-left .22s ease,width .22s ease!important}
+body.sidebar-collapsed .content,body.sidebar-collapsed .main-content,body.sidebar-collapsed .conteudo{margin-left:78px!important;width:calc(100% - 78px)!important}
+.sidebar.collapsed{width:78px!important}
+.sidebar.collapsed .brand-name,.sidebar.collapsed .menu-title,.sidebar.collapsed .nav-label,.sidebar.collapsed .user-info,.sidebar.collapsed .company-card,.sidebar.collapsed .logout-button span{display:none!important}
+.sidebar.collapsed .sidebar-options-btn{display:none!important}
+.sidebar.collapsed .menu a{justify-content:center!important;padding-left:0!important;padding-right:0!important}
+.sidebar.collapsed .user-card{justify-content:center!important}
+.sidebar.collapsed .logout-button{width:34px!important;margin-left:auto!important;margin-right:auto!important}
+.sidebar-overlay{position:fixed!important;inset:0!important;z-index:9999!important}
+@media(max-width:900px){
+ .sidebar{width:min(84vw,280px)!important;transform:translateX(-100%)!important}
+ .sidebar.open{transform:translateX(0)!important}
+ .sidebar.collapsed{width:min(84vw,280px)!important}
+ .sidebar.collapsed .brand-name,.sidebar.collapsed .menu-title,.sidebar.collapsed .nav-label,.sidebar.collapsed .user-info,.sidebar.collapsed .company-card,.sidebar.collapsed .logout-button span{display:initial!important}
+ .sidebar.collapsed .menu-title{display:block!important}
+ .sidebar.collapsed .menu a{justify-content:flex-start!important;padding:0 11px!important}
+ .sidebar.collapsed .user-card{justify-content:flex-start!important}
+ .sidebar.collapsed .logout-button{width:100%!important;margin-left:0!important;margin-right:0!important}
+ .sidebar.collapsed .sidebar-options-btn{display:grid!important}
+ .content,.main-content,.conteudo,body.sidebar-collapsed .content,body.sidebar-collapsed .main-content,body.sidebar-collapsed .conteudo{margin-left:0!important;width:100%!important}
+ .sidebar-overlay.active{opacity:1!important;visibility:visible!important}
+}

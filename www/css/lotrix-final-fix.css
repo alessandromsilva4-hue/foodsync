@@ -1,0 +1,233 @@
+
+/* =========================================================
+   LOTRIX — CORREÇÃO DEFINITIVA DE TEMA E BOTÕES
+   Este arquivo deve ser carregado por último.
+========================================================= */
+
+/* ---------- BOTÕES: NUNCA MOVER ---------- */
+button,
+button:hover,
+button:focus,
+button:focus-visible,
+button:active,
+.btn,
+.btn:hover,
+.btn:focus,
+.btn:active,
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-secondary,
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active,
+.btn-print,
+.btn-print:hover,
+.btn-print:focus,
+.btn-print:active,
+.btn-generate,
+.btn-generate:hover,
+.btn-generate:focus,
+.btn-generate:active,
+.quantity-btn,
+.quantity-btn:hover,
+.quantity-btn:focus,
+.quantity-btn:active,
+.btn-limpar-historico,
+.btn-limpar-historico:hover,
+.btn-limpar-historico:focus,
+.btn-limpar-historico:active {
+    transform: none !important;
+    translate: none !important;
+    top: auto !important;
+    bottom: auto !important;
+}
+
+.btn-print,
+.btn-generate,
+.quantity-btn,
+.btn-limpar-historico {
+    transition-property: background-color, border-color, color, box-shadow, opacity !important;
+    transition-duration: .15s !important;
+    transition-timing-function: ease !important;
+}
+
+/* Impede animações que possam alterar posição/tamanho */
+.btn-print:hover {
+    box-shadow: 0 8px 18px rgba(37, 99, 235, .20) !important;
+}
+.btn-print:active {
+    box-shadow: none !important;
+}
+
+/* ---------- ETIQUETAS: TEMA ESCURO ---------- */
+html[data-theme="dark"],
+html[data-theme="dark"] body {
+    background: #112f6e !important;
+    color: #f5f8ff !important;
+}
+
+html[data-theme="dark"] .content,
+html[data-theme="dark"] main,
+html[data-theme="dark"] .main-content,
+html[data-theme="dark"] .etiqueta-page {
+    background: #112f6e !important;
+    color: #f5f8ff !important;
+}
+
+html[data-theme="dark"] .print-panel,
+html[data-theme="dark"] .preview-panel,
+html[data-theme="dark"] .etiqueta-history,
+html[data-theme="dark"] .form-box,
+html[data-theme="dark"] .table-box {
+    background: #183571 !important;
+    color: #f5f8ff !important;
+    border-color: rgba(132,169,231,.24) !important;
+}
+
+html[data-theme="dark"] .print-panel *,
+html[data-theme="dark"] .preview-panel *,
+html[data-theme="dark"] .etiqueta-history * {
+    border-color: rgba(132,169,231,.24);
+}
+
+html[data-theme="dark"] .panel-kicker,
+html[data-theme="dark"] .print-panel label,
+html[data-theme="dark"] .preview-panel label,
+html[data-theme="dark"] .etiqueta-history label {
+    color: #9fc2ff !important;
+}
+
+html[data-theme="dark"] .print-panel h2,
+html[data-theme="dark"] .preview-panel h2,
+html[data-theme="dark"] .etiqueta-history h2 {
+    color: #f5f8ff !important;
+}
+
+html[data-theme="dark"] .print-panel p,
+html[data-theme="dark"] .preview-panel p,
+html[data-theme="dark"] .etiqueta-history p,
+html[data-theme="dark"] .preview-caption {
+    color: #b9c9e8 !important;
+}
+
+html[data-theme="dark"] .btn-generate {
+    background: #183571 !important;
+    color: #e7efff !important;
+    border-color: rgba(151,184,238,.34) !important;
+}
+
+html[data-theme="dark"] .quantity-control {
+    background: #122f68 !important;
+    border-color: rgba(151,184,238,.34) !important;
+}
+
+html[data-theme="dark"] .quantity-btn {
+    background: #122f68 !important;
+    color: #f5f8ff !important;
+}
+
+html[data-theme="dark"] .quantity-btn:hover {
+    background: #214888 !important;
+}
+
+html[data-theme="dark"] .etiqueta-history th {
+    background: #1d3d7b !important;
+    color: #dce7fa !important;
+}
+
+html[data-theme="dark"] .etiqueta-history td {
+    color: #dce7fa !important;
+    border-bottom-color: rgba(132,169,231,.20) !important;
+}
+
+html[data-theme="dark"] .preview-stage {
+    background: #17366f !important;
+    border-color: rgba(132,169,231,.28) !important;
+}
+
+/* ---------- PESQUISA DE PRODUTO ---------- */
+html[data-theme="dark"] .produto-search-input {
+    background: #122f68 !important;
+    color: #f5f8ff !important;
+}
+html[data-theme="dark"] .produto-search-list {
+    background: #17366f !important;
+}
+
+/* =========================================================
+   CORREÇÃO FINAL — ETIQUETAS
+   1) Botões de quantidade/impressão/atualização totalmente estáticos
+   2) Pré-visualização da etiqueta permanece branca com texto preto
+========================================================= */
+
+/* Botões desta tela não devem ter nenhuma animação de posição/tamanho */
+.etiqueta-workspace .quantity-btn,
+.etiqueta-workspace .btn-print,
+.etiqueta-workspace .btn-generate,
+.etiqueta-history .btn-limpar-historico {
+    transform: none !important;
+    translate: 0 0 !important;
+    rotate: none !important;
+    scale: 1 !important;
+    animation: none !important;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease, opacity .15s ease !important;
+}
+
+.etiqueta-workspace .quantity-btn:hover,
+.etiqueta-workspace .quantity-btn:focus,
+.etiqueta-workspace .quantity-btn:focus-visible,
+.etiqueta-workspace .quantity-btn:active,
+.etiqueta-workspace .btn-print:hover,
+.etiqueta-workspace .btn-print:focus,
+.etiqueta-workspace .btn-print:focus-visible,
+.etiqueta-workspace .btn-print:active,
+.etiqueta-workspace .btn-generate:hover,
+.etiqueta-workspace .btn-generate:focus,
+.etiqueta-workspace .btn-generate:focus-visible,
+.etiqueta-workspace .btn-generate:active,
+.etiqueta-history .btn-limpar-historico:hover,
+.etiqueta-history .btn-limpar-historico:focus,
+.etiqueta-history .btn-limpar-historico:focus-visible,
+.etiqueta-history .btn-limpar-historico:active {
+    transform: none !important;
+    translate: 0 0 !important;
+    rotate: none !important;
+    scale: 1 !important;
+    animation: none !important;
+}
+
+/* A prévia física é uma etiqueta branca: seus textos continuam pretos no tema escuro. */
+html[data-theme="dark"] .preview-stage .etiqueta,
+html[data-theme="dark"] .preview-stage .etiqueta * {
+    background-color: transparent;
+    color: #000000 !important;
+    border-color: #000000;
+    text-shadow: none !important;
+}
+
+html[data-theme="dark"] .preview-stage .etiqueta {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 12px 28px rgba(3,18,58,.28) !important;
+}
+
+html[data-theme="dark"] .preview-stage .etiqueta .linha-etiqueta {
+    border-top-color: #000000 !important;
+}
+
+html[data-theme="dark"] .preview-stage .etiqueta #qrcodeEtiqueta,
+html[data-theme="dark"] .preview-stage .etiqueta #qrcodeEtiqueta * {
+    color: #000000 !important;
+    background: transparent !important;
+}
+
+/* Painéis da página de Etiquetas seguem o azul do tema escuro. */
+html[data-theme="dark"] .etiqueta-workspace .print-panel,
+html[data-theme="dark"] .etiqueta-workspace .preview-panel,
+html[data-theme="dark"] .etiqueta-history {
+    background: #183571 !important;
+    color: #f5f8ff !important;
+    border-color: rgba(132,169,231,.24) !important;
+}

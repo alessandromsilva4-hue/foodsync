@@ -1,0 +1,95 @@
+/* LOTRIX — CORREÇÃO FINAL DA TELA ETIQUETAS */
+
+/* BOTÕES COMPLETAMENTE ESTÁTICOS: sem deslocamento, escala ou animação */
+.etiqueta-workspace button.quantity-btn,
+.etiqueta-workspace button.btn-print,
+.etiqueta-workspace button.btn-generate,
+.etiqueta-history button.btn-limpar-historico {
+  transform: none !important;
+  translate: none !important;
+  rotate: none !important;
+  scale: 1 !important;
+  animation: none !important;
+  transition: none !important;
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.etiqueta-workspace button.quantity-btn:hover,
+.etiqueta-workspace button.quantity-btn:focus,
+.etiqueta-workspace button.quantity-btn:focus-visible,
+.etiqueta-workspace button.quantity-btn:active,
+.etiqueta-workspace button.btn-print:hover,
+.etiqueta-workspace button.btn-print:focus,
+.etiqueta-workspace button.btn-print:focus-visible,
+.etiqueta-workspace button.btn-print:active,
+.etiqueta-workspace button.btn-generate:hover,
+.etiqueta-workspace button.btn-generate:focus,
+.etiqueta-workspace button.btn-generate:focus-visible,
+.etiqueta-workspace button.btn-generate:active,
+.etiqueta-history button.btn-limpar-historico:hover,
+.etiqueta-history button.btn-limpar-historico:focus,
+.etiqueta-history button.btn-limpar-historico:focus-visible,
+.etiqueta-history button.btn-limpar-historico:active {
+  transform: none !important;
+  translate: none !important;
+  rotate: none !important;
+  scale: 1 !important;
+  animation: none !important;
+  transition: none !important;
+  top: auto !important;
+  bottom: auto !important;
+}
+
+/* Remove qualquer efeito de movimento especificamente dos quatro controles principais. */
+.etiqueta-workspace .quantity-control,
+.etiqueta-workspace .quantity-control button,
+.etiqueta-workspace .quantity-control input,
+.etiqueta-workspace .btn-print,
+.etiqueta-workspace .btn-generate {
+  transform-origin: center center !important;
+}
+
+/* TEMA ESCURO — painel da tela de etiquetas */
+[data-theme="dark"] .etiquetas-page,
+[data-theme="dark"] .etiqueta-workspace,
+[data-theme="dark"] .etiqueta-workspace .print-panel,
+[data-theme="dark"] .etiqueta-workspace .preview-panel,
+[data-theme="dark"] .etiqueta-history {
+  color: #f5f8ff !important;
+}
+
+[data-theme="dark"] .etiqueta-workspace .print-panel,
+[data-theme="dark"] .etiqueta-workspace .preview-panel,
+[data-theme="dark"] .etiqueta-history {
+  background: #183571 !important;
+  border-color: rgba(132,169,231,.28) !important;
+  box-shadow: 0 8px 24px rgba(3,18,58,.18) !important;
+}
+
+[data-theme="dark"] .etiqueta-workspace .panel-title h2,
+[data-theme="dark"] .etiqueta-workspace .panel-description,
+[data-theme="dark"] .etiqueta-history h2 {
+  color: #f5f8ff !important;
+}
+
+[data-theme="dark"] .etiqueta-workspace .field label,
+[data-theme="dark"] .etiqueta-workspace .quantity-box label {
+  color: #dce7fa !important;
+}
+
+/* A etiqueta física da prévia é SEMPRE branca e com texto preto. */
+[data-theme="dark"] .preview-stage .etiqueta {
+  background: #fff !important;
+  color: #000 !important;
+  border-color: #cbd5e1 !important;
+}
+[data-theme="dark"] .preview-stage .etiqueta * {
+  color: #000 !important;
+  text-shadow: none !important;
+}

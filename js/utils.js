@@ -28,8 +28,8 @@ document.createElement("div");
 toast.className =
 `toast ${tipo}`;
 
-toast.innerHTML =
-mensagem;
+toast.textContent =
+String(mensagem);
 
 container.appendChild(toast);
 

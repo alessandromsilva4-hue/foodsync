@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -16,131 +16,343 @@
 <link rel="stylesheet" href="css/tabela.css">
 <link rel="stylesheet" href="css/etiquetas.css">
 
+    <link rel="stylesheet" href="./css/sidebar-global-final.css">
+
+    <link rel="stylesheet" href="./css/dark-theme.css">
+
+<link rel="stylesheet" href="css/button-interaction-fix.css">
+    <link rel="stylesheet" href="css/lotrix-final-fix.css">
+
+<style>
+/* =====================================================
+   LOTRIX — CORREÇÃO DOS BOTÕES DA TELA ETIQUETAS
+   Mantém os botões fixos, sem deslocamento/zoom/animação
+===================================================== */
+
+button,
+button:hover,
+button:focus,
+button:focus-visible,
+button:active {
+    box-sizing: border-box;
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    translate: none !important;
+    scale: 1 !important;
+}
+
+/* O botão de limpar permanece ancorado dentro do campo de busca. */
+.etiqueta-workspace .produto-search-clear {
+    position: absolute !important;
+    inset: 50% 10px auto auto !important;
+    translate: 0 -50% !important;
+}
+
+/* O controle mantém as mesmas três colunas em todos os estados. */
+.etiqueta-workspace .quantity-control {
+    display: grid !important;
+    grid-template-columns: 42px minmax(0, 1fr) 42px !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+}
+
+@media screen and (max-width: 1099px) {
+    .etiqueta-workspace .quantity-control {
+        grid-template-columns: 36px minmax(0, 1fr) 36px !important;
+    }
+}
+
+
+/* =====================================================
+   LOTRIX — LISTA DE PRODUTOS
+   Corrige o visual dos resultados da pesquisa.
+   Os itens da lista NÃO devem herdar o estilo dos botões
+   principais do sistema.
+===================================================== */
+.etiqueta-workspace .produto-search-list {
+    width: 100%;
+    max-height: 280px;
+    overflow-y: auto;
+    margin-top: 6px;
+    padding: 0;
+    background: #fff;
+    border: 1px solid #dbe3ef;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, .10);
+    overflow-x: hidden;
+}
+
+.etiqueta-workspace .produto-search-option {
+    width: 100% !important;
+    min-height: 50px !important;
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    margin: 0 !important;
+    padding: 8px 12px !important;
+    box-sizing: border-box !important;
+    border: 0 !important;
+    border-bottom: 1px solid #eef2f7 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+    transform: none !important;
+    translate: none !important;
+    scale: 1 !important;
+    text-align: left !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+.etiqueta-workspace .produto-search-option:last-child {
+    border-bottom: 0 !important;
+}
+
+.etiqueta-workspace .produto-search-option:hover,
+.etiqueta-workspace .produto-search-option:focus,
+.etiqueta-workspace .produto-search-option:active {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+    transform: none !important;
+    translate: none !important;
+    scale: 1 !important;
+    outline: none !important;
+}
+
+.etiqueta-workspace .produto-search-option-icon {
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 0;
+}
+
+.etiqueta-workspace .produto-search-option-icon::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border: 1.5px solid #2563eb;
+    border-radius: 2px;
+    box-sizing: border-box;
+}
+
+.etiqueta-workspace .produto-search-option-text {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2px;
+    line-height: 1.2;
+}
+
+.etiqueta-workspace .produto-search-option-text strong {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.etiqueta-workspace .produto-search-option-text small {
+    display: block;
+    color: #94a3b8;
+    font-size: 10px;
+    font-weight: 400;
+}
+
+.etiqueta-workspace .produto-search-empty {
+    padding: 14px;
+    color: #64748b;
+    background: #fff;
+    font-size: 12px;
+    text-align: center;
+}
+
+
+
+/* =====================================================
+   LOTRIX — CORREÇÃO DEFINITIVA DO CAMPO DE PESQUISA
+   A lupa fica separada do texto e nunca sobrepõe o placeholder.
+===================================================== */
+.etiqueta-workspace .produto-search-input-wrap {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    display: block !important;
+}
+
+.etiqueta-workspace .produto-search-icon {
+    position: absolute !important;
+    left: 15px !important;
+    top: 50% !important;
+    width: 16px !important;
+    height: 16px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    z-index: 5 !important;
+    pointer-events: none !important;
+    transform: translateY(-50%) !important;
+    box-sizing: border-box !important;
+    border: 2px solid #64748b !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+}
+
+.etiqueta-workspace .produto-search-icon::after {
+    content: "" !important;
+    position: absolute !important;
+    width: 7px !important;
+    height: 2px !important;
+    right: -5px !important;
+    bottom: -2px !important;
+    background: #64748b !important;
+    border-radius: 2px !important;
+    transform: rotate(45deg) !important;
+    transform-origin: left center !important;
+}
+
+.etiqueta-workspace #produtoEtiquetaBusca,
+.etiqueta-workspace .produto-search-input {
+    position: relative !important;
+    z-index: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    padding-left: 46px !important;
+    padding-right: 48px !important;
+}
+
+/* Remove o ícone nativo do type=search do navegador. */
+.etiqueta-workspace #produtoEtiquetaBusca::-webkit-search-decoration,
+.etiqueta-workspace #produtoEtiquetaBusca::-webkit-search-cancel-button,
+.etiqueta-workspace #produtoEtiquetaBusca::-webkit-search-results-button,
+.etiqueta-workspace #produtoEtiquetaBusca::-webkit-search-results-decoration {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+.etiqueta-workspace .produto-search-clear {
+    position: absolute !important;
+    right: 8px !important;
+    top: 50% !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transform: translateY(-50%) !important;
+    translate: none !important;
+    scale: 1 !important;
+    z-index: 6 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.etiqueta-workspace .produto-search-clear:hover,
+.etiqueta-workspace .produto-search-clear:focus,
+.etiqueta-workspace .produto-search-clear:active {
+    transform: translateY(-50%) !important;
+    translate: none !important;
+    scale: 1 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+</style>
+
 </head>
 
 <body>
 
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <button class="sidebar-menu-btn" id="sidebarMenuToggle" type="button" aria-label="Recolher menu" aria-expanded="true">
+            <i data-lucide="menu" aria-hidden="true"></i>
+        </button>
+        <a class="sidebar-brand" href="dashboard.html" aria-label="Lotrix - Dashboard">
+            <img class="brand-logo" src="img/logo.png" alt="Lotrix">
+            <span class="brand-name">Lotrix</span>
+        </a>
+        <button class="sidebar-options-btn" id="sidebarOptionsToggle" type="button" aria-label="Mais opções" aria-expanded="false">
+            <i data-lucide="more-vertical" aria-hidden="true"></i>
+        </button>
+        <div class="sidebar-options" id="sidebarOptions" hidden>
+            <a href="dashboard.html"><i data-lucide="home"></i> Início</a>
+            <button type="button" id="sidebarRefresh"><i data-lucide="refresh-cw"></i> Atualizar</button>
+        </div>
+    </div>
+
+    <nav class="menu" aria-label="Menu principal">
+        <div class="menu-section">
+            <div class="menu-title">Geral</div>
+            <a href="dashboard.html" data-page="dashboard.html"><i data-lucide="layout-dashboard"></i><span class="nav-label">Dashboard</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Operação</div>
+            <a href="producao.html" data-page="producao.html"><i data-lucide="factory"></i><span class="nav-label">Produção</span></a>
+            <a href="produtos.html" data-page="produtos.html"><i data-lucide="package"></i><span class="nav-label">Produtos</span></a>
+            <a href="etiquetas.html" data-page="etiquetas.html"><i data-lucide="tag"></i><span class="nav-label">Etiquetas</span></a>
+            <a href="estoque.html" data-page="estoque.html"><i data-lucide="boxes"></i><span class="nav-label">Estoque</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Gestão</div>
+            <a href="relatorios.html" data-page="relatorios.html"><i data-lucide="bar-chart-3"></i><span class="nav-label">Relatórios</span></a>
+            <a href="auditoria.html" data-page="auditoria.html"><i data-lucide="clipboard-check"></i><span class="nav-label">Auditoria</span></a>
+            <a href="usuario.html" data-page="usuario.html"><i data-lucide="users"></i><span class="nav-label">Usuários</span></a>
+            <a href="sac-admin.html" data-page="sac-admin.html"><i data-lucide="headphones"></i><span class="nav-label">SAC Admin</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Sistema</div>
+            <a href="configuracoes.html" data-page="configuracoes.html"><i data-lucide="settings"></i><span class="nav-label">Configurações</span></a>
+            <a href="ajuda.html" data-page="ajuda.html"><i data-lucide="circle-help"></i><span class="nav-label">Ajuda</span></a>
+            <a href="sac.html" data-page="sac.html"><i data-lucide="message-circle"></i><span class="nav-label">SAC</span></a>
+        </div>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="user-card">
+            <div class="avatar"><i data-lucide="user-round" aria-hidden="true"></i></div>
+            <div class="user-info"><strong>Alessandro</strong><small>Administrador</small></div>
+        </div>
+        <div class="company-card">
+            <span class="company-label">Empresa</span>
+            <strong class="company-name">Izu Oeste</strong>
+        </div>
+        <button class="logout-button" type="button" onclick="logout()"><i data-lucide="log-out"></i><span>Sair</span></button>
+    </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+
+
 <div class="layout">
 
     <!-- SIDEBAR -->
-    <aside class="sidebar">
-
-        <div class="logo-area">
-            <img src="img/logo.png" alt="Lotrix">
-            <h2>LOTRIX</h2>
-            <small>Food Safety Platform</small>
-        </div>
-
-        <nav class="menu">
-
-            <div class="menu-section">
-                <span class="menu-title">GERAL</span>
-
-                <a href="dashboard.html">
-                    <span>⌂</span>
-                    <span class="nav-label">Dashboard</span>
-                </a>
-            </div>
-
-            <div class="menu-section">
-                <span class="menu-title">OPERAÇÃO</span>
-
-                <a href="producao.html">
-                    <span>⚙</span>
-                    <span class="nav-label">Produção</span>
-                </a>
-
-                <a href="produtos.html">
-                    <span>▣</span>
-                    <span class="nav-label">Produtos</span>
-                </a>
-
-                <a href="etiquetas.html" class="active">
-                    <span>🏷</span>
-                    <span class="nav-label">Etiquetas</span>
-                </a>
-
-                <a href="estoque.html">
-                    <span>▤</span>
-                    <span class="nav-label">Estoque</span>
-                </a>
-            </div>
-
-            <div class="menu-section">
-                <span class="menu-title">GESTÃO</span>
-
-                <a href="relatorios.html">
-                    <span>▥</span>
-                    <span class="nav-label">Relatórios</span>
-                </a>
-
-                <a href="auditoria.html">
-                    <span>◉</span>
-                    <span class="nav-label">Auditoria</span>
-                </a>
-
-                <a href="usuario.html">
-                    <span>●</span>
-                    <span class="nav-label">Usuários</span>
-                </a>
-
-                <a href="sac-admin.html">
-                    <span>◉</span>
-                    <span class="nav-label">SAC Admin</span>
-                </a>
-            </div>
-
-            <div class="menu-section">
-                <span class="menu-title">SISTEMA</span>
-
-                <a href="configuracoes.html">
-                    <span>⚙</span>
-                    <span class="nav-label">Configurações</span>
-                </a>
-
-                <a href="ajuda.html">
-                    <span>?</span>
-                    <span class="nav-label">Ajuda</span>
-                </a>
-
-                <a href="sac.html">
-                    <span>◉</span>
-                    <span class="nav-label">SAC</span>
-                </a>
-
-            </div>
-
-        </nav>
-
-        <div class="sidebar-footer">
-
-            <div class="user-card">
-
-                <div class="avatar">
-                    👤
-                </div>
-
-                <div>
-                    <strong id="nomeUsuarioLogado">
-                        Usuário
-                    </strong>
-
-                    <small id="perfilUsuarioLogado">
-                        Carregando...
-                    </small>
-                </div>
-
-            </div>
-
-            <button onclick="logout()">
-                🚪 Sair
-            </button>
-
-        </div>
-
-    </aside>
-
-
     <!-- CONTEÚDO -->
     <main class="content">
 
@@ -360,15 +572,56 @@
                             Produto
                         </label>
 
-                        <select
-                            id="produtoEtiqueta"
-                            required>
+                        <div class="produto-search" id="produtoSearch">
 
-                            <option value="">
-                                Selecione o produto
-                            </option>
+                            <div class="produto-search-input-wrap">
 
-                        </select>
+                                <span class="produto-search-icon" aria-hidden="true"></span>
+
+                                <input
+                                    type="search"
+                                    id="produtoEtiquetaBusca"
+                                    class="produto-search-input"
+                                    placeholder="Pesquisar produto..."
+                                    autocomplete="off"
+                                    aria-label="Pesquisar produto"
+                                    aria-controls="produtoEtiquetaLista"
+                                    aria-expanded="false">
+
+                                <button
+                                    type="button"
+                                    class="produto-search-clear"
+                                    id="produtoEtiquetaLimpar"
+                                    aria-label="Limpar pesquisa"
+                                    hidden>
+                                    ×
+                                </button>
+
+                            </div>
+
+                            <div
+                                class="produto-search-list"
+                                id="produtoEtiquetaLista"
+                                role="listbox"
+                                aria-label="Produtos"
+                                hidden>
+                            </div>
+
+                            <!-- Mantido para compatibilidade com o sistema de impressão -->
+                            <select
+                                id="produtoEtiqueta"
+                                required
+                                aria-hidden="true"
+                                tabindex="-1"
+                                class="produto-select-hidden">
+                                <option value="">Selecione o produto</option>
+                            </select>
+
+                            <div class="produto-search-hint" id="produtoEtiquetaHint">
+                                Digite o nome do produto para localizar rapidamente.
+                            </div>
+
+                        </div>
 
                     </div>
 
@@ -402,7 +655,8 @@
                                 id="responsavelSelect"
                                 name="responsavel"
                                 placeholder="Digite o nome do responsável"
-                                autocomplete="off">
+                                autocomplete="off"
+                                required>
 
                         </div>
 
@@ -593,7 +847,8 @@
 <!-- SIDEBAR -->
 
 <script src="js/design-system.js"></script>
-<script src="js/sidebar.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/sidebar.js"></script>
 
 
 <!-- CONTROLE DE QUANTIDADE -->
@@ -637,8 +892,3 @@ function alterarQuantidade(delta) {
 </body>
 
 </html>
-
-
-
-
-

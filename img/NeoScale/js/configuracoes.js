@@ -29,7 +29,7 @@ function obterDadosFormulario() {
 async function salvarConfiguracao() {
     const dados = obterDadosFormulario();
     if (!Number.isFinite(dados.precoKg) || dados.precoKg < 0) {
-        alert("Informe um preço por kg válido.");
+        alert("Informe um preço por kg v?lido.");
         campos.precoPadrao.focus();
         return;
     }
@@ -41,7 +41,7 @@ async function salvarConfiguracao() {
     try {
         await setDoc(doc(db, "configuracoes", "principal"), dados, { merge: true });
         localStorage.setItem("neoscale-tema-quiosque", dados.temaQuiosque);
-        alert("Configurações salvas!");
+        alert("Configura??es salvas!");
     } catch (erro) {
         console.error("Não foi possível salvar as configurações:", erro);
         alert("Não foi possível salvar as configurações. Verifique sua conexão e tente novamente.");

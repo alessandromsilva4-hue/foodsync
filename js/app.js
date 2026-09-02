@@ -117,8 +117,8 @@ window.mostrarMensagem = function(
 
 
 
-    alerta.innerHTML =
-    mensagem;
+    alerta.textContent =
+    String(mensagem);
 
 
 

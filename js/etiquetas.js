@@ -687,6 +687,8 @@ async function carregarProdutos() {
             }
         );
 
+        configurarPesquisaProdutoEtiqueta();
+
         console.log(
             "PRODUTOS DA EMPRESA:",
             idEmpresa
@@ -717,6 +719,138 @@ async function carregarProdutos() {
 
     }
 
+}
+
+// =======================================
+// PESQUISA DE PRODUTOS PARA IMPRESSÃO
+// =======================================
+
+function configurarPesquisaProdutoEtiqueta() {
+
+    const select = obterElemento("produtoEtiqueta");
+    const input = obterElemento("produtoEtiquetaBusca");
+    const lista = obterElemento("produtoEtiquetaLista");
+    const limpar = obterElemento("produtoEtiquetaLimpar");
+    const hint = obterElemento("produtoEtiquetaHint");
+    const campo = obterElemento("produtoSearch");
+
+    if (!select || !input || !lista || !campo) return;
+
+    if (campo.dataset.configurado === "true") {
+        atualizarListaProdutosEtiqueta("");
+        return;
+    }
+
+    campo.dataset.configurado = "true";
+
+    function fecharLista() {
+        lista.hidden = true;
+        input.setAttribute("aria-expanded", "false");
+    }
+
+    function abrirLista() {
+        lista.hidden = false;
+        input.setAttribute("aria-expanded", "true");
+    }
+
+    function selecionarProduto(id, nome) {
+        select.value = id;
+        input.value = nome || "";
+        if (limpar) limpar.hidden = !input.value;
+        fecharLista();
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+
+    function atualizarListaProdutosEtiqueta(termo) {
+        const busca = String(termo || "").trim().toLocaleLowerCase("pt-BR");
+        lista.innerHTML = "";
+
+        const encontrados = produtos.filter(produto => {
+            const nome = String(produto.nome || "");
+            return !busca || nome.toLocaleLowerCase("pt-BR").includes(busca);
+        }).slice(0, 80);
+
+        if (!encontrados.length) {
+            const vazio = document.createElement("div");
+            vazio.className = "produto-search-empty";
+            vazio.textContent = busca
+                ? "Nenhum produto encontrado."
+                : "Nenhum produto cadastrado.";
+            lista.appendChild(vazio);
+        } else {
+            encontrados.forEach(produto => {
+                const item = document.createElement("button");
+                item.type = "button";
+                item.className = "produto-search-option";
+                item.setAttribute("role", "option");
+                item.dataset.id = produto.id;
+                item.innerHTML = `
+                    <span class="produto-search-option-icon">□</span>
+                    <span class="produto-search-option-text">
+                        <strong></strong>
+                        <small>Selecionar para imprimir</small>
+                    </span>
+                `;
+                item.querySelector("strong").textContent = produto.nome || "Produto sem nome";
+                item.addEventListener("mousedown", evento => evento.preventDefault());
+                item.addEventListener("click", () => {
+                    selecionarProduto(produto.id, produto.nome || "Produto sem nome");
+                });
+                lista.appendChild(item);
+            });
+        }
+
+        if (hint) {
+            hint.textContent = busca
+                ? `${encontrados.length} produto(s) encontrado(s)`
+                : `${produtos.length} produto(s) disponível(is)`;
+        }
+    }
+
+    input.addEventListener("input", () => {
+        select.value = "";
+        if (limpar) limpar.hidden = !input.value;
+        atualizarListaProdutosEtiqueta(input.value);
+        abrirLista();
+    });
+
+    input.addEventListener("focus", () => {
+        atualizarListaProdutosEtiqueta(input.value);
+        abrirLista();
+    });
+
+    input.addEventListener("keydown", evento => {
+        if (evento.key === "Escape") {
+            fecharLista();
+            return;
+        }
+
+        if (evento.key === "Enter") {
+            const primeiro = lista.querySelector(".produto-search-option");
+            if (primeiro) {
+                evento.preventDefault();
+                primeiro.click();
+            }
+        }
+    });
+
+    if (limpar) {
+        limpar.addEventListener("click", () => {
+            select.value = "";
+            input.value = "";
+            limpar.hidden = true;
+            atualizarListaProdutosEtiqueta("");
+            abrirLista();
+            input.focus();
+            select.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+    }
+
+    document.addEventListener("click", evento => {
+        if (!campo.contains(evento.target)) fecharLista();
+    });
+
+    atualizarListaProdutosEtiqueta("");
 }
 
 // =======================================
@@ -1137,8 +1271,10 @@ function gerarLote() {
 
 function atualizarResponsavelPrevia() {
 
-    const usuario =
-        usuarioAtual();
+    const campo =
+        obterElemento(
+            "responsavelSelect"
+        );
 
     const elemento =
         obterElemento(
@@ -1152,8 +1288,8 @@ function atualizarResponsavelPrevia() {
     }
 
     elemento.textContent =
-        usuario?.nome ||
-        "Não informado";
+        campo?.value?.trim() ||
+        "--";
 
 }
 
@@ -1897,9 +2033,26 @@ async function salvarEtiqueta() {
         // RESPONSÁVEL
         // ===================================
 
+        const responsavelCampo =
+            obterElemento(
+                "responsavelSelect"
+            );
+
         const responsavel =
-            usuario?.nome ||
-            "Não informado";
+            responsavelCampo?.value?.trim() ||
+            "";
+
+        if (!responsavel) {
+
+            alert(
+                "Informe o nome de quem está imprimindo a etiqueta."
+            );
+
+            responsavelCampo?.focus();
+
+            return;
+
+        }
 
         // ===================================
         // UNIDADE

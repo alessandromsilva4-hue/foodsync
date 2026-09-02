@@ -4,114 +4,141 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Lotrix — Dashboard</title>
 
-    <link rel="icon" href="img/favicon.png">
+    <link
+        rel="icon"
+        href="img/favicon.png"
+    >
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/dashboard.css">
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
 
+    <link
+        rel="stylesheet"
+        href="css/sidebar.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/dashboard.css"
+    >
+
+    <link rel="stylesheet" href="./css/sidebar-global-final.css">
+
+    <link rel="stylesheet" href="./css/dark-theme.css">
+
+<link rel="stylesheet" href="css/button-interaction-fix.css">
+    <link rel="stylesheet" href="css/lotrix-final-fix.css">
+    <link rel="stylesheet" href="css/lotrix-responsive-final.css">
 </head>
+
 
 <body>
 
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <button class="sidebar-menu-btn" id="sidebarMenuToggle" type="button" aria-label="Recolher menu" aria-expanded="true">
+            <i data-lucide="menu" aria-hidden="true"></i>
+        </button>
+        <a class="sidebar-brand" href="dashboard.html" aria-label="Lotrix - Dashboard">
+            <img class="brand-logo" src="img/logo.png" alt="Lotrix">
+            <span class="brand-name">Lotrix</span>
+        </a>
+        <button class="sidebar-options-btn" id="sidebarOptionsToggle" type="button" aria-label="Mais opções" aria-expanded="false">
+            <i data-lucide="more-vertical" aria-hidden="true"></i>
+        </button>
+        <div class="sidebar-options" id="sidebarOptions" hidden>
+            <a href="dashboard.html"><i data-lucide="home"></i> Início</a>
+            <button type="button" id="sidebarRefresh"><i data-lucide="refresh-cw"></i> Atualizar</button>
+        </div>
+    </div>
+
+    <nav class="menu" aria-label="Menu principal">
+        <div class="menu-section">
+            <div class="menu-title">Geral</div>
+            <a href="dashboard.html" data-page="dashboard.html"><i data-lucide="layout-dashboard"></i><span class="nav-label">Dashboard</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Operação</div>
+            <a href="producao.html" data-page="producao.html"><i data-lucide="factory"></i><span class="nav-label">Produção</span></a>
+            <a href="produtos.html" data-page="produtos.html"><i data-lucide="package"></i><span class="nav-label">Produtos</span></a>
+            <a href="etiquetas.html" data-page="etiquetas.html"><i data-lucide="tag"></i><span class="nav-label">Etiquetas</span></a>
+            <a href="estoque.html" data-page="estoque.html"><i data-lucide="boxes"></i><span class="nav-label">Estoque</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Gestão</div>
+            <a href="relatorios.html" data-page="relatorios.html"><i data-lucide="bar-chart-3"></i><span class="nav-label">Relatórios</span></a>
+            <a href="auditoria.html" data-page="auditoria.html"><i data-lucide="clipboard-check"></i><span class="nav-label">Auditoria</span></a>
+            <a href="usuario.html" data-page="usuario.html"><i data-lucide="users"></i><span class="nav-label">Usuários</span></a>
+            <a href="sac-admin.html" data-page="sac-admin.html"><i data-lucide="headphones"></i><span class="nav-label">SAC Admin</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Sistema</div>
+            <a href="configuracoes.html" data-page="configuracoes.html"><i data-lucide="settings"></i><span class="nav-label">Configurações</span></a>
+            <a href="ajuda.html" data-page="ajuda.html"><i data-lucide="circle-help"></i><span class="nav-label">Ajuda</span></a>
+            <a href="sac.html" data-page="sac.html"><i data-lucide="message-circle"></i><span class="nav-label">SAC</span></a>
+        </div>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="user-card">
+            <div class="avatar"><i data-lucide="user-round" aria-hidden="true"></i></div>
+            <div class="user-info"><strong>Alessandro</strong><small>Administrador</small></div>
+        </div>
+        <div class="company-card">
+            <span class="company-label">Empresa</span>
+            <strong class="company-name">Izu Oeste</strong>
+        </div>
+        <button class="logout-button" type="button" onclick="logout()"><i data-lucide="log-out"></i><span>Sair</span></button>
+    </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+
+
 <div class="layout">
 
-    <!-- ==========================================
-         MENU LATERAL
-    =========================================== -->
 
-    <aside class="sidebar">
+    <!-- =====================================================
+         SIDEBAR LOTRIX
+    ====================================================== -->
 
-        <div class="logo-area">
+    <button
+        type="button"
+        class="menu-toggle"
+        aria-label="Abrir menu lateral"
+        aria-expanded="false"
+        title="Abrir menu"
+    >
+        <i data-lucide="more-vertical" aria-hidden="true"></i>
+    </button>
 
-            <img
-                src="img/logo.jpg"
-                alt="Lotrix"
-            >
-
-        </div>
-
-
-        <nav class="menu">
-
-            <a href="dashboard.html" class="active">
-                Dashboard
-            </a>
-
-            <a href="producao.html">
-                Produção
-            </a>
-
-            <a href="produtos.html">
-                Produtos
-            </a>
-
-            <a href="etiquetas.html">
-                Etiquetas
-            </a>
-
-            <a href="estoque.html">
-                Estoque
-            </a>
-
-            <a href="relatorios.html">
-                Relatórios
-            </a>
-
-            <a href="auditoria.html">
-                Auditoria
-            </a>
-
-            <a href="usuario.html">
-                Usuários
-            </a>
-
-            <a href="configuracoes.html">
-                Configurações
-            </a>
-
-            <a href="ajuda.html">
-                Ajuda
-            </a>
-
-            <a href="sac.html">
-                SAC
-            </a>
-
-        </nav>
-
-
-        <div class="sidebar-footer">
-
-            <button
-                type="button"
-                onclick="logout()"
-            >
-                Sair
-            </button>
-
-        </div>
-
-    </aside>
-
-
-    <!-- ==========================================
-         CONTEÚDO
-    =========================================== -->
+    <!-- =====================================================
+         CONTEÚDO PRINCIPAL
+    ====================================================== -->
 
     <main class="content dashboard-page">
 
-        <!-- ======================================
+
+        <!-- =================================================
              CABEÇALHO
-        ======================================= -->
+        ================================================== -->
 
         <header class="top-header dashboard-header">
 
-            <div>
+            <div class="dashboard-welcome">
 
                 <p
                     class="header-kicker"
@@ -126,9 +153,33 @@
                 </h1>
 
 
-                <p>
+                <p class="dashboard-subtitle">
                     Veja o que precisa da sua atenção hoje.
                 </p>
+
+
+                <!--
+                    Mensagem dinâmica visual.
+                    O JS principal continua responsável
+                    pelos dados reais do dashboard.
+                -->
+
+                <div class="dashboard-status-message">
+
+                    <span class="status-message-icon">
+
+                        <i
+                            data-lucide="activity"
+                        ></i>
+
+                    </span>
+
+                    <span>
+                        Acompanhe as principais movimentações
+                        da operação.
+                    </span>
+
+                </div>
 
             </div>
 
@@ -139,7 +190,10 @@
                     class="button button-secondary"
                     href="producao.html"
                 >
+                    <i data-lucide="plus"></i>
+
                     Nova produção
+
                 </a>
 
 
@@ -147,7 +201,10 @@
                     class="button"
                     href="etiquetas.html"
                 >
+                    <i data-lucide="printer"></i>
+
                     Imprimir etiqueta
+
                 </a>
 
             </div>
@@ -155,22 +212,31 @@
         </header>
 
 
-        <!-- ======================================
-             INDICADORES
-        ======================================= -->
+
+        <!-- =================================================
+             CARDS PRINCIPAIS
+        ================================================== -->
 
         <section class="metric-grid">
 
-            <article class="metric-card">
+
+            <!-- PRODUÇÕES -->
+
+            <a
+                href="producao.html"
+                class="metric-card metric-link"
+            >
 
                 <span class="metric-icon success">
 
-                    <i data-lucide="chef-hat"></i>
+                    <i
+                        data-lucide="chef-hat"
+                    ></i>
 
                 </span>
 
 
-                <div>
+                <div class="metric-content">
 
                     <p>
                         Produções hoje
@@ -188,22 +254,39 @@
 
                 </div>
 
-            </article>
+
+                <span class="metric-arrow">
+
+                    <i
+                        data-lucide="arrow-up-right"
+                    ></i>
+
+                </span>
+
+            </a>
 
 
-            <article class="metric-card">
+
+            <!-- ETIQUETAS -->
+
+            <a
+                href="etiquetas.html"
+                class="metric-card metric-link"
+            >
 
                 <span class="metric-icon info">
 
-                    <i data-lucide="printer"></i>
+                    <i
+                        data-lucide="printer"
+                    ></i>
 
                 </span>
 
 
-                <div>
+                <div class="metric-content">
 
                     <p>
-                        Etiquetas impressas
+                        Etiquetas
                     </p>
 
 
@@ -218,19 +301,36 @@
 
                 </div>
 
-            </article>
+
+                <span class="metric-arrow">
+
+                    <i
+                        data-lucide="arrow-up-right"
+                    ></i>
+
+                </span>
+
+            </a>
 
 
-            <article class="metric-card">
+
+            <!-- VENCIMENTOS -->
+
+            <a
+                href="etiquetas.html"
+                class="metric-card metric-link metric-alert"
+            >
 
                 <span class="metric-icon warning">
 
-                    <i data-lucide="calendar-clock"></i>
+                    <i
+                        data-lucide="calendar-clock"
+                    ></i>
 
                 </span>
 
 
-                <div>
+                <div class="metric-content">
 
                     <p>
                         Vencendo hoje
@@ -248,19 +348,36 @@
 
                 </div>
 
-            </article>
+
+                <span class="metric-arrow">
+
+                    <i
+                        data-lucide="arrow-up-right"
+                    ></i>
+
+                </span>
+
+            </a>
 
 
-            <article class="metric-card">
+
+            <!-- ESTOQUE -->
+
+            <a
+                href="estoque.html"
+                class="metric-card metric-link"
+            >
 
                 <span class="metric-icon danger">
 
-                    <i data-lucide="package-x"></i>
+                    <i
+                        data-lucide="package-x"
+                    ></i>
 
                 </span>
 
 
-                <div>
+                <div class="metric-content">
 
                     <p>
                         Estoque crítico
@@ -278,29 +395,90 @@
 
                 </div>
 
-            </article>
+
+                <span class="metric-arrow">
+
+                    <i
+                        data-lucide="arrow-up-right"
+                    ></i>
+
+                </span>
+
+            </a>
 
         </section>
 
 
-        <!-- ======================================
-             GRID PRINCIPAL
-        ======================================= -->
 
-        <section class="dashboard-grid">
+        <!-- =================================================
+             MENSAGEM OPERACIONAL
+        ================================================== -->
 
-            <!-- ==================================
+        <section class="dashboard-attention-banner">
+
+            <div class="attention-banner-icon">
+
+                <i
+                    data-lucide="bell-ring"
+                ></i>
+
+            </div>
+
+
+            <div class="attention-banner-content">
+
+                <strong>
+                    Atenção operacional
+                </strong>
+
+                <span>
+                    <span
+                        id="resumoOperacional"
+                        aria-live="polite"
+                    >
+                    Confira os vencimentos e os níveis
+                    de estoque antes de iniciar a produção.
+                    </span>
+                </span>
+
+            </div>
+
+
+            <a href="etiquetas.html">
+
+                Revisar
+
+                <i
+                    data-lucide="arrow-right"
+                ></i>
+
+            </a>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PRODUÇÃO + RANKING
+        ================================================== -->
+
+        <section class="dashboard-main-grid">
+
+
+            <!-- =================================================
                  GRÁFICO
-            =================================== -->
+            ================================================== -->
 
-            <article class="dashboard-panel panel-wide">
+            <article
+                class="dashboard-panel production-chart-panel"
+            >
 
                 <div class="panel-heading">
 
                     <div>
 
                         <p class="panel-eyebrow">
-                            Acompanhamento
+                            Produção
                         </p>
 
 
@@ -308,11 +486,23 @@
                             Produção da semana
                         </h2>
 
+
+                        <span class="panel-description">
+                            Acompanhe o volume produzido
+                            nos últimos 7 dias.
+                        </span>
+
                     </div>
 
 
                     <span class="panel-badge">
+
+                        <i
+                            data-lucide="calendar-days"
+                        ></i>
+
                         Últimos 7 dias
+
                     </span>
 
                 </div>
@@ -329,11 +519,14 @@
             </article>
 
 
-            <!-- ==================================
-                 RANKING
-            =================================== -->
 
-            <article class="dashboard-panel">
+            <!-- =================================================
+                 RANKING
+            ================================================== -->
+
+            <article
+                class="dashboard-panel ranking-panel"
+            >
 
                 <div class="panel-heading">
 
@@ -345,10 +538,25 @@
 
 
                         <h2>
-                            Produtos mais produzidos
+                            Mais produzidos
                         </h2>
 
+
+                        <span class="panel-description">
+                            Produtos com maior volume
+                            de produção.
+                        </span>
+
                     </div>
+
+
+                    <span class="ranking-icon">
+
+                        <i
+                            data-lucide="trophy"
+                        ></i>
+
+                    </span>
 
                 </div>
 
@@ -359,7 +567,9 @@
                 >
 
                     <li class="skeleton-row"></li>
+
                     <li class="skeleton-row"></li>
+
                     <li class="skeleton-row"></li>
 
                 </ol>
@@ -367,11 +577,180 @@
             </article>
 
 
-            <!-- ==================================
-                 PRODUÇÕES RECENTES
-            =================================== -->
 
-            <article class="dashboard-panel">
+            <!-- =================================================
+                 VALIDADES
+            ================================================== -->
+
+            <article
+                class="dashboard-panel validity-panel"
+            >
+
+                <div class="panel-heading validity-heading">
+
+                    <div>
+
+                        <p class="panel-eyebrow validity-eyebrow">
+                            Atenção
+                        </p>
+
+
+                        <h2>
+                            Validades
+                        </h2>
+
+
+                        <span class="panel-description">
+                            Produtos que precisam de revisão.
+                        </span>
+
+                    </div>
+
+
+                    <a href="etiquetas.html">
+
+                        Ver todas
+
+                        <i
+                            data-lucide="arrow-up-right"
+                        ></i>
+
+                    </a>
+
+                </div>
+
+
+
+               <!-- ALERTA DE ETIQUETAS -->
+
+<div class="etiqueta-alertas">
+
+    <button
+        type="button"
+        class="etiqueta-alerta-card alerta-prestes"
+        data-alerta="prestes"
+        aria-controls="listaAlertasEtiquetas"
+        aria-expanded="false"
+    >
+        <span class="etiqueta-alerta-icon">
+            <i data-lucide="clock-3"></i>
+        </span>
+
+        <span class="etiqueta-alerta-content">
+            <strong>PRESTES A VENCER</strong>
+            <small>Até 7 dias</small>
+        </span>
+
+        <b id="alertaEtiquetasPrestes">0</b>
+
+        <i
+            class="etiqueta-alerta-arrow"
+            data-lucide="chevron-down"
+        ></i>
+    </button>
+
+
+    <button
+        type="button"
+        class="etiqueta-alerta-card alerta-dias"
+        data-alerta="dias"
+        aria-controls="listaAlertasEtiquetas"
+        aria-expanded="false"
+    >
+        <span class="etiqueta-alerta-icon">
+            <i data-lucide="calendar-check"></i>
+        </span>
+
+        <span class="etiqueta-alerta-content">
+            <strong>ETIQUETA EM DIAS</strong>
+            <small>Mais de 7 dias</small>
+        </span>
+
+        <b id="alertaEtiquetasDias">0</b>
+
+        <i
+            class="etiqueta-alerta-arrow"
+            data-lucide="chevron-down"
+        ></i>
+    </button>
+
+
+    <button
+        type="button"
+        class="etiqueta-alerta-card alerta-vencida"
+        data-alerta="vencida"
+        aria-controls="listaAlertasEtiquetas"
+        aria-expanded="false"
+    >
+        <span class="etiqueta-alerta-icon">
+            <i data-lucide="circle-alert"></i>
+        </span>
+
+        <span class="etiqueta-alerta-content">
+            <strong>ETIQUETA VENCIDA</strong>
+            <small>Validade ultrapassada</small>
+        </span>
+
+        <b id="alertaEtiquetasVencidas">0</b>
+
+        <i
+            class="etiqueta-alerta-arrow"
+            data-lucide="chevron-down"
+        ></i>
+    </button>
+
+</div>
+
+
+<!-- LISTA DAS ETIQUETAS SELECIONADAS -->
+
+<div
+    id="listaAlertasEtiquetas"
+    class="lista-alertas-etiquetas"
+    hidden
+></div>
+
+                <!-- LISTA PRINCIPAL -->
+
+                <div
+                    class="attention-list validity-list"
+                    id="listaVencimentos"
+                >
+
+                    <div class="skeleton-row"></div>
+
+                    <div class="skeleton-row"></div>
+
+                    <div class="skeleton-row"></div>
+
+                </div>
+
+
+                <div class="validity-footer">
+
+                    <a href="etiquetas.html">
+
+                        Ver todas as validades
+
+                        <i
+                            data-lucide="arrow-right"
+                        ></i>
+
+                    </a>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- =================================================
+                 PRODUÇÕES RECENTES
+            ================================================== -->
+
+            <article
+                class="dashboard-panel recent-panel"
+            >
 
                 <div class="panel-heading">
 
@@ -390,7 +769,13 @@
 
 
                     <a href="producao.html">
+
                         Ver todas
+
+                        <i
+                            data-lucide="arrow-up-right"
+                        ></i>
+
                     </a>
 
                 </div>
@@ -402,50 +787,9 @@
                 >
 
                     <div class="skeleton-row"></div>
-                    <div class="skeleton-row"></div>
-                    <div class="skeleton-row"></div>
-
-                </div>
-
-            </article>
-
-
-            <!-- ==================================
-                 ETIQUETAS
-            =================================== -->
-
-            <article class="dashboard-panel">
-
-                <div class="panel-heading">
-
-                    <div>
-
-                        <p class="panel-eyebrow">
-                            Impressões
-                        </p>
-
-
-                        <h2>
-                            Últimas etiquetas
-                        </h2>
-
-                    </div>
-
-
-                    <a href="etiquetas.html">
-                        Ver todas
-                    </a>
-
-                </div>
-
-
-                <div
-                    class="activity-list"
-                    id="listaEtiquetas"
-                >
 
                     <div class="skeleton-row"></div>
-                    <div class="skeleton-row"></div>
+
                     <div class="skeleton-row"></div>
 
                 </div>
@@ -453,74 +797,71 @@
             </article>
 
 
-            <!-- ==================================
-                 VENCIMENTOS
-            =================================== -->
 
-            <article class="dashboard-panel">
-
-                <div class="panel-heading">
-
-                    <div>
-
-                        <p class="panel-eyebrow">
-                            Atenção
-                        </p>
-
-
-                        <h2>
-                            Próximos do vencimento
-                        </h2>
-
-                    </div>
-
-
-                    <a href="etiquetas.html">
-                        Ver etiquetas
-                    </a>
-
-                </div>
-
-
-                <div
-                    class="attention-list"
-                    id="listaVencimentos"
-                >
-
-                    <div class="skeleton-row"></div>
-                    <div class="skeleton-row"></div>
-                    <div class="skeleton-row"></div>
-
-                </div>
-
-            </article>
-
-
-            <!-- ==================================
+            <!-- =================================================
                  ESTOQUE
-            =================================== -->
+            ================================================== -->
 
-            <article class="dashboard-panel">
+            <article
+                class="dashboard-panel stock-panel"
+            >
 
                 <div class="panel-heading">
 
                     <div>
 
                         <p class="panel-eyebrow">
-                            Reposição
+                            Estoque
                         </p>
 
 
                         <h2>
-                            Estoque crítico
+                            Situação do estoque
                         </h2>
 
                     </div>
 
 
                     <a href="estoque.html">
+
                         Abrir estoque
+
+                        <i
+                            data-lucide="arrow-up-right"
+                        ></i>
+
                     </a>
+
+                </div>
+
+
+                <div
+                    class="stock-overview"
+                >
+
+                    <div
+                        class="stock-status-icon"
+                    >
+
+                        <i
+                            data-lucide="package-check"
+                        ></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            Controle de estoque
+                        </strong>
+
+                        <span>
+                            Produtos abaixo do mínimo
+                            aparecem automaticamente aqui.
+                        </span>
+
+                    </div>
 
                 </div>
 
@@ -531,8 +872,25 @@
                 >
 
                     <div class="skeleton-row"></div>
+
                     <div class="skeleton-row"></div>
+
                     <div class="skeleton-row"></div>
+
+                </div>
+
+
+                <div class="stock-footer">
+
+                    <a href="estoque.html">
+
+                        Abrir estoque
+
+                        <i
+                            data-lucide="arrow-right"
+                        ></i>
+
+                    </a>
 
                 </div>
 
@@ -541,23 +899,167 @@
 
         </section>
 
+
+
+        <!-- =================================================
+             MONITORIA DE VALIDADES
+             
+             Mantida compatível com o dashboard.js.
+             Pode ser utilizada posteriormente sem quebrar
+             o restante do Dashboard.
+        ================================================== -->
+
+        <section
+            class="monitoria-validade dashboard-monitoria"
+            id="monitoriaValidade"
+            hidden
+        >
+
+            <div class="monitoria-topo">
+
+                <div class="monitoria-titulo">
+
+                    <p class="panel-eyebrow">
+                        Monitoramento
+                    </p>
+
+                    <h2>
+                        Monitoria de validades
+                    </h2>
+
+                    <p>
+                        Acompanhamento detalhado das etiquetas
+                        próximas do vencimento.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="monitoria-cards">
+
+
+                <div class="monitoria-card ontem">
+
+                    <span class="monitoria-periodo">
+                        Ontem
+                    </span>
+
+                    <div class="monitoria-numero">
+
+                        <strong id="validadeOntemMonitoria">
+                            —
+                        </strong>
+
+                        <span>
+                            produtos
+                        </span>
+
+                    </div>
+
+                    <span
+                        class="monitoria-data"
+                        id="dataValidadeOntemMonitoria"
+                    >
+                        —
+                    </span>
+
+                </div>
+
+
+
+                <div class="monitoria-card hoje">
+
+                    <span class="monitoria-periodo">
+                        Hoje
+                    </span>
+
+                    <div class="monitoria-numero">
+
+                        <strong id="validadeHojeMonitoria">
+                            —
+                        </strong>
+
+                        <span>
+                            produtos
+                        </span>
+
+                    </div>
+
+                    <span
+                        class="monitoria-data"
+                        id="dataValidadeHojeMonitoria"
+                    >
+                        —
+                    </span>
+
+                </div>
+
+
+
+                <div class="monitoria-card amanha">
+
+                    <span class="monitoria-periodo">
+                        Amanhã
+                    </span>
+
+                    <div class="monitoria-numero">
+
+                        <strong id="validadeAmanhaMonitoria">
+                            —
+                        </strong>
+
+                        <span>
+                            produtos
+                        </span>
+
+                    </div>
+
+                    <span
+                        class="monitoria-data"
+                        id="dataValidadeAmanhaMonitoria"
+                    >
+                        —
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="lista-monitoria-validades"
+                id="listaMonitoriaValidades"
+            ></div>
+
+        </section>
+
+
     </main>
 
 </div>
 
 
-<!-- ==========================================
+
+<!-- =====================================================
      BIBLIOTECAS
-=========================================== -->
+====================================================== -->
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/chart.js"
+></script>
 
-<script src="https://unpkg.com/lucide@latest"></script>
+
+<script
+    src="https://unpkg.com/lucide@latest"
+></script>
 
 
-<!-- ==========================================
+
+<!-- =====================================================
      FIREBASE / LOTRIX
-=========================================== -->
+====================================================== -->
 
 <script
     type="module"
@@ -582,8 +1084,40 @@
     src="js/dashboard.js"
 ></script>
 
+<script src="js/design-system.js"></script>
+    <script src="js/sidebar-final.js"></script>
+
+
+<script src="js/sidebar.js"></script>
+
+<!-- =====================================================
+     ÍCONES
+====================================================== -->
+
+<script>
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        () => {
+
+            if (
+                window.lucide &&
+                typeof window.lucide.createIcons ===
+                "function"
+            ) {
+
+                window.lucide.createIcons();
+
+            }
+
+        }
+    );
+
+</script>
+
 
 </body>
 
 </html>
+
 

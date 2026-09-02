@@ -1,18 +1,27 @@
 // =======================================
-// LOTRIX - USUÁRIOS V6
+// LOTRIX - USUÁRIOS V7
 // FIRESTORE + MULTIEMPRESA
 //
+// SEM CLOUD FUNCTIONS
+// SEM TROCAR SESSÃO DO ADMINISTRADOR
+//
 // NOVO USUÁRIO:
-// SEMPRE PERTENCE À LOJA ATUAL
+// - Criado em uma segunda instância do Firebase Auth
+// - Pertence sempre à empresa do administrador
 //
 // LISTAGEM:
-// SOMENTE USUÁRIOS DA LOJA ATUAL
+// - Somente usuários da empresa atual
+//
+// SEGURANÇA:
+// - Somente administrador ativo pode criar
+// - Somente usuários da empresa atual podem ser editados/excluídos
 // =======================================
 
 console.log("=======================================");
-console.log("LOTRIX USUARIOS.JS V6 CARREGADO");
+console.log("LOTRIX USUARIOS.JS V7 CARREGADO");
 console.log("MULTIEMPRESA ATIVO");
-console.log("USUÁRIO SEMPRE VINCULADO À LOJA ATUAL");
+console.log("SEM CLOUD FUNCTIONS");
+console.log("AUTH SECUNDÁRIO ATIVO");
 console.log("=======================================");
 
 
@@ -20,22 +29,36 @@ console.log("=======================================");
 // FIREBASE
 // =======================================
 
-import { db, auth } from "./firebase.js";
+import {
+    db,
+    auth
+} from "./firebase.js";
 
 import {
     collection,
     getDocs,
+    getDoc,
     doc,
-    setDoc,
     updateDoc,
     deleteDoc,
+    setDoc,
     query,
     where,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import {
-    createUserWithEmailAndPassword
+    createUserWithEmailAndPassword,
+    deleteUser
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+    getApp,
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getAuth
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
@@ -44,26 +67,84 @@ import {
 
 
 // =======================================
+// AUTH SECUNDÁRIO
+//
+// IMPORTANTE:
+//
+// O administrador continua conectado
+// no auth principal.
+//
+// O novo usuário é criado somente
+// no auth secundário.
+//
+// Isso evita trocar a sessão.
+// =======================================
+
+let authSecundario = null;
+
+try {
+
+    const appPrincipal =
+        getApp();
+
+    const appSecundario =
+        initializeApp(
+            appPrincipal.options,
+            "LotrixUsuarioSecundario"
+        );
+
+    authSecundario =
+        getAuth(
+            appSecundario
+        );
+
+    console.log(
+        "AUTH SECUNDÁRIO INICIALIZADO."
+    );
+
+} catch (error) {
+
+    console.error(
+        "ERRO AO INICIALIZAR AUTH SECUNDÁRIO:",
+        error
+    );
+
+}
+
+
+// =======================================
 // ELEMENTOS
 // =======================================
 
 const tabelaUsuarios =
-    document.getElementById("tabelaUsuarios");
+    document.getElementById(
+        "tabelaUsuarios"
+    );
 
 const btnNovoUsuario =
-    document.getElementById("btnNovoUsuario");
+    document.getElementById(
+        "btnNovoUsuario"
+    );
 
 const modalUsuario =
-    document.getElementById("modalUsuario");
+    document.getElementById(
+        "modalUsuario"
+    );
 
 const btnCancelar =
-    document.getElementById("btnCancelar");
+    document.getElementById(
+        "btnCancelar"
+    );
 
 const btnFecharModal =
-    document.getElementById("btnFecharModal");
+    document.getElementById(
+        "btnFecharModal"
+    );
 
 const formUsuario =
-    document.getElementById("formUsuario");
+    document.getElementById(
+        "formUsuario"
+    );
 
 
 // =======================================
@@ -71,19 +152,29 @@ const formUsuario =
 // =======================================
 
 const nomeUsuario =
-    document.getElementById("nomeUsuario");
+    document.getElementById(
+        "nomeUsuario"
+    );
 
 const emailUsuario =
-    document.getElementById("emailUsuario");
+    document.getElementById(
+        "emailUsuario"
+    );
 
 const senhaUsuario =
-    document.getElementById("senhaUsuario");
+    document.getElementById(
+        "senhaUsuario"
+    );
 
 const perfilUsuario =
-    document.getElementById("perfilUsuario");
+    document.getElementById(
+        "perfilUsuario"
+    );
 
 const statusUsuario =
-    document.getElementById("statusUsuario");
+    document.getElementById(
+        "statusUsuario"
+    );
 
 
 // =======================================
@@ -118,7 +209,9 @@ function usuarioAtual() {
 
         }
 
-        return JSON.parse(dados);
+        return JSON.parse(
+            dados
+        );
 
     } catch (error) {
 
@@ -165,6 +258,43 @@ function empresaAtual() {
     }
 
     return usuario.idEmpresa;
+
+}
+
+
+// =======================================
+// VERIFICAR ADMINISTRADOR
+// =======================================
+
+function ehAdministrador() {
+
+    const usuario =
+        usuarioAtual();
+
+    if (!usuario) {
+
+        return false;
+
+    }
+
+    const perfil =
+        String(
+            usuario.perfil || ""
+        )
+            .toLowerCase()
+            .trim();
+
+    const status =
+        String(
+            usuario.status || ""
+        )
+            .toLowerCase()
+            .trim();
+
+    return (
+        perfil === "administrador" &&
+        status === "ativo"
+    );
 
 }
 
@@ -259,7 +389,7 @@ function pegarPermissoes() {
 // =======================================
 // CARREGAR USUÁRIOS
 //
-// SOMENTE A LOJA ATUAL
+// SOMENTE EMPRESA ATUAL
 // =======================================
 
 async function carregarUsuarios() {
@@ -303,7 +433,6 @@ async function carregarUsuarios() {
         );
         console.log("=======================================");
 
-
         const consulta =
             query(
 
@@ -320,15 +449,12 @@ async function carregarUsuarios() {
 
             );
 
-
         const snap =
             await getDocs(
                 consulta
             );
 
-
         usuarios = [];
-
 
         snap.forEach(
             item => {
@@ -358,20 +484,16 @@ async function carregarUsuarios() {
             }
         );
 
-
         console.log(
             "USUÁRIOS DA LOJA:",
             usuarios.length
         );
 
-
         mostrarUsuarios(
             usuarios
         );
 
-
         atualizarCards();
-
 
     } catch (error) {
 
@@ -416,7 +538,6 @@ function atualizarCards() {
             "cardOperadores"
         );
 
-
     if (total) {
 
         total.innerText =
@@ -424,39 +545,42 @@ function atualizarCards() {
 
     }
 
-
     if (ativos) {
 
         ativos.innerText =
             usuarios.filter(
                 u =>
-                    (u.status || "")
+                    String(
+                        u.status || ""
+                    )
                         .toLowerCase() ===
                     "ativo"
             ).length;
 
     }
 
-
     if (admins) {
 
         admins.innerText =
             usuarios.filter(
                 u =>
-                    (u.perfil || "")
+                    String(
+                        u.perfil || ""
+                    )
                         .toLowerCase() ===
                     "administrador"
             ).length;
 
     }
 
-
     if (operadores) {
 
         operadores.innerText =
             usuarios.filter(
                 u =>
-                    (u.perfil || "")
+                    String(
+                        u.perfil || ""
+                    )
                         .toLowerCase() ===
                     "operador"
             ).length;
@@ -478,10 +602,8 @@ function mostrarUsuarios(lista) {
 
     }
 
-
     tabelaUsuarios.innerHTML =
         "";
-
 
     if (!lista.length) {
 
@@ -503,31 +625,50 @@ function mostrarUsuarios(lista) {
 
     }
 
-
     lista.forEach(
         u => {
+
+            const nome =
+                escapeHtml(
+                    u.nome || "-"
+                );
+
+            const email =
+                escapeHtml(
+                    u.email || "-"
+                );
+
+            const perfil =
+                escapeHtml(
+                    u.perfil || "-"
+                );
+
+            const status =
+                escapeHtml(
+                    u.status || "-"
+                );
 
             tabelaUsuarios.innerHTML += `
 
                 <tr>
 
                     <td>
-                        ${u.nome || "-"}
+                        ${nome}
                     </td>
 
                     <td>
-                        ${u.email || "-"}
+                        ${email}
                     </td>
 
                     <td>
-                        ${u.perfil || "-"}
+                        ${perfil}
                     </td>
 
                     <td>
 
-                        <span class="status ${u.status || ""}">
+                        <span class="status ${status}">
 
-                            ${u.status || "-"}
+                            ${status}
 
                         </span>
 
@@ -542,7 +683,6 @@ function mostrarUsuarios(lista) {
                             ✏️
 
                         </button>
-
 
                         <button
                             type="button"
@@ -565,6 +705,39 @@ function mostrarUsuarios(lista) {
 
 
 // =======================================
+// PROTEÇÃO CONTRA HTML
+// =======================================
+
+function escapeHtml(valor) {
+
+    return String(
+        valor
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+// =======================================
 // ABRIR NOVO USUÁRIO
 // =======================================
 
@@ -572,26 +745,45 @@ btnNovoUsuario?.addEventListener(
     "click",
     () => {
 
+        if (!ehAdministrador()) {
+
+            mostrarToast(
+                "Somente administradores ativos podem criar usuários.",
+                "erro"
+            );
+
+            return;
+
+        }
+
+        if (!authSecundario) {
+
+            mostrarToast(
+                "Serviço de autenticação indisponível.",
+                "erro"
+            );
+
+            return;
+
+        }
+
         usuarioEditando =
             null;
 
-
         formUsuario?.reset();
-
 
         emailUsuario.disabled =
             false;
 
-
         senhaUsuario.required =
             true;
-
 
         document.getElementById(
             "tituloModal"
         ).innerHTML =
             "👤 Novo Usuário";
 
+        carregarPermissoes({});
 
         modalUsuario.style.display =
             "flex";
@@ -612,6 +804,21 @@ function fecharModal() {
             "none";
 
     }
+
+    usuarioEditando =
+        null;
+
+    if (formUsuario) {
+
+        formUsuario.reset();
+
+    }
+
+    emailUsuario.disabled =
+        false;
+
+    senhaUsuario.required =
+        true;
 
 }
 
@@ -636,52 +843,237 @@ function carregarPermissoes(
     permissoes = {}
 ) {
 
-    document.getElementById(
-        "permDashboard"
-    ).checked =
-        permissoes.dashboard || false;
+    const campos = {
+
+        permDashboard:
+            permissoes.dashboard,
+
+        permProdutos:
+            permissoes.produtos,
+
+        permProducao:
+            permissoes.producao,
+
+        permEtiquetas:
+            permissoes.etiquetas,
+
+        permEstoque:
+            permissoes.estoque,
+
+        permRelatorios:
+            permissoes.relatorios,
+
+        permUsuarios:
+            permissoes.usuarios,
+
+        permConfiguracoes:
+            permissoes.configuracoes
+
+    };
+
+    Object.entries(
+        campos
+    ).forEach(
+        ([id, valor]) => {
+
+            const elemento =
+                document.getElementById(
+                    id
+                );
+
+            if (elemento) {
+
+                elemento.checked =
+                    valor || false;
+
+            }
+
+        }
+    );
+
+}
 
 
-    document.getElementById(
-        "permProdutos"
-    ).checked =
-        permissoes.produtos || false;
+// =======================================
+// CRIAR USUÁRIO
+//
+// SEM CLOUD FUNCTION
+//
+// USA AUTH SECUNDÁRIO
+// =======================================
 
+async function criarNovoUsuario({
+    nome,
+    email,
+    senha,
+    perfil,
+    status,
+    permissoes,
+    idEmpresa
+}) {
 
-    document.getElementById(
-        "permProducao"
-    ).checked =
-        permissoes.producao || false;
+    if (!authSecundario) {
 
+        throw new Error(
+            "AUTH_SECUNDARIO_NAO_INICIALIZADO"
+        );
 
-    document.getElementById(
-        "permEtiquetas"
-    ).checked =
-        permissoes.etiquetas || false;
+    }
 
+    console.log(
+        "CRIANDO NOVO USUÁRIO NO AUTH SECUNDÁRIO..."
+    );
 
-    document.getElementById(
-        "permEstoque"
-    ).checked =
-        permissoes.estoque || false;
+    let credencial =
+        null;
 
+    try {
 
-    document.getElementById(
-        "permRelatorios"
-    ).checked =
-        permissoes.relatorios || false;
+        // ===================================
+        // CRIAR AUTH
+        // ===================================
 
+        credencial =
+            await createUserWithEmailAndPassword(
 
-    document.getElementById(
-        "permUsuarios"
-    ).checked =
-        permissoes.usuarios || false;
+                authSecundario,
 
+                email,
 
-    document.getElementById(
-        "permConfiguracoes"
-    ).checked =
-        permissoes.configuracoes || false;
+                senha
+
+            );
+
+        const novoUsuario =
+            credencial.user;
+
+        const uid =
+            novoUsuario.uid;
+
+        console.log(
+            "UID NOVO USUÁRIO:",
+            uid
+        );
+
+        // ===================================
+        // CRIAR PERFIL FIRESTORE
+        // ===================================
+
+        await setDoc(
+
+            doc(
+                db,
+                "usuarios",
+                uid
+            ),
+
+            {
+
+                id:
+                    uid,
+
+                nome:
+                    nome,
+
+                email:
+                    email,
+
+                perfil:
+                    perfil,
+
+                status:
+                    status,
+
+                permissoes:
+                    permissoes,
+
+                idEmpresa:
+                    idEmpresa,
+
+                criadoPor:
+                    auth.currentUser?.uid || null,
+
+                criadoEm:
+                    serverTimestamp()
+
+            }
+
+        );
+
+        console.log(
+            "PERFIL CRIADO NA EMPRESA:",
+            idEmpresa
+        );
+
+        // ===================================
+        // DESLOGAR AUTH SECUNDÁRIO
+        // ===================================
+
+        try {
+
+            await authSecundario.signOut();
+
+        } catch (logoutError) {
+
+            console.warn(
+                "Não foi possível sair do AUTH secundário:",
+                logoutError
+            );
+
+        }
+
+        return {
+
+            sucesso:
+                true,
+
+            uid:
+                uid
+
+        };
+
+    } catch (error) {
+
+        console.error(
+            "ERRO AO CRIAR USUÁRIO:",
+            error
+        );
+
+        // ===================================
+        // ROLLBACK
+        //
+        // Se criou AUTH mas falhou Firestore,
+        // remove o usuário criado.
+        // ===================================
+
+        if (
+            credencial?.user
+        ) {
+
+            try {
+
+                await deleteUser(
+                    credencial.user
+                );
+
+                console.log(
+                    "ROLLBACK AUTH REALIZADO."
+                );
+
+            } catch (rollbackError) {
+
+                console.error(
+                    "ERRO NO ROLLBACK:",
+                    rollbackError
+                );
+
+            }
+
+        }
+
+        throw error;
+
+    }
 
 }
 
@@ -697,16 +1089,29 @@ formUsuario?.addEventListener(
 
         event.preventDefault();
 
-
         try {
 
             // ===================================
-            // EMPRESA ATUAL
+            // VERIFICAR ADMIN
+            // ===================================
+
+            if (!ehAdministrador()) {
+
+                mostrarToast(
+                    "Somente administradores ativos podem gerenciar usuários.",
+                    "erro"
+                );
+
+                return;
+
+            }
+
+            // ===================================
+            // EMPRESA
             // ===================================
 
             const idEmpresa =
                 empresaAtual();
-
 
             if (!idEmpresa) {
 
@@ -719,43 +1124,64 @@ formUsuario?.addEventListener(
 
             }
 
-
-            console.log("=======================================");
-            console.log("SALVANDO USUÁRIO");
-            console.log(
-                "ID EMPRESA:",
-                idEmpresa
-            );
-            console.log("=======================================");
-
-
             // ===================================
             // DADOS
             // ===================================
 
             const nome =
-                nomeUsuario.value.trim();
-
+                nomeUsuario.value
+                    .trim();
 
             const email =
-                emailUsuario.value.trim();
-
+                emailUsuario.value
+                    .trim()
+                    .toLowerCase();
 
             const senha =
                 senhaUsuario.value;
 
-
             const perfil =
-                perfilUsuario.value.toLowerCase();
-
+                String(
+                    perfilUsuario.value || "operador"
+                )
+                    .toLowerCase()
+                    .trim();
 
             const status =
-                statusUsuario.value.toLowerCase();
-
+                String(
+                    statusUsuario.value || "ativo"
+                )
+                    .toLowerCase()
+                    .trim();
 
             const permissoes =
                 pegarPermissoes();
 
+            // ===================================
+            // VALIDAÇÕES
+            // ===================================
+
+            if (!nome) {
+
+                mostrarToast(
+                    "Informe o nome do usuário.",
+                    "erro"
+                );
+
+                return;
+
+            }
+
+            if (!email) {
+
+                mostrarToast(
+                    "Informe o email.",
+                    "erro"
+                );
+
+                return;
+
+            }
 
             // ===================================
             // NOVO USUÁRIO
@@ -774,76 +1200,56 @@ formUsuario?.addEventListener(
 
                 }
 
+                if (senha.length < 6) {
 
-                // ===================================
-                // CRIAR AUTENTICAÇÃO
-                // ===================================
-
-                const credencial =
-                    await createUserWithEmailAndPassword(
-
-                        auth,
-
-                        email,
-
-                        senha
-
+                    mostrarToast(
+                        "A senha deve ter pelo menos 6 caracteres.",
+                        "erro"
                     );
 
+                    return;
 
-                const uid =
-                    credencial.user.uid;
-
-
-                console.log(
-                    "UID NOVO USUÁRIO:",
-                    uid
-                );
-
-
-                // ===================================
-                // CRIAR DOCUMENTO
-                //
-                // AQUI ESTÁ A CORREÇÃO PRINCIPAL
-                // ===================================
-
-                await setDoc(
-
-                    doc(
-                        db,
-                        "usuarios",
-                        uid
-                    ),
-
-                    {
-
-                        nome,
-
-                        email,
-
-                        perfil,
-
-                        status,
-
-                        permissoes,
-
-                        // LOJA ATUAL
-                        idEmpresa:
-                            idEmpresa,
-
-                        criadoEm:
-                            serverTimestamp()
-
-                    }
-
-                );
-
+                }
 
                 console.log(
-                    "USUÁRIO CRIADO NA LOJA:",
+                    "======================================="
+                );
+
+                console.log(
+                    "CRIANDO NOVO USUÁRIO"
+                );
+
+                console.log(
+                    "EMPRESA:",
                     idEmpresa
                 );
 
+                console.log(
+                    "PERFIL:",
+                    perfil
+                );
+
+                console.log(
+                    "======================================="
+                );
+
+                await criarNovoUsuario({
+
+                    nome,
+
+                    email,
+
+                    senha,
+
+                    perfil,
+
+                    status,
+
+                    permissoes,
+
+                    idEmpresa
+
+                });
 
                 mostrarToast(
                     "Usuário criado com sucesso!"
@@ -851,9 +1257,8 @@ formUsuario?.addEventListener(
 
             }
 
-
             // ===================================
-            // EDITAR
+            // EDITAR USUÁRIO
             // ===================================
 
             else {
@@ -864,7 +1269,6 @@ formUsuario?.addEventListener(
                             u.id ===
                             usuarioEditando
                     );
-
 
                 if (!usuario) {
 
@@ -877,10 +1281,9 @@ formUsuario?.addEventListener(
 
                 }
 
-
-                // SEGURANÇA:
-                // NÃO PERMITE EDITAR USUÁRIO
-                // DE OUTRA EMPRESA
+                // ===================================
+                // SEGURANÇA MULTIEMPRESA
+                // ===================================
 
                 if (
                     usuario.idEmpresa !==
@@ -895,7 +1298,6 @@ formUsuario?.addEventListener(
                     return;
 
                 }
-
 
                 await updateDoc(
 
@@ -922,13 +1324,11 @@ formUsuario?.addEventListener(
 
                 );
 
-
                 mostrarToast(
                     "Usuário atualizado!"
                 );
 
             }
-
 
             // ===================================
             // FINALIZAR
@@ -936,16 +1336,7 @@ formUsuario?.addEventListener(
 
             fecharModal();
 
-
-            formUsuario.reset();
-
-
-            usuarioEditando =
-                null;
-
-
             await carregarUsuarios();
-
 
         } catch (error) {
 
@@ -954,11 +1345,10 @@ formUsuario?.addEventListener(
                 error
             );
 
-
             let mensagem =
                 "Erro ao salvar usuário.";
 
-
+            // Firebase Auth
             if (
                 error?.code ===
                 "auth/email-already-in-use"
@@ -967,10 +1357,7 @@ formUsuario?.addEventListener(
                 mensagem =
                     "Este email já está cadastrado.";
 
-            }
-
-
-            if (
+            } else if (
                 error?.code ===
                 "auth/invalid-email"
             ) {
@@ -978,10 +1365,7 @@ formUsuario?.addEventListener(
                 mensagem =
                     "Email inválido.";
 
-            }
-
-
-            if (
+            } else if (
                 error?.code ===
                 "auth/weak-password"
             ) {
@@ -989,8 +1373,31 @@ formUsuario?.addEventListener(
                 mensagem =
                     "A senha deve ter pelo menos 6 caracteres.";
 
-            }
+            } else if (
+                error?.code ===
+                "auth/network-request-failed"
+            ) {
 
+                mensagem =
+                    "Erro de conexão com o Firebase.";
+
+            } else if (
+                error?.code ===
+                "permission-denied"
+            ) {
+
+                mensagem =
+                    "Você não tem permissão para criar este usuário.";
+
+            } else if (
+                error?.message ===
+                "AUTH_SECUNDARIO_NAO_INICIALIZADO"
+            ) {
+
+                mensagem =
+                    "Não foi possível iniciar o cadastro de usuário.";
+
+            }
 
             mostrarToast(
                 mensagem,
@@ -1010,6 +1417,21 @@ formUsuario?.addEventListener(
 window.editarUsuario =
     function(id) {
 
+        // ===================================
+        // SEGURANÇA
+        // ===================================
+
+        if (!ehAdministrador()) {
+
+            mostrarToast(
+                "Somente administradores ativos podem editar usuários.",
+                "erro"
+            );
+
+            return;
+
+        }
+
         const usuario =
             usuarios.find(
                 u =>
@@ -1017,17 +1439,19 @@ window.editarUsuario =
                     id
             );
 
-
         if (!usuario) {
+
+            mostrarToast(
+                "Usuário não encontrado.",
+                "erro"
+            );
 
             return;
 
         }
 
-
         const idEmpresa =
             empresaAtual();
-
 
         if (
             !idEmpresa ||
@@ -1044,51 +1468,40 @@ window.editarUsuario =
 
         }
 
-
         usuarioEditando =
             id;
-
 
         document.getElementById(
             "tituloModal"
         ).innerHTML =
             "✏️ Editar Usuário";
 
-
         nomeUsuario.value =
             usuario.nome || "";
-
 
         emailUsuario.value =
             usuario.email || "";
 
-
         senhaUsuario.value =
             "";
-
 
         senhaUsuario.required =
             false;
 
-
         emailUsuario.disabled =
             true;
-
 
         perfilUsuario.value =
             usuario.perfil ||
             "operador";
 
-
         statusUsuario.value =
             usuario.status ||
             "ativo";
 
-
         carregarPermissoes(
-            usuario.permissoes
+            usuario.permissoes || {}
         );
-
 
         modalUsuario.style.display =
             "flex";
@@ -1103,9 +1516,23 @@ window.editarUsuario =
 window.excluirUsuario =
     async function(id) {
 
+        // ===================================
+        // ADMIN
+        // ===================================
+
+        if (!ehAdministrador()) {
+
+            mostrarToast(
+                "Somente administradores ativos podem excluir usuários.",
+                "erro"
+            );
+
+            return;
+
+        }
+
         const idEmpresa =
             empresaAtual();
-
 
         if (!idEmpresa) {
 
@@ -1118,14 +1545,12 @@ window.excluirUsuario =
 
         }
 
-
         const usuario =
             usuarios.find(
                 u =>
                     u.id ===
                     id
             );
-
 
         if (!usuario) {
 
@@ -1138,8 +1563,9 @@ window.excluirUsuario =
 
         }
 
-
+        // ===================================
         // SEGURANÇA MULTIEMPRESA
+        // ===================================
 
         if (
             usuario.idEmpresa !==
@@ -1155,12 +1581,28 @@ window.excluirUsuario =
 
         }
 
+        // ===================================
+        // NÃO PERMITIR EXCLUIR A SI MESMO
+        // ===================================
+
+        if (
+            auth.currentUser?.uid ===
+            id
+        ) {
+
+            mostrarToast(
+                "Você não pode excluir seu próprio usuário.",
+                "erro"
+            );
+
+            return;
+
+        }
 
         const confirmar =
             confirm(
-                "Deseja realmente excluir este usuário?"
+                `Deseja realmente excluir o usuário "${usuario.nome || usuario.email}"?`
             );
-
 
         if (!confirmar) {
 
@@ -1168,8 +1610,11 @@ window.excluirUsuario =
 
         }
 
-
         try {
+
+            // ===================================
+            // EXCLUIR PERFIL FIRESTORE
+            // ===================================
 
             await deleteDoc(
 
@@ -1181,14 +1626,11 @@ window.excluirUsuario =
 
             );
 
-
             mostrarToast(
                 "Usuário removido!"
             );
 
-
             await carregarUsuarios();
-
 
         } catch (error) {
 
@@ -1197,9 +1639,21 @@ window.excluirUsuario =
                 error
             );
 
+            let mensagem =
+                "Erro ao excluir usuário.";
+
+            if (
+                error?.code ===
+                "permission-denied"
+            ) {
+
+                mensagem =
+                    "Você não tem permissão para excluir este usuário.";
+
+            }
 
             mostrarToast(
-                "Erro ao excluir usuário.",
+                mensagem,
                 "erro"
             );
 
@@ -1227,14 +1681,15 @@ document
                     .toLowerCase()
                     .trim();
 
-
             const filtrados =
                 usuarios.filter(
                     u => {
 
                         return (
 
-                            (u.nome || "")
+                            String(
+                                u.nome || ""
+                            )
                                 .toLowerCase()
                                 .includes(
                                     texto
@@ -1242,7 +1697,9 @@ document
 
                             ||
 
-                            (u.email || "")
+                            String(
+                                u.email || ""
+                            )
                                 .toLowerCase()
                                 .includes(
                                     texto
@@ -1250,7 +1707,19 @@ document
 
                             ||
 
-                            (u.perfil || "")
+                            String(
+                                u.perfil || ""
+                            )
+                                .toLowerCase()
+                                .includes(
+                                    texto
+                                )
+
+                            ||
+
+                            String(
+                                u.status || ""
+                            )
                                 .toLowerCase()
                                 .includes(
                                     texto
@@ -1260,7 +1729,6 @@ document
 
                     }
                 );
-
 
             mostrarUsuarios(
                 filtrados
@@ -1275,7 +1743,9 @@ document
 // INICIAR
 // =======================================
 
-if (verificarEmpresa()) {
+if (
+    verificarEmpresa()
+) {
 
     carregarUsuarios();
 

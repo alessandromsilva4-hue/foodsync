@@ -1,20 +1,193 @@
-/* ==========================================
+/* =========================================================
    LOTRIX — ETIQUETAS
+   LAYOUT ESTÁVEL
    Tela + Impressão Zebra ZD220
-   Etiqueta: 60 x 60 mm
-========================================== */
+   Etiqueta física: 60 x 60 mm
+========================================================= */
 
 
-/* ==========================================
-   CONFIGURAÇÃO GERAL DA TELA
-========================================== */
+/* =========================================================
+   BASE
+========================================================= */
 
-html,
-body {
+.etiquetas-page {
     width: 100%;
-    min-height: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+.content > .top-header {
+    margin-bottom: 24px;
+}
+
+.top-header h1 {
     margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.top-header p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   ÁREA PRINCIPAL
+   DESKTOP: PAINÉIS LADO A LADO
+========================================================= */
+
+.etiqueta-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+    width: 100%;
+    margin-bottom: 24px;
+    align-items: start;
+}
+
+
+/* =========================================================
+   PAINÉIS
+========================================================= */
+
+.preview-panel,
+.print-panel {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 22px;
+
+    box-shadow:
+        0 5px 18px rgba(15, 23, 42, 0.06);
+}
+
+
+/* =========================================================
+   TÍTULOS DOS PAINÉIS
+========================================================= */
+
+.panel-title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.panel-title h2 {
+    margin: 3px 0 0;
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.panel-kicker {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   DESCRIÇÃO
+========================================================= */
+
+.panel-description {
+    margin: -6px 0 20px;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   ÁREA DA PRÉVIA
+========================================================= */
+
+.preview-stage {
+    width: 100%;
+    min-height: 470px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    box-sizing: border-box;
+    padding: 24px;
+
+    border-radius: 12px;
+    background: linear-gradient(
+        135deg,
+        #f8fafc,
+        #eef2f7
+    );
+
+    border: 1px solid #e2e8f0;
+
+    overflow: auto;
+}
+
+
+/* =========================================================
+   TEXTO ABAIXO DA PRÉVIA
+========================================================= */
+
+.preview-caption {
+    text-align: center;
+    margin-top: 10px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   ETIQUETA
+   60 x 60 MM
+========================================================= */
+
+.etiqueta {
+    position: relative;
+
+    display: block;
+
+    width: 60mm;
+    height: 60mm;
+
+    min-width: 60mm;
+    min-height: 60mm;
+
+    max-width: 60mm;
+    max-height: 60mm;
+
     padding: 0;
+    margin: 0;
+
+    overflow: hidden;
+    box-sizing: border-box;
+
+    flex: 0 0 60mm;
+
+    background: #ffffff;
+    color: #000000;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+
+    box-shadow:
+        0 12px 28px rgba(15, 23, 42, 0.18);
 
     font-family:
         Arial,
@@ -23,743 +196,44 @@ body {
 }
 
 
-/* ==========================================
-   PÁGINA DE ETIQUETAS
-========================================== */
-
-.etiquetas-page {
-    width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding-bottom: 40px;
-}
-
-
-/* ==========================================
-   CABEÇALHO
-========================================== */
-
-.etiquetas-page .dashboard-header {
-    width: 100%;
-    margin-bottom: 28px;
-}
-
-
-/* ==========================================
-   ÁREA PRINCIPAL
-========================================== */
-
-.etiquetas-grid {
-
-    width: 100%;
-
-    display: grid;
-
-    grid-template-columns:
-        minmax(360px, 1fr)
-        minmax(300px, 420px);
-
-    gap: 24px;
-
-    align-items: start;
-}
-
-
-/* ==========================================
-   PAINÉIS
-========================================== */
-
-.etiquetas-page .dashboard-panel {
-
-    width: 100%;
-
-    box-sizing: border-box;
-
-    overflow: hidden;
-}
-
-
-/* ==========================================
-   FORMULÁRIO
-========================================== */
-
-.etiquetas-form {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap: 18px;
-
-    width: 100%;
-}
-
-
-.etiquetas-form .campo {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 7px;
-
-    min-width: 0;
-}
-
-
-.etiquetas-form .campo-full {
-
-    grid-column: 1 / -1;
-}
-
-
-.etiquetas-form label {
-
-    font-size: 13px;
-
-    font-weight: 700;
-
-    color: #475569;
-}
-
-
-.etiquetas-form input,
-.etiquetas-form select {
-
-    width: 100%;
-
-    min-height: 44px;
-
-    padding: 10px 12px;
-
-    box-sizing: border-box;
-
-    border: 1px solid #cbd5e1;
-
-    border-radius: 9px;
-
-    background: #ffffff;
-
-    color: #0f172a;
-
-    font-size: 14px;
-
-    outline: none;
-
-    transition:
-        border-color .2s ease,
-        box-shadow .2s ease;
-}
-
-
-.etiquetas-form input:focus,
-.etiquetas-form select:focus {
-
-    border-color: #2563eb;
-
-    box-shadow:
-        0 0 0 3px
-        rgba(37, 99, 235, .12);
-}
-
-
-/* ==========================================
-   BOTÕES
-========================================== */
-
-.etiquetas-form button {
-
-    grid-column: 1 / -1;
-
-    min-height: 44px;
-
-    border: 0;
-
-    border-radius: 9px;
-
-    padding: 11px 18px;
-
-    background: #2563eb;
-
-    color: white;
-
-    font-size: 14px;
-
-    font-weight: 700;
-
-    cursor: pointer;
-
-    transition:
-        transform .15s ease,
-        opacity .15s ease,
-        box-shadow .15s ease;
-}
-
-
-.etiquetas-form button:hover {
-
-    opacity: .94;
-
-    transform: translateY(-1px);
-
-    box-shadow:
-        0 6px 18px
-        rgba(37, 99, 235, .18);
-}
-
-
-/* ==========================================
-   PRÉ-VISUALIZAÇÃO
-========================================== */
-
-.etiqueta-preview {
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    justify-content: flex-start;
-
-    width: 100%;
-}
-
-
-.etiqueta-preview-area {
-
-    width: 100%;
-
-    min-height: 380px;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    padding: 20px;
-
-    box-sizing: border-box;
-
-    border-radius: 12px;
-
-    background:
-        #f1f5f9;
-
-    border: 1px dashed #cbd5e1;
-
-    overflow: auto;
-}
-
-
-/* ==========================================
-   ETIQUETA NA PRÉ-VISUALIZAÇÃO
-========================================== */
-
-.etiqueta {
-
-    width: 60mm;
-
-    height: 60mm;
-
-    min-width: 60mm;
-
-    min-height: 60mm;
-
-    box-sizing: border-box;
-
-    padding: 2mm;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    overflow: hidden;
-
-    background: white;
-
-    color: #000;
-
-    border: 1px solid #cbd5e1;
-
-    box-shadow:
-        0 8px 24px
-        rgba(15, 23, 42, .16);
-
-    transform-origin: center center;
-}
-
-
-/* ==========================================
-   EMPRESA
-========================================== */
-
-.empresa-etiqueta {
-
-    text-align: center;
-
-    width: 100%;
-
-    margin-bottom: 1mm;
-}
-
-
-.empresa-etiqueta h2 {
-
-    font-size: 16px;
-
-    font-weight: 900;
-
-    margin: 0;
-
-    line-height: 1;
-}
-
-
-.empresa-etiqueta span {
-
-    font-size: 9px;
-
-    font-weight: bold;
-
-    letter-spacing: 1px;
-}
-
-
-/* ==========================================
-   LINHA
-========================================== */
-
-.linha-etiqueta {
-
-    width: 100%;
-
-    border-bottom: 1px solid #000;
-
-    margin: 1mm 0;
-}
-
-
-/* ==========================================
+/* =========================================================
    PRODUTO
-========================================== */
-
-#nomeEtiqueta {
-
-    font-size: 18px;
-
-    font-weight: 900;
-
-    text-align: center;
-
-    margin: 1mm 0;
-
-    text-transform: uppercase;
-
-    max-width: 100%;
-
-    overflow: hidden;
-}
-
-
-/* ==========================================
-   TEMPERATURA
-========================================== */
-
-.temperatura-destaque {
-
-    text-align: center;
-
-    font-size: 9px;
-}
-
-
-.temperatura-destaque strong {
-
-    display: block;
-
-    font-size: 9px;
-}
-
-
-#temperaturaEtiqueta {
-
-    font-size: 10px;
-
-    font-weight: bold;
-}
-
-
-/* ==========================================
-   DATAS
-========================================== */
-
-.datas-etiqueta {
-
-    width: 100%;
-
-    text-align: center;
-}
-
-
-.datas-etiqueta p {
-
-    margin: 1mm 0;
-}
-
-
-.datas-etiqueta strong {
-
-    display: block;
-
-    font-size: 9px;
-}
-
-
-.datas-etiqueta span {
-
-    font-size: 10px;
-
-    font-weight: bold;
-}
-
-
-/* ==========================================
-   RESPONSÁVEL / LOTE
-========================================== */
-
-.info-etiqueta {
-
-    width: 100%;
-
-    text-align: center;
-}
-
-
-.info-etiqueta p {
-
-    margin: 1mm 0;
-}
-
-
-.info-etiqueta strong {
-
-    display: block;
-
-    font-size: 9px;
-}
-
-
-.info-etiqueta span {
-
-    font-size: 10px;
-
-    font-weight: bold;
-}
-
-
-/* ==========================================
-   QR CODE
-========================================== */
-
-#qrcodeEtiqueta {
-
-    margin-top: auto;
-
-    height: 14mm;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-}
-
-
-#qrcodeEtiqueta img,
-#qrcodeEtiqueta canvas {
-
-    width: 13mm !important;
-
-    height: 13mm !important;
-}
-
-
-/* ==========================================
-   BOTÃO IMPRIMIR
-========================================== */
-
-.etiqueta-preview button {
-
-    margin-top: 16px;
-
-    min-height: 42px;
-
-    padding: 10px 20px;
-
-    border: 0;
-
-    border-radius: 9px;
-
-    background: #2563eb;
-
-    color: white;
-
-    font-size: 14px;
-
-    font-weight: 700;
-
-    cursor: pointer;
-}
-
-
-/* ==========================================
-   HISTÓRICO
-========================================== */
-
-.etiquetas-historico {
-
-    width: 100%;
-
-    margin-top: 24px;
-}
-
-
-.etiquetas-historico .table-wrap {
-
-    width: 100%;
-
-    overflow-x: auto;
-}
-
-
-.etiquetas-historico table {
-
-    width: 100%;
-
-    border-collapse: collapse;
-
-    min-width: 700px;
-}
-
-
-.etiquetas-historico th,
-.etiquetas-historico td {
-
-    padding: 13px 14px;
-
-    text-align: left;
-
-    border-bottom: 1px solid #e2e8f0;
-
-    white-space: nowrap;
-}
-
-
-.etiquetas-historico th {
-
-    font-size: 12px;
-
-    text-transform: uppercase;
-
-    letter-spacing: .04em;
-
-    color: #64748b;
-
-    font-weight: 700;
-
-    background: #f8fafc;
-}
-
-
-.etiquetas-historico td {
-
-    font-size: 13px;
-
-    color: #334155;
-}
-
-
-/* ==========================================
-   RESPONSIVIDADE
-========================================== */
-
-@media (max-width: 1000px) {
-
-    .etiquetas-grid {
-
-        grid-template-columns: 1fr;
-    }
-
-}
-
-
-@media (max-width: 700px) {
-
-    .etiquetas-form {
-
-        grid-template-columns: 1fr;
-    }
-
-    .etiquetas-form .campo-full {
-
-        grid-column: auto;
-    }
-
-    .etiqueta-preview-area {
-
-        min-height: 350px;
-
-        padding: 12px;
-    }
-
-}
-
-
-/* ==========================================
-   IMPRESSÃO — ZEBRA ZD220
-========================================== */
-
-@media print {
-
-    @page {
-
-        size: 60mm 60mm;
-
-        margin: 0;
-    }
-
-
-    html,
-    body {
-
-        width: 60mm;
-
-        height: 60mm;
-
-        margin: 0;
-
-        padding: 0;
-
-        background: white;
-    }
-
-
-    body * {
-
-        visibility: hidden;
-    }
-
-
-    #etiquetaGerada,
-    #etiquetaGerada * {
-
-        visibility: visible;
-    }
-
-
-    #etiquetaGerada {
-
-        position: absolute;
-
-        left: 0;
-
-        top: 0;
-
-        width: 60mm;
-
-        height: 60mm;
-
-        padding: 2mm;
-
-        margin: 0;
-
-        box-sizing: border-box;
-
-        border: none;
-
-        box-shadow: none;
-
-        background: white;
-    }
-
-
-    .etiqueta-preview button {
-
-        display: none !important;
-    }
-
-
-    .etiqueta {
-
-        width: 60mm;
-
-        height: 60mm;
-
-        min-width: 60mm;
-
-        min-height: 60mm;
-
-        padding: 2mm;
-
-        border: none;
-
-        box-shadow: none;
-
-        transform: none;
-    }
-
-
-    * {
-
-        page-break-after: avoid !important;
-
-        page-break-before: avoid !important;
-
-        page-break-inside: avoid !important;
-    }
-}
-
-/* Layout de impressão: referência 60 x 60 mm. */
-#etiquetaGerada {
-    padding: 0;
-}
-
-.etiqueta {
-    position: relative;
-    display: block;
-    width: 60mm;
-    height: 60mm;
-    min-width: 60mm;
-    min-height: 60mm;
-    padding: 0;
-    overflow: hidden;
-    font-family: Arial, Helvetica, sans-serif;
-}
+========================================================= */
 
 #nomeEtiqueta {
     position: absolute;
-    top: 2mm;
-    right: 2mm;
-    left: 2mm;
+
+    top: 2.5mm;
+    left: 2.5mm;
+    right: 2.5mm;
+
     margin: 0;
-    font-size: 15px;
-    line-height: 1.1;
+
+    font-size: 17px;
+    line-height: 1.05;
+    font-weight: 900;
+
     text-align: left;
+    text-transform: uppercase;
+
     white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
+
+/* =========================================================
+   TEMPERATURA
+========================================================= */
+
 .temperatura-destaque {
     position: absolute;
+
     top: 8mm;
-    right: 2mm;
-    left: 2mm;
-    font-size: 11px;
+    left: 2.5mm;
+    right: 2.5mm;
+
+    font-size: 9px;
     line-height: 1;
     text-align: left;
 }
@@ -768,35 +242,64 @@ body {
     content: "TEMP. ";
 }
 
-.linha-etiqueta {
-    position: absolute;
-    top: 12.5mm;
-    right: 2mm;
-    left: 2mm;
-    width: auto;
-    margin: 0;
-    border: 0;
-    border-top: .25mm solid #000;
+#temperaturaEtiqueta {
+    font-size: 10px;
+    font-weight: 700;
 }
 
-.datas-etiqueta + .linha-etiqueta {
+
+/* =========================================================
+   LINHAS
+========================================================= */
+
+.linha-etiqueta {
+    position: absolute;
+
+    left: 2.5mm;
+    right: 2.5mm;
+
+    width: auto;
+    height: 0;
+
+    border: 0;
+    border-top: 0.25mm solid #000;
+
+    margin: 0;
+}
+
+.linha-topo {
+    top: 12.5mm;
+}
+
+.linha-inferior {
     top: 36mm;
 }
 
+
+/* =========================================================
+   DATAS
+========================================================= */
+
 .datas-etiqueta {
     position: absolute;
-    top: 17.5mm;
-    right: 2mm;
-    left: 2mm;
+
+    top: 17mm;
+    left: 2.5mm;
+    right: 2.5mm;
+
     width: auto;
     text-align: left;
 }
 
 .datas-etiqueta p {
     display: flex;
+
     justify-content: space-between;
-    margin: 1mm 0;
-    font-size: 12px;
+    align-items: baseline;
+
+    margin: 1.5mm 0;
+
+    font-size: 11px;
     line-height: 1;
 }
 
@@ -807,30 +310,27 @@ body {
     font-weight: 700;
 }
 
+
+/* =========================================================
+   INFORMAÇÕES
+========================================================= */
+
 .info-etiqueta {
     position: absolute;
-    top: 39mm;
-    right: 24mm;
-    left: 2mm;
+
+    top: 38.5mm;
+    left: 2.5mm;
+    right: 23mm;
+
     width: auto;
     text-align: left;
 }
 
 .info-etiqueta p {
-    margin: 0 0 3.5mm;
-    font-size: 11px;
-    line-height: 1;
-}
+    margin: 0 0 2mm;
 
-.info-etiqueta p:nth-child(2) {
-    position: absolute;
-    top: 15mm;
-    left: 0;
-    right: 0;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 9px;
+    line-height: 1.1;
 }
 
 .info-etiqueta strong,
@@ -840,41 +340,1226 @@ body {
     font-weight: 700;
 }
 
+.info-etiqueta p:nth-child(2) {
+    margin-top: 1mm;
+}
+
+
+/* =========================================================
+   EMPRESA
+========================================================= */
+
 .empresa-etiqueta {
     position: absolute;
-    top: 43mm;
-    right: 24mm;
-    left: 2mm;
+
+    left: 2.5mm;
+    right: 23mm;
+    bottom: 2mm;
+
     width: auto;
     margin: 0;
+
     text-align: left;
 }
 
 .empresa-etiqueta h2,
 .empresa-etiqueta small {
     display: block;
-    margin: 0 0 .6mm;
-    font-size: 9px;
-    font-weight: 700;
+
+    margin: 0 0 0.7mm;
+
+    font-size: 7.5px;
     line-height: 1;
+    font-weight: 700;
+
     overflow-wrap: anywhere;
+}
+
+.empresa-etiqueta h2 {
+    font-size: 8px;
+    font-weight: 900;
 }
 
 .empresa-etiqueta span {
     display: none;
 }
 
+
+/* =========================================================
+   QR CODE
+========================================================= */
+
 #qrcodeEtiqueta {
     position: absolute;
-    right: 2mm;
-    bottom: 2mm;
+
+    right: 2.5mm;
+    bottom: 2.5mm;
+
     width: 19mm;
     height: 19mm;
+
     margin: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #qrcodeEtiqueta img,
 #qrcodeEtiqueta canvas {
+    display: block;
+
     width: 19mm !important;
     height: 19mm !important;
+}
+
+
+/* =========================================================
+   CAMPOS
+========================================================= */
+
+.field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    min-width: 0;
+}
+
+.field-full {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.field-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+
+    gap: 14px;
+
+    margin-bottom: 16px;
+}
+
+.field label,
+.quantity-box label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+}
+
+.field input,
+.field select {
+    width: 100%;
+    min-height: 44px;
+
+    padding: 10px 12px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+
+    background: #ffffff;
+    color: #0f172a;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.field input:focus,
+.field select:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.10);
+}
+
+
+/* =========================================================
+   MEDIDA
+========================================================= */
+
+.measure-control {
+    display: grid;
+
+    grid-template-columns: 1fr 92px;
+
+    width: 100%;
+}
+
+.measure-control input {
+    border-radius: 9px 0 0 9px;
+}
+
+.measure-control select {
+    border-left: 0;
+    border-radius: 0 9px 9px 0;
+}
+
+
+/* =========================================================
+   QUANTIDADE + IMPRIMIR
+========================================================= */
+
+.quantity-print-row {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(190px, 1.2fr);
+
+    gap: 14px;
+
+    align-items: end;
+
+    margin-top: 4px;
+}
+
+.quantity-box {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    min-width: 0;
+}
+
+.quantity-control {
+    display: grid;
+
+    grid-template-columns:
+        42px
+        minmax(0, 1fr)
+        42px;
+
+    width: 100%;
+    min-height: 44px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    box-sizing: border-box;
+}
+
+.quantity-control input {
+    width: 100%;
+
+    border: 0;
+    outline: 0;
+
+    text-align: center;
+
+    font-size: 14px;
+    color: #0f172a;
+
+    min-width: 0;
+}
+
+.quantity-btn {
+    width: 42px;
+    height: 42px;
+
+    min-width: 42px;
+    min-height: 42px;
+
+    max-width: 42px;
+    max-height: 42px;
+
+    padding: 0;
+    margin: 0;
+
+    flex: 0 0 42px;
+
+    border: 0;
+
+    background: #f8fafc;
+    color: #334155;
+
+    font-size: 20px;
+    line-height: 42px;
+
+    cursor: pointer;
+
+    transition: background-color 0.12s ease;
+}
+
+.quantity-btn:hover {
+    background: #f1f5f9;
+}
+
+.quantity-btn:focus,
+.quantity-btn:active {
+    transform: none !important;
+}
+
+
+/* =========================================================
+   CAMPO DE QUANTIDADE
+========================================================= */
+
+#quantidadeProducao {
+    width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   BOTÃO IMPRIMIR
+   SEM MOVIMENTO
+========================================================= */
+
+.btn-print {
+    width: 100%;
+
+    min-height: 50px;
+
+    border: 0;
+    border-radius: 9px;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transform: none !important;
+
+    transition:
+        background-color 0.12s ease,
+        box-shadow 0.12s ease,
+        opacity 0.12s ease;
+}
+
+.btn-print:hover {
+    background: #1d4ed8;
+
+    transform: none !important;
+
+    box-shadow:
+        0 6px 16px rgba(37, 99, 235, 0.18);
+}
+
+.btn-print:focus,
+.btn-print:active {
+    transform: none !important;
+}
+
+.btn-print:active {
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   BOTÃO ATUALIZAR
+   SEM MOVIMENTO
+========================================================= */
+
+.btn-generate {
+    width: auto;
+
+    margin-top: 12px;
+
+    min-height: 38px;
+
+    padding: 8px 14px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    background: #f8fafc;
+    color: #475569;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transform: none !important;
+
+    transition:
+        background-color 0.12s ease,
+        border-color 0.12s ease;
+}
+
+.btn-generate:hover {
+    background: #f1f5f9;
+    transform: none !important;
+}
+
+.btn-generate:focus,
+.btn-generate:active {
+    transform: none !important;
+}
+
+
+/* =========================================================
+   HISTÓRICO
+========================================================= */
+
+.etiqueta-history {
+    width: 100%;
+
+    margin-top: 0;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+
+    padding: 22px;
+
+    box-sizing: border-box;
+
+    box-shadow:
+        0 5px 18px rgba(15, 23, 42, 0.05);
+}
+
+.historico-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 16px;
+
+    margin-bottom: 18px;
+}
+
+.historico-header h2 {
+    margin: 3px 0 0;
+
+    font-size: 18px;
+
+    color: #0f172a;
+}
+
+
+/* =========================================================
+   BOTÃO LIMPAR HISTÓRICO
+========================================================= */
+
+.btn-limpar-historico {
+    min-height: 38px;
+
+    padding: 8px 14px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transform: none !important;
+
+    transition:
+        background-color 0.12s ease,
+        opacity 0.12s ease;
+}
+
+.btn-limpar-historico:hover {
+    background: #1d4ed8;
+    transform: none !important;
+}
+
+.btn-limpar-historico:focus,
+.btn-limpar-historico:active {
+    transform: none !important;
+}
+
+
+/* =========================================================
+   TABELA
+========================================================= */
+
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.etiqueta-history table {
+    width: 100%;
+    min-width: 760px;
+
+    border-collapse: collapse;
+}
+
+.etiqueta-history th,
+.etiqueta-history td {
+    padding: 13px 12px;
+
+    text-align: left;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    white-space: nowrap;
+}
+
+.etiqueta-history th {
+    background: #f8fafc;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.05em;
+}
+
+.etiqueta-history td {
+    color: #334155;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   PESQUISA RÁPIDA DE PRODUTO
+========================================================= */
+
+.produto-search {
+    position: relative;
+    width: 100%;
+}
+
+.produto-search-input-wrap {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+}
+
+.produto-search-input {
+    width: 100%;
+
+    min-height: 48px;
+
+    padding: 0 46px 0 44px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+
+    background: #ffffff;
+    color: #0f172a;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        background-color 0.18s ease;
+}
+
+.produto-search-input:focus {
+    border-color: #3b82f6;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(59, 130, 246, 0.14);
+}
+
+.produto-search-icon {
+    position: absolute;
+
+    left: 15px;
+    z-index: 2;
+
+    font-size: 23px;
+    line-height: 1;
+
+    color: #64748b;
+
+    pointer-events: none;
+
+    transform: rotate(-20deg);
+}
+
+.produto-search-clear {
+    position: absolute;
+
+    right: 10px;
+    z-index: 2;
+
+    width: 30px;
+    height: 30px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: transparent;
+    color: #64748b;
+
+    font-size: 22px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transform: none !important;
+
+    transition:
+        background-color 0.12s ease,
+        color 0.12s ease;
+}
+
+.produto-search-clear:hover {
+    background: #eef2f7;
+    color: #0f172a;
+
+    transform: none !important;
+}
+
+.produto-search-clear:focus,
+.produto-search-clear:active {
+    transform: none !important;
+}
+
+
+/* =========================================================
+   LISTA DE PRODUTOS
+========================================================= */
+
+.produto-search-list {
+    position: absolute;
+
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+
+    z-index: 1000;
+
+    max-height: 280px;
+
+    overflow-y: auto;
+
+    padding: 6px;
+
+    border: 1px solid #dbe3ee;
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 14px 35px rgba(15, 23, 42, 0.16);
+}
+
+.produto-search-option {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+
+    gap: 11px;
+
+    padding: 10px 12px;
+
+    border: 0;
+    border-radius: 9px;
+
+    background: transparent;
+    color: #0f172a;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transform: none !important;
+}
+
+.produto-search-option:hover,
+.produto-search-option:focus-visible {
+    background: #eef5ff;
+
+    outline: none;
+
+    transform: none !important;
+}
+
+.produto-search-option-icon {
+    display: grid;
+    place-items: center;
+
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 34px;
+
+    border-radius: 9px;
+
+    background: #e8f0ff;
+    color: #2563eb;
+
+    font-size: 18px;
+}
+
+.produto-search-option-text {
+    display: flex;
+
+    min-width: 0;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+.produto-search-option-text strong {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.produto-search-option-text small {
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.produto-search-empty {
+    padding: 18px 12px;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    text-align: center;
+}
+
+.produto-search-hint {
+    margin-top: 7px;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   SELECT ORIGINAL — OCULTO
+========================================================= */
+
+.produto-select-hidden {
+    position: absolute !important;
+
+    width: 1px !important;
+    height: 1px !important;
+
+    padding: 0 !important;
+    margin: -1px !important;
+
+    overflow: hidden !important;
+
+    clip: rect(0, 0, 0, 0) !important;
+
+    white-space: nowrap !important;
+
+    border: 0 !important;
+}
+
+
+/* =========================================================
+   RESPONSIVO — TABLET
+   700px ATÉ 1100px
+========================================================= */
+
+@media screen and (min-width: 700px) and (max-width: 1100px) {
+
+    .etiqueta-workspace {
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(0, 1fr);
+
+        gap: 14px;
+
+        align-items: start;
+    }
+
+    .preview-panel,
+    .print-panel {
+        width: 100%;
+        min-width: 0;
+
+        padding: 16px;
+    }
+
+    .panel-title {
+        margin-bottom: 12px;
+    }
+
+    .panel-title h2 {
+        font-size: 16px;
+    }
+
+    .panel-description {
+        margin-bottom: 14px;
+        font-size: 12px;
+    }
+
+    .field-grid {
+        gap: 9px;
+    }
+
+    .field {
+        gap: 5px;
+    }
+
+    .field label,
+    .quantity-box label {
+        font-size: 11px;
+    }
+
+    .field input,
+    .field select {
+        min-height: 40px;
+
+        padding: 8px 9px;
+
+        font-size: 12px;
+    }
+
+    .quantity-print-row {
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(125px, 1fr);
+
+        gap: 9px;
+    }
+
+    .quantity-control {
+        min-height: 40px;
+
+        grid-template-columns:
+            36px
+            minmax(0, 1fr)
+            36px;
+    }
+
+    .quantity-btn {
+        width: 36px;
+        height: 38px;
+
+        min-width: 36px;
+        min-height: 38px;
+
+        max-width: 36px;
+        max-height: 38px;
+
+        line-height: 38px;
+    }
+
+    .btn-print {
+        min-height: 42px;
+        font-size: 13px;
+    }
+
+    .btn-generate {
+        min-height: 36px;
+        margin-top: 8px;
+        font-size: 11px;
+    }
+
+    .preview-stage {
+        min-height: 390px;
+        padding: 12px;
+    }
+
+    .preview-caption {
+        margin-top: 6px;
+        font-size: 10px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVO — MOBILE
+   ABAIXO DE 700px
+========================================================= */
+
+@media screen and (max-width: 699px) {
+
+    .etiqueta-workspace {
+        display: grid;
+
+        grid-template-columns: minmax(0, 1fr);
+
+        gap: 16px;
+
+        width: 100%;
+    }
+
+    .print-panel {
+        order: 1;
+    }
+
+    .preview-panel {
+        order: 2;
+    }
+
+    .preview-stage {
+        min-height: 400px;
+        padding: 14px;
+    }
+
+    .field-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .quantity-print-row {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .historico-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .btn-limpar-historico {
+        width: 100%;
+    }
+}
+
+
+/* =========================================================
+   TABLET 800 x 1340
+   PAINÉIS SEMPRE LADO A LADO
+========================================================= */
+
+@media screen and (min-width: 700px) and (max-width: 900px) {
+
+    .content .etiqueta-workspace {
+        display: grid !important;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(0, 1fr) !important;
+
+        grid-template-rows: auto !important;
+
+        gap: 12px !important;
+
+        width: 100% !important;
+
+        align-items: start !important;
+    }
+
+    .content .etiqueta-workspace > .print-panel {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+
+        order: 1 !important;
+
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+    }
+
+    .content .etiqueta-workspace > .preview-panel {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+
+        order: 2 !important;
+
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+    }
+}
+
+
+/* =========================================================
+   DARK THEME
+========================================================= */
+
+[data-theme="dark"] .top-header h1 {
+    color: #f5f8ff;
+}
+
+[data-theme="dark"] .top-header p {
+    color: #9fb4d8;
+}
+
+[data-theme="dark"] .preview-panel,
+[data-theme="dark"] .print-panel,
+[data-theme="dark"] .etiqueta-history {
+    background: #102b60;
+    border-color: rgba(151, 184, 238, 0.20);
+}
+
+[data-theme="dark"] .panel-title h2,
+[data-theme="dark"] .historico-header h2 {
+    color: #f5f8ff;
+}
+
+[data-theme="dark"] .panel-description {
+    color: #9fb4d8;
+}
+
+[data-theme="dark"] .preview-stage {
+    background: linear-gradient(
+        135deg,
+        #0d2450,
+        #132f65
+    );
+
+    border-color: rgba(151, 184, 238, 0.20);
+}
+
+[data-theme="dark"] .field label,
+[data-theme="dark"] .quantity-box label {
+    color: #b9c9e8;
+}
+
+[data-theme="dark"] .field input,
+[data-theme="dark"] .field select,
+[data-theme="dark"] .quantity-control {
+    background: #122f68;
+    border-color: rgba(151, 184, 238, 0.34);
+    color: #f5f8ff;
+}
+
+[data-theme="dark"] .quantity-control input {
+    background: #122f68;
+    color: #f5f8ff;
+}
+
+[data-theme="dark"] .quantity-btn {
+    background: #17366f;
+    color: #d9e6ff;
+}
+
+[data-theme="dark"] .quantity-btn:hover {
+    background: #214888;
+}
+
+[data-theme="dark"] .btn-generate {
+    background: #17366f;
+    border-color: rgba(151, 184, 238, 0.30);
+    color: #d9e6ff;
+}
+
+[data-theme="dark"] .btn-generate:hover {
+    background: #214888;
+}
+
+[data-theme="dark"] .etiqueta-history th {
+    background: #17366f;
+    color: #9fb4d8;
+}
+
+[data-theme="dark"] .etiqueta-history td {
+    color: #d9e6ff;
+}
+
+[data-theme="dark"] .etiqueta-history th,
+[data-theme="dark"] .etiqueta-history td {
+    border-bottom-color: rgba(151, 184, 238, 0.18);
+}
+
+
+/* =========================================================
+   DARK THEME — PESQUISA DE PRODUTO
+========================================================= */
+
+[data-theme="dark"] .produto-search-input {
+    background: #122f68;
+    border-color: rgba(151, 184, 238, 0.34);
+    color: #f5f8ff;
+}
+
+[data-theme="dark"] .produto-search-input:focus {
+    border-color: #4d91ff;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(77, 145, 255, 0.18);
+}
+
+[data-theme="dark"] .produto-search-icon,
+[data-theme="dark"] .produto-search-clear {
+    color: #b9c9e8;
+}
+
+[data-theme="dark"] .produto-search-clear:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+[data-theme="dark"] .produto-search-list {
+    background: #17366f;
+    border-color: rgba(132, 169, 231, 0.28);
+
+    box-shadow:
+        0 18px 40px rgba(3, 18, 58, 0.38);
+}
+
+[data-theme="dark"] .produto-search-option {
+    color: #f5f8ff;
+}
+
+[data-theme="dark"] .produto-search-option:hover,
+[data-theme="dark"] .produto-search-option:focus-visible {
+    background: #214888;
+}
+
+[data-theme="dark"] .produto-search-option-icon {
+    background: #2454a0;
+    color: #a9c9ff;
+}
+
+[data-theme="dark"] .produto-search-option-text small,
+[data-theme="dark"] .produto-search-empty,
+[data-theme="dark"] .produto-search-hint {
+    color: #9fb4d8;
+}
+
+
+/* =========================================================
+   PROTEÇÃO CONTRA MOVIMENTO DOS BOTÕES
+   EVITA CONFLITO COM CSS GLOBAL
+========================================================= */
+
+.etiqueta-workspace button,
+.etiqueta-history button {
+    transform: none !important;
+
+    translate: none !important;
+    scale: 1 !important;
+
+    animation: none !important;
+}
+
+.etiqueta-workspace button:hover,
+.etiqueta-workspace button:focus,
+.etiqueta-workspace button:active,
+.etiqueta-history button:hover,
+.etiqueta-history button:focus,
+.etiqueta-history button:active {
+    transform: none !important;
+
+    translate: none !important;
+    scale: 1 !important;
+
+    animation: none !important;
+}
+
+
+/* =========================================================
+   IMPRESSÃO ZEBRA ZD220
+   60 x 60 MM
+========================================================= */
+
+@media print {
+
+    @page {
+        size: 60mm 60mm;
+        margin: 0;
+    }
+
+    html,
+    body {
+        width: 60mm;
+        height: 60mm;
+
+        margin: 0;
+        padding: 0;
+
+        background: #ffffff;
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    #etiquetaGerada,
+    #etiquetaGerada * {
+        visibility: visible;
+    }
+
+    #etiquetaGerada {
+        position: absolute;
+
+        left: 0;
+        top: 0;
+
+        width: 60mm;
+        height: 60mm;
+
+        margin: 0;
+        padding: 0;
+
+        border: 0;
+        border-radius: 0;
+
+        box-shadow: none;
+
+        background: #ffffff;
+    }
+
+    .etiqueta {
+        position: relative;
+
+        width: 60mm;
+        height: 60mm;
+
+        min-width: 60mm;
+        min-height: 60mm;
+
+        max-width: 60mm;
+        max-height: 60mm;
+
+        margin: 0;
+        padding: 0;
+
+        border: 0;
+        border-radius: 0;
+
+        box-shadow: none;
+
+        background: #ffffff;
+    }
+
+    .preview-panel,
+    .print-panel,
+    .etiqueta-history,
+    .preview-caption {
+        display: none !important;
+    }
+
+    * {
+        page-break-after: avoid !important;
+        page-break-before: avoid !important;
+        page-break-inside: avoid !important;
+    }
 }

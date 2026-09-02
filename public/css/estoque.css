@@ -1,0 +1,340 @@
+/* ==========================================
+   LOTRIX — CONTROLE DE ESTOQUE
+   Layout profissional e espaçado
+========================================== */
+
+
+/* ==========================================
+   PÁGINA
+========================================== */
+
+.estoque-page {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-bottom: 60px;
+}
+
+
+/* ==========================================
+   CABEÇALHO
+========================================== */
+
+.estoque-page .dashboard-header {
+    margin-bottom: 30px;
+}
+
+.estoque-page .dashboard-header h1 {
+    margin-bottom: 8px;
+}
+
+.estoque-page .dashboard-header p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+
+/* ==========================================
+   PAINÉIS
+========================================== */
+
+.estoque-page .dashboard-panel {
+    width: 100%;
+    margin-bottom: 30px;
+    padding: 28px;
+    border-radius: 18px;
+}
+
+
+/* ==========================================
+   TÍTULOS
+========================================== */
+
+.estoque-page .panel-heading {
+    margin-bottom: 26px;
+}
+
+.estoque-page .panel-heading h2 {
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+.estoque-page .panel-eyebrow {
+    display: block;
+    margin-bottom: 5px;
+}
+
+
+/* ==========================================
+   FORMULÁRIOS
+========================================== */
+
+.estoque-page form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 24px;
+}
+
+
+/* Cada campo */
+
+.estoque-page .campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+/* Labels */
+
+.estoque-page .campo label {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+
+/* Inputs e selects */
+
+.estoque-page .campo input,
+.estoque-page .campo select {
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 14px;
+    border-radius: 10px;
+}
+
+
+/* Botão ocupa linha inteira */
+
+.estoque-page form > button {
+    grid-column: 1 / -1;
+    justify-self: start;
+    min-height: 46px;
+    margin-top: 4px;
+    padding: 0 22px;
+}
+
+
+/* ==========================================
+   TABELAS
+========================================== */
+
+.estoque-page .dashboard-panel > div[style*="overflow-x:auto"] {
+    width: 100%;
+    overflow-x: auto !important;
+    border-radius: 12px;
+}
+
+
+/* Remove dependência do inline */
+
+.estoque-page table {
+    width: 100% !important;
+    min-width: 780px;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+
+/* Cabeçalho */
+
+.estoque-page table thead th {
+    padding: 16px 18px !important;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .03em;
+    white-space: nowrap;
+}
+
+
+/* Corpo */
+
+.estoque-page table tbody td {
+    padding: 18px !important;
+    vertical-align: middle;
+    line-height: 1.5;
+}
+
+
+/* Linhas */
+
+.estoque-page table tbody tr {
+    transition: background .18s ease;
+}
+
+
+/* Hover */
+
+.estoque-page table tbody tr:hover {
+    background: rgba(22, 163, 74, .035);
+}
+
+
+/* ==========================================
+   COLUNAS DO INVENTÁRIO
+========================================== */
+
+.estoque-page #listaEstoque td:first-child {
+    min-width: 180px;
+    font-weight: 700;
+}
+
+.estoque-page #listaEstoque td:nth-child(2),
+.estoque-page #listaEstoque td:nth-child(4),
+.estoque-page #listaEstoque td:nth-child(5) {
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.estoque-page #listaEstoque td:nth-child(3) {
+    white-space: nowrap;
+}
+
+.estoque-page #listaEstoque td:last-child {
+    text-align: center;
+    min-width: 70px;
+}
+
+
+/* ==========================================
+   STATUS
+========================================== */
+
+.estoque-page #listaEstoque td:nth-child(6) {
+    white-space: nowrap;
+}
+
+
+/* ==========================================
+   BOTÃO DE EXCLUSÃO
+========================================== */
+
+.estoque-page #listaEstoque button {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 7px 10px;
+    border-radius: 9px;
+}
+
+
+/* ==========================================
+   HISTÓRICO
+========================================== */
+
+.estoque-page #listaMovimentacoes td:first-child {
+    min-width: 170px;
+    font-weight: 700;
+}
+
+.estoque-page #listaMovimentacoes td:nth-child(2) {
+    min-width: 110px;
+    font-weight: 700;
+}
+
+.estoque-page #listaMovimentacoes td:nth-child(3) {
+    min-width: 120px;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.estoque-page #listaMovimentacoes td:nth-child(4) {
+    min-width: 220px;
+}
+
+.estoque-page #listaMovimentacoes td:nth-child(5) {
+    min-width: 140px;
+    white-space: nowrap;
+}
+
+
+/* ==========================================
+   LINHA DE CARREGAMENTO
+========================================== */
+
+.estoque-page tbody td[colspan] {
+    padding: 32px !important;
+    text-align: center;
+}
+
+
+/* ==========================================
+   SEPARAÇÃO ENTRE BLOCOS
+========================================== */
+
+.estoque-page > section {
+    margin-bottom: 30px;
+}
+
+
+/* ==========================================
+   MOVIMENTAÇÃO
+========================================== */
+
+.estoque-page #movimentacaoForm {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+
+/* ==========================================
+   DESTAQUE DOS CAMPOS
+========================================== */
+
+.estoque-page input:focus,
+.estoque-page select:focus {
+    outline: none;
+}
+
+
+/* ==========================================
+   RESPONSIVO
+========================================== */
+
+@media (max-width: 900px) {
+
+    .estoque-page .dashboard-panel {
+        padding: 22px;
+    }
+
+    .estoque-page form {
+        grid-template-columns: 1fr;
+    }
+
+    .estoque-page form > button {
+        grid-column: auto;
+        width: 100%;
+    }
+
+}
+
+
+/* ==========================================
+   CELULAR
+========================================== */
+
+@media (max-width: 600px) {
+
+    .estoque-page {
+        padding-bottom: 30px;
+    }
+
+    .estoque-page .dashboard-panel {
+        padding: 18px;
+        margin-bottom: 22px;
+        border-radius: 14px;
+    }
+
+    .estoque-page .panel-heading {
+        margin-bottom: 20px;
+    }
+
+    .estoque-page table {
+        min-width: 700px;
+    }
+
+    .estoque-page table tbody td {
+        padding: 15px !important;
+    }
+
+}

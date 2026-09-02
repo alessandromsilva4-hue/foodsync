@@ -1,6 +1,6 @@
 /* ==========================================
    NeoScale
-   FIREBASE CONFIGURAÇÃO
+   FIREBASE CONFIGURA??O
 ========================================== */
 
 
@@ -24,7 +24,7 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 // ==========================================
-// CONFIGURAÇÃO FIREBASE
+// CONFIGURA??O FIREBASE
 // ==========================================
 
 
@@ -67,7 +67,7 @@ getFirestore(app);
 
 
 
-// Autenticação
+// Autentica??o
 
 const auth =
 

@@ -687,6 +687,8 @@ async function carregarProdutos() {
             }
         );
 
+        configurarPesquisaProdutoEtiqueta();
+
         console.log(
             "PRODUTOS DA EMPRESA:",
             idEmpresa
@@ -701,8 +703,6 @@ async function carregarProdutos() {
             "PRODUTOS:",
             produtos
         );
-
-        configurarPesquisaProduto();
 
     } catch (error) {
 
@@ -720,535 +720,139 @@ async function carregarProdutos() {
     }
 
 }
+
 // =======================================
-// PESQUISA DE PRODUTO
-// SUBSTITUI A LISTA ENORME
+// PESQUISA DE PRODUTOS PARA IMPRESSÃO
 // =======================================
 
-function configurarPesquisaProduto() {
+function configurarPesquisaProdutoEtiqueta() {
 
-    const select =
-        obterElemento("produtoEtiqueta");
+    const select = obterElemento("produtoEtiqueta");
+    const input = obterElemento("produtoEtiquetaBusca");
+    const lista = obterElemento("produtoEtiquetaLista");
+    const limpar = obterElemento("produtoEtiquetaLimpar");
+    const hint = obterElemento("produtoEtiquetaHint");
+    const campo = obterElemento("produtoSearch");
 
-    if (!select) {
+    if (!select || !input || !lista || !campo) return;
 
-        console.error(
-            "Elemento #produtoEtiqueta não encontrado."
-        );
-
+    if (campo.dataset.configurado === "true") {
+        atualizarListaProdutosEtiqueta("");
         return;
-
     }
 
-    // Evita criar a pesquisa duas vezes
-    if (
-        obterElemento("pesquisaProdutoEtiqueta")
-    ) {
+    campo.dataset.configurado = "true";
 
-        return;
-
+    function fecharLista() {
+        lista.hidden = true;
+        input.setAttribute("aria-expanded", "false");
     }
 
-    // Esconde o select original
-    select.style.display = "none";
+    function abrirLista() {
+        lista.hidden = false;
+        input.setAttribute("aria-expanded", "true");
+    }
 
-    // ===================================
-    // CONTAINER
-    // ===================================
+    function selecionarProduto(id, nome) {
+        select.value = id;
+        input.value = nome || "";
+        if (limpar) limpar.hidden = !input.value;
+        fecharLista();
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+    }
 
-    const container =
-        document.createElement("div");
+    function atualizarListaProdutosEtiqueta(termo) {
+        const busca = String(termo || "").trim().toLocaleLowerCase("pt-BR");
+        lista.innerHTML = "";
 
-    container.id =
-        "containerPesquisaProduto";
+        const encontrados = produtos.filter(produto => {
+            const nome = String(produto.nome || "");
+            return !busca || nome.toLocaleLowerCase("pt-BR").includes(busca);
+        }).slice(0, 80);
 
-    container.style.position =
-        "relative";
-
-    container.style.width =
-        "100%";
-
-    // ===================================
-    // CAMPO DE PESQUISA
-    // ===================================
-
-    const campo =
-        document.createElement("input");
-
-    campo.type =
-        "text";
-
-    campo.id =
-        "pesquisaProdutoEtiqueta";
-
-    campo.placeholder =
-        "🔍 Pesquisar produto...";
-
-    campo.autocomplete =
-        "off";
-
-    campo.style.width =
-        "100%";
-
-    campo.style.boxSizing =
-        "border-box";
-
-    campo.style.padding =
-        "10px 12px";
-
-    campo.style.border =
-        "1px solid #ccc";
-
-    campo.style.borderRadius =
-        "6px";
-
-    campo.style.fontSize =
-        "15px";
-
-    // ===================================
-    // RESULTADOS
-    // ===================================
-
-    const resultados =
-        document.createElement("div");
-
-    resultados.id =
-        "resultadosPesquisaProduto";
-
-    resultados.style.position =
-        "absolute";
-
-    resultados.style.top =
-        "100%";
-
-    resultados.style.left =
-        "0";
-
-    resultados.style.right =
-        "0";
-
-    resultados.style.background =
-        "#fff";
-
-    resultados.style.border =
-        "1px solid #ddd";
-
-    resultados.style.borderTop =
-        "none";
-
-    resultados.style.maxHeight =
-        "250px";
-
-    resultados.style.overflowY =
-        "auto";
-
-    resultados.style.zIndex =
-        "9999";
-
-    resultados.style.display =
-        "none";
-
-    resultados.style.boxShadow =
-        "0 4px 10px rgba(0,0,0,0.12)";
-
-    // ===================================
-    // INSERIR NA TELA
-    // ===================================
-
-    select.parentNode.insertBefore(
-        container,
-        select
-    );
-
-    container.appendChild(
-        campo
-    );
-
-    container.appendChild(
-        resultados
-    );
-
-    // ===================================
-    // MOSTRAR PRODUTOS
-    // ===================================
-
-    function mostrarResultados(termo) {
-
-        resultados.innerHTML = "";
-
-        const busca =
-            String(termo || "")
-                .trim()
-                .toLowerCase();
-
-        let encontrados;
-
-        if (!busca) {
-
-            encontrados =
-                produtos.slice(0, 30);
-
+        if (!encontrados.length) {
+            const vazio = document.createElement("div");
+            vazio.className = "produto-search-empty";
+            vazio.textContent = busca
+                ? "Nenhum produto encontrado."
+                : "Nenhum produto cadastrado.";
+            lista.appendChild(vazio);
         } else {
-
-            encontrados =
-                produtos.filter(
-                    produto => {
-
-                        const nome =
-                            String(
-                                produto.nome || ""
-                            ).toLowerCase();
-
-                        const codigo =
-                            String(
-                                produto.codigo || ""
-                            ).toLowerCase();
-
-                        return (
-                            nome.includes(busca) ||
-                            codigo.includes(busca)
-                        );
-
-                    }
-                ).slice(0, 30);
-
-        }
-
-        if (
-            encontrados.length === 0
-        ) {
-
-            const vazio =
-                document.createElement("div");
-
-            vazio.textContent =
-                "Nenhum produto encontrado.";
-
-            vazio.style.padding =
-                "12px";
-
-            vazio.style.color =
-                "#777";
-
-            resultados.appendChild(
-                vazio
-            );
-
-            resultados.style.display =
-                "block";
-
-            return;
-
-        }
-
-        encontrados.forEach(
-            produto => {
-
-                const item =
-                    document.createElement("div");
-
-                item.textContent =
-                    produto.nome ||
-                    "Produto sem nome";
-
-                item.style.padding =
-                    "10px 12px";
-
-                item.style.cursor =
-                    "pointer";
-
-                item.style.borderBottom =
-                    "1px solid #eee";
-
-                item.style.fontSize =
-                    "14px";
-
-                item.addEventListener(
-                    "mouseenter",
-                    () => {
-
-                        item.style.background =
-                            "#f3f4f6";
-
-                    }
-                );
-
-                item.addEventListener(
-                    "mouseleave",
-                    () => {
-
-                        item.style.background =
-                            "#fff";
-
-                    }
-                );
-
-                item.addEventListener(
-                    "click",
-                    () => {
-
-                        // Seleciona no select original
-                        select.value =
-                            produto.id;
-
-                        // Mostra o produto escolhido
-                        campo.value =
-                            produto.nome ||
-                            "";
-
-                        // Fecha resultados
-                        resultados.style.display =
-                            "none";
-
-                        // Dispara o change original
-                        select.dispatchEvent(
-                            new Event(
-                                "change",
-                                {
-                                    bubbles: true
-                                }
-                            )
-                        );
-
-                    }
-                );
-
-                resultados.appendChild(
-                    item
-                );
-
-            }
-        );
-
-        resultados.style.display =
-            "block";
-
-    }
-
-    // ===================================
-    // DIGITAR
-    // ===================================
-
-    campo.addEventListener(
-        "input",
-        () => {
-
-            // Limpa seleção anterior
-            select.value = "";
-
-            atualizarInformacoesProduto();
-
-            mostrarResultados(
-                campo.value
-            );
-
-        }
-    );
-
-    // ===================================
-    // FOCAR NO CAMPO
-    // ===================================
-
-    campo.addEventListener(
-        "focus",
-        () => {
-
-            mostrarResultados(
-                campo.value
-            );
-
-        }
-    );
-
-    // ===================================
-    // CLICAR FORA
-    // ===================================
-
-    document.addEventListener(
-        "click",
-        evento => {
-
-            if (
-                !container.contains(
-                    evento.target
-                )
-            ) {
-
-                resultados.style.display =
-                    "none";
-
-            }
-
-        }
-    );
-
-}
-// =======================================
-// CARREGAR RESPONSÁVEIS
-// SOMENTE USUÁRIOS DA EMPRESA ATUAL
-// =======================================
-
-async function carregarResponsaveis() {
-
-    const responsavelSelect =
-        obterElemento(
-            "responsavelSelect"
-        );
-
-    if (!responsavelSelect) {
-
-        console.error(
-            "Elemento #responsavelSelect não encontrado."
-        );
-
-        return;
-
-    }
-
-    const idEmpresa =
-        empresaAtual();
-
-    if (!idEmpresa) {
-
-        console.error(
-            "Empresa não identificada."
-        );
-
-        return;
-
-    }
-
-    try {
-
-        console.log("=======================================");
-        console.log("CARREGANDO RESPONSÁVEIS");
-        console.log(
-            "EMPRESA:",
-            idEmpresa
-        );
-        console.log("=======================================");
-
-        responsavelSelect.innerHTML =
-            `
-            <option value="">
-                Selecione o responsável
-            </option>
-            `;
-
-        const consulta =
-            query(
-
-                collection(
-                    db,
-                    "usuarios"
-                ),
-
-                where(
-                    "idEmpresa",
-                    "==",
-                    idEmpresa
-                )
-
-            );
-
-        const snapshot =
-            await getDocs(
-                consulta
-            );
-
-        const responsaveis = [];
-
-        snapshot.forEach(
-            item => {
-
-                const dados =
-                    item.data();
-
-                const nome =
-                    dados.nome ||
-                    dados.nomeCompleto ||
-                    dados.email ||
-                    "";
-
-                if (!nome) {
-
-                    return;
-
-                }
-
-                responsaveis.push({
-
-                    id:
-                        item.id,
-
-                    nome:
-                        nome,
-
-                    email:
-                        dados.email ||
-                        ""
-
+            encontrados.forEach(produto => {
+                const item = document.createElement("button");
+                item.type = "button";
+                item.className = "produto-search-option";
+                item.setAttribute("role", "option");
+                item.dataset.id = produto.id;
+                item.innerHTML = `
+                    <span class="produto-search-option-icon">□</span>
+                    <span class="produto-search-option-text">
+                        <strong></strong>
+                        <small>Selecionar para imprimir</small>
+                    </span>
+                `;
+                item.querySelector("strong").textContent = produto.nome || "Produto sem nome";
+                item.addEventListener("mousedown", evento => evento.preventDefault());
+                item.addEventListener("click", () => {
+                    selecionarProduto(produto.id, produto.nome || "Produto sem nome");
                 });
+                lista.appendChild(item);
+            });
+        }
 
-            }
-        );
-
-        responsaveis.sort(
-            (a, b) =>
-                String(a.nome)
-                    .localeCompare(
-                        String(b.nome),
-                        "pt-BR"
-                    )
-        );
-
-        responsaveis.forEach(
-            responsavel => {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-                option.value =
-                    responsavel.id;
-
-                option.textContent =
-                    responsavel.nome;
-
-                option.dataset.nome =
-                    responsavel.nome;
-
-                responsavelSelect.appendChild(
-                    option
-                );
-
-            }
-        );
-
-        console.log(
-            "RESPONSÁVEIS CARREGADOS:",
-            responsaveis.length
-        );
-
-        console.log(
-            responsaveis
-        );
-
-    } catch (error) {
-
-        console.error(
-            "ERRO AO CARREGAR RESPONSÁVEIS:",
-            error
-        );
-
-        alert(
-            "Erro ao carregar os responsáveis da empresa."
-        );
-
+        if (hint) {
+            hint.textContent = busca
+                ? `${encontrados.length} produto(s) encontrado(s)`
+                : `${produtos.length} produto(s) disponível(is)`;
+        }
     }
 
+    input.addEventListener("input", () => {
+        select.value = "";
+        if (limpar) limpar.hidden = !input.value;
+        atualizarListaProdutosEtiqueta(input.value);
+        abrirLista();
+    });
+
+    input.addEventListener("focus", () => {
+        atualizarListaProdutosEtiqueta(input.value);
+        abrirLista();
+    });
+
+    input.addEventListener("keydown", evento => {
+        if (evento.key === "Escape") {
+            fecharLista();
+            return;
+        }
+
+        if (evento.key === "Enter") {
+            const primeiro = lista.querySelector(".produto-search-option");
+            if (primeiro) {
+                evento.preventDefault();
+                primeiro.click();
+            }
+        }
+    });
+
+    if (limpar) {
+        limpar.addEventListener("click", () => {
+            select.value = "";
+            input.value = "";
+            limpar.hidden = true;
+            atualizarListaProdutosEtiqueta("");
+            abrirLista();
+            input.focus();
+            select.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+    }
+
+    document.addEventListener("click", evento => {
+        if (!campo.contains(evento.target)) fecharLista();
+    });
+
+    atualizarListaProdutosEtiqueta("");
 }
+
 // =======================================
 // PRODUTO SELECIONADO
 // =======================================
@@ -1680,12 +1284,15 @@ function atualizarResponsavelPrevia() {
     if (!elemento) {
 
         return;
+
     }
 
     elemento.textContent =
         campo?.value?.trim() ||
         "--";
+
 }
+
 // =======================================
 // ATUALIZAR TEMPERATURA NA PRÉVIA
 // =======================================
@@ -2030,7 +1637,7 @@ function gerarZPL(
     if (endereco) {
 
         zpl += "^FO16,394\n";
-        zpl += "^A0N,18,18\n";
+        zpl += "^A0N,15,15\n";
         zpl += "^FB305,2,0,L,0\n";
         zpl += `^FD${endereco}^FS\n`;
 
@@ -2422,29 +2029,31 @@ async function salvarEtiqueta() {
             produto.temperatura ||
             "AMBIENTE";
 
-      // ===================================
-// RESPONSÁVEL
-// ===================================
+        // ===================================
+        // RESPONSÁVEL
+        // ===================================
 
-const responsavelCampo =
-    obterElemento(
-        "responsavelSelect"
-    );
+        const responsavelCampo =
+            obterElemento(
+                "responsavelSelect"
+            );
 
-const responsavel =
-    responsavelCampo?.value?.trim() ||
-    "";
+        const responsavel =
+            responsavelCampo?.value?.trim() ||
+            "";
 
-if (!responsavel) {
+        if (!responsavel) {
 
-    alert(
-        "Digite o nome do responsável pela etiqueta."
-    );
+            alert(
+                "Informe o nome de quem está imprimindo a etiqueta."
+            );
 
-    responsavelCampo?.focus();
+            responsavelCampo?.focus();
 
-    return;
-}
+            return;
+
+        }
+
         // ===================================
         // UNIDADE
         // ===================================
@@ -2773,36 +2382,10 @@ await setDoc(
 
         if (formulario) {
 
-    formulario.reset();
+            formulario.reset();
 
-}
+        }
 
-const pesquisaProduto =
-    obterElemento(
-        "pesquisaProdutoEtiqueta"
-    );
-
-if (pesquisaProduto) {
-
-    pesquisaProduto.value =
-        "";
-
-}
-
-const resultadosProduto =
-    obterElemento(
-        "resultadosPesquisaProduto"
-    );
-
-if (resultadosProduto) {
-
-    resultadosProduto.innerHTML =
-        "";
-
-    resultadosProduto.style.display =
-        "none";
-
-}
         // ===================================
         // RESTAURAR CAMPOS
         // ===================================
@@ -3864,12 +3447,6 @@ document.addEventListener(
 
             await carregarProdutos();
 
-                        // ===================================
-            // RESPONSÁVEIS
-            // ===================================
-
-            await carregarResponsaveis();
-
             // ===================================
             // PRÉVIA
             // ===================================
@@ -3934,29 +3511,6 @@ document.addEventListener(
 
                         calcularValidadeProduto();
 
-                        atualizarPrevia();
-
-                    }
-                );
-
-            }
-
-                        // ===================================
-            // RESPONSÁVEL ALTERADO
-            // ===================================
-
-            const responsavelSelect =
-                obterElemento(
-                    "responsavelSelect"
-                );
-
-            if (responsavelSelect) {
-
-                responsavelSelect.addEventListener(
-                    "change",
-                    () => {
-
-                        atualizarResponsavelPrevia();
                         atualizarPrevia();
 
                     }
@@ -4089,5 +3643,3 @@ if (btnLimparHistorico) {
     }
 
 );
-
-

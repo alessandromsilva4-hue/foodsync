@@ -232,170 +232,123 @@ O conteúdo precisa respeitar os 250px.
 BOTÕES
 ========================================== */
 
-
 button,
 .button,
 .btn-primary,
 .btn-secondary,
-.btn-danger{
+.btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 
+    min-height: 44px;
+    padding: 11px 18px;
 
-    display:inline-flex;
+    border: none;
+    border-radius: var(--radius-sm);
 
+    background: var(--primary);
+    color: white;
 
-    align-items:center;
+    font-size: 14px;
+    font-weight: 600;
 
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
 
-    justify-content:center;
+    transition:
+        transform .15s ease,
+        background .2s ease,
+        box-shadow .2s ease;
 
+    box-shadow: 0 8px 20px rgba(37,99,235,.20);
 
-    gap:8px;
-
-
-    min-height:44px;
-
-
-    padding:
-
-    11px 18px;
-
-
-    border:none;
-
-
-    border-radius:
-
-    var(--radius-sm);
-
-
-    background:
-
-    var(--primary);
-
-
-    color:white;
-
-
-    font-size:14px;
-
-
-    font-weight:600;
-
-
-    transition:.25s;
-
-
-    box-shadow:
-
-    0 8px 20px rgba(37,99,235,.20);
-
-
+    -webkit-tap-highlight-color: transparent;
 }
 
-
-
-
+/* Movimento ao passar o mouse */
 button:hover,
 .button:hover,
-.btn-primary:hover{
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(37,99,235,.25);
+}
 
+/* Movimento ao clicar */
+button:active,
+.button:active,
+.btn-primary:active,
+.btn-secondary:active,
+.btn-danger:active {
+    transform: scale(.96);
+    box-shadow: 0 4px 10px rgba(37,99,235,.15);
+}
 
-    background:
+/* Botões desativados */
+button:disabled,
+.button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none !important;
+}
 
-    var(--primary-hover);
+/* Botão secundário */
+.btn-secondary {
+    background: #EFF6FF;
+    color: var(--primary);
+    border: 1px solid #BFDBFE;
+    box-shadow: none;
+}
 
+.btn-secondary:hover {
+    background: #DBEAFE;
+    transform: translateY(-2px);
+}
 
-    transform:
+/* Botão perigo */
+.btn-danger {
+    background: var(--danger);
+}
 
-    translateY(-2px);
+.btn-danger:hover {
+    background: #B91C1C;
+    transform: translateY(-2px);
+}
 
+/* Efeito de onda ao clicar */
+.button-ripple {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.45);
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0);
+    animation: buttonRipple .5s ease-out forwards;
+}
+
+@keyframes buttonRipple {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: .8;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(18);
+        opacity: 0;
+    }
 }
 
 
-
-button:active{
-
-    transform:
-
-    scale(.98);
-
-}
-
-
-
-button:disabled{
-
-    opacity:.6;
-
-    cursor:not-allowed;
-
-}
-
-
-
-
-
-/* BOTÃO SECUNDÁRIO */
-
-
-.btn-secondary{
-
-
-    background:#EFF6FF;
-
-
-    color:
-
-    var(--primary);
-
-
-    border:
-
-    1px solid #BFDBFE;
-
-
-    box-shadow:none;
-
-
-}
-
-
-
-.btn-secondary:hover{
-
-
-    background:#DBEAFE;
-
-}
-
-
-
-
-/* BOTÃO PERIGO */
-
-
-.btn-danger{
-
-
-    background:
-
-    var(--danger);
-
-
-}
-
-
-
-.btn-danger:hover{
-
-
-    background:#B91C1C;
-
-
-}
 /* ==========================================
 INPUTS
 ========================================== */
+
+
+
 
 
 input,
@@ -1578,9 +1531,7 @@ IA LOTRIX
 
 
 
-    transform:
-
-    translateY(-2px);
+    transform:translateY(-2px);
 
 
 }

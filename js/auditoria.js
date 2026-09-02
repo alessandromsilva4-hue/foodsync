@@ -5,7 +5,7 @@
 console.log("AUDITORIA.JS CARREGADO");
 
 
-import { db } from "./firebase.js";
+import { auth, db } from "./firebase.js";
 
 
 import {
@@ -13,7 +13,9 @@ import {
 collection,
 getDocs,
 query,
-orderBy
+where,
+doc,
+getDoc
 
 }
 
@@ -62,15 +64,46 @@ try{
 tabela.innerHTML="";
 
 
+// A regra do Firestore libera apenas os registros da empresa ativa. Aguardar
+// a autenticação e aplicar esse filtro na consulta evita a negação da leitura.
+await auth.authStateReady();
+
+const usuarioAtual = auth.currentUser;
+
+if(!usuarioAtual){
+
+throw new Error("Usuário não autenticado");
+
+}
+
+let idEmpresa =
+localStorage.getItem("empresaAtivaLotrix") || "";
+
+if(!idEmpresa){
+
+const perfilSnapshot =
+await getDoc(
+doc(db,"usuarios",usuarioAtual.uid)
+);
+
+idEmpresa =
+perfilSnapshot.data()?.idEmpresa || "";
+
+}
+
+if(!idEmpresa){
+
+throw new Error("Empresa ativa não encontrada");
+
+}
+
+
 const consulta =
 query(
 
 collection(db,"auditoria"),
 
-orderBy(
-"data",
-"desc"
-)
+where("idEmpresa","==",idEmpresa)
 
 );
 
@@ -93,6 +126,21 @@ dadosAuditoria.push({
 id:item.id,
 
 ...item.data()
+
+});
+
+// Ordenação no cliente para não exigir um índice composto no Firestore.
+dadosAuditoria.sort((a,b)=>{
+
+const dataA = a.data?.toMillis
+? a.data.toMillis()
+: (a.data?.seconds || 0) * 1000;
+
+const dataB = b.data?.toMillis
+? b.data.toMillis()
+: (b.data?.seconds || 0) * 1000;
+
+return dataB - dataA;
 
 });
 

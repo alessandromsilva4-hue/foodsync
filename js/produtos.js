@@ -1,4 +1,4 @@
-console.log("PRODUTOS.JS V9 MULTIEMPRESA CARREGADO");
+﻿console.log("PRODUTOS.JS V9 MULTIEMPRESA CARREGADO");
 
 // =======================================
 // FOODSYNC V9
@@ -1452,3 +1452,27 @@ window.debugProdutos = function () {
 console.log(
     "PRODUTOS.JS V9 PRONTO"
 );
+/* =========================================================
+   INFORMAÇÕES ADICIONAIS - MODAL PRODUTO
+========================================================= */
+
+window.toggleInformacoesProduto = function() {
+
+    const campos = document.getElementById("camposAdicionaisProduto");
+    const icone = document.getElementById("iconeInfoProduto");
+
+    if (!campos) {
+        console.error("camposAdicionaisProduto não encontrado");
+        return;
+    }
+
+    const aberto = campos.classList.toggle("aberto");
+
+    if (icone) {
+        icone.textContent = aberto ? "▲" : "▼";
+    }
+
+}
+
+
+

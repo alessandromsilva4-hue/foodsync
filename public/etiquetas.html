@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lotrix - Etiquetas</title>
+
+<link rel="icon" href="img/favicon.png">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/formulario.css">
+<link rel="stylesheet" href="css/tabela.css">
+<link rel="stylesheet" href="css/etiquetas.css">
+
+    <link rel="stylesheet" href="./css/sidebar-global-final.css">
+
+    <link rel="stylesheet" href="./css/dark-theme.css">
+
+<link rel="stylesheet" href="css/button-interaction-fix.css">
+    <link rel="stylesheet" href="css/lotrix-final-fix.css">
+
+<style>
+/* Mantém os controles da tela Etiquetas na mesma posição em qualquer estado. */
+button,
+button:hover,
+button:focus,
+button:focus-visible,
+button:active {
+    box-sizing: border-box;
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    translate: none !important;
+    scale: 1 !important;
+}
+
+/* O botão de limpar fica preso ao campo de busca, sem deslocar o layout. */
+.etiqueta-workspace .produto-search-clear {
+    position: absolute !important;
+    inset: 50% 10px auto auto !important;
+    translate: 0 -50% !important;
+}
+
+/* Os botões de quantidade e o campo central sempre ocupam as mesmas colunas. */
+.etiqueta-workspace .quantity-control {
+    display: grid !important;
+    grid-template-columns: 42px minmax(0, 1fr) 42px !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+}
+
+@media screen and (max-width: 1099px) {
+    .etiqueta-workspace .quantity-control {
+        grid-template-columns: 36px minmax(0, 1fr) 36px !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <button class="sidebar-menu-btn" id="sidebarMenuToggle" type="button" aria-label="Recolher menu" aria-expanded="true">
+            <i data-lucide="menu" aria-hidden="true"></i>
+        </button>
+        <a class="sidebar-brand" href="dashboard.html" aria-label="Lotrix - Dashboard">
+            <img class="brand-logo" src="img/logo.png" alt="Lotrix">
+            <span class="brand-name">Lotrix</span>
+        </a>
+        <button class="sidebar-options-btn" id="sidebarOptionsToggle" type="button" aria-label="Mais opções" aria-expanded="false">
+            <i data-lucide="more-vertical" aria-hidden="true"></i>
+        </button>
+        <div class="sidebar-options" id="sidebarOptions" hidden>
+            <a href="dashboard.html"><i data-lucide="home"></i> Início</a>
+            <button type="button" id="sidebarRefresh"><i data-lucide="refresh-cw"></i> Atualizar</button>
+        </div>
+    </div>
+
+    <nav class="menu" aria-label="Menu principal">
+        <div class="menu-section">
+            <div class="menu-title">Geral</div>
+            <a href="dashboard.html" data-page="dashboard.html"><i data-lucide="layout-dashboard"></i><span class="nav-label">Dashboard</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Operação</div>
+            <a href="producao.html" data-page="producao.html"><i data-lucide="factory"></i><span class="nav-label">Produção</span></a>
+            <a href="produtos.html" data-page="produtos.html"><i data-lucide="package"></i><span class="nav-label">Produtos</span></a>
+            <a href="etiquetas.html" data-page="etiquetas.html"><i data-lucide="tag"></i><span class="nav-label">Etiquetas</span></a>
+            <a href="estoque.html" data-page="estoque.html"><i data-lucide="boxes"></i><span class="nav-label">Estoque</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Gestão</div>
+            <a href="relatorios.html" data-page="relatorios.html"><i data-lucide="bar-chart-3"></i><span class="nav-label">Relatórios</span></a>
+            <a href="auditoria.html" data-page="auditoria.html"><i data-lucide="clipboard-check"></i><span class="nav-label">Auditoria</span></a>
+            <a href="usuario.html" data-page="usuario.html"><i data-lucide="users"></i><span class="nav-label">Usuários</span></a>
+            <a href="sac-admin.html" data-page="sac-admin.html"><i data-lucide="headphones"></i><span class="nav-label">SAC Admin</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Sistema</div>
+            <a href="configuracoes.html" data-page="configuracoes.html"><i data-lucide="settings"></i><span class="nav-label">Configurações</span></a>
+            <a href="ajuda.html" data-page="ajuda.html"><i data-lucide="circle-help"></i><span class="nav-label">Ajuda</span></a>
+            <a href="sac.html" data-page="sac.html"><i data-lucide="message-circle"></i><span class="nav-label">SAC</span></a>
+        </div>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="user-card">
+            <div class="avatar"><i data-lucide="user-round" aria-hidden="true"></i></div>
+            <div class="user-info"><strong>Alessandro</strong><small>Administrador</small></div>
+        </div>
+        <div class="company-card">
+            <span class="company-label">Empresa</span>
+            <strong class="company-name">Izu Oeste</strong>
+        </div>
+        <button class="logout-button" type="button" onclick="logout()"><i data-lucide="log-out"></i><span>Sair</span></button>
+    </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <!-- CONTEÚDO -->
+    <main class="content">
+
+        <!-- CABEÇALHO -->
+
+        <header class="top-header">
+
+            <div>
+
+                <h1>Etiquetas</h1>
+
+                <p>
+                    Gere e imprima etiquetas de validade
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- ÁREA PRINCIPAL -->
+
+        <section class="etiqueta-workspace">
+
+
+            <!-- PRÉVIA -->
+
+            <div class="preview-panel">
+
+                <div class="panel-title">
+
+                    <div>
+
+                        <span class="panel-kicker">
+                            PRÉVIA
+                        </span>
+
+                        <h2>
+                            Etiqueta
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="preview-stage">
+
+                    <div
+                        id="etiquetaGerada"
+                        class="etiqueta">
+
+
+                        <!-- PRODUTO -->
+
+                        <h3 id="nomeEtiqueta">
+                            PRODUTO
+                        </h3>
+
+
+                        <!-- TEMPERATURA -->
+
+                        <div class="temperatura-destaque">
+
+                            <span id="temperaturaEtiqueta">
+                                --
+                            </span>
+
+                        </div>
+
+
+                        <div class="linha-etiqueta linha-topo"></div>
+
+
+                        <!-- DATAS -->
+
+                        <div class="datas-etiqueta">
+
+                            <p>
+
+                                <strong>
+                                    MANIPULAÇÃO:
+                                </strong>
+
+                                <span id="dataEtiqueta">
+                                    --
+                                </span>
+
+                            </p>
+
+                            <p>
+
+                                <strong>
+                                    VALIDADE:
+                                </strong>
+
+                                <span id="validadeEtiqueta">
+                                    --
+                                </span>
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="linha-etiqueta linha-inferior"></div>
+
+
+                        <!-- RESPONSÁVEL -->
+
+                        <div class="info-etiqueta">
+
+                            <p>
+
+                                <strong>
+                                    RESP.:
+                                </strong>
+
+                                <span id="responsavelEtiqueta">
+                                    --
+                                </span>
+
+                            </p>
+
+                            <p>
+
+                                <strong>
+                                    LOTE:
+                                </strong>
+
+                                <span id="loteEtiqueta">
+                                    --
+                                </span>
+
+                            </p>
+
+                        </div>
+
+
+                        <!-- EMPRESA -->
+
+                        <div class="empresa-etiqueta">
+
+                            <h2 id="nomeEmpresaEtiqueta">
+                                EMPRESA
+                            </h2>
+
+                            <span id="razaoSocialEmpresaEtiqueta">
+                                --
+                            </span>
+
+                            <small id="cnpjEmpresaEtiqueta">
+                                --
+                            </small>
+
+                            <small id="enderecoEmpresaEtiqueta">
+                                --
+                            </small>
+
+                        </div>
+
+
+                        <!-- QR CODE -->
+
+                        <div id="qrcodeEtiqueta"></div>
+
+
+                    </div>
+
+                </div>
+
+
+                <div class="preview-caption">
+                    Pré-visualização da etiqueta 60 × 60 mm
+                </div>
+
+            </div>
+
+
+            <!-- FORMULÁRIO -->
+
+            <div class="print-panel">
+
+                <div class="panel-title">
+
+                    <div>
+
+                        <span class="panel-kicker">
+                            CONFIGURAÇÃO
+                        </span>
+
+                        <h2>
+                            Imprimir etiqueta
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <p class="panel-description">
+
+                    Sua etiqueta está pronta para ser impressa.
+                    Se preferir, adicione informações complementares.
+
+                </p>
+
+
+                <form id="etiquetaForm">
+
+
+                    <!-- PRODUTO -->
+
+                    <div class="field field-full">
+
+                        <label for="produtoEtiqueta">
+                            Produto
+                        </label>
+
+                        <div class="produto-search" id="produtoSearch">
+
+                            <div class="produto-search-input-wrap">
+
+                                <span class="produto-search-icon" aria-hidden="true">⌕</span>
+
+                                <input
+                                    type="search"
+                                    id="produtoEtiquetaBusca"
+                                    class="produto-search-input"
+                                    placeholder="Pesquisar produto..."
+                                    autocomplete="off"
+                                    aria-label="Pesquisar produto"
+                                    aria-controls="produtoEtiquetaLista"
+                                    aria-expanded="false">
+
+                                <button
+                                    type="button"
+                                    class="produto-search-clear"
+                                    id="produtoEtiquetaLimpar"
+                                    aria-label="Limpar pesquisa"
+                                    hidden>
+                                    ×
+                                </button>
+
+                            </div>
+
+                            <div
+                                class="produto-search-list"
+                                id="produtoEtiquetaLista"
+                                role="listbox"
+                                aria-label="Produtos"
+                                hidden>
+                            </div>
+
+                            <!-- Mantido para compatibilidade com o sistema de impressão -->
+                            <select
+                                id="produtoEtiqueta"
+                                required
+                                aria-hidden="true"
+                                tabindex="-1"
+                                class="produto-select-hidden">
+                                <option value="">Selecione o produto</option>
+                            </select>
+
+                            <div class="produto-search-hint" id="produtoEtiquetaHint">
+                                Digite o nome do produto para localizar rapidamente.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DATA + RESPONSÁVEL -->
+
+                    <div class="field-grid">
+
+                        <div class="field">
+
+                            <label for="dataProducao">
+                                Data de produção
+                            </label>
+
+                            <input
+                                type="date"
+                                id="dataProducao"
+                                required>
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="responsavelSelect">
+                                Responsável
+                            </label>
+
+                            <input
+                                type="text"
+                                id="responsavelSelect"
+                                name="responsavel"
+                                placeholder="Digite o nome do responsável"
+                                autocomplete="off"
+                                required>
+
+                        </div>
+
+                    </div>
+                    <!-- QUANTIDADE -->
+
+
+                    <div class="quantity-print-row">
+
+                        <div class="quantity-box">
+
+                            <label for="quantidadeProducao">
+                                Quantidade de etiquetas
+                            </label>
+
+                            <div class="quantity-control">
+
+                                <button
+                                    type="button"
+                                    class="quantity-btn"
+                                    onclick="alterarQuantidade(-1)">
+                                    −
+                                </button>
+
+                                <input
+                                    type="number"
+                                    id="quantidadeProducao"
+                                    value="1"
+                                    min="1">
+
+                                <button
+                                    type="button"
+                                    class="quantity-btn"
+                                    onclick="alterarQuantidade(1)">
+                                    +
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="btn-print">
+
+                            🖨 Imprimir
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- BOTÃO ORIGINAL, MANTIDO PARA O JS -->
+
+                    <button
+                        type="button"
+                        class="btn-generate"
+                        onclick="document.getElementById('etiquetaForm').requestSubmit()">
+
+                        Atualizar etiqueta
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- HISTÓRICO -->
+
+        <section class="table-box etiqueta-history">
+
+            <div class="historico-header">
+
+                <div>
+
+                    <span class="panel-kicker">
+                        HISTÓRICO
+                    </span>
+
+                    <h2>
+                        Histórico de Etiquetas
+                    </h2>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="btnLimparHistorico"
+                    class="btn-limpar-historico">
+
+                    🗑 Limpar histórico
+
+                </button>
+
+            </div>
+
+
+            <div class="table-scroll">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Código
+                            </th>
+
+                            <th>
+                                Produto
+                            </th>
+
+                            <th>
+                                Quantidade
+                            </th>
+
+                            <th>
+                                Produção
+                            </th>
+
+                            <th>
+                                Validade
+                            </th>
+
+                            <th>
+                                Responsável
+                            </th>
+
+                            <th>
+                                Ações
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="listaEtiquetas">
+
+                        <tr>
+
+                            <td colspan="7">
+                                Nenhuma etiqueta gerada.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- FIREBASE -->
+
+<script type="module" src="js/firebase.js"></script>
+
+<script type="module" src="js/app.js"></script>
+
+
+<!-- QR CODE -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+
+<!-- ETIQUETAS -->
+
+<script type="module" src="js/etiquetas.js"></script>
+
+
+<!-- AUTENTICAÇÃO -->
+
+<script type="module" src="js/auth.js"></script>
+
+
+<!-- SIDEBAR -->
+
+<script src="js/design-system.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/sidebar.js"></script>
+
+
+<!-- CONTROLE DE QUANTIDADE -->
+
+<script>
+
+function alterarQuantidade(delta) {
+
+    const campo =
+        document.getElementById("quantidadeProducao");
+
+    if (!campo) return;
+
+    let valor =
+        parseInt(campo.value || "1", 10);
+
+    valor += delta;
+
+    if (valor < 1) {
+        valor = 1;
+    }
+
+    campo.value = valor;
+
+    campo.dispatchEvent(
+        new Event("input", {
+            bubbles: true
+        })
+    );
+
+    campo.dispatchEvent(
+        new Event("change", {
+            bubbles: true
+        })
+    );
+
+}
+
+</script>
+
+</body>
+
+</html>
+
+

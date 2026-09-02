@@ -1,4 +1,4 @@
-// =======================================
+﻿// =======================================
 // LOTRIX - DASHBOARD
 // FIRESTORE + MULTIEMPRESA ISOLADO
 //
@@ -491,6 +491,331 @@ function daysUntil(value) {
 
 
 // =======================================
+// ALERTAS DE VALIDADE
+// =======================================
+
+function renderLabelAlerts(labels) {
+
+    const list =
+        document.getElementById(
+            "listaAlertasEtiquetas"
+        );
+
+    const cards =
+        document.querySelectorAll(
+            ".etiqueta-alerta-card[data-alerta]"
+        );
+
+    const sortByValidity = items =>
+        [...items].sort(
+            (first, second) =>
+                daysUntil(first.validade) -
+                daysUntil(second.validade)
+        );
+
+    const alerts = {
+        prestes: sortByValidity(labels.filter(item => {
+
+            const days = daysUntil(item.validade);
+
+            return days >= 0 && days <= 7;
+
+        })),
+
+        dias: sortByValidity(
+            labels.filter(item => daysUntil(item.validade) > 7)
+        ),
+
+        vencida: sortByValidity(
+            labels.filter(item => daysUntil(item.validade) < 0)
+        )
+    };
+
+    const vencendoHoje =
+        alerts.prestes.filter(item =>
+            daysUntil(item.validade) === 0
+        ).length;
+
+    setValue(
+        "alertaEtiquetasPrestes",
+        alerts.prestes.length
+    );
+
+    setValue(
+        "alertaEtiquetasDias",
+        alerts.dias.length
+    );
+
+    setValue(
+        "alertaEtiquetasVencidas",
+        alerts.vencida.length
+    );
+
+    setValue(
+        "vencendoHojeDescricao",
+        vencendoHoje > 0
+            ? `${vencendoHoje} etiqueta(s) vencem hoje`
+            : "Nenhuma etiqueta vence hoje"
+    );
+
+    setValue(
+        "resumoOperacional",
+        alerts.vencida.length > 0
+            ? `${alerts.vencida.length} etiqueta(s) vencida(s) precisam de ação imediata.`
+            : alerts.prestes.length > 0
+                ? `${alerts.prestes.length} etiqueta(s) vencem em até 7 dias.`
+                : "Nenhum vencimento previsto para os próximos 7 dias."
+    );
+
+    if (!list || !cards.length) {
+
+        return;
+
+    }
+
+    let activeAlert = null;
+
+    const statusFor = (type, days) => {
+
+        if (type === "vencida") {
+
+            const elapsed = Math.abs(days);
+
+            return elapsed === 1
+                ? "Venceu ontem"
+                : `Vencida há ${elapsed} dias`;
+
+        }
+
+        if (days === 0) {
+
+            return "Vence hoje";
+
+        }
+
+        if (days === 1) {
+
+            return "Vence amanhã";
+
+        }
+
+        return `Vence em ${days} dias`;
+
+    };
+
+    const colorFor = type => ({
+        prestes: "amarelo",
+        dias: "verde",
+        vencida: "vermelho"
+    })[type];
+
+    const showAlert = type => {
+
+        const items = alerts[type] || [];
+
+        if (activeAlert === type) {
+
+            activeAlert = null;
+            list.hidden = true;
+            list.innerHTML = "";
+
+        } else {
+
+            activeAlert = type;
+            list.hidden = false;
+
+            if (!items.length) {
+
+                list.innerHTML = `
+
+                    <div class="empty-state">
+                        Nenhuma etiqueta nesta categoria.
+                    </div>
+
+                `;
+
+            } else {
+
+                const title = {
+                    prestes: "Etiquetas que vencem em até 7 dias",
+                    dias: "Etiquetas com mais de 7 dias de validade",
+                    vencida: "Etiquetas vencidas"
+                }[type];
+
+                list.innerHTML = `
+
+                    <div class="alerta-etiqueta-resumo">
+                        <strong>${title}</strong>
+                        <span>${items.length} etiqueta(s)</span>
+                    </div>
+
+                ` + items
+                    .slice(0, 10)
+                    .map(item => {
+
+                        const days = daysUntil(item.validade);
+
+                        return `
+
+                            <div class="alerta-etiqueta-item">
+                                <div class="alerta-etiqueta-produto">
+                                    <strong>${escapeHtml(
+                                        item.produto ||
+                                        item.nomeProduto ||
+                                        "Produto sem nome"
+                                    )}</strong>
+                                    <small>Lote ${escapeHtml(
+                                        item.lote ||
+                                        item.codigo ||
+                                        "—"
+                                    )} · ${dateText(item.validade)}</small>
+                                </div>
+                                <span class="alerta-etiqueta-status ${colorFor(type)}">
+                                    ${statusFor(type, days)}
+                                </span>
+                            </div>
+
+                        `;
+
+                    })
+                    .join("") + (
+                        items.length > 10
+                            ? `
+
+                                <a class="alerta-etiqueta-rodape" href="etiquetas.html">
+                                    Ver todas as ${items.length} etiquetas
+                                </a>
+
+                            `
+                            : ""
+                    );
+
+            }
+
+        }
+
+        cards.forEach(card => {
+
+            const isActive =
+                card.dataset.alerta === activeAlert;
+
+            card.classList.toggle(
+                "active",
+                isActive
+            );
+
+            card.setAttribute(
+                "aria-expanded",
+                String(isActive)
+            );
+
+        });
+
+        if (
+            window.lucide &&
+            typeof window.lucide.createIcons === "function"
+        ) {
+
+            window.lucide.createIcons();
+
+        }
+
+    };
+
+    cards.forEach(card => {
+
+        card.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+        card.onclick = () => showAlert(card.dataset.alerta);
+
+    });
+
+}
+
+// =======================================
+// ABRIR DETALHE DA ETIQUETA
+// =======================================
+
+function abrirDetalheEtiqueta(id, labels = []) {
+
+    console.log("=================================");
+    console.log("🏷️ ABRINDO ETIQUETA");
+    console.log("ID:", id);
+    console.log("=================================");
+
+    // -------------------------------
+    // VERIFICAR ID
+    // -------------------------------
+
+    if (!id) {
+
+        console.error(
+            "❌ ID DA ETIQUETA AUSENTE."
+        );
+
+        return;
+
+    }
+
+    // -------------------------------
+    // PROCURAR ETIQUETA
+    // -------------------------------
+
+    const etiqueta = labels.find(
+        item =>
+            String(item.id) ===
+            String(id)
+    );
+
+    if (!etiqueta) {
+
+        console.error(
+            "❌ ETIQUETA NÃO ENCONTRADA:",
+            id
+        );
+
+        console.log(
+            "ETIQUETAS DISPONÍVEIS:",
+            labels
+        );
+
+        return;
+
+    }
+
+    console.log(
+        "✅ ETIQUETA ENCONTRADA:",
+        etiqueta
+    );
+
+    // -------------------------------
+    // SALVAR ID
+    // -------------------------------
+
+    sessionStorage.setItem(
+        "etiquetaSelecionada",
+        JSON.stringify(etiqueta)
+    );
+
+    // -------------------------------
+    // ABRIR PÁGINA
+    // -------------------------------
+
+    const url =
+        `etiquetas.html?id=${encodeURIComponent(id)}`;
+
+    console.log(
+        "➡️ REDIRECIONANDO PARA:",
+        url
+    );
+
+    window.location.href = url;
+
+}
+// =======================================
 // ATIVIDADES
 // =======================================
 
@@ -517,15 +842,11 @@ function renderActivity(
             container,
 
             type === "produção"
-
                 ? "Nenhuma produção registrada."
-
                 : "Nenhuma etiqueta emitida.",
 
             type === "produção"
-
                 ? "chef-hat"
-
                 : "tag"
 
         );
@@ -538,17 +859,14 @@ function renderActivity(
     container.innerHTML =
 
         items
-
             .slice(0, 5)
-
             .map(item => {
 
                 const name =
 
                     item.produto ||
-
+                    item.produtoNome ||
                     item.nomeProduto ||
-
                     "Produto sem nome";
 
 
@@ -557,21 +875,14 @@ function renderActivity(
                     type === "produção"
 
                         ? (
-
                             item.dataProducao ||
-
                             item.criadoEm
-
                         )
 
                         : (
-
                             item.criadoEm ||
-
                             item.dataEtiqueta ||
-
                             item.dataProducao
-
                         );
 
 
@@ -622,15 +933,51 @@ function renderActivity(
                 const icon =
 
                     type === "produção"
-
                         ? "chef-hat"
-
                         : "tag";
+
+
+                /*
+                 * ETIQUETA:
+                 * torna o item clicável.
+                 */
+
+                const clickAttribute =
+
+                    type === "etiqueta"
+
+                        ? `data-etiqueta-id="${escapeHtml(
+                            item.id || ""
+                        )}"`
+
+                        : "";
+
+
+                const clickableClass =
+
+                    type === "etiqueta"
+
+                        ? " activity-item-clickable"
+
+                        : "";
 
 
                 return `
 
-                    <div class="activity-item">
+                    <div
+                        class="activity-item${clickableClass}"
+                        ${clickAttribute}
+                        role="${
+                            type === "etiqueta"
+                                ? "button"
+                                : ""
+                        }"
+                        tabindex="${
+                            type === "etiqueta"
+                                ? "0"
+                                : "-1"
+                        }"
+                    >
 
                         <span class="activity-icon">
 
@@ -640,11 +987,13 @@ function renderActivity(
 
                         </span>
 
+
                         <div>
 
                             <strong>
                                 ${escapeHtml(name)}
                             </strong>
+
 
                             <small>
                                 ${detail}
@@ -659,6 +1008,93 @@ function renderActivity(
             })
 
             .join("");
+
+
+    /*
+     * ÍCONES
+     */
+
+    if (
+
+        window.lucide &&
+
+        typeof window.lucide.createIcons ===
+        "function"
+
+    ) {
+
+        window.lucide.createIcons();
+
+    }
+
+
+    /*
+     * CLIQUE NAS ETIQUETAS
+     */
+
+    if (
+        type === "etiqueta"
+    ) {
+
+        container
+            .querySelectorAll(
+                "[data-etiqueta-id]"
+            )
+            .forEach(element => {
+
+                element.addEventListener(
+                    "click",
+                    () => {
+
+                        const id =
+                            element.dataset.etiquetaId;
+
+
+                        console.log(
+                            "🏷️ ETIQUETA CLICADA:",
+                            id
+                        );
+
+
+                        abrirDetalheEtiqueta(
+                            id,
+                            items
+                        );
+
+                    }
+                );
+
+
+                /*
+                 * Permite ENTER no teclado
+                 */
+
+                element.addEventListener(
+                    "keydown",
+                    event => {
+
+                        if (
+                            event.key ===
+                            "Enter"
+                        ) {
+
+                            const id =
+                                element.dataset.etiquetaId;
+
+
+                            abrirDetalheEtiqueta(
+                                id,
+                                items
+                            );
+
+                        }
+
+                    }
+                );
+
+            });
+
+    }
 
 }
 
@@ -1920,6 +2356,11 @@ async function loadDashboard() {
 
     renderExpiring(
         expiring
+    );
+
+
+    renderLabelAlerts(
+        labels
     );
 
 

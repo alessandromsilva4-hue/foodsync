@@ -1,0 +1,63 @@
+/* LOTRIX - CORREÇÃO DE INTERAÇÃO DOS BOTÕES */
+/* Evita que os botões se movam, pulem ou mudem de posição ao passar o mouse/clicar. */
+button,
+.button,
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-success,
+.btn-warning,
+.btn-outline,
+input[type="button"],
+input[type="submit"] {
+  transform: none !important;
+  translate: none !important;
+  scale: 1 !important;
+  transition: none !important;
+}
+
+button:hover,
+.button:hover,
+.btn:hover,
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-danger:hover,
+.btn-success:hover,
+.btn-warning:hover,
+.btn-outline:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover {
+  transform: none !important;
+}
+
+button:active,
+.button:active,
+.btn:active,
+.btn-primary:active,
+.btn-secondary:active,
+.btn-danger:active,
+.btn-success:active,
+.btn-warning:active,
+.btn-outline:active,
+input[type="button"]:active,
+input[type="submit"]:active {
+  transform: none !important;
+  translate: none !important;
+  scale: 1 !important;
+}
+
+/* Mantém o botão estável mesmo durante foco/teclado. */
+button:focus,
+.button:focus,
+.btn:focus,
+.btn-primary:focus,
+.btn-secondary:focus,
+.btn-danger:focus,
+.btn-success:focus,
+.btn-warning:focus,
+.btn-outline:focus {
+  transform: none !important;
+  translate: none !important;
+  scale: 1 !important;
+}

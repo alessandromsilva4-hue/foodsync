@@ -1,0 +1,184 @@
+/* =========================================================
+   LOTRIX — TEMA ESCURO AZUL / PADRÃO VISUAL DO MOCKUP
+   Baseado no azul profundo da referência enviada.
+========================================================= */
+
+[data-theme="dark"] {
+    --background: #112f6e;
+    --surface: #183571;
+    --surface-subtle: #1d3d7b;
+    --text: #f5f8ff;
+    --text-light: #b9c9e8;
+    --border: rgba(129, 166, 226, .24);
+    --border-strong: rgba(151, 184, 238, .34);
+    --primary: #2f73e8;
+    --primary-hover: #3f83f5;
+    --primary-dark: #1f5ec9;
+    --secondary: #72a8ff;
+    --shadow: 0 12px 30px rgba(3, 18, 58, .24);
+}
+
+[data-theme="dark"] html,
+[data-theme="dark"] body,
+[data-theme="dark"] .layout {
+    background: #112f6e !important;
+    color: #f5f8ff !important;
+}
+
+[data-theme="dark"] .content,
+[data-theme="dark"] .main-content,
+[data-theme="dark"] .conteudo {
+    background: #112f6e !important;
+}
+
+/* Sidebar */
+[data-theme="dark"] .sidebar {
+    background: linear-gradient(180deg, #102e70 0%, #0e285e 55%, #0c2557 100%) !important;
+    border-right: 1px solid rgba(132, 169, 231, .15) !important;
+    box-shadow: 10px 0 30px rgba(4, 18, 55, .20) !important;
+}
+
+[data-theme="dark"] .sidebar-header {
+    border-bottom-color: rgba(146, 180, 237, .14) !important;
+}
+
+[data-theme="dark"] .sidebar-footer {
+    background: rgba(5, 19, 56, .20) !important;
+    border-top-color: rgba(146, 180, 237, .14) !important;
+}
+
+[data-theme="dark"] .sidebar .menu a.active {
+    background: linear-gradient(90deg, #2458b9 0%, #1f55b5 100%) !important;
+    box-shadow: inset 3px 0 #fff, 0 5px 14px rgba(4, 22, 72, .20) !important;
+}
+
+/* Área de conteúdo e componentes */
+[data-theme="dark"] .card,
+[data-theme="dark"] .form-box,
+[data-theme="dark"] .table-box,
+[data-theme="dark"] .dashboard-box,
+[data-theme="dark"] .metric-card,
+[data-theme="dark"] .panel,
+[data-theme="dark"] .panel-box,
+[data-theme="dark"] .section,
+[data-theme="dark"] .box,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .usuario-modal {
+    background: #183571 !important;
+    border-color: rgba(132, 169, 231, .24) !important;
+    color: #f5f8ff !important;
+    box-shadow: 0 12px 30px rgba(3, 18, 58, .20) !important;
+}
+
+[data-theme="dark"] .dashboard-grid > *,
+[data-theme="dark"] .dashboard-page .panel {
+    background: #183571;
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] strong,
+[data-theme="dark"] th,
+[data-theme="dark"] td,
+[data-theme="dark"] label,
+[data-theme="dark"] .metric-card strong,
+[data-theme="dark"] .metric-card p {
+    color: #f5f8ff !important;
+}
+
+[data-theme="dark"] p,
+[data-theme="dark"] small,
+[data-theme="dark"] .text-muted,
+[data-theme="dark"] .muted,
+[data-theme="dark"] .subtitle {
+    color: #b9c9e8 !important;
+}
+
+/* Inputs */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+    background: #122f68 !important;
+    color: #f5f8ff !important;
+    border-color: rgba(151, 184, 238, .34) !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+    color: #8fa9d3 !important;
+}
+
+[data-theme="dark"] option {
+    background: #122f68;
+    color: #f5f8ff;
+}
+
+/* Tabelas */
+[data-theme="dark"] thead,
+[data-theme="dark"] th {
+    background: #1d3d7b !important;
+}
+
+[data-theme="dark"] td {
+    color: #dce7fa !important;
+    border-bottom-color: rgba(132, 169, 231, .20) !important;
+}
+
+[data-theme="dark"] tbody tr:hover {
+    background: rgba(78, 128, 215, .10) !important;
+}
+
+/* Botões secundários */
+[data-theme="dark"] .btn-secondary,
+[data-theme="dark"] button.secondary,
+[data-theme="dark"] .button.secondary {
+    background: rgba(255,255,255,.07) !important;
+    border: 1px solid rgba(151,184,238,.28) !important;
+    color: #f5f8ff !important;
+    box-shadow: none !important;
+}
+
+/* Modais */
+[data-theme="dark"] .modal-sac,
+[data-theme="dark"] .modal-usuario {
+    background: rgba(4, 16, 47, .68) !important;
+}
+
+/* Dashboard — painéis, gráficos e áreas internas */
+[data-theme="dark"] .chart-box,
+[data-theme="dark"] .chart-container,
+[data-theme="dark"] .activity-list,
+[data-theme="dark"] .alert-box,
+[data-theme="dark"] .recent-box,
+[data-theme="dark"] .dashboard-panel {
+    background: #183571 !important;
+    border-color: rgba(132, 169, 231, .24) !important;
+}
+
+[data-theme="dark"] .metric-card:hover,
+[data-theme="dark"] .card:hover {
+    border-color: rgba(92, 145, 232, .42) !important;
+}
+
+/* Links e pequenos controles */
+[data-theme="dark"] a:not(.sidebar a) {
+    color: #9fc2ff;
+}
+
+[data-theme="dark"] .badge-blue,
+[data-theme="dark"] .status-blue {
+    background: #173b7b !important;
+    color: #8eb9ff !important;
+}
+
+/* Scrollbar */
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: #102b64;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #315a9d;
+    border-radius: 10px;
+}

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -32,10 +32,81 @@
         href="css/dashboard.css"
     >
 
+    <link rel="stylesheet" href="./css/sidebar-global-final.css">
+
+    <link rel="stylesheet" href="./css/dark-theme.css">
+
+<link rel="stylesheet" href="css/button-interaction-fix.css">
+    <link rel="stylesheet" href="css/lotrix-final-fix.css">
+    <link rel="stylesheet" href="css/lotrix-responsive-final.css">
 </head>
 
 
 <body>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <button class="sidebar-menu-btn" id="sidebarMenuToggle" type="button" aria-label="Recolher menu" aria-expanded="true">
+            <i data-lucide="menu" aria-hidden="true"></i>
+        </button>
+        <a class="sidebar-brand" href="dashboard.html" aria-label="Lotrix - Dashboard">
+            <img class="brand-logo" src="img/logo.png" alt="Lotrix">
+            <span class="brand-name">Lotrix</span>
+        </a>
+        <button class="sidebar-options-btn" id="sidebarOptionsToggle" type="button" aria-label="Mais opções" aria-expanded="false">
+            <i data-lucide="more-vertical" aria-hidden="true"></i>
+        </button>
+        <div class="sidebar-options" id="sidebarOptions" hidden>
+            <a href="dashboard.html"><i data-lucide="home"></i> Início</a>
+            <button type="button" id="sidebarRefresh"><i data-lucide="refresh-cw"></i> Atualizar</button>
+        </div>
+    </div>
+
+    <nav class="menu" aria-label="Menu principal">
+        <div class="menu-section">
+            <div class="menu-title">Geral</div>
+            <a href="dashboard.html" data-page="dashboard.html"><i data-lucide="layout-dashboard"></i><span class="nav-label">Dashboard</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Operação</div>
+            <a href="producao.html" data-page="producao.html"><i data-lucide="factory"></i><span class="nav-label">Produção</span></a>
+            <a href="produtos.html" data-page="produtos.html"><i data-lucide="package"></i><span class="nav-label">Produtos</span></a>
+            <a href="etiquetas.html" data-page="etiquetas.html"><i data-lucide="tag"></i><span class="nav-label">Etiquetas</span></a>
+            <a href="estoque.html" data-page="estoque.html"><i data-lucide="boxes"></i><span class="nav-label">Estoque</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Gestão</div>
+            <a href="relatorios.html" data-page="relatorios.html"><i data-lucide="bar-chart-3"></i><span class="nav-label">Relatórios</span></a>
+            <a href="auditoria.html" data-page="auditoria.html"><i data-lucide="clipboard-check"></i><span class="nav-label">Auditoria</span></a>
+            <a href="usuario.html" data-page="usuario.html"><i data-lucide="users"></i><span class="nav-label">Usuários</span></a>
+            <a href="sac-admin.html" data-page="sac-admin.html"><i data-lucide="headphones"></i><span class="nav-label">SAC Admin</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Sistema</div>
+            <a href="configuracoes.html" data-page="configuracoes.html"><i data-lucide="settings"></i><span class="nav-label">Configurações</span></a>
+            <a href="ajuda.html" data-page="ajuda.html"><i data-lucide="circle-help"></i><span class="nav-label">Ajuda</span></a>
+            <a href="sac.html" data-page="sac.html"><i data-lucide="message-circle"></i><span class="nav-label">SAC</span></a>
+        </div>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="user-card">
+            <div class="avatar"><i data-lucide="user-round" aria-hidden="true"></i></div>
+            <div class="user-info"><strong>Alessandro</strong><small>Administrador</small></div>
+        </div>
+        <div class="company-card">
+            <span class="company-label">Empresa</span>
+            <strong class="company-name">Izu Oeste</strong>
+        </div>
+        <button class="logout-button" type="button" onclick="logout()"><i data-lucide="log-out"></i><span>Sair</span></button>
+    </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+
 
 <div class="layout">
 
@@ -44,193 +115,14 @@
          SIDEBAR LOTRIX
     ====================================================== -->
 
-    <aside class="sidebar">
-
-        <div class="logo-area">
-
-            <div class="brand-lockup">
-                <img
-                    class="brand-logo"
-                    src="img/logo.png"
-                    alt=""
-                >
-
-                <div>
-                    <h2>Lotrix</h2>
-                    <small>Food Safety Platform</small>
-                </div>
-            </div>
-
-            <button
-                type="button"
-                class="sidebar-close"
-                aria-label="Fechar menu"
-            >
-                ×
-            </button>
-
-        </div>
-
-
-        <nav class="menu">
-
-            <!-- GERAL -->
-
-            <div class="menu-section">
-
-                <div class="menu-title">
-                    Geral
-                </div>
-
-                <a
-                    href="dashboard.html"
-                    class="active"
-                >
-                    Dashboard
-                </a>
-
-            </div>
-
-
-            <!-- OPERAÇÃO -->
-
-            <div class="menu-section">
-
-                <div class="menu-title">
-                    Operação
-                </div>
-
-                <a href="producao.html">
-                    Produção
-                </a>
-
-                <a href="produtos.html">
-                    Produtos
-                </a>
-
-                <a href="etiquetas.html">
-                    Etiquetas
-                </a>
-
-                <a href="estoque.html">
-                    Estoque
-                </a>
-
-            </div>
-
-
-            <!-- GESTÃO -->
-
-            <div class="menu-section">
-
-                <div class="menu-title">
-                    Gestão
-                </div>
-
-                <a href="relatorios.html">
-                    Relatórios
-                </a>
-
-                <a href="auditoria.html">
-                    Auditoria
-                </a>
-
-                <a href="usuario.html">
-                    Usuários
-                </a>
-
-                <a href="sac-admin.html">
-                    SAC Admin
-                </a>
-
-            </div>
-
-
-            <!-- SISTEMA -->
-
-            <div class="menu-section">
-
-                <div class="menu-title">
-                    Sistema
-                </div>
-
-                <a href="configuracoes.html">
-                    Configurações
-                </a>
-
-                <a href="ajuda.html">
-                    Ajuda
-                </a>
-
-                <a href="sac.html">
-                    SAC
-                </a>
-
-            </div>
-
-        </nav>
-
-
-        <div class="sidebar-footer">
-
-            <div class="user-card">
-
-                <div class="avatar">
-                    <i data-lucide="user-round" aria-hidden="true"></i>
-                </div>
-
-                <div>
-
-                    <strong>
-                        Alessandro
-                    </strong>
-
-                    <small>
-                        Administrador
-                    </small>
-
-                </div>
-
-            </div>
-
-
-            <div class="company-card">
-
-                <span class="company-label">
-                    EMPRESA
-                </span>
-
-                <strong class="company-name">
-                    Izu Oeste
-                </strong>
-
-            </div>
-
-
-            <button
-                type="button"
-                onclick="logout()"
-            >
-                Sair
-            </button>
-
-        </div>
-
-    </aside>
-
-
-    <div
-        class="sidebar-overlay"
-        aria-hidden="true"
-    ></div>
-
-
     <button
         type="button"
         class="menu-toggle"
-        aria-label="Abrir menu"
+        aria-label="Abrir menu lateral"
+        aria-expanded="false"
+        title="Abrir menu"
     >
-        <i data-lucide="menu" aria-hidden="true"></i>
+        <i data-lucide="more-vertical" aria-hidden="true"></i>
     </button>
 
     <!-- =====================================================
@@ -1193,6 +1085,8 @@
 ></script>
 
 <script src="js/design-system.js"></script>
+    <script src="js/sidebar-final.js"></script>
+
 
 <script src="js/sidebar.js"></script>
 
@@ -1225,6 +1119,5 @@
 </body>
 
 </html>
-
 
 

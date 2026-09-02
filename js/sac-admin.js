@@ -17,7 +17,8 @@ updateDoc,
 addDoc,
 serverTimestamp,
 query,
-orderBy
+orderBy,
+where
 }
 
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -43,15 +44,25 @@ if(!tabela)
 return;
 
 
+const usuario =
+JSON.parse(
+    localStorage.getItem("usuarioFoodSync")
+) || {};
 
 const consulta = query(
 
-collection(db,"sac"),
+    collection(db, "sac"),
 
-orderBy(
-"criadoEm",
-"desc"
-)
+    where(
+        "idEmpresa",
+        "==",
+        usuario.idEmpresa
+    ),
+
+    orderBy(
+        "criadoEm",
+        "desc"
+    )
 
 );
 

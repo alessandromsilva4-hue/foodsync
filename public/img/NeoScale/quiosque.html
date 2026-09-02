@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoScale | Quiosque</title>
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/quiosque.css">
+</head>
+<body class="quiosque">
+    <main class="quiosque-tela" aria-label="Terminal de autoatendimento">
+        <header class="quiosque-cabecalho">
+            <div>
+                <span>Bem-vindo(a), esse é o nosso</span>
+                <strong>Autoatendimento</strong>
+            </div>
+        </header>
+
+        <section class="quiosque-corpo">
+            <div class="quiosque-mensagem">
+                <h1>Coloque o prato sobre a balança</h1>
+            </div>
+        </section>
+
+        <section class="quiosque-medidas" aria-label="Dados da pesagem">
+            <div>
+                <span>Valor KG - Refeição</span>
+                <strong id="precoKgDisplay">R$ 89,90</strong>
+            </div>
+            <div>
+                <span>Peso</span>
+                <strong id="pesoDisplay">0,000 kg</strong>
+            </div>
+            <div>
+                <span>Total</span>
+                <strong id="valorDisplay">R$ 0,00</strong>
+            </div>
+        </section>
+        <div class="quiosque-rodape">NEOSCALE <span>•</span> Experiência de pesagem inteligente</div>
+    </main>
+
+    <button id="emitirComanda" class="controle-oculto" type="button">Emitir</button>
+    <div id="previewComanda" class="controle-oculto"></div>
+    <script type="module" src="js/firebase.js"></script>
+    <script src="js/quiosque.js"></script>
+    <script type="module" src="js/frases.js"></script>
+    <script type="module" src="voz.js"></script>
+    <script type="module" src="js/pesagem.js"></script>
+    <script type="module" src="js/impressao.js"></script>
+</body>
+</html>

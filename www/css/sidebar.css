@@ -1,803 +1,460 @@
 /* =========================================================
-   LOTRIX — SIDEBAR V2
-   Visual profissional / Drawer responsivo
+   LOTRIX — SIDEBAR GLOBAL
+   Padrão visual único para todas as páginas
 ========================================================= */
 
-* {
-    box-sizing: border-box;
+:root {
+    --lotrix-sidebar: #122d70;
+    --lotrix-sidebar-deep: #0d245d;
+    --lotrix-sidebar-hover: rgba(255,255,255,.085);
+    --lotrix-sidebar-active: #2f6fe4;
+    --lotrix-sidebar-text: #f8fbff;
+    --lotrix-sidebar-muted: #9eb9e9;
+    --lotrix-sidebar-width: 264px;
 }
 
-/* =========================================================
-   SIDEBAR
-========================================================= */
+* { box-sizing: border-box; }
 
 .sidebar {
     position: fixed !important;
     inset: 0 auto 0 0 !important;
-
-    width: 264px !important;
-    height: 100vh !important;
+    width: var(--lotrix-sidebar-width) !important;
     height: 100dvh !important;
-
     display: flex !important;
     flex-direction: column !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: linear-gradient(180deg, #243f91 0%, #193782 52%, #152f71 100%) !important;
-    color: #ffffff !important;
-
+    background: linear-gradient(180deg, #17367f 0%, var(--lotrix-sidebar) 52%, var(--lotrix-sidebar-deep) 100%) !important;
+    color: var(--lotrix-sidebar-text) !important;
     z-index: 99999 !important;
-
-    overflow: hidden !important;
-
-    transform: translateX(-100%) !important;
-    transition: transform .25s ease, box-shadow .25s ease !important;
-}
-
-.sidebar.open {
+    overflow: visible !important;
     transform: translateX(0) !important;
-
-    box-shadow:
-        8px 0 30px rgba(0, 0, 0, .22) !important;
+    transition: width .22s ease, transform .22s ease, box-shadow .22s ease !important;
+    box-shadow: 10px 0 30px rgba(7,20,55,.12) !important;
 }
 
-/* =========================================================
-   CABEÇALHO / LOGO LOTRIX
-========================================================= */
-
-.sidebar > .logo-area {
-    position: relative !important;
-
-    flex: 0 0 auto !important;
-
-    width: 100% !important;
-
-    min-height: 104px !important;
-
-    margin: 0 !important;
-
-    padding: 16px 52px 16px 20px !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-
-    align-items: flex-start !important;
-    justify-content: center !important;
-
-    border-bottom: 1px solid rgba(255, 255, 255, .13) !important;
-
-    overflow: hidden !important;
+.sidebar-header {
+    position: relative;
+    flex: 0 0 70px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 38px minmax(0,1fr) 38px;
+    align-items: center;
+    gap: 8px;
+    padding: 0 13px;
+    border-bottom: 1px solid rgba(255,255,255,.11);
 }
 
-/* Garante a renderização do conteúdo em todas as páginas legadas. */
-.sidebar > .logo-area,
-.sidebar > .menu,
-.sidebar > .sidebar-footer {
-    position: relative !important;
-    z-index: 1 !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+.sidebar-menu-btn,
+.sidebar-options-btn {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    transition: background .18s ease, transform .18s ease;
 }
 
-.brand-lockup {
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
+.sidebar-menu-btn:hover,
+.sidebar-options-btn:hover {
+    background: rgba(255,255,255,.11);
+    transform: translateY(-1px);
+}
+
+.sidebar-menu-btn svg,
+.sidebar-options-btn svg {
+    width: 19px;
+    height: 19px;
+    stroke-width: 2;
+}
+
+.sidebar-brand {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #fff;
+    text-decoration: none;
 }
 
 .brand-logo {
-    display: block !important;
-    width: 42px !important;
-    height: 42px !important;
-    flex: 0 0 42px !important;
-    object-fit: contain !important;
-    border-radius: 11px !important;
-    background: #ffffff !important;
-    box-shadow: 0 8px 18px rgba(8, 25, 80, .20) !important;
+    width: 35px !important;
+    height: 35px !important;
+    flex: 0 0 35px;
+    object-fit: contain;
+    border-radius: 9px;
+    background: #fff;
 }
 
-.sidebar > .logo-area h2 {
-    display: block !important;
-    margin: 0 !important;
-    color: #ffffff !important;
-    font-size: 19px !important;
-    font-weight: 800 !important;
-    letter-spacing: -.5px !important;
-    line-height: 22px !important;
+.brand-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-family: "Plus Jakarta Sans", Arial, sans-serif;
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -.4px;
 }
 
-.sidebar > .logo-area small {
-    display: block !important;
-    margin: 2px 0 0 !important;
-    color: #bfdbfe !important;
-    font-size: 9px !important;
-    font-weight: 600 !important;
-    letter-spacing: .2px !important;
+.sidebar-options {
+    position: absolute;
+    top: 58px;
+    right: 10px;
+    width: 165px;
+    padding: 6px;
+    border: 1px solid rgba(255,255,255,.13);
+    border-radius: 11px;
+    background: #fff;
+    box-shadow: 0 14px 32px rgba(2,12,40,.25);
+    z-index: 20;
 }
 
-/* Mantém o cabeçalho íntegro nas telas que ainda usam o logo legado. */
-.sidebar > .logo-area:not(:has(.brand-lockup)) {
-    align-items: center !important;
-    padding-right: 20px !important;
-    text-align: center !important;
+.sidebar-options a,
+.sidebar-options button {
+    width: 100%;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #1e2a44;
+    font: 600 12px Arial, sans-serif;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: left;
 }
 
-.sidebar > .logo-area > img {
-    display: block !important;
-    width: 42px !important;
-    height: 42px !important;
-    margin: 0 0 6px !important;
-    object-fit: contain !important;
+.sidebar-options a:hover,
+.sidebar-options button:hover { background: #eef4ff; }
+
+.sidebar-options svg {
+    width: 16px;
+    height: 16px;
+    color: #315fae;
 }
-
-.sidebar > .logo-area:not(:has(.brand-lockup)) h2 {
-    font-size: 16px !important;
-    line-height: 18px !important;
-}
-
-/* =========================================================
-   BOTÃO FECHAR
-========================================================= */
-
-.sidebar-close {
-    position: absolute !important;
-
-    top: 14px !important;
-    right: 13px !important;
-
-    width: 30px !important;
-    height: 30px !important;
-
-    display: grid !important;
-    place-items: center !important;
-
-    padding: 0 !important;
-
-    border: 1px solid rgba(255, 255, 255, .14) !important;
-    border-radius: 8px !important;
-
-    background: rgba(255, 255, 255, .07) !important;
-
-    color: #ffffff !important;
-
-    font-size: 21px !important;
-    line-height: 1 !important;
-
-    cursor: pointer !important;
-
-    z-index: 10 !important;
-
-    transition:
-        background .18s ease,
-        border-color .18s ease,
-        transform .18s ease !important;
-}
-
-.sidebar-close:hover {
-    background: rgba(255, 255, 255, .14) !important;
-
-    border-color: rgba(255, 255, 255, .25) !important;
-
-    transform: scale(1.04) !important;
-}
-
-/* =========================================================
-   MENU
-========================================================= */
 
 .sidebar > .menu {
-    display: block !important;
     flex: 1 1 auto !important;
-
-    width: 100% !important;
-
-    min-height: 0 !important;
-
-    margin: 0 !important;
-
-    padding: 18px 12px 14px !important;
-
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-}
-
-/* =========================================================
-   SEÇÕES
-========================================================= */
-
-.sidebar .menu-section {
-    display: block !important;
-    width: 100% !important;
-
-    margin: 0 0 19px !important;
-    padding: 0 !important;
-}
-
-.sidebar .menu-section:last-child {
-    margin-bottom: 0 !important;
-}
-
-/* =========================================================
-   TÍTULOS DAS SEÇÕES
-========================================================= */
-
-.sidebar .menu-title {
-    display: block !important;
-
-    width: 100% !important;
-
-    margin: 0 0 7px !important;
-
-    padding: 0 10px !important;
-
-    color: #a5c7ff !important;
-
-    font-size: 9px !important;
-    line-height: 12px !important;
-
-    font-weight: 700 !important;
-
-    letter-spacing: 1.15px !important;
-
-    text-transform: uppercase !important;
-}
-
-/* =========================================================
-   LINKS
-========================================================= */
-
-.sidebar .menu a {
-    position: relative !important;
-
-    display: flex !important;
-
-    align-items: center !important;
-
-    width: 100% !important;
-
-    min-height: 40px !important;
-    height: 40px !important;
-
-    margin: 0 0 3px !important;
-
-    padding: 0 11px !important;
-
-    gap: 11px !important;
-
-    border-radius: 9px !important;
-
-    background: transparent !important;
-
-    color: #ffffff !important;
-
-    text-decoration: none !important;
-
-    font-size: 13px !important;
-    line-height: 18px !important;
-
-    font-weight: 600 !important;
-
-    transition:
-        background .18s ease,
-        color .18s ease,
-        transform .18s ease !important;
-}
-
-/* =========================================================
-   ÍCONES LUCIDE
-========================================================= */
-
-.sidebar .menu a > i,
-.sidebar .menu a > svg {
-    flex: 0 0 18px !important;
-
-    width: 18px !important;
-    height: 18px !important;
-
-    stroke-width: 1.9 !important;
-
-    color: #bfdbfe !important;
-
-    transition:
-        color .18s ease,
-        transform .18s ease !important;
-}
-
-/* Ícones das páginas que usam a navegação legada com spans. */
-.sidebar .menu a > span:first-child:not(.nav-label) {
-    display: grid !important;
-    flex: 0 0 18px !important;
-    width: 18px !important;
-    height: 18px !important;
-    place-items: center !important;
-    color: #bfdbfe !important;
-    font-size: 14px !important;
-    line-height: 1 !important;
-}
-
-.sidebar .menu a .nav-label {
-    flex: 1 1 auto !important;
-
-    width: auto !important;
-    min-width: 0 !important;
-    max-width: none !important;
-
-    margin: 0 !important;
-
-    overflow: hidden !important;
-
-    white-space: nowrap !important;
-
-    text-overflow: ellipsis !important;
-}
-
-/* =========================================================
-   HOVER
-========================================================= */
-
-.sidebar .menu a:hover {
-    background: rgba(255, 255, 255, .10) !important;
-
-    color: #ffffff !important;
-
-    transform: translateX(2px) !important;
-}
-
-.sidebar .menu a:hover > i,
-.sidebar .menu a:hover > svg {
-    color: #ffffff !important;
-
-    transform: scale(1.05) !important;
-}
-
-/* =========================================================
-   ITEM ATIVO
-========================================================= */
-
-.sidebar .menu a.active {
-    background: linear-gradient(90deg, rgba(59, 130, 246, .42), rgba(37, 99, 235, .24)) !important;
-
-    color: #ffffff !important;
-
-    font-weight: 700 !important;
-
-    box-shadow:
-        inset 3px 0 0 #ffffff !important,
-        0 5px 12px rgba(8, 31, 102, .16) !important;
-}
-
-.sidebar .menu a.active > i,
-.sidebar .menu a.active > svg {
-    color: #ffffff !important;
-}
-
-/* =========================================================
-   ITENS SEM PERMISSÃO
-========================================================= */
-
-.sidebar .menu a[hidden],
-.sidebar .menu-section[hidden] {
-    display: none !important;
-}
-
-/* =========================================================
-   RODAPÉ
-========================================================= */
-
-.sidebar > .sidebar-footer {
-    flex: 0 0 auto !important;
-
-    width: 100% !important;
-
-    min-height: 106px !important;
-
-    margin: 0 !important;
-
-    padding: 13px 12px 11px !important;
-
-    border-top: 1px solid rgba(255, 255, 255, .09) !important;
-
-    background: rgba(6, 20, 70, .20) !important;
-
-    overflow: hidden !important;
-}
-
-/* =========================================================
-   CARTÃO DO USUÁRIO
-========================================================= */
-
-.sidebar .user-card {
-    display: flex !important;
-
-    align-items: center !important;
-
-    width: 100% !important;
-
-    min-width: 0 !important;
-
-    gap: 9px !important;
-
-    margin: 0 !important;
-
-    padding: 0 !important;
-}
-
-/* =========================================================
-   AVATAR
-========================================================= */
-
-.sidebar .user-card .avatar {
-    flex: 0 0 34px !important;
-
-    width: 34px !important;
-    height: 34px !important;
-
-    display: grid !important;
-    place-items: center !important;
-
-    border-radius: 50% !important;
-
-    background: linear-gradient(135deg, #60a5fa, #2563eb) !important;
-
-    color: #ffffff !important;
-
-    font-size: 15px !important;
-}
-
-/* =========================================================
-   DADOS DO USUÁRIO
-========================================================= */
-
-.sidebar .user-card > div:last-child {
-    flex: 1 1 auto !important;
-
-    min-width: 0 !important;
-
-    overflow: hidden !important;
-}
-
-.sidebar .sidebar-footer strong {
-    display: block !important;
-
-    width: 100% !important;
-
-    margin: 0 !important;
-
-    color: #ffffff !important;
-
-    font-size: 11px !important;
-    line-height: 15px !important;
-
-    font-weight: 700 !important;
-
-    white-space: nowrap !important;
-
-    overflow: hidden !important;
-
-    text-overflow: ellipsis !important;
-}
-
-.sidebar .sidebar-footer small {
-    display: block !important;
-
-    margin: 1px 0 0 !important;
-
-    color: #dbeafe !important;
-
-    font-size: 9px !important;
-    line-height: 12px !important;
-
-    white-space: nowrap !important;
-
-    overflow: hidden !important;
-
-    text-overflow: ellipsis !important;
-}
-
-/* =========================================================
-   BOTÃO SAIR
-========================================================= */
-
-.sidebar .sidebar-footer > button {
-    display: flex !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    width: 100% !important;
-
-    height: 32px !important;
-
-    margin: 9px 0 0 !important;
-
-    padding: 0 8px !important;
-
-    border: 1px solid rgba(147, 197, 253, .22) !important;
-
-    border-radius: 7px !important;
-
-    background: rgba(255, 255, 255, .08) !important;
-
-    color: #ffffff !important;
-
-    font-size: 10px !important;
-
-    cursor: pointer !important;
-
-    transition: background .18s ease, color .18s ease !important;
-}
-
-.sidebar .sidebar-footer > button:hover {
-    background: rgba(255, 255, 255, .16) !important;
-
-    color: #ffffff !important;
-}
-
-/* =========================================================
-   BOTÃO MENU
-========================================================= */
-
-.menu-toggle {
-    position: fixed !important;
-
-    top: 18px !important;
-    left: 18px !important;
-
-    width: 40px !important;
-    height: 40px !important;
-
-    display: grid !important;
-    place-items: center !important;
-
-    padding: 0 !important;
-
-    border: 0 !important;
-    border-radius: 10px !important;
-
-    background: #2563eb !important;
-
-    color: #ffffff !important;
-
-    font-size: 20px !important;
-    line-height: 1 !important;
-
-    cursor: pointer !important;
-
-    z-index: 2147483647 !important;
-
-    box-shadow:
-        0 4px 14px rgba(15, 23, 42, .22) !important;
-}
-
-.menu-toggle:hover {
-    background: #1d4ed8 !important;
-}
-
-/* =========================================================
-   ESCONDER BOTÃO QUANDO MENU ESTÁ ABERTO
-========================================================= */
-
-.sidebar.open ~ .menu-toggle,
-.sidebar.open + .menu-toggle {
-    visibility: hidden !important;
-
-    pointer-events: none !important;
-}
-
-/* =========================================================
-   OVERLAY
-========================================================= */
-
-.sidebar-overlay {
-    position: fixed !important;
-
-    inset: 0 !important;
-
-    background: rgba(15, 23, 42, .48) !important;
-
-    visibility: hidden !important;
-
-    opacity: 0 !important;
-
-    transition:
-        opacity .25s ease,
-        visibility .25s ease !important;
-
-    z-index: 99998 !important;
-}
-
-.sidebar-overlay.active {
-    visibility: visible !important;
-
-    opacity: 1 !important;
-}
-
-/* =========================================================
-   CONTEÚDO
-========================================================= */
-
-.content {
-    margin-left: 0 !important;
-
-    width: 100% !important;
-
-    min-height: 100vh !important;
-
-    box-sizing: border-box !important;
-}
-
-/* =========================================================
-   SCROLLBAR
-========================================================= */
-
-.sidebar > .menu::-webkit-scrollbar {
-    width: 4px;
-}
-
-.sidebar > .menu::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.sidebar > .menu::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, .18);
-
-    border-radius: 10px;
-}
-
-/* =========================================================
-   TABLET / DESKTOP
-========================================================= */
-
-@media (min-width: 901px) {
-
-    .sidebar {
-        transform: translateX(0) !important;
-    }
-
-    .menu-toggle {
-        display: none !important;
-    }
-
-    .sidebar-close {
-        display: none !important;
-    }
-
-    .sidebar-overlay {
-        display: none !important;
-    }
-
-    .content {
-        margin-left: 264px !important;
-
-        width: calc(100% - 264px) !important;
-    }
-}
-
-/* =========================================================
-   TABLET
-========================================================= */
-
-@media (min-width: 641px) and (max-width: 900px) {
-
-    .sidebar {
-        width: 264px !important;
-    }
-
-    .content {
-        margin-left: 0 !important;
-
-        width: 100% !important;
-    }
-}
-
-/* =========================================================
-   CELULAR
-========================================================= */
-
-@media (max-width: 640px) {
-
-    .sidebar {
-        width: min(86vw, 280px) !important;
-    }
-
-    .sidebar > .logo-area {
-        padding-left: 18px !important;
-    }
-
-    .sidebar > .menu {
-        padding: 14px 10px !important;
-    }
-
-    .sidebar .menu a {
-        min-height: 40px !important;
-
-        height: 40px !important;
-    }
-
-    .sidebar .menu-section {
-        margin-bottom: 14px !important;
-    }
-
-    .content {
-        margin-left: 0 !important;
-
-        width: 100% !important;
-
-        padding-top: 0 !important;
-    }
-}
-
-/* =========================================================
-   ACESSIBILIDADE
-========================================================= */
-
-.sidebar a:focus-visible,
-.sidebar button:focus-visible,
-.menu-toggle:focus-visible {
-    outline: 2px solid #93c5fd !important;
-
-    outline-offset: 2px !important;
-}
-
-/* =========================================================
-   MICROINTERAÇÕES
-========================================================= */
-
-.sidebar .menu a,
-.sidebar button,
-.menu-toggle {
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* =========================================================
-   EMPRESA
-========================================================= */
-
-.sidebar .company-card {
+    min-height: 0;
     width: 100%;
-
-    margin: 10px 0 0;
-
-    padding: 8px 10px;
-
-    border-top: 1px solid rgba(255, 255, 255, .07);
-
-    overflow: hidden;
+    margin: 0;
+    padding: 17px 11px 12px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-.sidebar .company-label {
+.menu-section {
+    margin: 0 0 18px;
+}
+
+.menu-section:last-child { margin-bottom: 0; }
+
+.menu-title {
     display: block;
-
-    margin: 0 0 2px;
-
-    color: #93c5fd;
-
-    font-size: 8px;
-    line-height: 11px;
-
-    font-weight: 700;
-
-    letter-spacing: 1.1px;
-
+    padding: 0 10px;
+    margin: 0 0 7px;
+    color: var(--lotrix-sidebar-muted);
+    font-size: 9px;
+    line-height: 12px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
 }
 
-.sidebar .company-name {
-    display: block;
+.sidebar .menu a {
+    position: relative;
+    width: 100%;
+    min-height: 40px;
+    height: 40px;
+    display: flex !important;
+    align-items: center;
+    gap: 11px;
+    margin: 0 0 3px;
+    padding: 0 11px;
+    border-radius: 9px;
+    color: #f7faff !important;
+    background: transparent !important;
+    text-decoration: none !important;
+    font: 600 13px/18px Arial, sans-serif;
+    transition: background .18s ease, transform .18s ease;
+}
 
-    color: #ffffff;
+.sidebar .menu a svg {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    color: #a9c4ef;
+    stroke-width: 1.9;
+}
 
-    font-size: 11px;
-    line-height: 15px;
+.sidebar .menu a:hover {
+    background: var(--lotrix-sidebar-hover) !important;
+    transform: none;
+}
 
-    font-weight: 600;
+.sidebar .menu a.active {
+    background: linear-gradient(90deg, rgba(55,122,236,.95), rgba(48,103,213,.68)) !important;
+    font-weight: 700;
+    box-shadow: inset 3px 0 #fff, 0 5px 12px rgba(4,22,72,.16);
+}
 
+.sidebar .menu a.active svg,
+.sidebar .menu a:hover svg { color: #fff; }
+
+.nav-label {
+    min-width: 0;
+    flex: 1 1 auto;
     white-space: nowrap;
-
     overflow: hidden;
-
     text-overflow: ellipsis;
 }
 
+.sidebar-footer {
+    flex: 0 0 auto;
+    padding: 12px;
+    border-top: 1px solid rgba(255,255,255,.10);
+    background: rgba(4,15,52,.22);
+}
+
+.user-card {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+}
+
+.avatar {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#68a9ff,#2563eb);
+}
+
+.avatar svg { width: 17px; height: 17px; }
+
+.user-info { min-width: 0; }
+
+.user-info strong,
+.user-info small {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-info strong { font-size: 11px; line-height: 15px; }
+.user-info small { margin-top: 1px; color: #c9dcfa; font-size: 9px; line-height: 12px; }
+
+.company-card {
+    margin-top: 9px;
+    padding: 8px 10px;
+    border-top: 1px solid rgba(255,255,255,.07);
+}
+
+.company-label {
+    display: block;
+    margin-bottom: 2px;
+    color: #8fb5ed;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+}
+
+.company-name {
+    display: block;
+    color: #fff;
+    font-size: 11px;
+    line-height: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.logout-button {
+    width: 100%;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 8px;
+    border: 1px solid rgba(147,197,253,.23);
+    border-radius: 7px;
+    background: rgba(255,255,255,.07);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.logout-button:hover { background: rgba(255,255,255,.14); }
+.logout-button svg { width: 14px; height: 14px; }
+
+/* =========================================================
+   MOBILE / APP — botão fixo para abrir a Sidebar
+   A Sidebar funciona como drawer em telas <= 900px.
+========================================================= */
+.menu-toggle {
+    position: fixed !important;
+    top: max(14px, calc(14px + env(safe-area-inset-top, 0px))) !important;
+    left: max(14px, calc(14px + env(safe-area-inset-left, 0px))) !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    display: grid !important;
+    place-items: center !important;
+    padding: 0 !important;
+    border: 1px solid rgba(255,255,255,.16) !important;
+    border-radius: 12px !important;
+    background: #17367f !important;
+    color: #fff !important;
+    box-shadow: 0 8px 22px rgba(7,20,55,.22) !important;
+    z-index: 10001 !important;
+    transform: none !important;
+    transition: background-color .18s ease, box-shadow .18s ease, opacity .18s ease !important;
+}
+.menu-toggle:hover,
+.menu-toggle:active,
+.menu-toggle:focus {
+    transform: none !important;
+}
+.menu-toggle svg {
+    width: 21px !important;
+    height: 21px !important;
+}
+body.sidebar-open .menu-toggle {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+@media (min-width: 901px) {
+    .menu-toggle {
+        display: none !important;
+    }
+}
+
+.sidebar-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(7,16,37,.50) !important;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 99998;
+    transition: opacity .22s ease, visibility .22s ease;
+}
+
+.content,
+.main-content {
+    margin-left: var(--lotrix-sidebar-width) !important;
+    width: calc(100% - var(--lotrix-sidebar-width)) !important;
+    min-height: 100vh;
+    transition: margin-left .22s ease, width .22s ease;
+}
+
+body.sidebar-collapsed .content,
+body.sidebar-collapsed .main-content {
+    margin-left: 78px !important;
+    width: calc(100% - 78px) !important;
+}
+
+.sidebar.collapsed {
+    width: 78px !important;
+}
+
+.sidebar.collapsed .sidebar-header {
+    grid-template-columns: 1fr 1fr;
+    padding: 0 12px;
+}
+
+.sidebar.collapsed .sidebar-brand { justify-content: center; }
+.sidebar.collapsed .brand-name,
+.sidebar.collapsed .menu-title,
+.sidebar.collapsed .nav-label,
+.sidebar.collapsed .user-info,
+.sidebar.collapsed .company-card,
+.sidebar.collapsed .logout-button span { display: none !important; }
+
+.sidebar.collapsed .sidebar-options-btn { display: none; }
+
+.sidebar.collapsed > .menu { padding-left: 11px; padding-right: 11px; }
+.sidebar.collapsed .menu a { justify-content: center; padding: 0; }
+.sidebar.collapsed .menu a svg { flex-basis: 20px; width: 20px; height: 20px; }
+.sidebar.collapsed .user-card { justify-content: center; }
+.sidebar.collapsed .avatar { width: 34px; }
+.sidebar.collapsed .logout-button {
+    width: 34px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+}
+.sidebar.collapsed .logout-button svg { margin: 0; }
+
+.sidebar a:focus-visible,
+.sidebar button:focus-visible {
+    outline: 2px solid #9bc3ff;
+    outline-offset: 2px;
+}
+
+.sidebar > .menu::-webkit-scrollbar { width: 4px; }
+.sidebar > .menu::-webkit-scrollbar-thumb { background: rgba(255,255,255,.17); border-radius: 10px; }
+
+@media (max-width: 900px) {
+    .sidebar {
+        width: min(84vw, 280px) !important;
+        transform: translateX(-100%) !important;
+        box-shadow: none !important;
+    }
+    .sidebar.open {
+        transform: translateX(0) !important;
+        box-shadow: 12px 0 32px rgba(4,15,48,.28) !important;
+    }
+    .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    .sidebar.collapsed {
+        width: min(84vw, 280px) !important;
+    }
+    .sidebar.collapsed .brand-name,
+    .sidebar.collapsed .menu-title,
+    .sidebar.collapsed .nav-label,
+    .sidebar.collapsed .user-info,
+    .sidebar.collapsed .company-card,
+    .sidebar.collapsed .logout-button span { display: initial !important; }
+    .sidebar.collapsed .menu-title { display: block !important; }
+    .sidebar.collapsed .menu a { justify-content: flex-start; padding: 0 11px; }
+    .sidebar.collapsed .user-card { justify-content: flex-start; }
+    .sidebar.collapsed .logout-button { width: 100%; margin-left: 0; margin-right: 0; }
+    .sidebar.collapsed .sidebar-header { grid-template-columns: 38px minmax(0,1fr) 38px; padding: 0 13px; }
+    .sidebar.collapsed .sidebar-options-btn { display: grid; }
+    .content, .main-content,
+    body.sidebar-collapsed .content,
+    body.sidebar-collapsed .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+    .sidebar-menu-btn { display: grid; }
+}
+
+@media (min-width: 901px) {
+    .sidebar-menu-btn { display: grid; }
+}
+
+@media (max-width: 640px) {
+    .sidebar-header { flex-basis: 64px; }
+    .sidebar > .menu { padding: 14px 10px; }
+    .sidebar-footer { padding: 11px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sidebar, .sidebar .menu a, .content, .main-content { transition: none !important; }
+}
