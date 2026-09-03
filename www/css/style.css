@@ -1720,3 +1720,95 @@ EVITA DESLOCAMENTO VERTICAL
 
 }
 
+/* =========================================================
+   LOTRIX — CORREÇÃO FINAL DO BOTÃO DO MENU MOBILE
+========================================================= */
+
+button.menu-toggle {
+    position: fixed !important;
+    top: 14px !important;
+    left: 14px !important;
+    right: auto !important;
+    bottom: auto !important;
+
+    width: 44px !important;
+    height: 44px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: grid !important;
+    place-items: center !important;
+
+    z-index: 100001 !important;
+
+    transform: none !important;
+    translate: none !important;
+    rotate: none !important;
+    scale: 1 !important;
+
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+}
+
+button.menu-toggle svg,
+button.menu-toggle i {
+    pointer-events: none !important;
+}
+/* =========================================================
+   LOTRIX — CABEÇALHO MOBILE
+   Botão do menu + título sem sobreposição
+========================================================= */
+
+@media (max-width: 900px) {
+
+    /* Espaço para o botão não ficar em cima do título */
+    .page-header,
+    .header,
+    .content-header,
+    main > header {
+        padding-left: 70px !important;
+        position: relative !important;
+    }
+
+    /* Caso o título esteja dentro de um container */
+    .page-title,
+    .content-title,
+    .header-title {
+        margin-left: 0 !important;
+    }
+
+    /* Botão do menu */
+    button.menu-toggle {
+        position: fixed !important;
+        top: 14px !important;
+        left: 14px !important;
+        width: 44px !important;
+        height: 44px !important;
+        z-index: 100001 !important;
+    }
+
+    /* Evita que o título fique escondido atrás do botão */
+    main {
+        padding-top: 8px !important;
+    }
+
+    /* Título da página */
+    h1 {
+        position: relative !important;
+        z-index: 1 !important;
+    }
+}
+/* ==========================================
+   LOTRIX — LOGO OCULTA QUANDO MENU RECOLHIDO
+========================================== */
+
+.sidebar.collapsed .sidebar-brand {
+    display: none !important;
+}
+
+/* Mantém a área superior limpa quando recolhido */
+.sidebar.collapsed .sidebar-header {
+    justify-content: center !important;
+    padding-top: 12px !important;
+}

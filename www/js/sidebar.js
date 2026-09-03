@@ -1,9 +1,11 @@
 /* =========================================================
    LOTRIX — NAVEGAÇÃO GLOBAL
-   Uma única Sidebar para todas as telas.
+   Sidebar única para todas as telas
+   CORREÇÃO DEFINITIVA DO MENU MOBILE/TABLET
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+
     const sidebar = document.querySelector(".sidebar");
     if (!sidebar) return;
 
@@ -13,128 +15,495 @@ document.addEventListener("DOMContentLoaded", () => {
     const options = document.getElementById("sidebarOptions");
     const refreshButton = document.getElementById("sidebarRefresh");
 
-    // No aplicativo/tablet a Sidebar é um drawer. Algumas páginas antigas
-    // não possuem o botão externo; criamos um automaticamente.
+    /* =====================================================
+       DETECTA DESKTOP
+    ===================================================== */
+
+    const isDesktop = () =>
+        window.matchMedia("(min-width: 901px)").matches;
+
+
+    /* =====================================================
+       BOTÃO MOBILE ☰
+    ===================================================== */
+
     let mobileToggle = document.querySelector(".menu-toggle");
+
     if (!mobileToggle) {
+
         mobileToggle = document.createElement("button");
+
         mobileToggle.type = "button";
         mobileToggle.className = "menu-toggle";
-        mobileToggle.setAttribute("aria-label", "Abrir menu lateral");
-        mobileToggle.setAttribute("aria-expanded", "false");
+
+        mobileToggle.setAttribute(
+            "aria-label",
+            "Abrir menu lateral"
+        );
+
+        mobileToggle.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
         mobileToggle.title = "Abrir menu";
-        mobileToggle.innerHTML = '<i data-lucide="menu" aria-hidden="true"></i>';
+
+        mobileToggle.innerHTML =
+            '<i data-lucide="menu" aria-hidden="true"></i>';
+
         document.body.appendChild(mobileToggle);
+
     } else {
-        // O botão antigo do Dashboard usava "more-vertical"; padroniza para menu.
-        mobileToggle.innerHTML = '<i data-lucide="menu" aria-hidden="true"></i>';
+
+        mobileToggle.type = "button";
+
+        mobileToggle.innerHTML =
+            '<i data-lucide="menu" aria-hidden="true"></i>';
     }
 
-    const desktop = () => window.matchMedia("(min-width: 901px)").matches;
+
+    /* =====================================================
+       ESTADO DESKTOP
+    ===================================================== */
 
     function setCollapsed(collapsed) {
-        sidebar.classList.toggle("collapsed", collapsed);
+
+        sidebar.classList.toggle(
+            "collapsed",
+            collapsed
+        );
+
+        document.body.classList.toggle(
+            "sidebar-collapsed",
+            collapsed
+        );
+
         if (menuButton) {
-            menuButton.setAttribute("aria-expanded", String(!collapsed));
-            menuButton.setAttribute("aria-label", collapsed ? "Expandir menu" : "Recolher menu");
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                String(!collapsed)
+            );
+
+            menuButton.setAttribute(
+                "aria-label",
+                collapsed
+                    ? "Expandir menu"
+                    : "Recolher menu"
+            );
         }
-        document.body.classList.toggle("sidebar-collapsed", collapsed);
-        try { localStorage.setItem("lotrix_sidebar_collapsed", collapsed ? "1" : "0"); } catch (_) {}
+
+        try {
+
+            localStorage.setItem(
+                "lotrix_sidebar_collapsed",
+                collapsed ? "1" : "0"
+            );
+
+        } catch (_) {}
     }
+
+
+    /* =====================================================
+       ABRIR MENU MOBILE
+    ===================================================== */
 
     function openMobile() {
+
         sidebar.classList.add("open");
-        overlay?.classList.add("active");
-        document.body.classList.add("sidebar-open");
-        overlay?.setAttribute("aria-hidden", "false");
-        syncMobileToggle();
+
+        document.body.classList.add(
+            "sidebar-open"
+        );
+
+        if (overlay) {
+
+            overlay.classList.add("active");
+
+            overlay.setAttribute(
+                "aria-hidden",
+                "false"
+            );
+        }
+
+        if (mobileToggle) {
+
+            mobileToggle.setAttribute(
+                "aria-expanded",
+                "true"
+            );
+
+            mobileToggle.setAttribute(
+                "aria-label",
+                "Fechar menu lateral"
+            );
+
+            mobileToggle.title =
+                "Fechar menu";
+        }
     }
+
+
+    /* =====================================================
+       FECHAR MENU MOBILE
+    ===================================================== */
 
     function closeMobile() {
+
         sidebar.classList.remove("open");
-        overlay?.classList.remove("active");
-        document.body.classList.remove("sidebar-open");
-        overlay?.setAttribute("aria-hidden", "true");
-        syncMobileToggle();
+
+        document.body.classList.remove(
+            "sidebar-open"
+        );
+
+        if (overlay) {
+
+            overlay.classList.remove("active");
+
+            overlay.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+        }
+
+        if (mobileToggle) {
+
+            mobileToggle.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            mobileToggle.setAttribute(
+                "aria-label",
+                "Abrir menu lateral"
+            );
+
+            mobileToggle.title =
+                "Abrir menu";
+        }
     }
 
-    function syncMobileToggle() {
-        if (!mobileToggle) return;
-        const opened = sidebar.classList.contains("open");
-        mobileToggle.setAttribute("aria-expanded", String(opened));
-        mobileToggle.setAttribute("aria-label", opened ? "Fechar menu lateral" : "Abrir menu lateral");
-    }
 
-    mobileToggle?.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        if (sidebar.classList.contains("open")) {
+    /* =====================================================
+       ALTERNAR MENU
+    ===================================================== */
+
+    function toggleMenu(event) {
+
+        if (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        if (isDesktop()) {
+
+            setCollapsed(
+                !sidebar.classList.contains(
+                    "collapsed"
+                )
+            );
+
+            return;
+        }
+
+        if (
+            sidebar.classList.contains("open")
+        ) {
+
             closeMobile();
+
         } else {
+
             openMobile();
         }
-        syncMobileToggle();
-    });
-
-    menuButton?.addEventListener("click", () => {
-        if (desktop()) {
-            setCollapsed(!sidebar.classList.contains("collapsed"));
-        } else {
-            sidebar.classList.contains("open") ? closeMobile() : openMobile();
-        }
-    });
-
-    overlay?.addEventListener("click", closeMobile);
-
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-            closeMobile();
-            if (options && !options.hidden) closeOptions();
-        }
-    });
-
-    function closeOptions() {
-        if (!options || !optionsButton) return;
-        options.hidden = true;
-        optionsButton.setAttribute("aria-expanded", "false");
     }
 
-    optionsButton?.addEventListener("click", (event) => {
-        event.stopPropagation();
-        if (!options) return;
-        options.hidden = !options.hidden;
-        optionsButton.setAttribute("aria-expanded", String(!options.hidden));
-        if (!options.hidden) options.querySelector("a, button")?.focus();
-    });
 
-    options?.addEventListener("click", event => event.stopPropagation());
-    document.addEventListener("click", closeOptions);
-    refreshButton?.addEventListener("click", () => window.location.reload());
+    /* =====================================================
+       CLIQUE NO ☰ MOBILE
+    ===================================================== */
 
-    // Marca automaticamente a página atual.
-    const current = location.pathname.split("/").pop().toLowerCase() || "dashboard.html";
-    sidebar.querySelectorAll(".menu a[data-page]").forEach(link => {
-        link.classList.toggle("active", link.dataset.page.toLowerCase() === current);
-    });
+    if (mobileToggle) {
 
-    // Fecha o drawer ao navegar no celular.
-    sidebar.querySelectorAll(".menu a, .sidebar-brand, .sidebar-options a").forEach(link => {
-        link.addEventListener("click", closeMobile);
-    });
+        mobileToggle.addEventListener(
+            "click",
+            toggleMenu,
+            false
+        );
 
-    // Estado salvo apenas para desktop.
-    try {
-        if (desktop()) setCollapsed(localStorage.getItem("lotrix_sidebar_collapsed") === "1");
-    } catch (_) {}
+        mobileToggle.addEventListener(
+            "touchend",
+            (event) => {
 
-    window.addEventListener("resize", () => {
-        if (desktop()) {
-            closeMobile();
-            try {
-                setCollapsed(localStorage.getItem("lotrix_sidebar_collapsed") === "1");
-            } catch (_) {}
+                event.preventDefault();
+
+                toggleMenu(event);
+
+            },
+            {
+                passive: false
+            }
+        );
+    }
+
+
+    /* =====================================================
+       BOTÃO DA SIDEBAR DESKTOP
+    ===================================================== */
+
+    if (menuButton) {
+
+        menuButton.type = "button";
+
+        menuButton.addEventListener(
+            "click",
+            (event) => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                toggleMenu(event);
+            }
+        );
+    }
+
+
+    /* =====================================================
+       OVERLAY
+    ===================================================== */
+
+    if (overlay) {
+
+        overlay.addEventListener(
+            "click",
+            (event) => {
+
+                event.preventDefault();
+
+                closeMobile();
+            }
+        );
+    }
+
+
+    /* =====================================================
+       TECLA ESC
+    ===================================================== */
+
+    document.addEventListener(
+        "keydown",
+        (event) => {
+
+            if (event.key === "Escape") {
+
+                closeMobile();
+                closeOptions();
+            }
         }
-    });
+    );
 
-    if (window.lucide) window.lucide.createIcons();
+
+    /* =====================================================
+       OPÇÕES ⋮
+    ===================================================== */
+
+    function closeOptions() {
+
+        if (!options || !optionsButton) {
+            return;
+        }
+
+        options.hidden = true;
+
+        optionsButton.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+    }
+
+
+    if (optionsButton) {
+
+        optionsButton.addEventListener(
+            "click",
+            (event) => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (!options) {
+                    return;
+                }
+
+                const open =
+                    options.hidden;
+
+                options.hidden = !open;
+
+                optionsButton.setAttribute(
+                    "aria-expanded",
+                    String(open)
+                );
+
+                if (open) {
+
+                    requestAnimationFrame(() => {
+
+                        options
+                            .querySelector(
+                                "a, button"
+                            )
+                            ?.focus();
+
+                    });
+                }
+            }
+        );
+    }
+
+
+    if (options) {
+
+        options.addEventListener(
+            "click",
+            (event) => {
+
+                event.stopPropagation();
+            }
+        );
+    }
+
+
+    document.addEventListener(
+        "click",
+        () => {
+
+            closeOptions();
+        }
+    );
+
+
+    /* =====================================================
+       ATUALIZAR
+    ===================================================== */
+
+    if (refreshButton) {
+
+        refreshButton.addEventListener(
+            "click",
+            () => {
+
+                window.location.reload();
+            }
+        );
+    }
+
+
+    /* =====================================================
+       MARCAR PÁGINA ATUAL
+    ===================================================== */
+
+    const current =
+        location.pathname
+            .split("/")
+            .pop()
+            .toLowerCase()
+        || "dashboard.html";
+
+
+    sidebar
+        .querySelectorAll(
+            ".menu a[data-page]"
+        )
+        .forEach((link) => {
+
+            link.classList.toggle(
+                "active",
+                link.dataset.page
+                    .toLowerCase() === current
+            );
+        });
+
+
+    /* =====================================================
+       FECHAR AO NAVEGAR
+    ===================================================== */
+
+    sidebar
+        .querySelectorAll(
+            ".menu a, .sidebar-brand, .sidebar-options a"
+        )
+        .forEach((link) => {
+
+            link.addEventListener(
+                "click",
+                () => {
+
+                    if (!isDesktop()) {
+                        closeMobile();
+                    }
+                }
+            );
+        });
+
+
+    /* =====================================================
+       ESTADO INICIAL
+    ===================================================== */
+
+    if (isDesktop()) {
+
+        try {
+
+            setCollapsed(
+                localStorage.getItem(
+                    "lotrix_sidebar_collapsed"
+                ) === "1"
+            );
+
+        } catch (_) {}
+
+    } else {
+
+        closeMobile();
+    }
+
+
+    /* =====================================================
+       RESIZE
+    ===================================================== */
+
+    window.addEventListener(
+        "resize",
+        () => {
+
+            if (isDesktop()) {
+
+                closeMobile();
+
+                try {
+
+                    setCollapsed(
+                        localStorage.getItem(
+                            "lotrix_sidebar_collapsed"
+                        ) === "1"
+                    );
+
+                } catch (_) {}
+
+            }
+        }
+    );
+
+
+    /* =====================================================
+       LUCIDE
+    ===================================================== */
+
+    if (window.lucide) {
+
+        window.lucide.createIcons();
+    }
+
 });

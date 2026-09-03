@@ -1447,46 +1447,84 @@ async function carregarPerfil(
 // ATUALIZAR USUÁRIO NA SIDEBAR
 // =======================================
 
-function atualizarUsuarioTela(
-    usuario
-) {
+function atualizarUsuarioTela(usuario) {
+
+    console.log("=======================================");
+    console.log("ATUALIZANDO USUÁRIO NA SIDEBAR");
+    console.log("NOME:", usuario?.nome);
+    console.log("PERFIL:", usuario?.perfil);
+    console.log("UID:", usuario?.id);
+    console.log("=======================================");
 
     const nome =
-        document.getElementById(
-            "nomeUsuarioLogado"
-        );
-
+        document.getElementById("nomeUsuarioLogado");
 
     const perfil =
-        document.getElementById(
-            "perfilUsuarioLogado"
-        );
+        document.getElementById("perfilUsuarioLogado");
 
+
+    // ===================================
+    // NOME DO USUÁRIO
+    // ===================================
 
     if (nome) {
 
-        nome.innerText =
-            usuario.nome ||
+        nome.textContent =
+            usuario?.nome ||
             "Usuário";
 
     }
 
 
+    // ===================================
+    // PERFIL DO USUÁRIO
+    // ===================================
+
     if (perfil) {
 
-        let textoPerfil =
-            usuario.perfil ||
-            "";
+        const perfilOriginal =
+            (
+                usuario?.perfil ||
+                ""
+            )
+                .trim()
+                .toLowerCase();
 
 
-        textoPerfil =
-            textoPerfil.charAt(0)
-                .toUpperCase()
-            +
-            textoPerfil.slice(1);
+        let textoPerfil = "Usuário";
 
 
-        perfil.innerText =
+        // COLABORADOR = OPERADOR
+        if (
+            perfilOriginal === "colaborador" ||
+            perfilOriginal === "operador"
+        ) {
+
+            textoPerfil = "Operador";
+
+        }
+
+        // ADMINISTRADOR
+        else if (
+            perfilOriginal === "administrador" ||
+            perfilOriginal === "admin"
+        ) {
+
+            textoPerfil = "Administrador";
+
+        }
+
+        // OUTROS PERFIS
+        else if (perfilOriginal) {
+
+            textoPerfil =
+                perfilOriginal.charAt(0).toUpperCase() +
+                perfilOriginal.slice(1);
+
+        }
+
+
+        perfil.textContent =
             textoPerfil;
 
     }
