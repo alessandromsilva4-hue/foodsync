@@ -1876,3 +1876,74 @@ button.menu-toggle i {
         translate: none !important;
     }
 }
+/* =========================================================
+   LOTRIX - CORREÇÃO DEFINITIVA DOS BOTÕES DA SIDEBAR
+   MOBILE/TABLET = somente .menu-toggle
+   DESKTOP = somente #sidebarMenuToggle
+========================================================= */
+
+@media (max-width: 900px) {
+
+    /* Esconde o botão que fica dentro da sidebar */
+    #sidebarMenuToggle {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+
+    /* Mantém somente o botão externo */
+    button.menu-toggle {
+        display: grid !important;
+        position: fixed !important;
+
+        top: 14px !important;
+        left: 14px !important;
+        right: auto !important;
+        bottom: auto !important;
+
+        width: 44px !important;
+        height: 44px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        z-index: 100001 !important;
+
+        transform: none !important;
+        translate: none !important;
+        rotate: none !important;
+        scale: 1 !important;
+
+        pointer-events: auto !important;
+        touch-action: manipulation !important;
+    }
+
+    button.menu-toggle svg,
+    button.menu-toggle i {
+        width: 21px !important;
+        height: 21px !important;
+        pointer-events: none !important;
+    }
+
+}
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media (min-width: 901px) {
+
+    /* Botão externo não aparece no computador */
+    button.menu-toggle {
+        display: none !important;
+    }
+
+    /* Botão interno da sidebar continua funcionando */
+    #sidebarMenuToggle {
+        display: flex !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+    }
+
+}
+
