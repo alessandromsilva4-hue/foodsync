@@ -16,14 +16,23 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
-     signingConfigs {
-    release {
-        storeFile file(System.getProperty("user.home") + "/.android/debug.keystore")
-        storePassword "android"
-        keyAlias "androiddebugkey"
-        keyPassword "android"
+      signingConfigs {
+        release {
+           def keystorePropertiesFile = rootProject.file("../keystore/keystore.properties")
+            def keystoreProperties = new Properties()
+
+            if (keystorePropertiesFile.exists()) {
+                keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+                storeFile file(keystoreProperties["storeFile"])
+                storePassword keystoreProperties["storePassword"]
+                keyAlias keystoreProperties["keyAlias"]
+                keyPassword keystoreProperties["keyPassword"]
+            } else {
+                throw new GradleException("Arquivo keystore.properties não encontrado.")
+            }
+        }
     }
-}
 
     buildTypes {
         release {
