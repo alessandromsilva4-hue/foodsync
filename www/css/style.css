@@ -1812,3 +1812,67 @@ button.menu-toggle i {
     justify-content: center !important;
     padding-top: 12px !important;
 }
+/* ==========================================
+   LOTRIX — SIDEBAR RECOLHIDA
+   BOTÃO NÃO SOBREPOE A LOGO
+========================================== */
+
+@media (max-width: 900px) {
+
+    /* Esconde completamente a área da logo */
+    .sidebar:not(.open) .sidebar-brand,
+    .sidebar:not(.open) .logo-area {
+        display: none !important;
+    }
+
+    /* Remove espaço vazio deixado pela logo */
+    .sidebar:not(.open) .sidebar-header {
+        height: 60px !important;
+        min-height: 60px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Botão do menu */
+    .menu-toggle {
+        position: fixed !important;
+        top: 10px !important;
+        left: 8px !important;
+        width: 42px !important;
+        height: 42px !important;
+        z-index: 100001 !important;
+    }
+}
+/* ==========================================
+   LOTRIX — NÃO MOSTRAR DOIS BOTÕES NO MOBILE
+========================================== */
+
+@media (max-width: 900px) {
+
+    /* Botão interno da Sidebar: esconder */
+    #sidebarMenuToggle {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+
+    /* Manter somente o botão externo */
+    button.menu-toggle {
+        display: grid !important;
+        position: fixed !important;
+
+        top: 10px !important;
+        left: 8px !important;
+
+        width: 44px !important;
+        height: 44px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        z-index: 100001 !important;
+
+        transform: none !important;
+        translate: none !important;
+    }
+}
