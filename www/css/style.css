@@ -1877,21 +1877,21 @@ button.menu-toggle i {
     }
 }
 /* =========================================================
-   LOTRIX - CORREÇÃO DEFINITIVA DOS BOTÕES DA SIDEBAR
+   LOTRIX - CORREï¿½ï¿½O DEFINITIVA DOS BOTï¿½ES DA SIDEBAR
    MOBILE/TABLET = somente .menu-toggle
    DESKTOP = somente #sidebarMenuToggle
 ========================================================= */
 
 @media (max-width: 900px) {
 
-    /* Esconde o botão que fica dentro da sidebar */
+    /* Esconde o botï¿½o que fica dentro da sidebar */
     #sidebarMenuToggle {
         display: none !important;
         visibility: hidden !important;
         pointer-events: none !important;
     }
 
-    /* Mantém somente o botão externo */
+    /* Mantï¿½m somente o botï¿½o externo */
     button.menu-toggle {
         display: grid !important;
         position: fixed !important;
@@ -1933,12 +1933,12 @@ button.menu-toggle i {
 
 @media (min-width: 901px) {
 
-    /* Botão externo não aparece no computador */
+    /* BotÃ£o externo no aparece no computador */
     button.menu-toggle {
         display: none !important;
     }
 
-    /* Botão interno da sidebar continua funcionando */
+    /* BotÃ£o interno da sidebar continua funcionando */
     #sidebarMenuToggle {
         display: flex !important;
         visibility: visible !important;
@@ -1946,4 +1946,63 @@ button.menu-toggle i {
     }
 
 }
+/* =========================================================
+   LOTRIX - BOTÃƒO MENU MOBILE/TABLET
+   Alto contraste
+========================================================= */
 
+@media (max-width: 900px) {
+
+    button.menu-toggle {
+        display: grid !important;
+        place-items: center !important;
+
+        position: fixed !important;
+        top: 14px !important;
+        left: 14px !important;
+
+        width: 44px !important;
+        height: 44px !important;
+
+        padding: 0 !important;
+        margin: 0 !important;
+
+        background: #111827 !important;
+        background-color: #111827 !important;
+
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+
+        color: #ffffff !important;
+
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35) !important;
+
+        z-index: 100001 !important;
+
+        opacity: 1 !important;
+        visibility: visible !important;
+
+        transform: none !important;
+        translate: none !important;
+    }
+
+    button.menu-toggle:hover,
+    button.menu-toggle:focus,
+    button.menu-toggle:focus-visible,
+    button.menu-toggle:active {
+        background: #111827 !important;
+        background-color: #111827 !important;
+        color: #ffffff !important;
+        transform: none !important;
+    }
+
+    button.menu-toggle svg {
+        width: 23px !important;
+        height: 23px !important;
+
+        stroke: #ffffff !important;
+        color: #ffffff !important;
+
+        pointer-events: none !important;
+    }
+}
