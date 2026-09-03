@@ -13,22 +13,42 @@ document.addEventListener("DOMContentLoaded", () => {
     const options = document.getElementById("sidebarOptions");
     const refreshButton = document.getElementById("sidebarRefresh");
 
-    // No aplicativo/tablet a Sidebar é um drawer. Algumas páginas antigas
-    // não possuem o botão externo; criamos um automaticamente.
-    let mobileToggle = document.querySelector(".menu-toggle");
-    if (!mobileToggle) {
-        mobileToggle = document.createElement("button");
-        mobileToggle.type = "button";
-        mobileToggle.className = "menu-toggle";
-        mobileToggle.setAttribute("aria-label", "Abrir menu lateral");
-        mobileToggle.setAttribute("aria-expanded", "false");
-        mobileToggle.title = "Abrir menu";
-        mobileToggle.innerHTML = '<i data-lucide="menu" aria-hidden="true"></i>';
-        document.body.appendChild(mobileToggle);
-    } else {
-        // O botão antigo do Dashboard usava "more-vertical"; padroniza para menu.
-        mobileToggle.innerHTML = '<i data-lucide="menu" aria-hidden="true"></i>';
-    }
+    // =======================================
+// BOTÃO DO MENU MOBILE
+// Usa somente o botão existente no HTML.
+// Não cria um segundo botão.
+// =======================================
+
+const mobileToggle =
+    document.querySelector(".menu-toggle");
+
+if (!mobileToggle) {
+
+    console.error(
+        "LOTRIX: botão .menu-toggle não encontrado no HTML."
+    );
+
+} else {
+
+    mobileToggle.setAttribute(
+        "type",
+        "button"
+    );
+
+    mobileToggle.setAttribute(
+        "aria-label",
+        "Abrir menu lateral"
+    );
+
+    mobileToggle.setAttribute(
+        "aria-expanded",
+        "false"
+    );
+
+    mobileToggle.title =
+        "Abrir menu";
+
+}
 
     const desktop = () => window.matchMedia("(min-width: 901px)").matches;
 
