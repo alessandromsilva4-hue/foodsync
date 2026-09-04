@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>Lotrix - Relatórios</title>
+
+
+<link rel="icon" href="img/favicon.png">
+
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet" href="css/sidebar.css">
+
+<link rel="stylesheet" href="css/tabela.css">
+
+<style>
+/* Ajuste específico do Relatório */
+body .content {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1 !important;
+    min-height: 100vh !important;
+    color: #1e293b !important;
+    background: #f1f5f9 !important;
+}
+
+/* Mantém o relatório ancorado no topo, mesmo após os scripts da tela serem carregados. */
+body .content.relatorios-page {
+    position: relative !important;
+    top: 0 !important;
+    inset: auto !important;
+    margin-top: 0 !important;
+    transform: none !important;
+}
+
+body .content.relatorios-page > * {
+    position: relative;
+    top: 0;
+    transform: none;
+}
+
+/* No celular, isola a página do fluxo externo para impedir que o WebView a alinhe no rodapé. */
+@media (max-width: 640px) {
+    body .content.relatorios-page {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100% !important;
+        height: 100dvh !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 72px 16px 32px !important;
+        overflow-y: auto !important;
+        z-index: 0 !important;
+    }
+}
+
+.content .top-header,
+.content .acoes-relatorio,
+.content .cards,
+.content .table-box {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+</style>
+
+
+    <link rel="stylesheet" href="./css/sidebar-global-final.css">
+
+    <link rel="stylesheet" href="./css/dark-theme.css">
+
+<link rel="stylesheet" href="css/button-interaction-fix.css">
+    <link rel="stylesheet" href="css/lotrix-final-fix.css">
+</head>
+
+
+
+<body>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <button class="sidebar-menu-btn" id="sidebarMenuToggle" type="button" aria-label="Recolher menu" aria-expanded="true">
+            <i data-lucide="menu" aria-hidden="true"></i>
+        </button>
+        <a class="sidebar-brand" href="dashboard.html" aria-label="Lotrix - Dashboard">
+            <img class="brand-logo" src="img/logo.png" alt="Lotrix">
+            <span class="brand-name">Lotrix</span>
+        </a>
+        <button class="sidebar-options-btn" id="sidebarOptionsToggle" type="button" aria-label="Mais opções" aria-expanded="false">
+            <i data-lucide="more-vertical" aria-hidden="true"></i>
+        </button>
+        <div class="sidebar-options" id="sidebarOptions" hidden>
+            <a href="dashboard.html"><i data-lucide="home"></i> Início</a>
+            <button type="button" id="sidebarRefresh"><i data-lucide="refresh-cw"></i> Atualizar</button>
+        </div>
+    </div>
+
+    <nav class="menu" aria-label="Menu principal">
+        <div class="menu-section">
+            <div class="menu-title">Geral</div>
+            <a href="dashboard.html" data-page="dashboard.html"><i data-lucide="layout-dashboard"></i><span class="nav-label">Dashboard</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Operação</div>
+            <a href="producao.html" data-page="producao.html"><i data-lucide="factory"></i><span class="nav-label">Produção</span></a>
+            <a href="produtos.html" data-page="produtos.html"><i data-lucide="package"></i><span class="nav-label">Produtos</span></a>
+            <a href="etiquetas.html" data-page="etiquetas.html"><i data-lucide="tag"></i><span class="nav-label">Etiquetas</span></a>
+            <a href="estoque.html" data-page="estoque.html"><i data-lucide="boxes"></i><span class="nav-label">Estoque</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Gestão</div>
+            <a href="relatorios.html" data-page="relatorios.html"><i data-lucide="bar-chart-3"></i><span class="nav-label">Relatórios</span></a>
+            <a href="auditoria.html" data-page="auditoria.html"><i data-lucide="clipboard-check"></i><span class="nav-label">Auditoria</span></a>
+            <a href="usuario.html" data-page="usuario.html"><i data-lucide="users"></i><span class="nav-label">Usuários</span></a>
+            <a href="sac-admin.html" data-page="sac-admin.html"><i data-lucide="headphones"></i><span class="nav-label">SAC Admin</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Sistema</div>
+            <a href="configuracoes.html" data-page="configuracoes.html"><i data-lucide="settings"></i><span class="nav-label">Configurações</span></a>
+            <a href="ajuda.html" data-page="ajuda.html"><i data-lucide="circle-help"></i><span class="nav-label">Ajuda</span></a>
+            <a href="sac.html" data-page="sac.html"><i data-lucide="message-circle"></i><span class="nav-label">SAC</span></a>
+        </div>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="user-card">
+            <div class="avatar"><i data-lucide="user-round" aria-hidden="true"></i></div>
+           <div class="user-info">
+    <strong id="nomeUsuarioLogado">Usuário</strong>
+    <small id="perfilUsuarioLogado">Usuário</small>
+</div>
+        </div>
+        <div class="company-card">
+            <span class="company-label">Empresa</span>
+            <strong class="company-name">Izu Oeste</strong>
+        </div>
+        <button class="logout-button" type="button" onclick="logout()"><i data-lucide="log-out"></i><span>Sair</span></button>
+    </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+
+
+
+<div class="layout">
+
+
+
+<main class="content relatorios-page">
+
+
+
+<header class="top-header">
+
+
+<div>
+
+
+<h1>
+Relatórios
+</h1>
+
+
+<p>
+Análise dos dados do Lotrix
+</p>
+
+
+</div>
+
+
+</header>
+
+
+<div class="acoes-relatorio">
+
+<button onclick="exportarExcel()">
+📊 Exportar Excel
+</button>
+
+
+<button onclick="exportarCSV()">
+📄 Exportar CSV
+</button>
+
+
+<button onclick="imprimirRelatorio()">
+🖨️ Imprimir
+</button>
+
+</div>
+
+
+
+
+
+<section class="cards">
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+🍱
+
+</div>
+
+
+<div>
+
+
+<h3>
+Produções
+</h3>
+
+
+<strong id="totalProducoes">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+🏷️
+
+</div>
+
+
+<div>
+
+
+<h3>
+Etiquetas
+</h3>
+
+
+<strong id="totalEtiquetas">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+📦
+
+</div>
+
+
+<div>
+
+
+<h3>
+Produtos
+</h3>
+
+
+<strong id="totalProdutos">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<div class="card-icon">
+
+⚠️
+
+</div>
+
+
+<div>
+
+
+<h3>
+Estoque Baixo
+</h3>
+
+
+<strong id="totalEstoqueBaixo">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+</section>
+
+<section class="table-box">
+
+<h2>
+📊 Produção por Produto
+</h2>
+
+<canvas id="graficoProducao"></canvas>
+
+</section>
+
+
+
+
+
+
+<section class="table-box">
+
+
+<h2>
+Últimas Produções
+</h2>
+
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+Produto
+</th>
+
+
+<th>
+Quantidade
+</th>
+
+
+<th>
+Responsável
+</th>
+
+
+<th>
+Data
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+<tbody id="relatorioProducao">
+
+
+<tr>
+
+<td colspan="4">
+
+Sem dados
+
+</td>
+
+
+</tr>
+
+
+</tbody>
+
+
+
+
+</table>
+
+
+</section>
+
+
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+<script type="module" src="js/firebase.js"></script>
+
+<script type="module" src="js/app.js"></script>
+
+<script type="module" src="js/relatorios.js"></script>
+
+<script type="module" src="js/auth.js"></script>
+
+
+<script src="js/design-system.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/sidebar.js"></script>
+
+
+</body>
+
+</html>
+
+

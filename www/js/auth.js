@@ -1,6 +1,6 @@
-// =======================================
+﻿// =======================================
 // LOTRIX - AUTENTICAÇÃO E PERMISSÕES
-// V11 - MULTIEMPRESA 4 EMPRESAS
+// V12 - MULTIEMPRESA 4 EMPRESAS
 // =======================================
 
 import "./design-system.js";
@@ -13,8 +13,7 @@ import {
     createUserWithEmailAndPassword,
     sendPasswordResetEmail,
     deleteUser
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
     collection,
@@ -23,12 +22,11 @@ import {
     doc,
     getDoc,
     setDoc
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 console.log("=======================================");
-console.log("AUTH.JS V11 LOTRIX CARREGADO");
+console.log("AUTH.JS V12 LOTRIX CARREGADO");
 console.log("MULTIEMPRESA - 4 EMPRESAS");
 console.log("=======================================");
 
@@ -80,6 +78,10 @@ const EMPRESAS_LOTRIX = [
 
 function obterDadosEmpresa(idEmpresa) {
 
+    if (!idEmpresa) {
+        return null;
+    }
+
     return EMPRESAS_LOTRIX.find(
         empresa =>
             empresa.idEmpresa === idEmpresa
@@ -91,14 +93,16 @@ function obterDadosEmpresa(idEmpresa) {
 // =======================================
 // EMPRESA ATIVA
 // =======================================
-// A empresa NÃO pode ser trocada pela tela.
-// Ela vem do perfil salvo no Firestore.
+// A empresa vem exclusivamente do perfil
+// salvo no Firestore.
+// O usuário NÃO pode trocar pela tela.
 // =======================================
 
 window.definirEmpresaAtiva = function () {
 
     console.warn(
-        "ALTERAÇÃO DE EMPRESA BLOQUEADA."
+        "ALTERAÇÃO DE EMPRESA BLOQUEADA. " +
+        "A empresa é definida pelo perfil do usuário."
     );
 
 };
@@ -107,40 +111,22 @@ window.definirEmpresaAtiva = function () {
 // =======================================
 // MOSTRAR EMPRESA DO USUÁRIO
 // =======================================
+// Exibe automaticamente a empresa vinculada
+// ao usuário logado.
+// =======================================
 
 function mostrarEmpresaAtiva(usuario) {
 
-    const existente =
-        document.getElementById(
-            "seletorEmpresaLotrix"
-        );
-
-    if (existente) {
-        existente.remove();
-    }
-
-    // A empresa permanece vinculada à sessão, mas não é exibida no menu lateral.
-    return;
-
-
-    const logoArea =
-        document.querySelector(
-            ".logo-area"
-        );
-
-    if (!logoArea) {
-
+    if (!usuario) {
         console.warn(
-            "LOGO AREA NÃO ENCONTRADA."
+            "Não foi possível mostrar empresa: usuário inexistente."
         );
-
         return;
-
     }
 
 
     const idEmpresa =
-        usuario?.idEmpresa || "";
+        usuario.idEmpresa || "";
 
 
     if (!idEmpresa) {
@@ -173,66 +159,267 @@ function mostrarEmpresaAtiva(usuario) {
     }
 
 
+    const nomeEmpresa =
+        empresa.nomeFantasia ||
+        empresa.nome ||
+        "Empresa";
+    // ===================================
+    // EMPRESA NO RODAPÉ DA SIDEBAR
+    // ===================================
+    document.querySelectorAll(".company-name").forEach(function(elemento) {
+        elemento.textContent = nomeEmpresa;
+    });
+
+
+
+    console.log(
+        "======================================="
+    );
+
+    console.log(
+        "EMPRESA DO USUÁRIO"
+    );
+
+    console.log(
+        "ID:",
+        idEmpresa
+    );
+
+    console.log(
+        "NOME:",
+        nomeEmpresa
+    );
+
+    console.log(
+        "======================================="
+
+
+    );
+
+
+    // ===================================
+    // REMOVER ELEMENTOS ANTIGOS
+    // ===================================
+
+    document
+        .querySelectorAll(
+            ".empresa-usuario-lotrix"
+        )
+        .forEach(
+            elemento => elemento.remove()
+        );
+
+
+    // ===================================
+    // PROCURAR LOCAL DA EMPRESA
+    // ===================================
+
+    const sidebar =
+        document.querySelector(
+            ".sidebar"
+        );
+
+
+    const sidebarHeader =
+        document.querySelector(
+            ".sidebar-header"
+        );
+
+
+    const logoArea =
+        document.querySelector(
+            ".logo-area"
+        );
+
+
+    const menu =
+        document.querySelector(
+            ".menu"
+        );
+
+
+    const localInsercao =
+        sidebarHeader ||
+        logoArea ||
+        menu ||
+        sidebar;
+
+
+    if (!localInsercao) {
+
+        console.warn(
+            "LOCAL DA SIDEBAR NÃO ENCONTRADO."
+        );
+
+        return;
+
+    }
+
+
+    // ===================================
+    // CRIAR IDENTIFICAÇÃO DA EMPRESA
+    // ===================================
+
     const container =
         document.createElement(
             "div"
         );
 
 
+    container.className =
+        "empresa-usuario-lotrix";
+
+
     container.id =
-        "seletorEmpresaLotrix";
+        "empresaUsuarioLotrix";
 
 
-    container.style.margin =
-        "8px 15px 12px";
-
-
-    container.style.padding =
-        "8px";
-
-
-    container.style.borderRadius =
-        "8px";
-
-
-    container.style.background =
-        "rgba(255,255,255,0.08)";
+    container.setAttribute(
+        "data-id-empresa",
+        idEmpresa
+    );
 
 
     container.innerHTML = `
 
-        <div style="
-            font-size:10px;
-            opacity:.65;
-            margin-bottom:3px;
-            letter-spacing:.5px;
-        ">
+        <div class="empresa-usuario-label">
             EMPRESA
         </div>
 
-        <strong style="
-            font-size:13px;
-        ">
-            ${empresa.nomeFantasia || empresa.nome}
-        </strong>
+        <div class="empresa-usuario-nome">
+            ${nomeEmpresa}
+        </div>
 
     `;
 
 
-    logoArea.after(
-        container
-    );
+    // ===================================
+    // INSERIR NA SIDEBAR
+    // ===================================
+
+    if (
+        sidebarHeader &&
+        sidebarHeader.parentNode
+    ) {
+
+        sidebarHeader.insertAdjacentElement(
+            "afterend",
+            container
+        );
+
+    }
+
+    else if (
+        logoArea &&
+        logoArea.parentNode
+    ) {
+
+        logoArea.insertAdjacentElement(
+            "afterend",
+            container
+        );
+
+    }
+
+    else if (menu) {
+
+        menu.insertAdjacentElement(
+            "beforebegin",
+            container
+        );
+
+    }
+
+    else {
+
+        sidebar.prepend(
+            container
+        );
+
+    }
+
+
+    // ===================================
+    // ESTILO
+    // ===================================
+
+    container.style.margin =
+        "8px 12px 12px";
+
+    container.style.padding =
+        "9px 10px";
+
+    container.style.borderRadius =
+        "8px";
+
+    container.style.background =
+        "rgba(255,255,255,0.08)";
+
+    container.style.border =
+        "1px solid rgba(255,255,255,0.08)";
+
+    container.style.overflow =
+        "hidden";
+
+
+    const label =
+        container.querySelector(
+            ".empresa-usuario-label"
+        );
+
+
+    if (label) {
+
+        label.style.fontSize =
+            "9px";
+
+        label.style.fontWeight =
+            "600";
+
+        label.style.opacity =
+            "0.60";
+
+        label.style.letterSpacing =
+            "0.7px";
+
+        label.style.marginBottom =
+            "3px";
+
+        label.style.textTransform =
+            "uppercase";
+
+    }
+
+
+    const nome =
+        container.querySelector(
+            ".empresa-usuario-nome"
+        );
+
+
+    if (nome) {
+
+        nome.style.fontSize =
+            "13px";
+
+        nome.style.fontWeight =
+            "600";
+
+        nome.style.whiteSpace =
+            "nowrap";
+
+        nome.style.overflow =
+            "hidden";
+
+        nome.style.textOverflow =
+            "ellipsis";
+
+    }
 
 
     console.log(
-        "EMPRESA DO USUÁRIO:",
-        empresa.nome
-    );
-
-
-    console.log(
-        "ID EMPRESA DO USUÁRIO:",
-        usuario.idEmpresa
+        "EMPRESA EXIBIDA NA SIDEBAR:",
+        nomeEmpresa
     );
 
 }
@@ -443,6 +630,42 @@ if (loginForm) {
 
                     mensagem.textContent =
                         "Usuário sem empresa vinculada. Procure o administrador.";
+
+
+                    return;
+
+                }
+
+
+                // =================================
+                // VALIDAR EMPRESA
+                // =================================
+
+                const empresaLogin =
+                    obterDadosEmpresa(
+                        perfilLogin.idEmpresa
+                    );
+
+
+                if (!empresaLogin) {
+
+                    await signOut(
+                        auth
+                    );
+
+
+                    mensagem.style.color =
+                        "#dc2626";
+
+
+                    mensagem.textContent =
+                        "A empresa vinculada ao usuário não é válida.";
+
+
+                    console.error(
+                        "EMPRESA INVÁLIDA NO PERFIL:",
+                        perfilLogin.idEmpresa
+                    );
 
 
                     return;
@@ -781,10 +1004,6 @@ cadastroForm?.addEventListener(
         evento.preventDefault();
 
 
-        // =================================
-        // CAMPOS
-        // =================================
-
         const nome =
             document
                 .getElementById(
@@ -1049,23 +1268,18 @@ cadastroForm?.addEventListener(
                     email:
                         email,
 
-                    // NOVO USUÁRIO
-                    // SEMPRE COLABORADOR
                     perfil:
                         "colaborador",
 
-                    // AGUARDA APROVAÇÃO
                     status:
                         "pendente",
 
                     permissoes:
                         {},
 
-                    // EMPRESA ESCOLHIDA NO CADASTRO
                     idEmpresa:
                         idEmpresaCadastro,
 
-                    // INFORMAÇÕES DA EMPRESA
                     nomeEmpresa:
                         empresaCadastro.nome,
 
@@ -1107,18 +1321,10 @@ cadastroForm?.addEventListener(
             );
 
 
-            // =================================
-            // SAIR APÓS CADASTRO
-            // =================================
-
             await signOut(
                 auth
             );
 
-
-            // =================================
-            // MENSAGEM
-            // =================================
 
             mensagem.style.color =
                 "#16a34a";
@@ -1138,10 +1344,6 @@ cadastroForm?.addEventListener(
                 error
             );
 
-
-            // =================================
-            // CANCELAR AUTH SE FIRESTORE FALHAR
-            // =================================
 
             if (
                 credencial?.user &&
@@ -1163,10 +1365,6 @@ cadastroForm?.addEventListener(
 
             }
 
-
-            // =================================
-            // MENSAGENS DE ERRO
-            // =================================
 
             mensagem.style.color =
                 "#dc2626";
@@ -1281,10 +1479,6 @@ async function carregarPerfil(
                 .toLowerCase();
 
 
-        // =================================
-        // EMPRESA VEM DO FIRESTORE
-        // =================================
-
         const idEmpresa =
             dados.idEmpresa ||
             "";
@@ -1304,9 +1498,7 @@ async function carregarPerfil(
         // SEGURANÇA
         // =================================
 
-        if (
-            !empresa
-        ) {
+        if (!empresa) {
 
             console.error(
                 "USUÁRIO SEM EMPRESA VÁLIDA:",
@@ -1379,6 +1571,33 @@ async function carregarPerfil(
         );
 
 
+        // =================================
+        // SALVAR EMPRESA ATIVA
+        // =================================
+
+        localStorage.setItem(
+            "empresaAtivaLotrix",
+            JSON.stringify({
+
+                idEmpresa:
+                    perfil.idEmpresa,
+
+                nome:
+                    perfil.nomeEmpresa,
+
+                nomeFantasia:
+                    perfil.nomeFantasia,
+
+                razaoSocial:
+                    perfil.razaoSocial,
+
+                cnpj:
+                    perfil.cnpj
+
+            })
+        );
+
+
         console.log(
             "======================================="
         );
@@ -1447,25 +1666,54 @@ async function carregarPerfil(
 // ATUALIZAR USUÁRIO NA SIDEBAR
 // =======================================
 
-function atualizarUsuarioTela(usuario) {
+function atualizarUsuarioTela(
+    usuario
+) {
 
-    console.log("=======================================");
-    console.log("ATUALIZANDO USUÁRIO NA SIDEBAR");
-    console.log("NOME:", usuario?.nome);
-    console.log("PERFIL:", usuario?.perfil);
-    console.log("UID:", usuario?.id);
-    console.log("=======================================");
+    console.log(
+        "======================================="
+    );
+
+    console.log(
+        "ATUALIZANDO USUÁRIO NA SIDEBAR"
+    );
+
+    console.log(
+        "NOME:",
+        usuario?.nome
+    );
+
+    console.log(
+        "PERFIL:",
+        usuario?.perfil
+    );
+
+    console.log(
+        "EMPRESA:",
+        usuario?.nomeEmpresa
+    );
+
+    console.log(
+        "UID:",
+        usuario?.id
+    );
+
+    console.log(
+        "======================================="
+    );
+
 
     const nome =
-        document.getElementById("nomeUsuarioLogado");
+        document.getElementById(
+            "nomeUsuarioLogado"
+        );
+
 
     const perfil =
-        document.getElementById("perfilUsuarioLogado");
+        document.getElementById(
+            "perfilUsuarioLogado"
+        );
 
-
-    // ===================================
-    // NOME DO USUÁRIO
-    // ===================================
 
     if (nome) {
 
@@ -1475,10 +1723,6 @@ function atualizarUsuarioTela(usuario) {
 
     }
 
-
-    // ===================================
-    // PERFIL DO USUÁRIO
-    // ===================================
 
     if (perfil) {
 
@@ -1491,34 +1735,42 @@ function atualizarUsuarioTela(usuario) {
                 .toLowerCase();
 
 
-        let textoPerfil = "Usuário";
+        let textoPerfil =
+            "Usuário";
 
 
-        // COLABORADOR = OPERADOR
         if (
-            perfilOriginal === "colaborador" ||
-            perfilOriginal === "operador"
+            perfilOriginal ===
+            "colaborador" ||
+            perfilOriginal ===
+            "operador"
         ) {
-
-            textoPerfil = "Operador";
-
-        }
-
-        // ADMINISTRADOR
-        else if (
-            perfilOriginal === "administrador" ||
-            perfilOriginal === "admin"
-        ) {
-
-            textoPerfil = "Administrador";
-
-        }
-
-        // OUTROS PERFIS
-        else if (perfilOriginal) {
 
             textoPerfil =
-                perfilOriginal.charAt(0).toUpperCase() +
+                "Operador";
+
+        }
+
+        else if (
+            perfilOriginal ===
+            "administrador" ||
+            perfilOriginal ===
+            "admin"
+        ) {
+
+            textoPerfil =
+                "Administrador";
+
+        }
+
+        else if (
+            perfilOriginal
+        ) {
+
+            textoPerfil =
+                perfilOriginal
+                    .charAt(0)
+                    .toUpperCase() +
                 perfilOriginal.slice(1);
 
         }
@@ -1636,6 +1888,62 @@ onAuthStateChanged(
                 );
 
 
+                localStorage.removeItem(
+                    "empresaAtivaLotrix"
+                );
+
+
+                if (
+                    pagina !==
+                    "index.html" &&
+                    pagina !==
+                    ""
+                ) {
+
+                    window.location.href =
+                        "index.html";
+
+                }
+
+
+                return;
+
+            }
+
+
+            // =================================
+            // EMPRESA INVÁLIDA
+            // =================================
+
+            const empresaUsuario =
+                obterDadosEmpresa(
+                    usuario.idEmpresa
+                );
+
+
+            if (!empresaUsuario) {
+
+                console.error(
+                    "EMPRESA DO USUÁRIO É INVÁLIDA:",
+                    usuario.idEmpresa
+                );
+
+
+                await signOut(
+                    auth
+                );
+
+
+                localStorage.removeItem(
+                    "usuarioFoodSync"
+                );
+
+
+                localStorage.removeItem(
+                    "empresaAtivaLotrix"
+                );
+
+
                 if (
                     pagina !==
                     "index.html" &&
@@ -1682,6 +1990,11 @@ onAuthStateChanged(
                 );
 
 
+                localStorage.removeItem(
+                    "empresaAtivaLotrix"
+                );
+
+
                 if (
                     pagina !==
                     "index.html" &&
@@ -1701,13 +2014,17 @@ onAuthStateChanged(
 
 
             // =================================
-            // ATUALIZAR TELA
+            // ATUALIZAR USUÁRIO
             // =================================
 
             atualizarUsuarioTela(
                 usuario
             );
 
+
+            // =================================
+            // MOSTRAR EMPRESA
+            // =================================
 
             mostrarEmpresaAtiva(
                 usuario
@@ -1774,9 +2091,6 @@ onAuthStateChanged(
                         .trim()
                         .toLowerCase();
 
-
-                // ADMINISTRADOR
-                // ACESSO TOTAL
 
                 if (
                     perfil !==
@@ -1848,6 +2162,16 @@ onAuthStateChanged(
 
             localStorage.removeItem(
                 "usuarioFoodSync"
+            );
+
+
+            localStorage.removeItem(
+                "empresaAtivaLotrix"
+            );
+
+
+            sessionStorage.removeItem(
+                "loginAuditoriaRegistrado"
             );
 
 
@@ -1992,10 +2316,6 @@ function controlarMenu(
         {};
 
 
-    // =================================
-    // CONTROLAR LINKS
-    // =================================
-
     document
         .querySelectorAll(
             ".menu a"
@@ -2021,7 +2341,6 @@ function controlarMenu(
                     mapa[pagina];
 
 
-                // LINK NÃO MAPEADO
                 if (!permissao) {
 
                     link.hidden =
@@ -2035,9 +2354,6 @@ function controlarMenu(
 
                 }
 
-
-                // AJUDA LIBERADA
-                // PARA TODOS
 
                 if (
                     permissao ===
@@ -2299,9 +2615,10 @@ console.log(
 );
 
 console.log(
-    "AUTH.JS V11 PRONTO"
+    "AUTH.JS V12 PRONTO"
 );
 
 console.log(
     "======================================="
 );
+

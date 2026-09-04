@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lotrix - Etiquetas</title>
+
+<link rel="icon" href="img/favicon.png">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/formulario.css">
+<link rel="stylesheet" href="css/tabela.css">
+<link rel="stylesheet" href="css/etiquetas.css">
+
+    <link rel="stylesheet" href="./css/sidebar-global-final.css">
+
+    <link rel="stylesheet" href="./css/dark-theme.css">
+
+<link rel="stylesheet" href="css/button-interaction-fix.css">
+    <link rel="stylesheet" href="css/lotrix-final-fix.css">
+
+<style>
+/* =====================================================
+   LOTRIX — CORREÇÃO DOS BOTÕES DA TELA ETIQUETAS
+   Mantém os botões fixos, sem deslocamento/zoom/animação
+===================================================== */
+
+button,
+button:hover,
+button:focus,
+button:focus-visible,
+button:active {
+    box-sizing: border-box;
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    translate: none !important;
+    scale: 1 !important;
+}
+
+/* O botão de limpar permanece ancorado dentro do campo de busca. */
+.etiqueta-workspace .produto-search-clear {
+    position: absolute !important;
+    inset: 50% 10px auto auto !important;
+    translate: 0 -50% !important;
+}
+
+/* O controle mantém as mesmas três colunas em todos os estados. */
+.etiqueta-workspace .quantity-control {
+    display: grid !important;
+    grid-template-columns: 42px minmax(0, 1fr) 42px !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+}
+
+@media screen and (max-width: 1099px) {
+    .etiqueta-workspace .quantity-control {
+        grid-template-columns: 36px minmax(0, 1fr) 36px !important;
+    }
+}
+
+
+/* =====================================================
+   LOTRIX — LISTA DE PRODUTOS
+   Corrige o visual dos resultados da pesquisa.
+   Os itens da lista NÃO devem herdar o estilo dos botões
+   principais do sistema.
+===================================================== */
+.etiqueta-workspace .produto-search-list {
+    width: 100%;
+    max-height: 280px;
+    overflow-y: auto;
+    margin-top: 6px;
+    padding: 0;
+    background: #fff;
+    border: 1px solid #dbe3ef;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, .10);
+    overflow-x: hidden;
+}
+
+.etiqueta-workspace .produto-search-option {
+    width: 100% !important;
+    min-height: 50px !important;
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    margin: 0 !important;
+    padding: 8px 12px !important;
+    box-sizing: border-box !important;
+    border: 0 !important;
+    border-bottom: 1px solid #eef2f7 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+    transform: none !important;
+    translate: none !important;
+    scale: 1 !important;
+    text-align: left !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+.etiqueta-workspace .produto-search-option:last-child {
+    border-bottom: 0 !important;
+}
+
+.etiqueta-workspace .produto-search-option:hover,
+.etiqueta-workspace .produto-search-option:focus,
+.etiqueta-workspace .produto-search-option:active {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+    transform: none !important;
+    translate: none !important;
+    scale: 1 !important;
+    outline: none !important;
+}
+
+.etiqueta-workspace .produto-search-option-icon {
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 0;
+}
+
+.etiqueta-workspace .produto-search-option-icon::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border: 1.5px solid #2563eb;
+    border-radius: 2px;
+    box-sizing: border-box;
+}
+
+.etiqueta-workspace .produto-search-option-text {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2px;
+    line-height: 1.2;
+}
+
+.etiqueta-workspace .produto-search-option-text strong {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.etiqueta-workspace .produto-search-option-text small {
+    display: block;
+    color: #94a3b8;
+    font-size: 10px;
+    font-weight: 400;
+}
+
+.etiqueta-workspace .produto-search-empty {
+    padding: 14px;
+    color: #64748b;
+    background: #fff;
+    font-size: 12px;
+    text-align: center;
+}
+
+
+
+/* =====================================================
+   LOTRIX — CORREÇÃO DEFINITIVA DO CAMPO DE PESQUISA
+   A lupa fica separada do texto e nunca sobrepõe o placeholder.
+===================================================== */
+.etiqueta-workspace .produto-search-input-wrap {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    display: block !important;
+}
+
+.etiqueta-workspace .produto-search-icon {
+    position: absolute !important;
+    left: 15px !important;
+    top: 50% !important;
+    width: 16px !important;
+    height: 16px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    z-index: 5 !important;
+    pointer-events: none !important;
+    transform: translateY(-50%) !important;
+    box-sizing: border-box !important;
+    border: 2px solid #64748b !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+}
+
+.etiqueta-workspace .produto-search-icon::after {
+    content: "" !important;
+    position: absolute !important;
+    width: 7px !important;
+    height: 2px !important;
+    right: -5px !important;
+    bottom: -2px !important;
+    background: #64748b !important;
+    border-radius: 2px !important;
+    transform: rotate(45deg) !important;
+    transform-origin: left center !important;
+}
+
+.etiqueta-workspace #produtoEtiquetaBusca,
+.etiqueta-workspace .produto-search-input {
+    position: relative !important;
+    z-index: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    padding-left: 46px !important;
+    padding-right: 48px !important;
+}
+
+/* Remove o ícone nativo do type=search do navegador. */
+.etiqueta-workspace #produtoEtiquetaBusca::-webkit-search-decoration,
+.etiqueta-workspace #produtoEtiquetaBusca::-webkit-search-cancel-button,
+.etiqueta-workspace #produtoEtiquetaBusca::-webkit-search-results-button,
+.etiqueta-workspace #produtoEtiquetaBusca::-webkit-search-results-decoration {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+.etiqueta-workspace .produto-search-clear {
+    position: absolute !important;
+    right: 8px !important;
+    top: 50% !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transform: translateY(-50%) !important;
+    translate: none !important;
+    scale: 1 !important;
+    z-index: 6 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.etiqueta-workspace .produto-search-clear:hover,
+.etiqueta-workspace .produto-search-clear:focus,
+.etiqueta-workspace .produto-search-clear:active {
+    transform: translateY(-50%) !important;
+    translate: none !important;
+    scale: 1 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+
+/* LOTRIX - PREVIA AO LADO DO FORMULARIO */
+.etiqueta-workspace { display:grid !important; grid-template-columns:minmax(280px,.85fr) minmax(380px,1.15fr) !important; gap:22px !important; align-items:start !important; width:100% !important; }
+.etiqueta-workspace .preview-panel, .etiqueta-workspace .print-panel { width:100% !important; min-width:0 !important; margin:0 !important; }
+.etiqueta-workspace .preview-panel { grid-column:1 !important; grid-row:1 !important; }
+.etiqueta-workspace .print-panel { grid-column:2 !important; grid-row:1 !important; }
+.etiqueta-workspace .preview-stage { width:100% !important; min-width:0 !important; display:flex !important; align-items:center !important; justify-content:center !important; overflow:hidden !important; }
+@media screen and (max-width:900px) { .etiqueta-workspace { grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) !important; gap:14px !important; } .etiqueta-workspace .panel-title h2 { font-size:17px !important; } .etiqueta-workspace .panel-description { font-size:11px !important; } .etiqueta-workspace .preview-caption { font-size:10px !important; } .etiqueta-workspace .field-grid { grid-template-columns:1fr !important; gap:10px !important; } .etiqueta-workspace .quantity-print-row { grid-template-columns:1fr !important; gap:10px !important; } .etiqueta-workspace .btn-print, .etiqueta-workspace .btn-generate { width:100% !important; } }
+@media screen and (max-width:560px) { .etiqueta-workspace { grid-template-columns:1fr !important; gap:16px !important; } .etiqueta-workspace .preview-panel { grid-column:1 !important; grid-row:1 !important; } .etiqueta-workspace .print-panel { grid-column:1 !important; grid-row:2 !important; } }
+
+</style>
+
+</head>
+
+<body>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <button class="sidebar-menu-btn" id="sidebarMenuToggle" type="button" aria-label="Recolher menu" aria-expanded="true">
+            <i data-lucide="menu" aria-hidden="true"></i>
+        </button>
+        <a class="sidebar-brand" href="dashboard.html" aria-label="Lotrix - Dashboard">
+            <img class="brand-logo" src="img/logo.png" alt="Lotrix">
+            <span class="brand-name">Lotrix</span>
+        </a>
+        <button class="sidebar-options-btn" id="sidebarOptionsToggle" type="button" aria-label="Mais opções" aria-expanded="false">
+            <i data-lucide="more-vertical" aria-hidden="true"></i>
+        </button>
+        <div class="sidebar-options" id="sidebarOptions" hidden>
+            <a href="dashboard.html"><i data-lucide="home"></i> Início</a>
+            <button type="button" id="sidebarRefresh"><i data-lucide="refresh-cw"></i> Atualizar</button>
+        </div>
+    </div>
+
+    <nav class="menu" aria-label="Menu principal">
+        <div class="menu-section">
+            <div class="menu-title">Geral</div>
+            <a href="dashboard.html" data-page="dashboard.html"><i data-lucide="layout-dashboard"></i><span class="nav-label">Dashboard</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Operação</div>
+            <a href="producao.html" data-page="producao.html"><i data-lucide="factory"></i><span class="nav-label">Produção</span></a>
+            <a href="produtos.html" data-page="produtos.html"><i data-lucide="package"></i><span class="nav-label">Produtos</span></a>
+            <a href="etiquetas.html" data-page="etiquetas.html"><i data-lucide="tag"></i><span class="nav-label">Etiquetas</span></a>
+            <a href="estoque.html" data-page="estoque.html"><i data-lucide="boxes"></i><span class="nav-label">Estoque</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Gestão</div>
+            <a href="relatorios.html" data-page="relatorios.html"><i data-lucide="bar-chart-3"></i><span class="nav-label">Relatórios</span></a>
+            <a href="auditoria.html" data-page="auditoria.html"><i data-lucide="clipboard-check"></i><span class="nav-label">Auditoria</span></a>
+            <a href="usuario.html" data-page="usuario.html"><i data-lucide="users"></i><span class="nav-label">Usuários</span></a>
+            <a href="sac-admin.html" data-page="sac-admin.html"><i data-lucide="headphones"></i><span class="nav-label">SAC Admin</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Sistema</div>
+            <a href="configuracoes.html" data-page="configuracoes.html"><i data-lucide="settings"></i><span class="nav-label">Configurações</span></a>
+            <a href="ajuda.html" data-page="ajuda.html"><i data-lucide="circle-help"></i><span class="nav-label">Ajuda</span></a>
+            <a href="sac.html" data-page="sac.html"><i data-lucide="message-circle"></i><span class="nav-label">SAC</span></a>
+        </div>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="user-card">
+            <div class="avatar"><i data-lucide="user-round" aria-hidden="true"></i></div>
+            <div class="user-info">
+    <strong id="nomeUsuarioLogado">Usuário</strong>
+    <small id="perfilUsuarioLogado">Usuário</small>
+</div>
+        </div>
+        <div class="company-card">
+            <span class="company-label">Empresa</span>
+            <strong class="company-name">Izu Oeste</strong>
+        </div>
+        <button class="logout-button" type="button" onclick="logout()"><i data-lucide="log-out"></i><span>Sair</span></button>
+    </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <!-- CONTEÚDO -->
+    <main class="content">
+
+        <!-- CABEÇALHO -->
+
+        <header class="top-header">
+
+            <div>
+
+                <h1>Etiquetas</h1>
+
+                <p>
+                    Gere e imprima etiquetas de validade
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- ÁREA PRINCIPAL -->
+
+        <section class="etiqueta-workspace">
+
+
+            <!-- PRÉVIA -->
+
+            <div class="preview-panel">
+
+                <div class="panel-title">
+
+                    <div>
+
+                        <span class="panel-kicker">
+                            PRÉVIA
+                        </span>
+
+                        <h2>
+                            Etiqueta
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="preview-stage">
+
+                    <div
+                        id="etiquetaGerada"
+                        class="etiqueta">
+
+
+                        <!-- PRODUTO -->
+
+                        <h3 id="nomeEtiqueta">
+                            PRODUTO
+                        </h3>
+
+
+                        <!-- TEMPERATURA -->
+
+                        <div class="temperatura-destaque">
+
+                            <span id="temperaturaEtiqueta">
+                                --
+                            </span>
+
+                        </div>
+
+
+                        <div class="linha-etiqueta linha-topo"></div>
+
+
+                        <!-- DATAS -->
+
+                        <div class="datas-etiqueta">
+
+                            <p>
+
+                                <strong>
+                                    MANIPULAÇÃO:
+                                </strong>
+
+                                <span id="dataEtiqueta">
+                                    --
+                                </span>
+
+                            </p>
+
+                            <p>
+
+                                <strong>
+                                    VALIDADE:
+                                </strong>
+
+                                <span id="validadeEtiqueta">
+                                    --
+                                </span>
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="linha-etiqueta linha-inferior"></div>
+
+
+                        <!-- RESPONSÁVEL -->
+
+                        <div class="info-etiqueta">
+
+                            <p>
+
+                                <strong>
+                                    RESP.:
+                                </strong>
+
+                                <span id="responsavelEtiqueta">
+                                    --
+                                </span>
+
+                            </p>
+
+                            <p>
+
+                                <strong>
+                                    LOTE:
+                                </strong>
+
+                                <span id="loteEtiqueta">
+                                    --
+                                </span>
+
+                            </p>
+
+                        </div>
+
+
+                        <!-- EMPRESA -->
+
+                        <div class="empresa-etiqueta">
+
+                            <h2 id="nomeEmpresaEtiqueta">
+                                EMPRESA
+                            </h2>
+
+                            <span id="razaoSocialEmpresaEtiqueta">
+                                --
+                            </span>
+
+                            <small id="cnpjEmpresaEtiqueta">
+                                --
+                            </small>
+
+                            <small id="enderecoEmpresaEtiqueta">
+                                --
+                            </small>
+
+                        </div>
+
+
+                        <!-- QR CODE -->
+
+                        <div id="qrcodeEtiqueta"></div>
+
+
+                    </div>
+
+                </div>
+
+
+                <div class="preview-caption">
+                    Pré-visualização da etiqueta 60 × 60 mm
+                </div>
+
+            </div>
+
+
+            <!-- FORMULÁRIO -->
+
+            <div class="print-panel">
+
+                <div class="panel-title">
+
+                    <div>
+
+                        <span class="panel-kicker">
+                            CONFIGURAÇÃO
+                        </span>
+
+                        <h2>
+                            Imprimir etiqueta
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <p class="panel-description">
+
+                    Sua etiqueta está pronta para ser impressa.
+                    Se preferir, adicione informações complementares.
+
+                </p>
+
+
+                <form id="etiquetaForm">
+
+
+                    <!-- PRODUTO -->
+
+                    <div class="field field-full">
+
+                        <label for="produtoEtiqueta">
+                            Produto
+                        </label>
+
+                        <div class="produto-search" id="produtoSearch">
+
+                            <div class="produto-search-input-wrap">
+
+                                <span class="produto-search-icon" aria-hidden="true"></span>
+
+                                <input
+                                    type="search"
+                                    id="produtoEtiquetaBusca"
+                                    class="produto-search-input"
+                                    placeholder="Pesquisar produto..."
+                                    autocomplete="off"
+                                    aria-label="Pesquisar produto"
+                                    aria-controls="produtoEtiquetaLista"
+                                    aria-expanded="false">
+
+                                <button
+                                    type="button"
+                                    class="produto-search-clear"
+                                    id="produtoEtiquetaLimpar"
+                                    aria-label="Limpar pesquisa"
+                                    hidden>
+                                    ×
+                                </button>
+
+                            </div>
+
+                            <div
+                                class="produto-search-list"
+                                id="produtoEtiquetaLista"
+                                role="listbox"
+                                aria-label="Produtos"
+                                hidden>
+                            </div>
+
+                            <!-- Mantido para compatibilidade com o sistema de impressão -->
+                            <select
+                                id="produtoEtiqueta"
+                                required
+                                aria-hidden="true"
+                                tabindex="-1"
+                                class="produto-select-hidden">
+                                <option value="">Selecione o produto</option>
+                            </select>
+
+                            <div class="produto-search-hint" id="produtoEtiquetaHint">
+                                Digite o nome do produto para localizar rapidamente.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DATA + RESPONSÁVEL -->
+
+                    <div class="field-grid">
+
+                        <div class="field">
+
+                            <label for="dataProducao">
+                                Data de produção
+                            </label>
+
+                            <input
+                                type="date"
+                                id="dataProducao"
+                                required>
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="responsavelSelect">
+                                Responsável
+                            </label>
+
+                            <input
+                                type="text"
+                                id="responsavelSelect"
+                                name="responsavel"
+                                placeholder="Digite o nome do responsável"
+                                autocomplete="off"
+                                required>
+
+                        </div>
+
+                    </div>
+                    <!-- QUANTIDADE -->
+
+
+                    <div class="quantity-print-row">
+
+                        <div class="quantity-box">
+
+                            <label for="quantidadeProducao">
+                                Quantidade de etiquetas
+                            </label>
+
+                            <div class="quantity-control">
+
+                                <button
+                                    type="button"
+                                    class="quantity-btn"
+                                    onclick="alterarQuantidade(-1)">
+                                    −
+                                </button>
+
+                                <input
+                                    type="number"
+                                    id="quantidadeProducao"
+                                    value="1"
+                                    min="1">
+
+                                <button
+                                    type="button"
+                                    class="quantity-btn"
+                                    onclick="alterarQuantidade(1)">
+                                    +
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="btn-print">
+
+                            🖨 Imprimir
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- BOTÃO ORIGINAL, MANTIDO PARA O JS -->
+
+                    <button
+                        type="button"
+                        class="btn-generate"
+                        onclick="document.getElementById('etiquetaForm').requestSubmit()">
+
+                        Atualizar etiqueta
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- HISTÓRICO -->
+
+        <section class="table-box etiqueta-history">
+
+            <div class="historico-header">
+
+                <div>
+
+                    <span class="panel-kicker">
+                        HISTÓRICO
+                    </span>
+
+                    <h2>
+                        Histórico de Etiquetas
+                    </h2>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="btnLimparHistorico"
+                    class="btn-limpar-historico">
+
+                    🗑 Limpar histórico
+
+                </button>
+
+            </div>
+
+
+            <div class="table-scroll">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Código
+                            </th>
+
+                            <th>
+                                Produto
+                            </th>
+
+                            <th>
+                                Quantidade
+                            </th>
+
+                            <th>
+                                Produção
+                            </th>
+
+                            <th>
+                                Validade
+                            </th>
+
+                            <th>
+                                Responsável
+                            </th>
+
+                            <th>
+                                Ações
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="listaEtiquetas">
+
+                        <tr>
+
+                            <td colspan="7">
+                                Nenhuma etiqueta gerada.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- FIREBASE -->
+
+<script type="module" src="js/firebase.js"></script>
+
+<script type="module" src="js/app.js"></script>
+
+
+<!-- QR CODE -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+
+<!-- ETIQUETAS -->
+
+<script type="module" src="js/etiquetas.js"></script>
+
+
+<!-- AUTENTICAÇÃO -->
+
+<script type="module" src="js/auth.js"></script>
+
+
+<!-- SIDEBAR -->
+
+<script src="js/design-system.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/sidebar.js"></script>
+
+
+<!-- CONTROLE DE QUANTIDADE -->
+
+<script>
+
+function alterarQuantidade(delta) {
+
+    const campo =
+        document.getElementById("quantidadeProducao");
+
+    if (!campo) return;
+
+    let valor =
+        parseInt(campo.value || "1", 10);
+
+    valor += delta;
+
+    if (valor < 1) {
+        valor = 1;
+    }
+
+    campo.value = valor;
+
+    campo.dispatchEvent(
+        new Event("input", {
+            bubbles: true
+        })
+    );
+
+    campo.dispatchEvent(
+        new Event("change", {
+            bubbles: true
+        })
+    );
+
+}
+
+</script>
+
+</body>
+
+</html>

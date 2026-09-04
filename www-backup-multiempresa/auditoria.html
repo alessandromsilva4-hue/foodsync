@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Lotrix - Auditoria</title>
+
+<link rel="icon" href="img/favicon.png">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/tabela.css">
+<link rel="stylesheet" href="css/auditoria.css">
+
+    <link rel="stylesheet" href="./css/sidebar-global-final.css">
+
+    <link rel="stylesheet" href="./css/dark-theme.css">
+
+<link rel="stylesheet" href="css/button-interaction-fix.css">
+    <link rel="stylesheet" href="css/lotrix-final-fix.css">
+</head>
+
+
+<body>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <button class="sidebar-menu-btn" id="sidebarMenuToggle" type="button" aria-label="Recolher menu" aria-expanded="true">
+            <i data-lucide="menu" aria-hidden="true"></i>
+        </button>
+        <a class="sidebar-brand" href="dashboard.html" aria-label="Lotrix - Dashboard">
+            <img class="brand-logo" src="img/logo.png" alt="Lotrix">
+            <span class="brand-name">Lotrix</span>
+        </a>
+        <button class="sidebar-options-btn" id="sidebarOptionsToggle" type="button" aria-label="Mais opções" aria-expanded="false">
+            <i data-lucide="more-vertical" aria-hidden="true"></i>
+        </button>
+        <div class="sidebar-options" id="sidebarOptions" hidden>
+            <a href="dashboard.html"><i data-lucide="home"></i> Início</a>
+            <button type="button" id="sidebarRefresh"><i data-lucide="refresh-cw"></i> Atualizar</button>
+        </div>
+    </div>
+
+    <nav class="menu" aria-label="Menu principal">
+        <div class="menu-section">
+            <div class="menu-title">Geral</div>
+            <a href="dashboard.html" data-page="dashboard.html"><i data-lucide="layout-dashboard"></i><span class="nav-label">Dashboard</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Operação</div>
+            <a href="producao.html" data-page="producao.html"><i data-lucide="factory"></i><span class="nav-label">Produção</span></a>
+            <a href="produtos.html" data-page="produtos.html"><i data-lucide="package"></i><span class="nav-label">Produtos</span></a>
+            <a href="etiquetas.html" data-page="etiquetas.html"><i data-lucide="tag"></i><span class="nav-label">Etiquetas</span></a>
+            <a href="estoque.html" data-page="estoque.html"><i data-lucide="boxes"></i><span class="nav-label">Estoque</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Gestão</div>
+            <a href="relatorios.html" data-page="relatorios.html"><i data-lucide="bar-chart-3"></i><span class="nav-label">Relatórios</span></a>
+            <a href="auditoria.html" data-page="auditoria.html"><i data-lucide="clipboard-check"></i><span class="nav-label">Auditoria</span></a>
+            <a href="usuario.html" data-page="usuario.html"><i data-lucide="users"></i><span class="nav-label">Usuários</span></a>
+            <a href="sac-admin.html" data-page="sac-admin.html"><i data-lucide="headphones"></i><span class="nav-label">SAC Admin</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Sistema</div>
+            <a href="configuracoes.html" data-page="configuracoes.html"><i data-lucide="settings"></i><span class="nav-label">Configurações</span></a>
+            <a href="ajuda.html" data-page="ajuda.html"><i data-lucide="circle-help"></i><span class="nav-label">Ajuda</span></a>
+            <a href="sac.html" data-page="sac.html"><i data-lucide="message-circle"></i><span class="nav-label">SAC</span></a>
+        </div>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="user-card">
+            <div class="avatar"><i data-lucide="user-round" aria-hidden="true"></i></div>
+            <div class="user-info">
+    <strong id="nomeUsuarioLogado">Usuário</strong>
+    <small id="perfilUsuarioLogado">Usuário</small>
+</div>
+        </div>
+        <div class="company-card">
+            <span class="company-label">Empresa</span>
+            <strong class="company-name">Izu Oeste</strong>
+        </div>
+        <button class="logout-button" type="button" onclick="logout()"><i data-lucide="log-out"></i><span>Sair</span></button>
+    </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+
+
+
+<!-- =========================================================
+     BOTÃO MENU
+========================================================= -->
+
+<!-- =========================================================
+     FUNDO ESCURO
+========================================================= -->
+
+<div class="layout">
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<!-- =========================================================
+     CONTEÚDO
+========================================================= -->
+
+<main class="content">
+
+
+<header class="top-header">
+
+
+    <div>
+
+        <h1>
+            📝 Auditoria
+        </h1>
+
+
+        <p>
+            Histórico de ações realizadas no Lotrix
+        </p>
+
+    </div>
+
+
+</header>
+
+
+
+<!-- =========================================================
+     AÇÕES
+========================================================= -->
+
+<div class="acoes-relatorio">
+
+
+    <button
+        type="button"
+        onclick="exportarExcel()">
+
+        📊 Exportar Excel
+
+    </button>
+
+
+    <button
+        type="button"
+        onclick="imprimirAuditoria()">
+
+        🖨️ Imprimir
+
+    </button>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     HISTÓRICO
+========================================================= -->
+
+<section class="table-box">
+
+
+    <h2>
+        Histórico de ações
+    </h2>
+
+
+
+    <!-- FILTROS -->
+
+    <div class="filtros-auditoria">
+
+
+        <select id="filtroModulo">
+
+            <option value="">
+                Todos os módulos
+            </option>
+
+            <option value="Produtos">
+                Produtos
+            </option>
+
+            <option value="Produção">
+                Produção
+            </option>
+
+            <option value="Etiquetas">
+                Etiquetas
+            </option>
+
+            <option value="Estoque">
+                Estoque
+            </option>
+
+        </select>
+
+
+
+        <input
+            type="date"
+            id="filtroData">
+
+
+
+        <button
+            type="button"
+            onclick="filtrarAuditoria()">
+
+            🔎 Filtrar
+
+        </button>
+
+
+    </div>
+
+
+
+    <!-- TABELA -->
+
+    <div
+        style="
+            width:100%;
+            overflow-x:auto;
+        ">
+
+
+        <table id="tabelaAuditoria">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Data
+                    </th>
+
+                    <th>
+                        Usuário
+                    </th>
+
+                    <th>
+                        Módulo
+                    </th>
+
+                    <th>
+                        Ação
+                    </th>
+
+                    <th>
+                        Detalhes
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+
+            <tbody id="listaAuditoria">
+
+                <tr>
+
+                    <td colspan="6"
+                        style="
+                            padding:30px;
+                            text-align:center;
+                        ">
+
+                        Carregando...
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+</section>
+
+
+</main>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     BIBLIOTECA EXCEL
+========================================================= -->
+
+<script
+    src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js">
+</script>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script
+    type="module"
+    src="js/firebase.js">
+</script>
+
+
+<script
+    type="module"
+    src="js/auditoria.js">
+</script>
+
+
+<script
+    type="module"
+    src="js/auth.js">
+</script>
+
+
+<script src="js/design-system.js"></script>
+<script
+    src="js/sidebar.js">
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,13 @@
+{
+  "projects": {},
+  "targets": {
+    "foodsync-43a7e": {
+      "hosting": {
+        "lotrix": [
+          "lotrix"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

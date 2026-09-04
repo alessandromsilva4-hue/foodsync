@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lotrix - Ajuda</title>
+
+<link rel="icon" href="img/favicon.png">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/tabela.css">
+<link rel="stylesheet" href="css/formulario.css">
+
+    <link rel="stylesheet" href="./css/sidebar-global-final.css">
+
+    <link rel="stylesheet" href="./css/dark-theme.css">
+
+<link rel="stylesheet" href="css/button-interaction-fix.css">
+    <link rel="stylesheet" href="css/lotrix-final-fix.css">
+</head>
+
+<body>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <button class="sidebar-menu-btn" id="sidebarMenuToggle" type="button" aria-label="Recolher menu" aria-expanded="true">
+            <i data-lucide="menu" aria-hidden="true"></i>
+        </button>
+        <a class="sidebar-brand" href="dashboard.html" aria-label="Lotrix - Dashboard">
+            <img class="brand-logo" src="img/logo.png" alt="Lotrix">
+            <span class="brand-name">Lotrix</span>
+        </a>
+        <button class="sidebar-options-btn" id="sidebarOptionsToggle" type="button" aria-label="Mais opções" aria-expanded="false">
+            <i data-lucide="more-vertical" aria-hidden="true"></i>
+        </button>
+        <div class="sidebar-options" id="sidebarOptions" hidden>
+            <a href="dashboard.html"><i data-lucide="home"></i> Início</a>
+            <button type="button" id="sidebarRefresh"><i data-lucide="refresh-cw"></i> Atualizar</button>
+        </div>
+    </div>
+
+    <nav class="menu" aria-label="Menu principal">
+        <div class="menu-section">
+            <div class="menu-title">Geral</div>
+            <a href="dashboard.html" data-page="dashboard.html"><i data-lucide="layout-dashboard"></i><span class="nav-label">Dashboard</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Operação</div>
+            <a href="producao.html" data-page="producao.html"><i data-lucide="factory"></i><span class="nav-label">Produção</span></a>
+            <a href="produtos.html" data-page="produtos.html"><i data-lucide="package"></i><span class="nav-label">Produtos</span></a>
+            <a href="etiquetas.html" data-page="etiquetas.html"><i data-lucide="tag"></i><span class="nav-label">Etiquetas</span></a>
+            <a href="estoque.html" data-page="estoque.html"><i data-lucide="boxes"></i><span class="nav-label">Estoque</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Gestão</div>
+            <a href="relatorios.html" data-page="relatorios.html"><i data-lucide="bar-chart-3"></i><span class="nav-label">Relatórios</span></a>
+            <a href="auditoria.html" data-page="auditoria.html"><i data-lucide="clipboard-check"></i><span class="nav-label">Auditoria</span></a>
+            <a href="usuario.html" data-page="usuario.html"><i data-lucide="users"></i><span class="nav-label">Usuários</span></a>
+            <a href="sac-admin.html" data-page="sac-admin.html"><i data-lucide="headphones"></i><span class="nav-label">SAC Admin</span></a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">Sistema</div>
+            <a href="configuracoes.html" data-page="configuracoes.html"><i data-lucide="settings"></i><span class="nav-label">Configurações</span></a>
+            <a href="ajuda.html" data-page="ajuda.html"><i data-lucide="circle-help"></i><span class="nav-label">Ajuda</span></a>
+            <a href="sac.html" data-page="sac.html"><i data-lucide="message-circle"></i><span class="nav-label">SAC</span></a>
+        </div>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="user-card">
+            <div class="avatar"><i data-lucide="user-round" aria-hidden="true"></i></div>
+            <div class="user-info">
+    <strong id="nomeUsuarioLogado">Usuário</strong>
+    <small id="perfilUsuarioLogado">Usuário</small>
+</div>
+        </div>
+        <div class="company-card">
+            <span class="company-label">Empresa</span>
+            <strong class="company-name">Izu Oeste</strong>
+        </div>
+        <button class="logout-button" type="button" onclick="logout()"><i data-lucide="log-out"></i><span>Sair</span></button>
+    </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+
+
+<div class="layout">
+
+<main class="content">
+
+<header class="top-header">
+
+<div>
+
+<h1>❓ Central de Ajuda</h1>
+
+<p>
+Encontre orientações sobre todos os recursos do Lotrix.
+</p>
+
+</div>
+
+</header>
+
+<section class="table-box">
+
+<h2>🍱 Produção</h2>
+
+<ul>
+<li>Registrar uma nova produção.</li>
+<li>Selecionar o produto e informar a quantidade.</li>
+<li>Calcular automaticamente a validade.</li>
+<li>Gerar etiquetas ao finalizar a produção.</li>
+</ul>
+
+</section>
+
+<section class="table-box">
+
+<h2>📦 Produtos</h2>
+
+<ul>
+<li>Cadastrar novos produtos.</li>
+<li>Editar informações cadastradas.</li>
+<li>Excluir produtos quando necessário.</li>
+<li>Definir validade padrão.</li>
+</ul>
+
+</section>
+
+<section class="table-box">
+
+<h2>🏷️ Etiquetas</h2>
+
+<ul>
+<li>Gerar etiquetas automaticamente.</li>
+<li>Imprimir etiquetas de validade.</li>
+<li>Utilizar QR Code para rastreabilidade.</li>
+<li>Consultar o histórico de etiquetas.</li>
+</ul>
+
+</section>
+
+<section class="table-box">
+
+<h2>📋 Estoque</h2>
+
+<ul>
+<li>Registrar entradas de produtos.</li>
+<li>Registrar saídas de estoque.</li>
+<li>Consultar movimentações.</li>
+<li>Acompanhar o saldo disponível.</li>
+</ul>
+
+</section>
+
+<section class="table-box">
+
+<h2>📈 Relatórios</h2>
+
+<ul>
+<li>Visualizar indicadores do sistema.</li>
+<li>Acompanhar produção e estoque.</li>
+<li>Exportar informações para análise.</li>
+</ul>
+
+</section>
+
+<section class="table-box">
+
+<h2>📝 Auditoria</h2>
+
+<ul>
+<li>Consultar o histórico de ações.</li>
+<li>Verificar quem realizou cada operação.</li>
+<li>Exportar registros de auditoria.</li>
+</ul>
+
+</section>
+
+<section class="table-box">
+
+<h2>⚙️ Configurações</h2>
+
+<ul>
+<li>Definir a validade padrão.</li>
+<li>Configurar o tamanho das etiquetas.</li>
+<li>Ativar ou desativar o QR Code.</li>
+<li>Definir a impressora utilizada.</li>
+</ul>
+
+</section>
+
+<section class="table-box">
+
+<h2>❓ Perguntas Frequentes</h2>
+
+<p><strong>Como cadastrar um produto?</strong></p>
+<p>Acesse o menu <strong>Produtos</strong>, clique em <strong>Novo Produto</strong>, preencha os dados e salve.</p>
+
+<hr>
+
+<p><strong>Como registrar uma produção?</strong></p>
+<p>Abra o menu <strong>Produção</strong>, selecione o produto, informe a quantidade e clique em <strong>Registrar Produção</strong>.</p>
+
+<hr>
+
+<p><strong>Como imprimir uma etiqueta?</strong></p>
+<p>Após gerar a etiqueta, utilize o botão <strong>Imprimir</strong>.</p>
+
+<hr>
+
+<p><strong>Onde vejo o histórico de alterações?</strong></p>
+<p>Acesse o módulo <strong>Auditoria</strong> para consultar todas as ações registradas no sistema.</p>
+
+</section>
+
+<section class="table-box">
+
+<h2>🎧 Precisa de mais ajuda?</h2>
+
+<p>
+Caso sua dúvida não esteja respondida nesta página, acesse o SAC para falar com o suporte.
+</p>
+
+<p>
+
+<a href="sac.html">
+
+🎧 Abrir SAC
+
+</a>
+
+</p>
+
+</section>
+
+</main>
+
+</div>
+
+<script type="module" src="js/auth.js"></script>
+
+<script src="js/design-system.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/sidebar.js"></script>
+
+</body>
+
+</html>
+

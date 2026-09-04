@@ -1890,3 +1890,12 @@ button.menu-toggle i {
    FIM â€” CORREÃ‡ÃƒO DO ALINHAMENTO DA SIDEBAR
    ========================================================= */
 
+
+/* =========================================================
+   EMPRESA — EXIBIR SOMENTE NO RODAPÉ
+   ========================================================= */
+
+.empresa-usuario-lotrix {
+    display: none !important;
+}
+
