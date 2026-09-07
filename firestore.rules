@@ -165,16 +165,20 @@ service cloud.firestore {
 
     match /etiquetas/{etiquetaId} {
 
+      // Usuário ativo só enxerga etiquetas
+      // pertencentes à própria empresa.
       allow read: if
         usuarioAtivo()
         &&
         resource.data.idEmpresa == idEmpresaUsuario();
 
+      // Criação somente dentro da própria empresa.
       allow create: if
         usuarioAtivo()
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
 
+      // Alteração somente dentro da própria empresa.
       allow update: if
         usuarioAtivo()
         &&
@@ -182,6 +186,9 @@ service cloud.firestore {
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
 
+      // EXCLUSÃO:
+      // somente administrador ativo
+      // e somente etiquetas da própria empresa.
       allow delete: if
         administrador()
         &&
@@ -309,8 +316,6 @@ service cloud.firestore {
 
       // -----------------------------------
       // ADMIN CRIA USUÁRIO
-      //
-      // V7 - SEM CLOUD FUNCTIONS
       // -----------------------------------
 
       allow create: if

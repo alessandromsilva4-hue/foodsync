@@ -289,7 +289,180 @@ button:active {
 .etiqueta-workspace .preview-stage { width:100% !important; min-width:0 !important; display:flex !important; align-items:center !important; justify-content:center !important; overflow:hidden !important; }
 @media screen and (max-width:900px) { .etiqueta-workspace { grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) !important; gap:14px !important; } .etiqueta-workspace .panel-title h2 { font-size:17px !important; } .etiqueta-workspace .panel-description { font-size:11px !important; } .etiqueta-workspace .preview-caption { font-size:10px !important; } .etiqueta-workspace .field-grid { grid-template-columns:1fr !important; gap:10px !important; } .etiqueta-workspace .quantity-print-row { grid-template-columns:1fr !important; gap:10px !important; } .etiqueta-workspace .btn-print, .etiqueta-workspace .btn-generate { width:100% !important; } }
 @media screen and (max-width:560px) { .etiqueta-workspace { grid-template-columns:1fr !important; gap:16px !important; } .etiqueta-workspace .preview-panel { grid-column:1 !important; grid-row:1 !important; } .etiqueta-workspace .print-panel { grid-column:1 !important; grid-row:2 !important; } }
+/* =====================================================
+   LOTRIX — CONTROLES DO FILTRO DE ETIQUETAS
+===================================================== */
 
+.etiquetas-filtros {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr);
+    gap: 16px;
+    margin: 18px 0 10px;
+}
+
+.etiquetas-filtros label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+}
+
+.filtro-busca-controle,
+.filtro-validade-controle {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+}
+
+.etiquetas-filtros input,
+.etiquetas-filtros select {
+    width: 100%;
+    height: 42px;
+    box-sizing: border-box;
+    padding: 0 12px;
+    border: 1px solid #dbe3ef;
+    border-radius: 9px;
+    background: #fff;
+    color: #0f172a;
+    font-size: 13px;
+    outline: none;
+}
+
+.etiquetas-filtros input:focus,
+.etiquetas-filtros select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+}
+
+
+/* BOTÃO PESQUISAR */
+
+.btn-filtro-pesquisar,
+.btn-filtro-aplicar {
+    height: 42px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 9px;
+    cursor: pointer;
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 700;
+    box-sizing: border-box;
+}
+
+.btn-filtro-pesquisar {
+    background: #2563eb;
+    color: #fff;
+}
+
+.btn-filtro-aplicar {
+    background: #15803d;
+    color: #fff;
+}
+
+
+/* LIMPAR */
+
+.filtros-acoes {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
+.btn-limpar-filtros {
+    height: 34px;
+    padding: 0 13px;
+    border: 1px solid #dbe3ef;
+    border-radius: 8px;
+    background: #fff;
+    color: #475569;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.btn-limpar-filtros:hover {
+    background: #f8fafc;
+}
+
+
+/* INDICADOR */
+
+.filtro-etiquetas-status {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 12px;
+}
+
+.filtro-etiquetas-status a {
+    margin-left: 8px;
+    color: #2563eb;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+
+/* RESPONSIVO */
+
+@media screen and (max-width: 800px) {
+
+    .etiquetas-filtros {
+        grid-template-columns: 1fr;
+    }
+
+    .filtro-busca-controle,
+    .filtro-validade-controle {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-filtro-pesquisar,
+    .btn-filtro-aplicar {
+        width: 100%;
+    }
+
+}
+/* =====================================================
+   LOTRIX — AÇÕES DO HISTÓRICO
+===================================================== */
+
+.historico-acoes {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-apagar-filtradas {
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    background: #fff;
+    color: #b91c1c;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.btn-apagar-filtradas:hover {
+    background: #fef2f2;
+    border-color: #fca5a5;
+}
+
+.btn-apagar-filtradas:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
 </style>
 
 </head>
@@ -741,98 +914,237 @@ button:active {
         </section>
 
 
-        <!-- HISTÓRICO -->
+   <!-- =====================================================
+     HISTÓRICO DE ETIQUETAS
+===================================================== -->
 
-        <section class="table-box etiqueta-history">
-
-            <div class="historico-header">
-
-                <div>
-
-                    <span class="panel-kicker">
-                        HISTÓRICO
-                    </span>
-
-                    <h2>
-                        Histórico de Etiquetas
-                    </h2>
-
-                </div>
-
-                <button
-                    type="button"
-                    id="btnLimparHistorico"
-                    class="btn-limpar-historico">
-
-                    🗑 Limpar histórico
-
-                </button>
-
-            </div>
+<section class="table-box etiqueta-history">
 
 
-            <div class="table-scroll">
+<div class="historico-header">
 
-                <table>
+    <div>
 
-                    <thead>
+        <span class="panel-kicker">
+            HISTÓRICO
+        </span>
 
-                        <tr>
+        <h2>
+            Histórico de Etiquetas
+        </h2>
 
-                            <th>
-                                Código
-                            </th>
+    </div>
 
-                            <th>
-                                Produto
-                            </th>
+    <div class="historico-acoes">
 
-                            <th>
-                                Quantidade
-                            </th>
+        <button
+            type="button"
+            id="btnApagarEtiquetasFiltradas"
+            class="btn-apagar-filtradas">
 
-                            <th>
-                                Produção
-                            </th>
+            🗑 Apagar filtradas
 
-                            <th>
-                                Validade
-                            </th>
+        </button>
 
-                            <th>
-                                Responsável
-                            </th>
+        <button
+            type="button"
+            id="btnLimparHistorico"
+            class="btn-limpar-historico">
 
-                            <th>
-                                Ações
-                            </th>
+            🗑 Limpar histórico
 
-                        </tr>
+        </button>
 
-                    </thead>
-
-
-                    <tbody id="listaEtiquetas">
-
-                        <tr>
-
-                            <td colspan="7">
-                                Nenhuma etiqueta gerada.
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-    </main>
+    </div>
 
 </div>
+
+
+<!-- =====================================================
+     FILTROS
+===================================================== -->
+
+<div class="etiquetas-filtros">
+
+    <!-- PESQUISA -->
+
+    <div class="etiquetas-filtro-busca">
+
+        <label for="buscarEtiqueta">
+            Pesquisar etiquetas
+        </label>
+
+        <div class="filtro-busca-controle">
+
+            <input
+                type="search"
+                id="buscarEtiqueta"
+                placeholder="Código, produto ou responsável..."
+                autocomplete="off">
+
+            <button
+                type="button"
+                id="btnPesquisarEtiqueta"
+                class="btn-filtro-pesquisar">
+
+                🔎 Pesquisar
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- FILTRO DE VALIDADE -->
+
+    <div class="etiquetas-filtro-validade">
+
+        <label for="filtroStatusEtiqueta">
+            Validade
+        </label>
+
+        <div class="filtro-validade-controle">
+
+            <select id="filtroStatusEtiqueta">
+
+                <option value="todas">
+                    Todas
+                </option>
+
+                <option value="vencidas">
+                    🔴 Vencidas
+                </option>
+
+                <option value="prestes">
+                    🟠 Prestes a vencer
+                </option>
+
+                <option value="em-dias">
+                    🟢 Em dias
+                </option>
+
+            </select>
+
+            <button
+                type="button"
+                id="btnAplicarFiltroEtiqueta"
+                class="btn-filtro-aplicar">
+
+                Aplicar filtro
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     LIMPAR FILTROS
+===================================================== -->
+
+<div class="filtros-acoes">
+
+    <button
+        type="button"
+        id="btnLimparFiltrosEtiqueta"
+        class="btn-limpar-filtros">
+
+        ✕ Limpar filtros
+
+    </button>
+
+</div>
+
+
+<!-- =====================================================
+     STATUS DOS FILTROS
+===================================================== -->
+
+<div
+    id="filtroEtiquetasStatus"
+    class="filtro-etiquetas-status"
+    hidden>
+</div>
+
+
+<!-- =====================================================
+     TABELA DO HISTÓRICO
+===================================================== -->
+
+<div class="table-responsive">
+
+    <table class="data-table etiquetas-table">
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    Código
+                </th>
+
+                <th>
+                    Produto
+                </th>
+
+                <th>
+                    Data de produção
+                </th>
+
+                <th>
+                    Validade
+                </th>
+
+                <th>
+                    Quantidade
+                </th>
+
+                <th>
+                    Responsável
+                </th>
+
+                <th>
+                    Lote
+                </th>
+
+                <th>
+                    Status
+                </th>
+
+                <th>
+                    Ações
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="listaEtiquetas">
+
+            <tr>
+
+                <td
+                    colspan="9"
+                    style="text-align:center; padding:30px;">
+
+                    Carregando histórico de etiquetas...
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+</section>
 
 
 <!-- FIREBASE -->

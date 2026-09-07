@@ -1,482 +1,868 @@
 // =======================================
-// FOODSYNC - AUDITORIA
+// LOTRIX - AUDITORIA
 // =======================================
 
-console.log("AUDITORIA.JS CARREGADO");
-
+console.log("AUDITORIA.JS V2 CARREGADO");
 
 import { auth, db } from "./firebase.js";
 
-
 import {
-
-collection,
-getDocs,
-query,
-where,
-doc,
-getDoc
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    collection,
+    getDocs,
+    query,
+    where,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-
+// =======================================
 // ELEMENTOS
+// =======================================
 
 const tabela =
-document.getElementById("listaAuditoria");
-
+    document.getElementById("listaAuditoria");
 
 const filtroModulo =
-document.getElementById("filtroModulo");
-
+    document.getElementById("filtroModulo");
 
 const filtroData =
-document.getElementById("filtroData");
+    document.getElementById("filtroData");
 
 
-
+// =======================================
 // DADOS
+// =======================================
 
 let dadosAuditoria = [];
 
 
+// =======================================
+// OBTER EMPRESA DO USUÁRIO
+// =======================================
 
+async function obterIdEmpresa() {
+
+    await auth.authStateReady();
+
+    const usuarioAtual =
+        auth.currentUser;
+
+
+    if (!usuarioAtual) {
+
+        throw new Error(
+            "Usuário não autenticado."
+        );
+
+    }
+
+
+    console.log(
+        "Usuário autenticado:",
+        usuarioAtual.uid
+    );
+
+
+    // =======================================
+    // TENTAR PERFIL DO FIRESTORE PRIMEIRO
+    // =======================================
+
+    try {
+
+        const perfilRef =
+            doc(
+                db,
+                "usuarios",
+                usuarioAtual.uid
+            );
+
+
+        const perfilSnapshot =
+            await getDoc(perfilRef);
+
+
+        if (perfilSnapshot.exists()) {
+
+            const perfil =
+                perfilSnapshot.data();
+
+
+            console.log(
+                "Perfil encontrado:",
+                perfil
+            );
+
+
+            if (perfil.idEmpresa) {
+
+                console.log(
+                    "ID empresa pelo perfil:",
+                    perfil.idEmpresa
+                );
+
+
+                return perfil.idEmpresa;
+
+            }
+
+        }
+
+    }
+
+    catch (erro) {
+
+        console.warn(
+            "Não foi possível consultar o perfil:",
+            erro
+        );
+
+    }
+
+
+    // =======================================
+    // FALLBACK LOCALSTORAGE
+    // =======================================
+
+    const dadosUsuario =
+        localStorage.getItem(
+            "usuarioFoodSync"
+        );
+
+
+    if (dadosUsuario) {
+
+        try {
+
+            const usuario =
+                JSON.parse(
+                    dadosUsuario
+                );
+
+
+            if (usuario?.idEmpresa) {
+
+                console.log(
+                    "ID empresa pelo usuarioFoodSync:",
+                    usuario.idEmpresa
+                );
+
+
+                return usuario.idEmpresa;
+
+            }
+
+        }
+
+        catch (erro) {
+
+            console.warn(
+                "usuarioFoodSync inválido:",
+                erro
+            );
+
+        }
+
+    }
+
+
+    // =======================================
+    // ÚLTIMO FALLBACK
+    // =======================================
+
+    const empresaAtiva =
+        localStorage.getItem(
+            "empresaAtivaLotrix"
+        );
+
+
+    if (empresaAtiva) {
+
+        console.log(
+            "Empresa pelo empresaAtivaLotrix:",
+            empresaAtiva
+        );
+
+
+        return empresaAtiva;
+
+    }
+
+
+    throw new Error(
+        "Empresa ativa não encontrada."
+    );
+
+}
 
 
 // =======================================
 // CARREGAR AUDITORIA
 // =======================================
 
+async function carregarAuditoria() {
 
-async function carregarAuditoria(){
+    if (!tabela) {
+
+        console.error(
+            "Elemento listaAuditoria não encontrado."
+        );
+
+        return;
+
+    }
 
 
-if(!tabela)
-return;
+    tabela.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="6"
+                style="
+                    padding:30px;
+                    text-align:center;
+                "
+            >
+
+                Carregando...
+
+            </td>
+
+        </tr>
+
+    `;
 
 
-try{
+    try {
+
+        // =======================================
+        // EMPRESA
+        // =======================================
+
+        const idEmpresa =
+            await obterIdEmpresa();
 
 
-tabela.innerHTML="";
+        console.log(
+            "Carregando auditoria da empresa:",
+            idEmpresa
+        );
 
 
-// A regra do Firestore libera apenas os registros da empresa ativa. Aguardar
-// a autenticação e aplicar esse filtro na consulta evita a negação da leitura.
-await auth.authStateReady();
+        if (!idEmpresa) {
 
-const usuarioAtual = auth.currentUser;
+            throw new Error(
+                "ID da empresa vazio."
+            );
 
-if(!usuarioAtual){
+        }
 
-throw new Error("Usuário não autenticado");
+
+        // =======================================
+        // CONSULTA FIRESTORE
+        // =======================================
+
+        const consulta =
+            query(
+
+                collection(
+                    db,
+                    "auditoria"
+                ),
+
+                where(
+                    "idEmpresa",
+                    "==",
+                    idEmpresa
+                )
+
+            );
+
+
+        const snapshot =
+            await getDocs(
+                consulta
+            );
+
+
+        console.log(
+            "Registros de auditoria encontrados:",
+            snapshot.size
+        );
+
+
+        dadosAuditoria = [];
+
+
+        snapshot.forEach(item => {
+
+            dadosAuditoria.push({
+
+                id: item.id,
+
+                ...item.data()
+
+            });
+
+        });
+
+
+        // =======================================
+        // ORDENAR
+        // =======================================
+
+        dadosAuditoria.sort(
+            (a, b) => {
+
+                return obterTimestamp(
+                    b.data
+                ) -
+                obterTimestamp(
+                    a.data
+                );
+
+            }
+        );
+
+
+        // =======================================
+        // RENDERIZAR
+        // =======================================
+
+        renderizarTabela(
+            dadosAuditoria
+        );
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "================================"
+        );
+
+        console.error(
+            "ERRO AO CARREGAR AUDITORIA"
+        );
+
+        console.error(
+            error
+        );
+
+        console.error(
+            "Código:",
+            error?.code
+        );
+
+        console.error(
+            "Mensagem:",
+            error?.message
+        );
+
+        console.error(
+            "================================"
+        );
+
+
+        let mensagem =
+            "Erro ao carregar auditoria.";
+
+
+        if (
+            error?.code ===
+            "permission-denied"
+        ) {
+
+            mensagem =
+                "Sem permissão para acessar a auditoria.";
+
+        }
+
+
+        else if (
+            error?.code ===
+            "unauthenticated"
+        ) {
+
+            mensagem =
+                "Usuário não autenticado.";
+
+        }
+
+
+        else if (
+            error?.message
+        ) {
+
+            mensagem =
+                error.message;
+
+        }
+
+
+        tabela.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    style="
+                        padding:30px;
+                        text-align:center;
+                    "
+                >
+
+                    ⚠️ ${escaparHTML(
+                        mensagem
+                    )}
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
 
 }
-
-let idEmpresa =
-localStorage.getItem("empresaAtivaLotrix") || "";
-
-if(!idEmpresa){
-
-const perfilSnapshot =
-await getDoc(
-doc(db,"usuarios",usuarioAtual.uid)
-);
-
-idEmpresa =
-perfilSnapshot.data()?.idEmpresa || "";
-
-}
-
-if(!idEmpresa){
-
-throw new Error("Empresa ativa não encontrada");
-
-}
-
-
-const consulta =
-query(
-
-collection(db,"auditoria"),
-
-where("idEmpresa","==",idEmpresa)
-
-);
-
-
-
-const snapshot =
-await getDocs(consulta);
-
-
-
-dadosAuditoria=[];
-
-
-
-snapshot.forEach(item=>{
-
-
-dadosAuditoria.push({
-
-id:item.id,
-
-...item.data()
-
-});
-
-// Ordenação no cliente para não exigir um índice composto no Firestore.
-dadosAuditoria.sort((a,b)=>{
-
-const dataA = a.data?.toMillis
-? a.data.toMillis()
-: (a.data?.seconds || 0) * 1000;
-
-const dataB = b.data?.toMillis
-? b.data.toMillis()
-: (b.data?.seconds || 0) * 1000;
-
-return dataB - dataA;
-
-});
-
-
-});
-
-
-
-renderizarTabela(
-dadosAuditoria
-);
-
-
-
-}
-
-catch(error){
-
-
-console.error(
-"Erro auditoria:",
-error
-);
-
-
-
-tabela.innerHTML=`
-
-<tr>
-
-<td colspan="6">
-
-Erro ao carregar auditoria
-
-</td>
-
-</tr>
-
-`;
-
-
-}
-
-
-}
-
-
-
-
-
 
 
 // =======================================
-// TABELA
+// RENDERIZAR TABELA
 // =======================================
 
+function renderizarTabela(lista) {
 
-function renderizarTabela(lista){
-
-
-tabela.innerHTML="";
-
+    if (!tabela)
+        return;
 
 
-if(lista.length===0){
+    tabela.innerHTML = "";
 
 
-tabela.innerHTML=`
+    if (
+        !lista ||
+        lista.length === 0
+    ) {
 
-<tr>
+        tabela.innerHTML = `
 
-<td colspan="6">
+            <tr>
 
-Nenhuma ação registrada
+                <td
+                    colspan="6"
+                    style="
+                        padding:30px;
+                        text-align:center;
+                    "
+                >
 
-</td>
+                    Nenhuma ação registrada.
 
-</tr>
+                </td>
 
-`;
+            </tr>
 
-return;
+        `;
 
+        return;
 
-}
-
-
-
-lista.forEach(a=>{
-
-
-tabela.innerHTML += `
-
-<tr>
-
-<td>
-${formatarData(a.data)}
-</td>
-
-<td>
-${a.usuario || "-"}
-</td>
-
-<td>
-${a.modulo || "-"}
-</td>
-
-<td>
-${a.acao || "-"}
-</td>
-
-<td>
-${a.detalhes || "-"}
-</td>
-
-<td>
-${a.status || "-"}
-</td>
-
-</tr>
-
-`;
+    }
 
 
-});
+    lista.forEach(a => {
+
+        const linha =
+            document.createElement(
+                "tr"
+            );
 
 
-}
+        linha.innerHTML = `
+
+            <td>
+                ${formatarData(a.data)}
+            </td>
+
+            <td>
+                ${escaparHTML(
+                    a.usuario || "-"
+                )}
+            </td>
+
+            <td>
+                ${escaparHTML(
+                    a.modulo || "-"
+                )}
+            </td>
+
+            <td>
+                ${escaparHTML(
+                    a.acao || "-"
+                )}
+            </td>
+
+            <td>
+                ${escaparHTML(
+                    a.detalhes || "-"
+                )}
+            </td>
+
+            <td>
+                ${escaparHTML(
+                    a.status || "-"
+                )}
+            </td>
+
+        `;
 
 
+        tabela.appendChild(
+            linha
+        );
 
-
-
-
-
-// =======================================
-// DATA FIREBASE
-// =======================================
-
-
-function formatarData(data){
-
-
-if(!data)
-return "-";
-
-
-// Timestamp Firebase
-
-if(data.toDate){
-
-
-return data
-.toDate()
-.toLocaleString(
-"pt-BR"
-);
-
+    });
 
 }
-
-
-// formato antigo
-
-if(data.seconds){
-
-
-return new Date(
-
-data.seconds * 1000
-
-)
-.toLocaleString(
-"pt-BR"
-);
-
-
-}
-
-
-return data;
-
-
-}
-
-
-
-
-
-
 
 
 // =======================================
-// FILTROS
+// TIMESTAMP
 // =======================================
 
+function obterTimestamp(data) {
 
-window.filtrarAuditoria=function(){
-
-
-let resultado =
-[...dadosAuditoria];
+    if (!data)
+        return 0;
 
 
+    if (
+        typeof data.toMillis ===
+        "function"
+    ) {
 
-if(
-filtroModulo &&
-filtroModulo.value
-){
+        return data.toMillis();
 
-
-resultado =
-resultado.filter(a=>
-
-a.modulo === filtroModulo.value
-
-);
+    }
 
 
-}
+    if (
+        typeof data.toDate ===
+        "function"
+    ) {
+
+        return data.toDate().getTime();
+
+    }
 
 
+    if (
+        typeof data.seconds ===
+        "number"
+    ) {
+
+        return data.seconds * 1000;
+
+    }
 
 
-if(
-filtroData &&
-filtroData.value
-){
+    if (data instanceof Date) {
+
+        return data.getTime();
+
+    }
 
 
-resultado =
-resultado.filter(a=>{
-
-
-let data =
-formatarData(a.data);
-
-
-return data.includes(
-filtroData.value
-);
-
-
-});
-
+    return 0;
 
 }
 
 
+// =======================================
+// FORMATAR DATA
+// =======================================
 
-renderizarTabela(resultado);
+function formatarData(data) {
 
+    const timestamp =
+        obterTimestamp(data);
+
+
+    if (!timestamp)
+        return "-";
+
+
+    return new Date(
+        timestamp
+    ).toLocaleString(
+        "pt-BR"
+    );
 
 }
 
 
+// =======================================
+// ESCAPAR HTML
+// =======================================
+
+function escaparHTML(valor) {
+
+    return String(valor)
+
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+
+}
 
 
+// =======================================
+// FILTRAR
+// =======================================
+
+window.filtrarAuditoria =
+function () {
+
+    let resultado =
+        [...dadosAuditoria];
 
 
+    // =======================================
+    // FILTRO MÓDULO
+    // =======================================
+
+    if (
+        filtroModulo &&
+        filtroModulo.value
+    ) {
+
+        resultado =
+            resultado.filter(
+                a =>
+                    a.modulo ===
+                    filtroModulo.value
+            );
+
+    }
+
+
+    // =======================================
+    // FILTRO DATA
+    // =======================================
+
+    if (
+        filtroData &&
+        filtroData.value
+    ) {
+
+        const dataSelecionada =
+            filtroData.value;
+
+
+        resultado =
+            resultado.filter(
+                a => {
+
+                    const timestamp =
+                        obterTimestamp(
+                            a.data
+                        );
+
+
+                    if (!timestamp)
+                        return false;
+
+
+                    const data =
+                        new Date(
+                            timestamp
+                        );
+
+
+                    const ano =
+                        data.getFullYear();
+
+
+                    const mes =
+                        String(
+                            data.getMonth() + 1
+                        ).padStart(
+                            2,
+                            "0"
+                        );
+
+
+                    const dia =
+                        String(
+                            data.getDate()
+                        ).padStart(
+                            2,
+                            "0"
+                        );
+
+
+                    const dataFormatada =
+                        `${ano}-${mes}-${dia}`;
+
+
+                    return (
+                        dataFormatada ===
+                        dataSelecionada
+                    );
+
+                }
+            );
+
+    }
+
+
+    renderizarTabela(
+        resultado
+    );
+
+};
 
 
 // =======================================
 // EXPORTAR EXCEL
 // =======================================
 
+window.exportarExcel =
+function () {
 
-window.exportarExcel=function(){
+    if (
+        !dadosAuditoria.length
+    ) {
 
+        alert(
+            "Não existem registros para exportar."
+        );
 
-if(!dadosAuditoria.length)
-return;
+        return;
 
-
-const ws =
-XLSX.utils.json_to_sheet(
-dadosAuditoria
-);
-
-
-const wb =
-XLSX.utils.book_new();
+    }
 
 
-XLSX.utils.book_append_sheet(
-wb,
-ws,
-"Auditoria"
-);
+    if (
+        typeof XLSX ===
+        "undefined"
+    ) {
+
+        alert(
+            "A biblioteca Excel não foi carregada."
+        );
+
+        return;
+
+    }
 
 
-XLSX.writeFile(
-wb,
-"auditoria-lotrix.xlsx"
-);
+    const dados =
+        dadosAuditoria.map(
+            a => ({
+
+                Data:
+                    formatarData(
+                        a.data
+                    ),
+
+                Usuário:
+                    a.usuario || "-",
+
+                Módulo:
+                    a.modulo || "-",
+
+                Ação:
+                    a.acao || "-",
+
+                Detalhes:
+                    a.detalhes || "-",
+
+                Status:
+                    a.status || "-"
+
+            })
+        );
 
 
-}
+    const ws =
+        XLSX.utils.json_to_sheet(
+            dados
+        );
 
 
+    const wb =
+        XLSX.utils.book_new();
 
 
+    XLSX.utils.book_append_sheet(
+        wb,
+        ws,
+        "Auditoria"
+    );
 
 
+    XLSX.writeFile(
+        wb,
+        "auditoria-lotrix.xlsx"
+    );
+
+};
 
 
 // =======================================
 // IMPRIMIR
 // =======================================
 
+window.imprimirAuditoria =
+function () {
 
-window.imprimirAuditoria=function(){
+    window.print();
 
-
-window.print();
-
-
-}
+};
 
 
+// =======================================
+// INICIALIZAÇÃO
+// =======================================
 
+if (
+    document.readyState ===
+    "loading"
+) {
 
-
-
-
-
-document.addEventListener(
-
-"DOMContentLoaded",
-
-()=>{
-
-
-carregarAuditoria();
-
+    document.addEventListener(
+        "DOMContentLoaded",
+        carregarAuditoria
+    );
 
 }
 
-);
+else {
+
+    carregarAuditoria();
+
+}

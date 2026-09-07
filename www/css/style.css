@@ -1814,30 +1814,20 @@ button.menu-toggle i {
 }
 
 /* =========================================================
-   LOTRIX — SIDEBAR DESKTOP RECOLHIDA
-   Botão #sidebarMenuToggle alinhado ao centro dos ícones
+   LOTRIX — SIDEBAR DESKTOP
+   CORREÇÃO DEFINITIVA DO BOTÃO #sidebarMenuToggle
+
+   O botão desktop fica independente da animação/recolhimento
+   da sidebar. Assim ele nunca desaparece ao clicar.
    ========================================================= */
 
 @media (min-width: 901px) {
 
-    /* O cabeçalho da sidebar vira a referência do botão */
-    .sidebar.collapsed .sidebar-header {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 100% !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-    }
-
-    /* Botão de abrir/recolher centralizado */
-    .sidebar.collapsed #sidebarMenuToggle,
-    .sidebar.collapsed button.menu-toggle {
-        position: relative !important;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
-        bottom: auto !important;
+    /* O botão desktop permanece sempre acima da sidebar */
+    #sidebarMenuToggle {
+        position: fixed !important;
+        top: 14px !important;
+        left: 103px !important;
 
         width: 44px !important;
         min-width: 44px !important;
@@ -1845,33 +1835,86 @@ button.menu-toggle i {
         height: 44px !important;
         min-height: 44px !important;
 
-        margin: 0 auto !important;
+        margin: 0 !important;
         padding: 0 !important;
 
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
 
+        z-index: 110000 !important;
+
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+
         transform: none !important;
         translate: none !important;
         rotate: none !important;
         scale: 1 !important;
 
-        flex: 0 0 44px !important;
+        overflow: visible !important;
+        touch-action: manipulation !important;
     }
 
-    /* Ícone exatamente no centro do botão */
-    .sidebar.collapsed #sidebarMenuToggle svg,
-    .sidebar.collapsed #sidebarMenuToggle i,
-    .sidebar.collapsed button.menu-toggle svg,
-    .sidebar.collapsed button.menu-toggle i {
+    /* Impede o efeito global de hover/active de mover o botão */
+    #sidebarMenuToggle:hover,
+    #sidebarMenuToggle:active,
+    #sidebarMenuToggle:focus,
+    #sidebarMenuToggle:focus-visible {
+        transform: none !important;
+        translate: none !important;
+        rotate: none !important;
+        scale: 1 !important;
+    }
+
+    #sidebarMenuToggle svg,
+    #sidebarMenuToggle i {
         width: 22px !important;
         height: 22px !important;
         margin: 0 !important;
         flex: 0 0 auto !important;
+        pointer-events: none !important;
     }
 
-    /* Mantém os links/ícones da sidebar no mesmo eixo */
+    /*
+       Sidebar aberta:
+       250px de largura -> centro = 125px.
+       Botão tem 44px -> left = 103px.
+    */
+
+    /* Sidebar recolhida:
+       80px de largura -> centro = 40px.
+       Botão tem 44px -> left = 18px.
+    */
+    body.sidebar-collapsed #sidebarMenuToggle {
+        left: 18px !important;
+    }
+
+    /*
+       Em telas entre 901px e 1100px a sidebar normalmente usa
+       230px de largura.
+    */
+    @media (min-width: 901px) and (max-width: 1100px) {
+
+        #sidebarMenuToggle {
+            left: 93px !important;
+        }
+
+        body.sidebar-collapsed #sidebarMenuToggle {
+            left: 18px !important;
+        }
+    }
+
+    /* Garante que o cabeçalho não corte o botão */
+    .sidebar,
+    .sidebar-header {
+        overflow: visible !important;
+    }
+
+    /*
+       Quando recolhida, os ícones continuam centralizados.
+    */
     .sidebar.collapsed .menu a {
         justify-content: center !important;
         align-items: center !important;
@@ -1884,7 +1927,7 @@ button.menu-toggle i {
         margin-left: auto !important;
         margin-right: auto !important;
     }
-}
+} 
 
 /* =========================================================
    FIM — CORREÇÃO DO ALINHAMENTO DA SIDEBAR
@@ -1892,10 +1935,62 @@ button.menu-toggle i {
 
 
 /* =========================================================
-   EMPRESA � EXIBIR SOMENTE NO RODAP�
+   EMPRESA � EXIBIR SOMENTE NO RODAP�
    ========================================================= */
 
 .empresa-usuario-lotrix {
     display: none !important;
 }
 
+
+
+/* =========================================================
+   LOTRIX — BOTÃO MOBILE SEPARADO DO BOTÃO DESKTOP
+   ========================================================= */
+
+@media (min-width: 901px) {
+    button.menu-toggle:not(#sidebarMenuToggle) {
+        display: none !important;
+        pointer-events: none !important;
+    }
+}
+
+@media (max-width: 900px) {
+    button.menu-toggle:not(#sidebarMenuToggle) {
+        position: fixed !important;
+        top: 14px !important;
+        left: 14px !important;
+        right: auto !important;
+        bottom: auto !important;
+
+        width: 44px !important;
+        min-width: 44px !important;
+        max-width: 44px !important;
+        height: 44px !important;
+        min-height: 44px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        display: grid !important;
+        place-items: center !important;
+
+        z-index: 110000 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+
+        transform: none !important;
+        translate: none !important;
+        rotate: none !important;
+        scale: 1 !important;
+    }
+
+    button.menu-toggle:not(#sidebarMenuToggle):hover,
+    button.menu-toggle:not(#sidebarMenuToggle):active {
+        transform: none !important;
+        translate: none !important;
+        rotate: none !important;
+        scale: 1 !important;
+    }
+}

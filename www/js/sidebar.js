@@ -1,44 +1,76 @@
-/* =========================================================
-   LOTRIX — NAVEGAÇÃO GLOBAL
-   Sidebar única para todas as telas
-   CORREÇÃO DEFINITIVA DO MENU MOBILE/TABLET
-========================================================= */
+// =======================================
+// LOTRIX - SIDEBAR / NAVEGAÇÃO GLOBAL
+// V17 - CORREÇÃO DEFINITIVA MENU
+// =======================================
+//
+// - Botão mobile permanece visível
+// - Botão desktop independente do botão mobile
+// - Evita conflito entre touch + click
+// - Sidebar abre/fecha corretamente
+// - Overlay funciona
+// - Desktop preservado
+// - Estado collapsed salvo no localStorage
+// =======================================
 
-document.addEventListener("DOMContentLoaded", () => {
+(function () {
+
+    "use strict";
+
+    // =======================================
+    // ELEMENTOS PRINCIPAIS
+    // =======================================
 
     const sidebar = document.querySelector(".sidebar");
-    if (!sidebar) return;
+
+    if (!sidebar) {
+        console.warn("LOTRIX: Sidebar não encontrada.");
+        return;
+    }
 
     const menuButton = document.getElementById("sidebarMenuToggle");
+
     const overlay = document.getElementById("sidebarOverlay");
+
     const optionsButton = document.getElementById("sidebarOptionsToggle");
+
     const options = document.getElementById("sidebarOptions");
+
     const refreshButton = document.getElementById("sidebarRefresh");
 
-    /* =====================================================
-       DETECTA DESKTOP
-    ===================================================== */
+    // =======================================
+    // IDENTIFICA DESKTOP
+    // =======================================
 
-    const isDesktop = () =>
-        window.matchMedia("(min-width: 901px)").matches;
+    const isDesktop = () => {
+        return window.matchMedia("(min-width: 901px)").matches;
+    };
 
+    // =======================================
+    // BOTÃO MOBILE
+    //
+    // IMPORTANTE:
+    // NÃO pode pegar o #sidebarMenuToggle
+    // =======================================
 
-    /* =====================================================
-       BOTÃO MOBILE ☰
-    ===================================================== */
+    let mobileToggle = document.querySelector(
+        ".menu-toggle:not(#sidebarMenuToggle)"
+    );
 
-    let mobileToggle = document.querySelector(".menu-toggle");
+    // =======================================
+    // CRIA BOTÃO MOBILE CASO NÃO EXISTA
+    // =======================================
 
     if (!mobileToggle) {
 
         mobileToggle = document.createElement("button");
 
-        mobileToggle.type = "button";
         mobileToggle.className = "menu-toggle";
+
+        mobileToggle.type = "button";
 
         mobileToggle.setAttribute(
             "aria-label",
-            "Abrir menu lateral"
+            "Abrir menu"
         );
 
         mobileToggle.setAttribute(
@@ -46,27 +78,86 @@ document.addEventListener("DOMContentLoaded", () => {
             "false"
         );
 
-        mobileToggle.title = "Abrir menu";
-
-        mobileToggle.innerHTML =
-            '<i data-lucide="menu" aria-hidden="true"></i>';
+        mobileToggle.innerHTML = `
+            <i data-lucide="menu"></i>
+        `;
 
         document.body.appendChild(mobileToggle);
-
-    } else {
-
-        mobileToggle.type = "button";
-
-        mobileToggle.innerHTML =
-            '<i data-lucide="menu" aria-hidden="true"></i>';
     }
 
+    // =======================================
+    // GARANTE QUE BOTÃO MOBILE FIQUE FORA
+    // DA SIDEBAR
+    // =======================================
 
-    /* =====================================================
-       ESTADO DESKTOP
-    ===================================================== */
+    if (
+        mobileToggle &&
+        mobileToggle.parentElement !== document.body
+    ) {
+        document.body.appendChild(mobileToggle);
+    }
+
+    // =======================================
+    // ESTADO DA SIDEBAR
+    // =======================================
+
+    let isMobileOpen = false;
+
+    // =======================================
+    // STORAGE
+    // =======================================
+
+    const STORAGE_KEY = "lotrix_sidebar_collapsed";
+
+    // =======================================
+    // LÊ ESTADO SALVO
+    // =======================================
+
+    function getSavedCollapsed() {
+
+        try {
+
+            return (
+                localStorage.getItem(STORAGE_KEY) === "true"
+            );
+
+        } catch (error) {
+
+            return false;
+        }
+    }
+
+    // =======================================
+    // SALVA ESTADO
+    // =======================================
+
+    function saveCollapsed(value) {
+
+        try {
+
+            localStorage.setItem(
+                STORAGE_KEY,
+                value ? "true" : "false"
+            );
+
+        } catch (error) {
+
+            console.warn(
+                "LOTRIX: Não foi possível salvar estado da sidebar."
+            );
+        }
+    }
+
+    // =======================================
+    // APLICA ESTADO COLLAPSED
+    // DESKTOP
+    // =======================================
 
     function setCollapsed(collapsed) {
+
+        if (!sidebar) {
+            return;
+        }
 
         sidebar.classList.toggle(
             "collapsed",
@@ -82,33 +173,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
             menuButton.setAttribute(
                 "aria-expanded",
-                String(!collapsed)
-            );
-
-            menuButton.setAttribute(
-                "aria-label",
-                collapsed
-                    ? "Expandir menu"
-                    : "Recolher menu"
+                collapsed ? "false" : "true"
             );
         }
 
-        try {
-
-            localStorage.setItem(
-                "lotrix_sidebar_collapsed",
-                collapsed ? "1" : "0"
-            );
-
-        } catch (_) {}
+        saveCollapsed(collapsed);
     }
 
-
-    /* =====================================================
-       ABRIR MENU MOBILE
-    ===================================================== */
+    // =======================================
+    // ABRIR MENU MOBILE
+    // =======================================
 
     function openMobile() {
+
+        if (!sidebar) {
+            return;
+        }
 
         sidebar.classList.add("open");
 
@@ -119,12 +199,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (overlay) {
 
             overlay.classList.add("active");
-
-            overlay.setAttribute(
-                "aria-hidden",
-                "false"
-            );
         }
+
+        isMobileOpen = true;
 
         if (mobileToggle) {
 
@@ -135,20 +212,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
             mobileToggle.setAttribute(
                 "aria-label",
-                "Fechar menu lateral"
+                "Fechar menu"
             );
 
-            mobileToggle.title =
-                "Fechar menu";
+            // ===================================
+            // GARANTIA DO BOTÃO MOBILE
+            // ===================================
+
+            mobileToggle.style.position = "fixed";
+
+            mobileToggle.style.zIndex = "110000";
+
+            mobileToggle.style.pointerEvents = "auto";
+
+            mobileToggle.style.transform = "none";
         }
+
+        // ===================================
+        // GARANTE QUE SIDEBAR NÃO FIQUE
+        // ATRÁS DO BOTÃO
+        // ===================================
+
+        sidebar.style.zIndex = "100000";
     }
 
-
-    /* =====================================================
-       FECHAR MENU MOBILE
-    ===================================================== */
+    // =======================================
+    // FECHAR MENU MOBILE
+    // =======================================
 
     function closeMobile() {
+
+        if (!sidebar) {
+            return;
+        }
 
         sidebar.classList.remove("open");
 
@@ -159,12 +255,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (overlay) {
 
             overlay.classList.remove("active");
-
-            overlay.setAttribute(
-                "aria-hidden",
-                "true"
-            );
         }
+
+        isMobileOpen = false;
 
         if (mobileToggle) {
 
@@ -175,41 +268,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
             mobileToggle.setAttribute(
                 "aria-label",
-                "Abrir menu lateral"
+                "Abrir menu"
             );
 
-            mobileToggle.title =
-                "Abrir menu";
+            // ===================================
+            // GARANTIA DO BOTÃO MOBILE
+            // ===================================
+
+            mobileToggle.style.position = "fixed";
+
+            mobileToggle.style.zIndex = "110000";
+
+            mobileToggle.style.pointerEvents = "auto";
+
+            mobileToggle.style.transform = "none";
         }
     }
 
-
-    /* =====================================================
-       ALTERNAR MENU
-    ===================================================== */
+    // =======================================
+    // TOGGLE PRINCIPAL
+    // =======================================
 
     function toggleMenu(event) {
 
         if (event) {
 
             event.preventDefault();
+
             event.stopPropagation();
         }
 
+        // ===================================
+        // DESKTOP
+        // ===================================
+
         if (isDesktop()) {
 
-            setCollapsed(
-                !sidebar.classList.contains(
-                    "collapsed"
-                )
-            );
+            const collapsed =
+                sidebar.classList.contains("collapsed");
+
+            setCollapsed(!collapsed);
 
             return;
         }
 
-        if (
-            sidebar.classList.contains("open")
-        ) {
+        // ===================================
+        // MOBILE
+        // ===================================
+
+        if (isMobileOpen) {
 
             closeMobile();
 
@@ -219,291 +326,453 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // =======================================
+    // BOTÃO DESKTOP
+    // =======================================
 
-    /* =====================================================
-       CLIQUE NO ☰ MOBILE
-    ===================================================== */
+    if (menuButton) {
+
+        menuButton.addEventListener(
+            "click",
+            function (event) {
+
+                toggleMenu(event);
+
+            },
+            false
+        );
+
+        menuButton.addEventListener(
+            "touchstart",
+            function (event) {
+
+                // Não executar ação duplicada
+                event.stopPropagation();
+
+            },
+            {
+                passive: true
+            }
+        );
+    }
+
+    // =======================================
+    // BOTÃO MOBILE
+    // =======================================
 
     if (mobileToggle) {
 
         mobileToggle.addEventListener(
             "click",
-            toggleMenu,
-            false
-        );
-
-        mobileToggle.addEventListener(
-            "touchend",
-            (event) => {
-
-                event.preventDefault();
+            function (event) {
 
                 toggleMenu(event);
 
             },
-            {
-                passive: false
-            }
+            false
         );
     }
 
-
-    /* =====================================================
-       BOTÃO DA SIDEBAR DESKTOP
-    ===================================================== */
-
-    if (menuButton) {
-
-        menuButton.type = "button";
-
-        menuButton.addEventListener(
-            "click",
-            (event) => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-                toggleMenu(event);
-            }
-        );
-    }
-
-
-    /* =====================================================
-       OVERLAY
-    ===================================================== */
+    // =======================================
+    // OVERLAY
+    // =======================================
 
     if (overlay) {
 
         overlay.addEventListener(
             "click",
-            (event) => {
+            function (event) {
 
                 event.preventDefault();
 
+                event.stopPropagation();
+
                 closeMobile();
-            }
+
+            },
+            false
         );
     }
 
-
-    /* =====================================================
-       TECLA ESC
-    ===================================================== */
+    // =======================================
+    // ESC FECHA MENU
+    // =======================================
 
     document.addEventListener(
         "keydown",
-        (event) => {
+        function (event) {
 
             if (event.key === "Escape") {
 
-                closeMobile();
-                closeOptions();
+                if (!isDesktop() && isMobileOpen) {
+
+                    closeMobile();
+                }
+
+                if (
+                    options &&
+                    options.classList.contains("open")
+                ) {
+
+                    options.classList.remove("open");
+                }
             }
-        }
+        },
+        false
     );
 
+    // =======================================
+    // BOTÃO DE OPÇÕES
+    // =======================================
 
-    /* =====================================================
-       OPÇÕES ⋮
-    ===================================================== */
-
-    function closeOptions() {
-
-        if (!options || !optionsButton) {
-            return;
-        }
-
-        options.hidden = true;
-
-        optionsButton.setAttribute(
-            "aria-expanded",
-            "false"
-        );
-    }
-
-
-    if (optionsButton) {
+    if (optionsButton && options) {
 
         optionsButton.addEventListener(
             "click",
-            (event) => {
+            function (event) {
 
                 event.preventDefault();
+
                 event.stopPropagation();
 
-                if (!options) {
-                    return;
-                }
+                options.classList.toggle("open");
 
-                const open =
-                    options.hidden;
-
-                options.hidden = !open;
-
-                optionsButton.setAttribute(
-                    "aria-expanded",
-                    String(open)
-                );
-
-                if (open) {
-
-                    requestAnimationFrame(() => {
-
-                        options
-                            .querySelector(
-                                "a, button"
-                            )
-                            ?.focus();
-
-                    });
-                }
-            }
+            },
+            false
         );
     }
 
-
-    if (options) {
-
-        options.addEventListener(
-            "click",
-            (event) => {
-
-                event.stopPropagation();
-            }
-        );
-    }
-
+    // =======================================
+    // FECHAR OPÇÕES CLICANDO FORA
+    // =======================================
 
     document.addEventListener(
         "click",
-        () => {
+        function (event) {
 
-            closeOptions();
-        }
+            if (
+                options &&
+                options.classList.contains("open")
+            ) {
+
+                if (
+                    !options.contains(event.target) &&
+                    !(
+                        optionsButton &&
+                        optionsButton.contains(event.target)
+                    )
+                ) {
+
+                    options.classList.remove("open");
+                }
+            }
+        },
+        false
     );
 
-
-    /* =====================================================
-       ATUALIZAR
-    ===================================================== */
+    // =======================================
+    // ATUALIZAR PÁGINA
+    // =======================================
 
     if (refreshButton) {
 
         refreshButton.addEventListener(
             "click",
-            () => {
+            function (event) {
+
+                event.preventDefault();
 
                 window.location.reload();
+
+            },
+            false
+        );
+    }
+
+    // =======================================
+    // PÁGINA ATUAL
+    // =======================================
+
+    function markCurrentPage() {
+
+        const currentPage =
+            window.location.pathname
+                .split("/")
+                .pop();
+
+        if (!currentPage) {
+            return;
+        }
+
+        const links =
+            sidebar.querySelectorAll(
+                "a[href]"
+            );
+
+        links.forEach(function (link) {
+
+            const href =
+                link.getAttribute("href");
+
+            if (!href) {
+                return;
+            }
+
+            const linkPage =
+                href
+                    .split("/")
+                    .pop()
+                    .split("?")[0]
+                    .split("#")[0];
+
+            if (
+                linkPage &&
+                linkPage === currentPage
+            ) {
+
+                link.classList.add("active");
+
+            } else {
+
+                link.classList.remove("active");
+            }
+        });
+    }
+
+    // =======================================
+    // LINKS DA SIDEBAR
+    // =======================================
+
+    const sidebarLinks =
+        sidebar.querySelectorAll(
+            "a[href]"
+        );
+
+    sidebarLinks.forEach(function (link) {
+
+        link.addEventListener(
+            "click",
+            function () {
+
+                // ===================================
+                // MOBILE
+                // ===================================
+
+                if (!isDesktop()) {
+
+                    closeMobile();
+                }
+            },
+            false
+        );
+    });
+
+    // =======================================
+    // ESTADO INICIAL
+    // =======================================
+
+    function initializeSidebar() {
+
+        if (isDesktop()) {
+
+            // ===================================
+            // DESKTOP
+            // ===================================
+
+            const saved =
+                getSavedCollapsed();
+
+            setCollapsed(saved);
+
+            closeMobile();
+
+        } else {
+
+            // ===================================
+            // MOBILE
+            // ===================================
+
+            sidebar.classList.remove(
+                "collapsed"
+            );
+
+            document.body.classList.remove(
+                "sidebar-collapsed"
+            );
+
+            closeMobile();
+        }
+
+        markCurrentPage();
+    }
+
+    // =======================================
+    // RESIZE
+    // =======================================
+
+    let resizeTimer = null;
+
+    window.addEventListener(
+        "resize",
+        function () {
+
+            clearTimeout(resizeTimer);
+
+            resizeTimer = setTimeout(
+                function () {
+
+                    if (isDesktop()) {
+
+                        // ===================================
+                        // ENTROU NO DESKTOP
+                        // ===================================
+
+                        closeMobile();
+
+                        const saved =
+                            getSavedCollapsed();
+
+                        setCollapsed(saved);
+
+                    } else {
+
+                        // ===================================
+                        // ENTROU NO MOBILE
+                        // ===================================
+
+                        closeMobile();
+
+                        sidebar.classList.remove(
+                            "collapsed"
+                        );
+
+                        document.body.classList.remove(
+                            "sidebar-collapsed"
+                        );
+                    }
+
+                },
+                150
+            );
+        },
+        false
+    );
+
+    // =======================================
+    // INICIALIZA
+    // =======================================
+
+    initializeSidebar();
+
+    // =======================================
+    // LUCIDE ICONS
+    // =======================================
+
+    function refreshIcons() {
+
+        try {
+
+            if (
+                typeof lucide !== "undefined" &&
+                typeof lucide.createIcons === "function"
+            ) {
+
+                lucide.createIcons();
+
+            }
+
+        } catch (error) {
+
+            console.warn(
+                "LOTRIX: Erro ao carregar ícones Lucide.",
+                error
+            );
+        }
+    }
+
+    // =======================================
+    // PRIMEIRA CARGA
+    // =======================================
+
+    refreshIcons();
+
+    // =======================================
+    // PEQUENO ATRASO PARA ELEMENTOS
+    // CRIADOS DINAMICAMENTE
+    // =======================================
+
+    setTimeout(
+        function () {
+
+            refreshIcons();
+
+        },
+        100
+    );
+
+    // =======================================
+    // GARANTIA FINAL DO BOTÃO MOBILE
+    // =======================================
+
+    if (mobileToggle) {
+
+        mobileToggle.style.position = "fixed";
+
+        mobileToggle.style.zIndex = "110000";
+
+        mobileToggle.style.pointerEvents = "auto";
+
+        mobileToggle.style.transform = "none";
+    }
+
+    // =======================================
+    // OBSERVADOR PARA EVITAR QUE ALGUM
+    // SCRIPT MOVA O BOTÃO MOBILE
+    // =======================================
+
+    if (mobileToggle) {
+
+        const buttonObserver =
+            new MutationObserver(
+                function () {
+
+                    if (!mobileToggle) {
+                        return;
+                    }
+
+                    if (
+                        !isDesktop()
+                    ) {
+
+                        mobileToggle.style.position =
+                            "fixed";
+
+                        mobileToggle.style.zIndex =
+                            "110000";
+
+                        mobileToggle.style.pointerEvents =
+                            "auto";
+
+                        mobileToggle.style.transform =
+                            "none";
+                    }
+                }
+            );
+
+        buttonObserver.observe(
+            mobileToggle,
+            {
+                attributes: true,
+                attributeFilter: [
+                    "style",
+                    "class"
+                ]
             }
         );
     }
 
+    // =======================================
+    // FIM
+    // =======================================
 
-    /* =====================================================
-       MARCAR PÁGINA ATUAL
-    ===================================================== */
-
-    const current =
-        location.pathname
-            .split("/")
-            .pop()
-            .toLowerCase()
-        || "dashboard.html";
-
-
-    sidebar
-        .querySelectorAll(
-            ".menu a[data-page]"
-        )
-        .forEach((link) => {
-
-            link.classList.toggle(
-                "active",
-                link.dataset.page
-                    .toLowerCase() === current
-            );
-        });
-
-
-    /* =====================================================
-       FECHAR AO NAVEGAR
-    ===================================================== */
-
-    sidebar
-        .querySelectorAll(
-            ".menu a, .sidebar-brand, .sidebar-options a"
-        )
-        .forEach((link) => {
-
-            link.addEventListener(
-                "click",
-                () => {
-
-                    if (!isDesktop()) {
-                        closeMobile();
-                    }
-                }
-            );
-        });
-
-
-    /* =====================================================
-       ESTADO INICIAL
-    ===================================================== */
-
-    if (isDesktop()) {
-
-        try {
-
-            setCollapsed(
-                localStorage.getItem(
-                    "lotrix_sidebar_collapsed"
-                ) === "1"
-            );
-
-        } catch (_) {}
-
-    } else {
-
-        closeMobile();
-    }
-
-
-    /* =====================================================
-       RESIZE
-    ===================================================== */
-
-    window.addEventListener(
-        "resize",
-        () => {
-
-            if (isDesktop()) {
-
-                closeMobile();
-
-                try {
-
-                    setCollapsed(
-                        localStorage.getItem(
-                            "lotrix_sidebar_collapsed"
-                        ) === "1"
-                    );
-
-                } catch (_) {}
-
-            }
-        }
-    );
-
-
-    /* =====================================================
-       LUCIDE
-    ===================================================== */
-
-    if (window.lucide) {
-
-        window.lucide.createIcons();
-    }
-
-});
+})();
