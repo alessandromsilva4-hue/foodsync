@@ -518,12 +518,12 @@ function renderLabelAlerts(labels) {
 
             const days = daysUntil(item.validade);
 
-            return days >= 0 && days <= 7;
+            return days >= 0 && days <= 3;
 
         })),
 
         dias: sortByValidity(
-            labels.filter(item => daysUntil(item.validade) > 7)
+            labels.filter(item => daysUntil(item.validade) > 3)
         ),
 
         vencida: sortByValidity(
@@ -563,8 +563,8 @@ function renderLabelAlerts(labels) {
         alerts.vencida.length > 0
             ? `${alerts.vencida.length} etiqueta(s) vencida(s) precisam de ação imediata.`
             : alerts.prestes.length > 0
-                ? `${alerts.prestes.length} etiqueta(s) vencem em até 7 dias.`
-                : "Nenhum vencimento previsto para os próximos 7 dias."
+                ? `${alerts.prestes.length} etiqueta(s) vencem em até 3 dias.`
+                : "Nenhum vencimento previsto para os próximos 3 dias."
     );
 
     if (!list || !cards.length) {
@@ -637,8 +637,8 @@ function renderLabelAlerts(labels) {
             } else {
 
                 const title = {
-                    prestes: "Etiquetas que vencem em até 7 dias",
-                    dias: "Etiquetas com mais de 7 dias de validade",
+                    prestes: "Etiquetas que vencem em até 3 dias",
+                    dias: "Etiquetas com mais de 3 dias de validade",
                     vencida: "Etiquetas vencidas"
                 }[type];
 
@@ -722,17 +722,33 @@ function renderLabelAlerts(labels) {
 
     };
 
-    cards.forEach(card => {
+  cards.forEach(card => {
 
-        card.setAttribute(
-            "aria-expanded",
-            "false"
-        );
+    card.setAttribute(
+        "aria-expanded",
+        "false"
+    );
 
-        card.onclick = () => showAlert(card.dataset.alerta);
+    card.onclick = () => {
 
-    });
+        const tipo =
+            card.dataset.alerta;
 
+        const filtros = {
+            prestes: "prestes",
+            dias: "em-dias",
+            vencida: "vencidas"
+        };
+
+        const filtro =
+            filtros[tipo] || "todas";
+
+        window.location.href =
+            `etiquetas.html?filtro=${encodeURIComponent(filtro)}`;
+
+    };
+
+});
 }
 
 // =======================================

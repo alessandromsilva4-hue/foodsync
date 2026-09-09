@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "937632219130",
+    "project_id": "foodsync-43a7e",
+    "storage_bucket": "foodsync-43a7e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937632219130:android:458bbb6bf94ad1c9922e43",
+        "android_client_info": {
+          "package_name": "com.lotrix.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_KIRGisxL_dDHbHXuJbvSQZRpKWRZQog"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

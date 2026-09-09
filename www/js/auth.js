@@ -1,4 +1,4 @@
-﻿// =======================================
+// =======================================
 // LOTRIX - AUTENTICAÇÃO E PERMISSÕES
 // V12 - MULTIEMPRESA 4 EMPRESAS
 // =======================================
@@ -23,6 +23,304 @@ import {
     getDoc,
     setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// =======================================
+// LOTRIX - NOTIFICAÇÕES PUSH
+// CAPACITOR + FIREBASE CLOUD MESSAGING
+// MULTIEMPRESA
+// =======================================
+
+let lotrixPushInicializado = false;
+
+function obterPluginPushLotrix() {
+
+    try {
+
+        if (!window.Capacitor) {
+            return null;
+        }
+
+        if (
+            window.Capacitor.Plugins &&
+            window.Capacitor.Plugins.PushNotifications
+        ) {
+            return window.Capacitor.Plugins.PushNotifications;
+        }
+
+        if (
+            typeof window.Capacitor.registerPlugin === "function"
+        ) {
+            return window.Capacitor.registerPlugin(
+                "PushNotifications"
+            );
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao obter plugin de notificações:",
+            error
+        );
+
+    }
+
+    return null;
+}
+
+
+async function registrarTokenPushLotrix(usuario) {
+
+    if (!usuario?.id || !usuario?.idEmpresa) {
+
+        console.warn(
+            "PUSH: usuário ou empresa não disponível."
+        );
+
+        return;
+
+    }
+
+    const pushNotifications =
+        obterPluginPushLotrix();
+
+    if (!pushNotifications) {
+
+        console.log(
+            "PUSH: plugin não disponível. " +
+            "Isso é normal no navegador."
+        );
+
+        return;
+
+    }
+
+    if (lotrixPushInicializado) {
+        return;
+    }
+
+    lotrixPushInicializado = true;
+
+    try {
+
+        // ===================================
+        // PERMISSÃO
+        // ===================================
+
+        let permissao =
+            await pushNotifications.checkPermissions();
+
+        if (
+            permissao.receive === "prompt" ||
+            permissao.receive === "prompt-with-rationale"
+        ) {
+
+            permissao =
+                await pushNotifications.requestPermissions();
+
+        }
+
+        if (
+            permissao.receive !== "granted"
+        ) {
+
+            console.warn(
+                "PUSH: permissão de notificações não concedida.",
+                permissao.receive
+            );
+
+            return;
+
+        }
+
+
+        // ===================================
+        // EVENTO DE REGISTRO DO TOKEN
+        // ===================================
+
+        await pushNotifications.addListener(
+            "registration",
+            async (tokenData) => {
+
+                try {
+
+                    const token =
+                        tokenData?.value;
+
+                    if (!token) {
+
+                        console.error(
+                            "PUSH: token vazio recebido."
+                        );
+
+                        return;
+
+                    }
+
+                    const tokenId =
+                        `${usuario.id}_${encodeURIComponent(token)}`;
+
+                    const plataforma =
+                        window.Capacitor?.getPlatform?.() ||
+                        "android";
+
+
+                    // ===================================
+                    // SALVAR TOKEN NO FIRESTORE
+                    // ===================================
+
+                    await setDoc(
+
+                        doc(
+                            db,
+                            "tokens",
+                            tokenId
+                        ),
+
+                        {
+
+                            uid:
+                                usuario.id,
+
+                            idEmpresa:
+                                usuario.idEmpresa,
+
+                            token:
+                                token,
+
+                            plataforma:
+                                plataforma,
+
+                            ativo:
+                                true,
+
+                            atualizadoEm:
+                                serverTimestamp()
+
+                        },
+
+                        {
+                            merge: true
+                        }
+
+                    );
+
+
+                    console.log(
+                        "======================================="
+                    );
+
+                    console.log(
+                        "PUSH LOTRIX ATIVO"
+                    );
+
+                    console.log(
+                        "UID:",
+                        usuario.id
+                    );
+
+                    console.log(
+                        "EMPRESA:",
+                        usuario.idEmpresa
+                    );
+
+                    console.log(
+                        "PLATAFORMA:",
+                        plataforma
+                    );
+
+                    console.log(
+                        "TOKEN SALVO NO FIRESTORE"
+                    );
+
+                    console.log(
+                        "======================================="
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "PUSH: erro ao salvar token:",
+                        error
+                    );
+
+                }
+
+            }
+        );
+
+
+        // ===================================
+        // ERRO DE REGISTRO
+        // ===================================
+
+        await pushNotifications.addListener(
+            "registrationError",
+            (error) => {
+
+                console.error(
+                    "PUSH: erro ao registrar dispositivo:",
+                    error
+                );
+
+            }
+        );
+
+
+        // ===================================
+        // NOTIFICAÇÃO RECEBIDA
+        // ===================================
+
+        await pushNotifications.addListener(
+            "pushNotificationReceived",
+            (notification) => {
+
+                console.log(
+                    "PUSH: notificação recebida:",
+                    notification
+                );
+
+            }
+        );
+
+
+        // ===================================
+        // USUÁRIO TOCOU NA NOTIFICAÇÃO
+        // ===================================
+
+        await pushNotifications.addListener(
+            "pushNotificationActionPerformed",
+            (action) => {
+
+                console.log(
+                    "PUSH: usuário abriu a notificação:",
+                    action
+                );
+
+            }
+        );
+
+
+        // ===================================
+        // REGISTRAR DISPOSITIVO
+        // ===================================
+
+        await pushNotifications.register();
+
+        console.log(
+            "PUSH: dispositivo registrado no FCM."
+        );
+
+    } catch (error) {
+
+        console.error(
+            "PUSH LOTRIX: erro na inicialização:",
+            error
+        );
+
+    }
+
+}
+
 
 
 console.log("=======================================");
@@ -2013,22 +2311,52 @@ onAuthStateChanged(
             }
 
 
-            // =================================
-            // ATUALIZAR USUÁRIO
-            // =================================
+           // =================================
+// NOTIFICAÇÕES PUSH
+// =================================
+// O usuário, perfil e empresa já foram
+// validados neste ponto.
 
-            atualizarUsuarioTela(
-                usuario
-            );
+console.log(
+    "PUSH: iniciando registro do dispositivo..."
+);
+
+try {
+
+    await registrarTokenPushLotrix(
+        usuario
+    );
+
+    console.log(
+        "PUSH: rotina de registro finalizada."
+    );
+
+} catch (erroPush) {
+
+    console.error(
+        "PUSH: erro geral na rotina:",
+        erroPush
+    );
+
+}
 
 
-            // =================================
-            // MOSTRAR EMPRESA
-            // =================================
+// =================================
+// ATUALIZAR USUÁRIO
+// =================================
 
-            mostrarEmpresaAtiva(
-                usuario
-            );
+atualizarUsuarioTela(
+    usuario
+);
+
+
+// =================================
+// MOSTRAR EMPRESA
+// =================================
+
+mostrarEmpresaAtiva(
+    usuario
+);
 
 
             // =================================

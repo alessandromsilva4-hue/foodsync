@@ -430,7 +430,33 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+// =====================================
+// TOKENS DE NOTIFICAÇÃO PUSH
+// =====================================
 
+match /tokens/{tokenId} {
+
+  // Usuário pode salvar/atualizar
+  // somente o próprio token e dentro da própria empresa.
+  allow create, update: if
+    usuarioAtivo()
+    &&
+    request.resource.data.uid == request.auth.uid
+    &&
+    request.resource.data.idEmpresa == idEmpresaUsuario();
+
+  // Usuário só pode consultar o próprio token.
+  allow read: if
+    usuarioAtivo()
+    &&
+    resource.data.uid == request.auth.uid;
+
+  // Usuário só pode excluir o próprio token.
+  allow delete: if
+    usuarioAtivo()
+    &&
+    resource.data.uid == request.auth.uid;
+}
     // =====================================
     // BLOQUEIO PADRÃO
     // =====================================
