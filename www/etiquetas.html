@@ -840,9 +840,30 @@ button:active {
                                 type="text"
                                 id="responsavelSelect"
                                 name="responsavel"
-                                placeholder="Digite o nome do responsável"
+                                list="responsaveisFixos"
+                                placeholder="Selecione ou digite o nome..."
                                 autocomplete="off"
                                 required>
+
+                            <datalist id="responsaveisFixos">
+                                <option value="Alessandro"></option>
+                                <option value="Ana Luiza"></option>
+                                <option value="Carlos Flavio"></option>
+                                <option value="Davilaa"></option>
+                                <option value="Erika"></option>
+                                <option value="Fernando"></option>
+                                <option value="Genegilda"></option>
+                                <option value="Hugo"></option>
+                                <option value="João"></option>
+                                <option value="Laércio"></option>
+                                <option value="Luís Miguel"></option>
+                                <option value="Maria"></option>
+                                <option value="Manu"></option>
+                                <option value="Ramon"></option>
+                            </datalist>
+                            <small style="display:block; margin-top:6px; color:#94a3b8; font-size:11px;">
+                                Se o nome não estiver na lista, digite normalmente.
+                            </small>
 
                         </div>
 
@@ -1217,4 +1238,3 @@ function alterarQuantidade(delta) {
 </body>
 
 </html>
-

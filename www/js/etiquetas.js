@@ -110,6 +110,10 @@ let termoBuscaEtiqueta = "";
 
 let statusFiltroEtiqueta = "todas";
 
+let imprimirDepoisDeSalvar = false;
+
+let ultimaEtiquetaGerada = null;
+
 let filtroInicialUrl = null;
 
 let empresaAtualDados = null;

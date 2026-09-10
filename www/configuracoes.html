@@ -15,110 +15,475 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/sidebar.css">
 <link rel="stylesheet" href="css/formulario.css">
-
-    <link rel="stylesheet" href="./css/sidebar-global-final.css">
-
-    <link rel="stylesheet" href="./css/dark-theme.css">
-
+<link rel="stylesheet" href="./css/sidebar-global-final.css">
+<link rel="stylesheet" href="./css/dark-theme.css">
 <link rel="stylesheet" href="css/button-interaction-fix.css">
-    <link rel="stylesheet" href="css/lotrix-final-fix.css">
+<link rel="stylesheet" href="css/lotrix-final-fix.css">
+
+<style>
+
+/* =========================================================
+   LOTRIX - ATUALIZAÇÃO DO APLICATIVO
+========================================================= */
+
+.atualizacao-box {
+    margin-top: 25px;
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.atualizacao-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.atualizacao-header-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(37, 99, 235, 0.10);
+    font-size: 22px;
+}
+
+.atualizacao-header h2 {
+    margin: 0;
+}
+
+.atualizacao-header p {
+    margin: 4px 0 0;
+    opacity: 0.75;
+}
+
+.atualizacao-info {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.atualizacao-item {
+    padding: 15px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.atualizacao-item span {
+    display: block;
+    font-size: 13px;
+    opacity: 0.7;
+    margin-bottom: 5px;
+}
+
+.atualizacao-item strong {
+    font-size: 16px;
+}
+
+.atualizacao-status {
+    margin: 15px 0;
+    padding: 13px 15px;
+    border-radius: 10px;
+    background: rgba(37, 99, 235, 0.08);
+    font-size: 14px;
+}
+
+.atualizacao-status.sucesso {
+    background: rgba(22, 122, 61, 0.10);
+    color: #167a3d;
+}
+
+.atualizacao-status.erro {
+    background: rgba(180, 35, 24, 0.10);
+    color: #b42318;
+}
+
+.atualizacao-acoes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.atualizacao-acoes button {
+    margin: 0;
+}
+
+#baixarAtualizacao {
+    display: none;
+}
+
+@media (max-width: 700px) {
+
+    .atualizacao-info {
+        grid-template-columns: 1fr;
+    }
+
+    .atualizacao-acoes {
+        flex-direction: column;
+    }
+
+    .atualizacao-acoes button {
+        width: 100%;
+    }
+
+}
+
+</style>
+
 </head>
 
 
 <body>
 
 <aside class="sidebar" id="sidebar">
+
     <div class="sidebar-header">
-        <button class="sidebar-menu-btn" id="sidebarMenuToggle" type="button" aria-label="Recolher menu" aria-expanded="true">
+
+        <button
+            class="sidebar-menu-btn"
+            id="sidebarMenuToggle"
+            type="button"
+            aria-label="Recolher menu"
+            aria-expanded="true">
+
             <i data-lucide="menu" aria-hidden="true"></i>
+
         </button>
-        <a class="sidebar-brand" href="dashboard.html" aria-label="Lotrix - Dashboard">
-            <img class="brand-logo" src="img/logo.png" alt="Lotrix">
-            <span class="brand-name">Lotrix</span>
+
+
+        <a
+            class="sidebar-brand"
+            href="dashboard.html"
+            aria-label="Lotrix - Dashboard">
+
+            <img
+                class="brand-logo"
+                src="img/logo.png"
+                alt="Lotrix">
+
+            <span class="brand-name">
+                Lotrix
+            </span>
+
         </a>
-        <button class="sidebar-options-btn" id="sidebarOptionsToggle" type="button" aria-label="Mais opções" aria-expanded="false">
-            <i data-lucide="more-vertical" aria-hidden="true"></i>
+
+
+        <button
+            class="sidebar-options-btn"
+            id="sidebarOptionsToggle"
+            type="button"
+            aria-label="Mais opções"
+            aria-expanded="false">
+
+            <i data-lucide="more-vertical"
+               aria-hidden="true"></i>
+
         </button>
-        <div class="sidebar-options" id="sidebarOptions" hidden>
-            <a href="dashboard.html"><i data-lucide="home"></i> Início</a>
-            <button type="button" id="sidebarRefresh"><i data-lucide="refresh-cw"></i> Atualizar</button>
+
+
+        <div
+            class="sidebar-options"
+            id="sidebarOptions"
+            hidden>
+
+            <a href="dashboard.html">
+                <i data-lucide="home"></i>
+                Início
+            </a>
+
+            <button
+                type="button"
+                id="sidebarRefresh">
+
+                <i data-lucide="refresh-cw"></i>
+                Atualizar
+
+            </button>
+
         </div>
+
     </div>
 
-    <nav class="menu" aria-label="Menu principal">
-        <div class="menu-section">
-            <div class="menu-title">Geral</div>
-            <a href="dashboard.html" data-page="dashboard.html"><i data-lucide="layout-dashboard"></i><span class="nav-label">Dashboard</span></a>
-        </div>
+
+    <nav
+        class="menu"
+        aria-label="Menu principal">
 
         <div class="menu-section">
-            <div class="menu-title">Operação</div>
-            <a href="producao.html" data-page="producao.html"><i data-lucide="factory"></i><span class="nav-label">Produção</span></a>
-            <a href="produtos.html" data-page="produtos.html"><i data-lucide="package"></i><span class="nav-label">Produtos</span></a>
-            <a href="etiquetas.html" data-page="etiquetas.html"><i data-lucide="tag"></i><span class="nav-label">Etiquetas</span></a>
-            <a href="estoque.html" data-page="estoque.html"><i data-lucide="boxes"></i><span class="nav-label">Estoque</span></a>
+
+            <div class="menu-title">
+                Geral
+            </div>
+
+            <a
+                href="dashboard.html"
+                data-page="dashboard.html">
+
+                <i data-lucide="layout-dashboard"></i>
+
+                <span class="nav-label">
+                    Dashboard
+                </span>
+
+            </a>
+
         </div>
 
-        <div class="menu-section">
-            <div class="menu-title">Gestão</div>
-            <a href="relatorios.html" data-page="relatorios.html"><i data-lucide="bar-chart-3"></i><span class="nav-label">Relatórios</span></a>
-            <a href="auditoria.html" data-page="auditoria.html"><i data-lucide="clipboard-check"></i><span class="nav-label">Auditoria</span></a>
-            <a href="usuario.html" data-page="usuario.html"><i data-lucide="users"></i><span class="nav-label">Usuários</span></a>
-            <a href="sac-admin.html" data-page="sac-admin.html"><i data-lucide="headphones"></i><span class="nav-label">SAC Admin</span></a>
-        </div>
 
         <div class="menu-section">
-            <div class="menu-title">Sistema</div>
-            <a href="configuracoes.html" data-page="configuracoes.html"><i data-lucide="settings"></i><span class="nav-label">Configurações</span></a>
-            <a href="ajuda.html" data-page="ajuda.html"><i data-lucide="circle-help"></i><span class="nav-label">Ajuda</span></a>
-            <a href="sac.html" data-page="sac.html"><i data-lucide="message-circle"></i><span class="nav-label">SAC</span></a>
+
+            <div class="menu-title">
+                Operação
+            </div>
+
+            <a
+                href="producao.html"
+                data-page="producao.html">
+
+                <i data-lucide="factory"></i>
+
+                <span class="nav-label">
+                    Produção
+                </span>
+
+            </a>
+
+
+            <a
+                href="produtos.html"
+                data-page="produtos.html">
+
+                <i data-lucide="package"></i>
+
+                <span class="nav-label">
+                    Produtos
+                </span>
+
+            </a>
+
+
+            <a
+                href="etiquetas.html"
+                data-page="etiquetas.html">
+
+                <i data-lucide="tag"></i>
+
+                <span class="nav-label">
+                    Etiquetas
+                </span>
+
+            </a>
+
+
+            <a
+                href="estoque.html"
+                data-page="estoque.html">
+
+                <i data-lucide="boxes"></i>
+
+                <span class="nav-label">
+                    Estoque
+                </span>
+
+            </a>
+
         </div>
+
+
+        <div class="menu-section">
+
+            <div class="menu-title">
+                Gestão
+            </div>
+
+            <a
+                href="relatorios.html"
+                data-page="relatorios.html">
+
+                <i data-lucide="bar-chart-3"></i>
+
+                <span class="nav-label">
+                    Relatórios
+                </span>
+
+            </a>
+
+
+            <a
+                href="auditoria.html"
+                data-page="auditoria.html">
+
+                <i data-lucide="clipboard-check"></i>
+
+                <span class="nav-label">
+                    Auditoria
+                </span>
+
+            </a>
+
+
+            <a
+                href="usuario.html"
+                data-page="usuario.html">
+
+                <i data-lucide="users"></i>
+
+                <span class="nav-label">
+                    Usuários
+                </span>
+
+            </a>
+
+
+            <a
+                href="sac-admin.html"
+                data-page="sac-admin.html">
+
+                <i data-lucide="headphones"></i>
+
+                <span class="nav-label">
+                    SAC Admin
+                </span>
+
+            </a>
+
+        </div>
+
+
+        <div class="menu-section">
+
+            <div class="menu-title">
+                Sistema
+            </div>
+
+
+            <a
+                href="configuracoes.html"
+                data-page="configuracoes.html">
+
+                <i data-lucide="settings"></i>
+
+                <span class="nav-label">
+                    Configurações
+                </span>
+
+            </a>
+
+
+            <a
+                href="ajuda.html"
+                data-page="ajuda.html">
+
+                <i data-lucide="circle-help"></i>
+
+                <span class="nav-label">
+                    Ajuda
+                </span>
+
+            </a>
+
+
+            <a
+                href="sac.html"
+                data-page="sac.html">
+
+                <i data-lucide="message-circle"></i>
+
+                <span class="nav-label">
+                    SAC
+                </span>
+
+            </a>
+
+        </div>
+
     </nav>
 
+
     <div class="sidebar-footer">
+
         <div class="user-card">
-            <div class="avatar"><i data-lucide="user-round" aria-hidden="true"></i></div>
+
+            <div class="avatar">
+
+                <i
+                    data-lucide="user-round"
+                    aria-hidden="true">
+                </i>
+
+            </div>
+
+
             <div class="user-info">
-    <strong id="nomeUsuarioLogado">Usuário</strong>
-    <small id="perfilUsuarioLogado">Usuário</small>
-</div>
+
+                <strong id="nomeUsuarioLogado">
+                    Usuário
+                </strong>
+
+                <small id="perfilUsuarioLogado">
+                    Usuário
+                </small>
+
+            </div>
+
         </div>
+
+
         <div class="company-card">
-            <span class="company-label">Empresa</span>
-            <strong class="company-name" id="nomeEmpresaLogada">Carregando...</strong>
+
+            <span class="company-label">
+                Empresa
+            </span>
+
+            <strong
+                class="company-name"
+                id="nomeEmpresaLogada">
+
+                Carregando...
+
+            </strong>
+
         </div>
-        <button class="logout-button" type="button" onclick="logout()"><i data-lucide="log-out"></i><span>Sair</span></button>
+
+
+        <button
+            class="logout-button"
+            type="button"
+            onclick="logout()">
+
+            <i data-lucide="log-out"></i>
+
+            <span>
+                Sair
+            </span>
+
+        </button>
+
     </div>
+
 </aside>
-<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
 
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay"
+    aria-hidden="true">
+</div>
 
-
-<!-- =========================================================
-     BOTÃO MENU
-========================================================= -->
-
-<!-- =========================================================
-     FUNDO ESCURO
-========================================================= -->
 
 <div class="layout">
 
-
-<!-- =========================================================
-     SIDEBAR
-========================================================= -->
-
-<!-- =========================================================
-     CONTEÚDO
-========================================================= -->
 
 <main class="content">
 
 
 <header class="top-header">
-
 
     <div>
 
@@ -126,16 +491,13 @@
             ⚙️ Configurações
         </h1>
 
-
         <p>
             Configurações gerais do sistema
         </p>
 
     </div>
 
-
 </header>
-
 
 
 <!-- =========================================================
@@ -144,11 +506,9 @@
 
 <section class="form-box">
 
-
     <h2>
         Configurações Gerais
     </h2>
-
 
 
     <form id="configForm">
@@ -165,14 +525,12 @@
                     Nome do Sistema
                 </label>
 
-
                 <input
                     type="text"
                     id="nomeSistema"
                     value="Lotrix">
 
             </div>
-
 
 
             <!-- TEMA -->
@@ -182,7 +540,6 @@
                 <label for="temaSistema">
                     Tema da interface
                 </label>
-
 
                 <select
                     id="temaSistema"
@@ -215,7 +572,6 @@
             </div>
 
 
-
             <!-- TAMANHO DA ETIQUETA -->
 
             <div class="input-group">
@@ -223,7 +579,6 @@
                 <label for="tamanhoEtiqueta">
                     Tamanho da Etiqueta
                 </label>
-
 
                 <select id="tamanhoEtiqueta">
 
@@ -248,7 +603,6 @@
             </div>
 
 
-
             <!-- VALIDADE -->
 
             <div class="input-group">
@@ -256,7 +610,6 @@
                 <label for="validadePadrao">
                     Validade Padrão (dias)
                 </label>
-
 
                 <input
                     type="number"
@@ -267,7 +620,6 @@
             </div>
 
 
-
             <!-- IMPRESSORA -->
 
             <div class="input-group">
@@ -275,7 +627,6 @@
                 <label for="impressora">
                     Impressora padrão
                 </label>
-
 
                 <input
                     type="text"
@@ -316,11 +667,12 @@
                     max="65535">
 
                 <small class="input-help">
+
                     O serviço padrão utiliza a porta 9100.
+
                 </small>
 
             </div>
-
 
 
             <!-- QR CODE -->
@@ -330,7 +682,6 @@
                 <label for="qrCode">
                     QR Code
                 </label>
-
 
                 <select id="qrCode">
 
@@ -349,6 +700,7 @@
 
         </div>
 
+
         <button
             type="button"
             id="testarPrinterService">
@@ -357,14 +709,14 @@
 
         </button>
 
-        <p id="statusPrinterService" aria-live="polite"></p>
+
+        <p
+            id="statusPrinterService"
+            aria-live="polite">
+        </p>
 
 
-
-        <!-- BOTÃO -->
-
-        <button
-            type="submit">
+        <button type="submit">
 
             💾 Salvar Configurações
 
@@ -373,15 +725,104 @@
 
     </form>
 
+</section>
+
+
+<!-- =========================================================
+     ATUALIZAÇÃO DO APLICATIVO
+========================================================= -->
+
+<section class="atualizacao-box">
+
+    <div class="atualizacao-header">
+
+        <div class="atualizacao-header-icon">
+            📱
+        </div>
+
+        <div>
+
+            <h2>
+                Atualização do Lotrix
+            </h2>
+
+            <p>
+                Mantenha o aplicativo sempre atualizado.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="atualizacao-info">
+
+        <div class="atualizacao-item">
+
+            <span>
+                Versão instalada
+            </span>
+
+            <strong id="versaoInstalada">
+                Verificando...
+            </strong>
+
+        </div>
+
+
+        <div class="atualizacao-item">
+
+            <span>
+                Última verificação
+            </span>
+
+            <strong id="ultimaVerificacao">
+                Ainda não verificado
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="statusAtualizacao"
+        class="atualizacao-status"
+        aria-live="polite">
+
+        Clique em "Verificar atualização" para consultar
+        a versão mais recente.
+
+    </div>
+
+
+    <div class="atualizacao-acoes">
+
+        <button
+            type="button"
+            id="verificarAtualizacao">
+
+            🔄 Verificar atualização
+
+        </button>
+
+
+        <button
+            type="button"
+            id="baixarAtualizacao">
+
+            ⬇️ Baixar atualização
+
+        </button>
+
+    </div>
 
 </section>
 
 
 </main>
 
-
 </div>
-
 
 
 <!-- =========================================================
@@ -412,12 +853,10 @@
 </script>
 
 
-<!-- MENU LATERAL -->
-
 <script src="js/design-system.js"></script>
-<script
-    src="js/sidebar.js">
-</script>
+
+
+<script src="js/sidebar.js"></script>
 
 
 </body>
