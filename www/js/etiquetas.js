@@ -1485,6 +1485,71 @@ function prepararImpressaoRapida() {
 }
 
 // =======================================
+// CONFIRMAR IMPRESSÃO RÁPIDA
+// =======================================
+
+async function confirmarImpressaoRapida() {
+
+    prepararImpressaoRapida();
+
+    const produto =
+        produtoSelecionado();
+
+    if (!produto) {
+
+        alert(
+            "Escolha o produto antes de imprimir."
+        );
+
+        obterElemento(
+            "produtoEtiquetaBusca"
+        )?.focus();
+
+        return;
+
+    }
+
+    const quantidade =
+        parseInt(
+            obterElemento(
+                "quantidadeProducao"
+            )?.value,
+            10
+        );
+
+    if (!Number.isInteger(quantidade) || quantidade < 1) {
+
+        alert(
+            "Informe uma quantidade válida de etiquetas."
+        );
+
+        obterElemento(
+            "quantidadeProducao"
+        )?.focus();
+
+        return;
+
+    }
+
+    const confirmar =
+        window.confirm(
+            `Confirmar a impressão de ${quantidade} etiqueta(s) de ${produto.nome || "produto selecionado"}?`
+        );
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+    imprimirDepoisDeSalvar =
+        true;
+
+    await salvarEtiqueta();
+
+}
+
+// =======================================
 // ATUALIZAR TEMPERATURA NA PRÉVIA
 // =======================================
 
