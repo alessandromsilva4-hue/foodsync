@@ -1531,17 +1531,6 @@ async function confirmarImpressaoRapida() {
 
     }
 
-    const confirmar =
-        window.confirm(
-            `Confirmar a impressão de ${quantidade} etiqueta(s) de ${produto.nome || "produto selecionado"}?`
-        );
-
-    if (!confirmar) {
-
-        return;
-
-    }
-
     imprimirDepoisDeSalvar =
         true;
 
