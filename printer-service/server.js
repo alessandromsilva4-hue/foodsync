@@ -1,25 +1,133 @@
 ﻿const https = require("https");
 const fs = require("fs");
 const {
-    execFile
+    execFile,
+    execFileSync
 } = require("child_process");
+const os = require("os");
+const dgram = require("dgram");
+const crypto = require("crypto");
+const path = require("path");
 
 const PORT = 9100;
+const DISCOVERY_PORT = 9101;
+const DISCOVERY_MESSAGE = "LOTRIX_PRINTER_DISCOVER_V1";
 
 const PRINTER = "ZDesigner ZD220-203dpi ZPL";
 const USB_PORT = "USB005";
+
+function obterIpsLocais() {
+    return Object.values(os.networkInterfaces())
+        .flat()
+        .filter(interfaceRede =>
+            interfaceRede &&
+            interfaceRede.family === "IPv4" &&
+            !interfaceRede.internal
+        )
+        .map(interfaceRede => interfaceRede.address);
+}
+
+function obterIpParaTablet(ipTablet) {
+    const ips = obterIpsLocais();
+    const mesmaRede = ips.find(ip =>
+        ip.split(".").slice(0, 3).join(".") ===
+        ipTablet.split(".").slice(0, 3).join(".")
+    );
+
+    return mesmaRede || ips[0] || "127.0.0.1";
+}
 
 // =======================================
 // CERTIFICADOS HTTPS
 // =======================================
 
-const SSL_KEY = fs.readFileSync(
-    "./192.168.0.109+2-key.pem"
-);
+function encontrarCertificadoCompativel(ipsLocais) {
+    return fs.readdirSync(__dirname)
+        .filter(nome => nome.endsWith(".pem") && !nome.endsWith("-key.pem"))
+        .map(nome => {
+            const caminhoCert = `${__dirname}/${nome}`;
+            const caminhoChave = `${__dirname}/${nome.replace(/\.pem$/, "-key.pem")}`;
 
-const SSL_CERT = fs.readFileSync(
-    "./192.168.0.109+2.pem"
-);
+            if (!fs.existsSync(caminhoChave)) return null;
+
+            try {
+                const certificado = new crypto.X509Certificate(
+                    fs.readFileSync(caminhoCert)
+                );
+
+                const ip = ipsLocais.find(endereco =>
+                    certificado.subjectAltName.includes(`IP Address:${endereco}`)
+                );
+
+                return ip ? { caminhoCert, caminhoChave, ip } : null;
+            } catch (_) {
+                return null;
+            }
+        })
+        .find(Boolean);
+}
+
+function encontrarMkcert() {
+    const pastaPacotes = path.join(
+        process.env.LOCALAPPDATA || "",
+        "Microsoft",
+        "WinGet",
+        "Packages"
+    );
+
+    try {
+        const pastaMkcert = fs.readdirSync(pastaPacotes)
+            .find(nome => nome.startsWith("FiloSottile.mkcert_"));
+        const executavel = pastaMkcert && path.join(
+            pastaPacotes,
+            pastaMkcert,
+            "mkcert.exe"
+        );
+
+        if (executavel && fs.existsSync(executavel)) return executavel;
+    } catch (_) {
+        // O mkcert também pode estar disponível no PATH.
+    }
+
+    return "mkcert";
+}
+
+function obterCertificadoLocal() {
+    const ipsLocais = obterIpsLocais();
+    let certificadoCompativel = encontrarCertificadoCompativel(ipsLocais);
+
+    // Quando o roteador atribui outro IP, gere um certificado para os novos
+    // endereços antes de abrir o HTTPS. O mesmo CA já embarcado no APK assina
+    // esse certificado, portanto o tablet continua confiando na conexão.
+    if (!certificadoCompativel && ipsLocais.length) {
+        try {
+            execFileSync(
+                encontrarMkcert(),
+                [
+                    "-cert-file", "lotrix-local.pem",
+                    "-key-file", "lotrix-local-key.pem",
+                    "localhost",
+                    ...ipsLocais
+                ],
+                { cwd: __dirname, stdio: "ignore" }
+            );
+
+            certificadoCompativel = encontrarCertificadoCompativel(ipsLocais);
+        } catch (erro) {
+            console.error("Não foi possível renovar o certificado HTTPS:", erro.message);
+        }
+    }
+
+    return certificadoCompativel || {
+        caminhoCert: `${__dirname}/localhost.pem`,
+        caminhoChave: `${__dirname}/localhost-key.pem`,
+        ip: "localhost"
+    };
+}
+
+const certificadoLocal = obterCertificadoLocal();
+const SSL_KEY = fs.readFileSync(certificadoLocal.caminhoChave);
+const SSL_CERT = fs.readFileSync(certificadoLocal.caminhoCert);
 
 // =======================================
 // LOTRIX PRINTER SERVICE
@@ -34,6 +142,7 @@ console.log("HTTPS: ATIVO");
 console.log("Porta:", PORT);
 console.log("Impressora:", PRINTER);
 console.log("USB:", USB_PORT);
+console.log("Certificado HTTPS:", certificadoLocal.ip);
 console.log("=======================================");
 
 // =======================================
@@ -641,17 +750,19 @@ server.listen(
             "Endereco:"
         );
 
-        console.log(
-            "https://192.168.0.109:9100"
-        );
+        console.log("https://localhost:9100");
 
         console.log(
             "Endpoint:"
         );
 
-        console.log(
-            "https://192.168.0.109:9100/print"
-        );
+        console.log("https://localhost:9100/print");
+
+        const ipsLocais = obterIpsLocais();
+
+        if (ipsLocais.length) {
+            console.log("IP(s) local(is) detectado(s):", ipsLocais.join(", "));
+        }
 
         console.log(
             "Impressora:",
@@ -674,4 +785,29 @@ server.listen(
 
     }
 );
+
+// Responde à busca feita pelo aplicativo no tablet. O IP enviado é obtido
+// na hora, portanto acompanha qualquer alteração feita pelo roteador.
+const discoveryServer = dgram.createSocket("udp4");
+
+discoveryServer.on("message", (mensagem, remoto) => {
+    if (mensagem.toString("utf8") !== DISCOVERY_MESSAGE) return;
+
+    const resposta = Buffer.from(JSON.stringify({
+        service: "lotrix-printer",
+        host: obterIpParaTablet(remoto.address),
+        port: PORT
+    }));
+
+    discoveryServer.send(resposta, remoto.port, remoto.address);
+});
+
+discoveryServer.on("error", erro => {
+    console.error("Erro na descoberta do Printer Service:", erro);
+});
+
+discoveryServer.bind(DISCOVERY_PORT, "0.0.0.0", () => {
+    discoveryServer.setBroadcast(true);
+    console.log(`Descoberta automática ativa na porta UDP ${DISCOVERY_PORT}.`);
+});
 

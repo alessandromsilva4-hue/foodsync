@@ -25,7 +25,7 @@ console.log("Produção: NÃO UTILIZADA");
 console.log("Estoque: NÃO UTILIZADO");
 console.log("Movimentações: NÃO UTILIZADAS");
 console.log("Impressão: ZPL RAW");
-console.log("Printer Service: HTTPS 192.168.0.109:9100");
+console.log("Printer Service: HTTPS configurado por empresa");
 console.log("Layout: PADRÃO DEFINITIVO");
 console.log("=======================================");
 
@@ -52,6 +52,35 @@ serverTimestamp
 // CONFIGURAÇÃO DA IMPRESSORA
 // =======================================
 
+let printerServiceDescoberto = null;
+
+async function descobrirPrinterService() {
+
+    if (printerServiceDescoberto && Date.now() - printerServiceDescoberto.em < 300000) {
+        return printerServiceDescoberto;
+    }
+
+    const plugin = window.Capacitor?.Plugins?.LotrixPrinterDiscovery;
+
+    if (!plugin?.discover) return null;
+
+    try {
+        const resultado = await plugin.discover({ timeoutMs: 2500 });
+        const host = String(resultado.host || "").trim();
+        const porta = Number(resultado.port);
+
+        if (!host || !Number.isInteger(porta) || porta < 1 || porta > 65535) {
+            return null;
+        }
+
+        printerServiceDescoberto = { host, porta, em: Date.now() };
+        return printerServiceDescoberto;
+    } catch (erro) {
+        console.warn("Printer Service não localizado automaticamente:", erro);
+        return null;
+    }
+}
+
 async function obterUrlPrinterService() {
 
     const idEmpresa = empresaAtual();
@@ -70,18 +99,22 @@ async function obterUrlPrinterService() {
         ? configuracao.data()
         : {};
 
-    const host = String(dados.printerServiceIp || "")
+    // No Android, descubra o serviço na rede antes de usar a configuração
+    // antiga. Assim, uma troca de IP do computador não exige intervenção.
+    const encontrado = await descobrirPrinterService();
+
+    const host = String(encontrado?.host || dados.printerServiceIp || "")
         .trim()
         .replace(/^https?:\/\//i, "")
         .replace(/\/.*$/, "")
         .replace(/:\d+$/, "");
 
-    const porta = Number(dados.printerServicePort || 9100);
+    const porta = Number(encontrado?.porta || dados.printerServicePort || 9100);
 
     if (!host || !Number.isInteger(porta) || porta < 1 || porta > 65535) {
 
         throw new Error(
-            "Configure o IP e a porta do Lotrix Printer Service em Configurações antes de imprimir."
+            "Não foi possível localizar o Lotrix Printer Service na rede. Verifique se ele está aberto no computador da impressora."
         );
 
     }
@@ -1305,6 +1338,158 @@ function atualizarResponsavelPrevia() {
         campo?.value?.trim() ||
         "--";
 
+    const resumoResponsavel =
+        obterElemento(
+            "responsavelRapido"
+        );
+
+    if (resumoResponsavel) {
+
+        resumoResponsavel.textContent =
+            campo?.value?.trim() ||
+            "usuário logado";
+
+    }
+
+}
+
+// =======================================
+// RESUMO DA IMPRESSÃO RÁPIDA
+// =======================================
+
+function prepararImpressaoRapida() {
+
+    const usuario =
+        usuarioAtual();
+
+    const responsavel =
+        obterElemento(
+            "responsavelSelect"
+        );
+
+    if (
+        responsavel &&
+        !responsavel.value.trim()
+    ) {
+
+        responsavel.value =
+            usuario?.nome ||
+            usuario?.email ||
+            "Usuário logado";
+
+    }
+
+    const data =
+        obterElemento(
+            "dataProducao"
+        );
+
+    const resumoData =
+        obterElemento(
+            "dataProducaoRapida"
+        );
+
+    if (resumoData) {
+
+        resumoData.textContent =
+            data?.value
+                ? "hoje"
+                : "não informada";
+
+    }
+
+    atualizarResponsavelPrevia();
+
+}
+
+function ativarEtapaImpressao(
+    etapa
+) {
+
+    document
+        .querySelectorAll(
+            "[data-label-step]"
+        )
+        .forEach(
+            botao => {
+
+                botao.classList.toggle(
+                    "is-active",
+                    botao.dataset.labelStep === etapa
+                );
+
+            }
+        );
+
+}
+
+// =======================================
+// CONFIRMAÇÃO ANTES DE ENVIAR À IMPRESSORA
+// =======================================
+
+async function confirmarImpressaoRapida() {
+
+    prepararImpressaoRapida();
+
+    const produto =
+        produtoSelecionado();
+
+    if (!produto) {
+
+        alert(
+            "Escolha o produto antes de imprimir."
+        );
+
+        obterElemento(
+            "produtoEtiquetaBusca"
+        )?.focus();
+
+        ativarEtapaImpressao(
+            "print"
+        );
+
+        return;
+
+    }
+
+    const quantidade =
+        parseInt(
+            obterElemento(
+                "quantidadeProducao"
+            )?.value,
+            10
+        );
+
+    if (!Number.isInteger(quantidade) || quantidade < 1) {
+
+        alert(
+            "Informe uma quantidade válida de etiquetas."
+        );
+
+        obterElemento(
+            "quantidadeProducao"
+        )?.focus();
+
+        return;
+
+    }
+
+    const confirmar =
+        window.confirm(
+            `Confirmar a impressão de ${quantidade} etiqueta(s) de ${produto.nome || "produto selecionado"}?`
+        );
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+    imprimirDepoisDeSalvar =
+        true;
+
+    await salvarEtiqueta();
+
 }
 
 // =======================================
@@ -2362,6 +2547,10 @@ await setDoc(
                     `Etiqueta criada e ${quantidade} etiqueta(s) enviada(s) para a impressora.`
                 );
 
+                ativarEtapaImpressao(
+                    "confirm"
+                );
+
             } catch (error) {
 
                 console.error(
@@ -2405,6 +2594,8 @@ await setDoc(
         // ===================================
 
         preencherDataAtual();
+
+        prepararImpressaoRapida();
 
         if (campoQuantidade) {
 
@@ -4366,6 +4557,8 @@ if (btnApagarEtiquetasFiltradas) {
 
             preencherDataAtual();
 
+            prepararImpressaoRapida();
+
             // ===================================
             // PRODUTOS
             // ===================================
@@ -4405,10 +4598,7 @@ if (btnApagarEtiquetasFiltradas) {
 
                         evento.preventDefault();
 
-                        imprimirDepoisDeSalvar =
-                            true;
-
-                        await salvarEtiqueta();
+                        await confirmarImpressaoRapida();
 
                     }
                 );
@@ -4462,6 +4652,8 @@ if (btnApagarEtiquetasFiltradas) {
 
                         atualizarPrevia();
 
+                        prepararImpressaoRapida();
+
                     }
                 );
 
@@ -4497,6 +4689,73 @@ if (btnApagarEtiquetasFiltradas) {
                 );
 
             }
+
+            const campoResponsavel =
+                obterElemento(
+                    "responsavelSelect"
+                );
+
+            campoResponsavel?.addEventListener(
+                "input",
+                atualizarResponsavelPrevia
+            );
+
+            document
+                .querySelectorAll(
+                    "[data-label-step]"
+                )
+                .forEach(
+                    botao => {
+
+                        botao.addEventListener(
+                            "click",
+                            () => {
+
+                                const etapa =
+                                    botao.dataset.labelStep;
+
+                                if (etapa === "confirm") {
+
+                                    confirmarImpressaoRapida();
+
+                                    return;
+
+                                }
+
+                                ativarEtapaImpressao(
+                                    etapa
+                                );
+
+                                const destino =
+                                    etapa === "history"
+                                        ? obterElemento("historicoEtiquetas")
+                                        : obterElemento("impressaoRapida");
+
+                                destino?.scrollIntoView({
+                                    behavior: "smooth",
+                                    block: "start"
+                                });
+
+                                if (etapa === "print") {
+
+                                    window.setTimeout(
+                                        () => {
+
+                                            obterElemento(
+                                                "produtoEtiquetaBusca"
+                                            )?.focus();
+
+                                        },
+                                        350
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
 // ===================================
 // BOTÃO LIMPAR HISTÓRICO
 // ===================================

@@ -27,6 +27,10 @@ body.sidebar-collapsed .content,body.sidebar-collapsed .main-content,body.sideba
  .sidebar.collapsed .sidebar-options-btn{display:grid!important}
  .content,.main-content,.conteudo,body.sidebar-collapsed .content,body.sidebar-collapsed .main-content,body.sidebar-collapsed .conteudo{margin-left:0!important;width:100%!important}
  .sidebar-overlay.active{opacity:1!important;visibility:visible!important}
+ /* Há apenas um botão de menu por vez: externo quando fechado,
+    interno quando o painel está aberto. */
+ .sidebar-menu-btn{display:none!important}
+ body.sidebar-open .sidebar-menu-btn{display:grid!important}
 }
 
 /* MOBILE APP — gatilho da Sidebar */
@@ -45,4 +49,5 @@ body.sidebar-collapsed .content,body.sidebar-collapsed .main-content,body.sideba
 .menu-toggle:hover,.menu-toggle:active,.menu-toggle:focus{transform:none!important}
 .menu-toggle svg{width:21px!important;height:21px!important}
 body.sidebar-open .menu-toggle{opacity:0!important;pointer-events:none!important}
+body.sidebar-open button.menu-toggle:not(#sidebarMenuToggle){opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 @media(min-width:901px){.menu-toggle{display:none!important}}

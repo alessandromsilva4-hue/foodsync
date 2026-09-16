@@ -1,708 +1,1413 @@
 ﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>Lotrix — Dashboard</title>
+<title>Lotrix — Dashboard</title>
 
-    <link
-        rel="icon"
-        href="img/favicon.png"
-    >
+<link rel="icon" href="img/favicon.png">
 
-    <link
-        rel="stylesheet"
-        href="css/style.css"
-    >
-
-    <link
-        rel="stylesheet"
-        href="css/sidebar.css"
-    >
-
-    <link
-        rel="stylesheet"
-        href="css/dashboard.css"
-    >
-
-    <link rel="stylesheet" href="./css/sidebar-global-final.css">
-
-    <link rel="stylesheet" href="./css/dark-theme.css">
-
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="./css/sidebar-global-final.css">
+<link rel="stylesheet" href="./css/dark-theme.css">
 <link rel="stylesheet" href="css/button-interaction-fix.css">
-    <link rel="stylesheet" href="css/lotrix-final-fix.css">
-    <link rel="stylesheet" href="css/lotrix-responsive-final.css">
-</head>
+<link rel="stylesheet" href="css/lotrix-final-fix.css">
+<link rel="stylesheet" href="css/lotrix-responsive-final.css">
 
+<style id="dashboard-reorganization">
+
+    /* =========================================================
+       LOTRIX — DASHBOARD
+       Organização executiva / leitura rápida
+       ========================================================= */
+
+    .dashboard-page {
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+
+    /* =========================================================
+       CABEÇALHO
+       ========================================================= */
+
+    .dashboard-header {
+        margin-bottom: 24px;
+    }
+
+    .dashboard-welcome .header-kicker {
+        margin-bottom: 5px;
+    }
+
+    .dashboard-welcome h1 {
+        margin-bottom: 6px;
+    }
+
+    .dashboard-subtitle {
+        margin: 0;
+        opacity: .68;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    /* =========================================================
+       INDICADORES PRINCIPAIS
+       ========================================================= */
+
+    .dashboard-summary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .dashboard-summary-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+        padding: 18px;
+        border: 1px solid rgba(148, 163, 184, .16);
+        border-radius: 18px;
+        background: var(--card-bg, #fff);
+        box-shadow: 0 8px 24px rgba(15, 23, 42, .05);
+        color: inherit;
+        text-decoration: none;
+        transition:
+            transform .18s ease,
+            box-shadow .18s ease;
+    }
+
+    .dashboard-summary-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(15, 23, 42, .09);
+    }
+
+    .summary-icon {
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+    }
+
+    .summary-icon.success {
+        background: rgba(34, 197, 94, .12);
+    }
+
+    .summary-icon.info {
+        background: rgba(37, 99, 235, .12);
+    }
+
+    .summary-icon.danger {
+        background: rgba(239, 68, 68, .12);
+    }
+
+    .summary-icon svg {
+        width: 21px;
+        height: 21px;
+    }
+
+    .summary-copy {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .summary-copy small {
+        font-size: 12px;
+        font-weight: 700;
+        opacity: .68;
+    }
+
+    .summary-copy strong {
+        font-size: 26px;
+        line-height: 1.1;
+        margin: 3px 0;
+    }
+
+    .summary-copy span {
+        font-size: 12px;
+        opacity: .6;
+    }
+
+    .summary-arrow {
+        width: 17px;
+        margin-left: auto;
+        opacity: .4;
+    }
+
+    /* =========================================================
+       STATUS OPERACIONAL
+       ========================================================= */
+
+    .dashboard-operation-status {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 22px;
+        padding: 16px 18px;
+        border: 1px solid rgba(148, 163, 184, .16);
+        border-radius: 18px;
+        background: var(--card-bg, #fff);
+        box-shadow: 0 8px 24px rgba(15, 23, 42, .04);
+    }
+
+    .operation-main {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        min-width: 0;
+    }
+
+    .operation-indicator {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: rgba(34, 197, 94, .12);
+    }
+
+    .operation-indicator svg {
+        width: 21px;
+        height: 21px;
+    }
+
+    .operation-copy {
+        min-width: 0;
+    }
+
+    .operation-copy strong {
+        display: block;
+        font-size: 15px;
+    }
+
+    .operation-copy span {
+        display: block;
+        margin-top: 4px;
+        font-size: 12px;
+        opacity: .68;
+    }
+
+    .operation-badges {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 7px;
+        flex-wrap: wrap;
+    }
+
+    .operation-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        border: 1px solid transparent;
+        background: rgba(100, 116, 139, .09);
+    }
+
+    .operation-badge strong {
+        font-size: 13px;
+    }
+
+    .operation-badge.badge-danger {
+        background: rgba(239, 68, 68, .09);
+    }
+
+    .operation-badge.badge-warning {
+        background: rgba(245, 158, 11, .10);
+    }
+
+    .status-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .status-action svg {
+        width: 16px;
+    }
+
+    /* =========================================================
+       GRID PRINCIPAL
+       ========================================================= */
+
+    .dashboard-main-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.65fr) minmax(300px, .85fr);
+        gap: 16px;
+        align-items: start;
+    }
+
+    .dashboard-panel {
+        min-width: 0;
+    }
+
+    /* =========================================================
+       CABEÇALHO DOS PAINÉIS
+       ========================================================= */
+
+    .panel-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .panel-heading > div {
+        min-width: 0;
+    }
+
+    .panel-eyebrow {
+        margin: 0 0 4px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        opacity: .55;
+    }
+
+    .panel-heading h2 {
+        margin: 0;
+    }
+
+    .panel-description {
+        display: block;
+        margin-top: 5px;
+        font-size: 12px;
+        opacity: .58;
+    }
+
+    /* =========================================================
+       PRODUÇÃO
+       ========================================================= */
+
+    .production-chart-panel {
+        min-height: 390px;
+    }
+
+    .chart-wrap {
+        min-height: 300px;
+    }
+
+    /* =========================================================
+       RANKING
+       ========================================================= */
+
+    .ranking-panel {
+        min-height: 390px;
+    }
+
+    .ranking-icon {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background: rgba(245, 158, 11, .10);
+    }
+
+    .ranking-icon svg {
+        width: 19px;
+    }
+
+    .rank-list {
+        margin-top: 18px;
+    }
+
+    /* =========================================================
+       ALERTAS DE VALIDADE
+       ========================================================= */
+
+    .validity-panel {
+        grid-column: 1 / -1;
+    }
+
+    .validity-heading {
+        align-items: center;
+    }
+
+    .validity-heading > a {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .validity-heading svg {
+        width: 15px;
+    }
+
+    .dashboard-validity-summary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .etiqueta-alerta-card {
+        min-height: 78px;
+    }
+
+    .validity-footer {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 12px;
+    }
+
+    .validity-footer a {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .validity-footer svg {
+        width: 15px;
+    }
+
+    /* =========================================================
+       PRÓXIMOS VENCIMENTOS
+       ========================================================= */
+
+    .validity-next {
+        margin-top: 18px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(148, 163, 184, .14);
+    }
+
+    .validity-next-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .validity-next-title span {
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .validity-next-title small {
+        font-size: 11px;
+        opacity: .55;
+    }
+
+    /* =========================================================
+       ATIVIDADE RECENTE
+       ========================================================= */
+
+    .recent-panel {
+        grid-column: 1;
+    }
+
+    /* =========================================================
+       ESTOQUE
+       ========================================================= */
+
+    .stock-panel {
+        grid-column: 2;
+    }
+
+    .stock-overview {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        margin: 16px 0;
+        padding: 12px;
+        border-radius: 13px;
+        background: rgba(100, 116, 139, .06);
+    }
+
+    .stock-status-icon {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        display: grid;
+        place-items: center;
+        border-radius: 11px;
+        background: rgba(37, 99, 235, .10);
+    }
+
+    .stock-status-icon svg {
+        width: 19px;
+    }
+
+    .stock-overview strong {
+        display: block;
+        font-size: 13px;
+    }
+
+    .stock-overview span {
+        display: block;
+        margin-top: 3px;
+        font-size: 11px;
+        opacity: .6;
+    }
+
+    .stock-footer {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 12px;
+    }
+
+    .stock-footer a {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .stock-footer svg {
+        width: 15px;
+    }
+
+    /* =========================================================
+       LISTA DE ALERTAS
+       ========================================================= */
+
+    .lista-alertas-etiquetas {
+        margin-top: 12px;
+    }
+
+    /* =========================================================
+       ELEMENTOS DE COMPATIBILIDADE
+       ========================================================= */
+
+    #resumoOperacional,
+    #vencendoHoje,
+    #vencendoHojeDescricao {
+        display: none !important;
+    }
+
+    .dashboard-monitoria {
+        display: none !important;
+    }
+
+    /* =========================================================
+       RESPONSIVO
+       ========================================================= */
+
+    @media (max-width: 1100px) {
+
+        .dashboard-main-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .validity-panel,
+        .recent-panel,
+        .stock-panel {
+            grid-column: 1;
+        }
+
+    }
+
+    @media (max-width: 900px) {
+
+        .dashboard-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-operation-status {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .operation-badges {
+            justify-content: flex-start;
+        }
+
+        .status-action {
+            justify-self: start;
+        }
+
+        .dashboard-validity-summary {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .header-actions {
+            width: 100%;
+        }
+
+        .header-actions .button {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .dashboard-summary-card {
+            padding: 15px;
+        }
+
+        .summary-copy strong {
+            font-size: 23px;
+        }
+
+        .dashboard-operation-status {
+            padding: 14px;
+        }
+
+        .validity-next-title {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+    }
+
+</style>
+
+</head>
 
 <body>
 
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
 <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <button class="sidebar-menu-btn" id="sidebarMenuToggle" type="button" aria-label="Recolher menu" aria-expanded="true">
-            <i data-lucide="menu" aria-hidden="true"></i>
-        </button>
-        <a class="sidebar-brand" href="dashboard.html" aria-label="Lotrix - Dashboard">
-            <img class="brand-logo" src="img/logo.png" alt="Lotrix">
-            <span class="brand-name">Lotrix</span>
-        </a>
-        <button class="sidebar-options-btn" id="sidebarOptionsToggle" type="button" aria-label="Mais opções" aria-expanded="false">
-            <i data-lucide="more-vertical" aria-hidden="true"></i>
-        </button>
-        <div class="sidebar-options" id="sidebarOptions" hidden>
-            <a href="dashboard.html"><i data-lucide="home"></i> Início</a>
-            <button type="button" id="sidebarRefresh"><i data-lucide="refresh-cw"></i> Atualizar</button>
-        </div>
-    </div>
 
-    <nav class="menu" aria-label="Menu principal">
-        <div class="menu-section">
-            <div class="menu-title">Geral</div>
-            <a href="dashboard.html" data-page="dashboard.html"><i data-lucide="layout-dashboard"></i><span class="nav-label">Dashboard</span></a>
-        </div>
+<div class="sidebar-header">
 
-        <div class="menu-section">
-            <div class="menu-title">Operação</div>
-            <a href="producao.html" data-page="producao.html"><i data-lucide="factory"></i><span class="nav-label">Produção</span></a>
-            <a href="produtos.html" data-page="produtos.html"><i data-lucide="package"></i><span class="nav-label">Produtos</span></a>
-            <a href="etiquetas.html" data-page="etiquetas.html"><i data-lucide="tag"></i><span class="nav-label">Etiquetas</span></a>
-            <a href="estoque.html" data-page="estoque.html"><i data-lucide="boxes"></i><span class="nav-label">Estoque</span></a>
-        </div>
+    <button
+        class="sidebar-menu-btn"
+        id="sidebarMenuToggle"
+        type="button"
+        aria-label="Recolher menu"
+        aria-expanded="true"
+    >
+        <i data-lucide="menu" aria-hidden="true"></i>
+    </button>
 
-        <div class="menu-section">
-            <div class="menu-title">Gestão</div>
-            <a href="relatorios.html" data-page="relatorios.html"><i data-lucide="bar-chart-3"></i><span class="nav-label">Relatórios</span></a>
-            <a href="auditoria.html" data-page="auditoria.html"><i data-lucide="clipboard-check"></i><span class="nav-label">Auditoria</span></a>
-            <a href="usuario.html" data-page="usuario.html"><i data-lucide="users"></i><span class="nav-label">Usuários</span></a>
-            <a href="sac-admin.html" data-page="sac-admin.html"><i data-lucide="headphones"></i><span class="nav-label">SAC Admin</span></a>
-        </div>
+    <a
+        class="sidebar-brand"
+        href="dashboard.html"
+        aria-label="Lotrix - Dashboard"
+    >
+        <img
+            class="brand-logo"
+            src="img/logo.png"
+            alt="Lotrix"
+        >
 
-        <div class="menu-section">
-            <div class="menu-title">Sistema</div>
-            <a href="configuracoes.html" data-page="configuracoes.html"><i data-lucide="settings"></i><span class="nav-label">Configurações</span></a>
-            <a href="ajuda.html" data-page="ajuda.html"><i data-lucide="circle-help"></i><span class="nav-label">Ajuda</span></a>
-            <a href="sac.html" data-page="sac.html"><i data-lucide="message-circle"></i><span class="nav-label">SAC</span></a>
-        </div>
-    </nav>
+        <span class="brand-name">Lotrix</span>
+    </a>
 
-    <div class="sidebar-footer">
-        <div class="user-card">
-            <div class="avatar"><i data-lucide="user-round" aria-hidden="true"></i></div>
-            <div class="user-info">
-    <strong id="nomeUsuarioLogado">Usuário</strong>
-    <small id="perfilUsuarioLogado">Usuário</small>
-</div>
-        </div>
-        <div class="company-card">
-            <span class="company-label">Empresa</span>
-            <strong class="company-name" id="nomeEmpresaLogada">Carregando...</strong>
-        </div>
-        <button class="logout-button" type="button" onclick="logout()"><i data-lucide="log-out"></i><span>Sair</span></button>
-    </div>
-</aside>
-<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
-
-
-
-<div class="layout">
-
-
+    <button
+        class="sidebar-options-btn"
+        id="sidebarOptionsToggle"
+        type="button"
+        aria-label="Mais opções"
+        aria-expanded="false"
+    >
         <i data-lucide="more-vertical" aria-hidden="true"></i>
     </button>
 
-    <!-- =====================================================
-         CONTEÚDO PRINCIPAL
-    ====================================================== -->
-
-    <main class="content dashboard-page">
-
-
-        <!-- =================================================
-             CABEÇALHO
-        ================================================== -->
-
-        <header class="top-header dashboard-header">
-
-            <div class="dashboard-welcome">
-
-                <p
-                    class="header-kicker"
-                    id="dataAtual"
-                >
-                    Visão operacional
-                </p>
-
-
-                <h1 id="saudacao">
-                    Boa noite 👋
-                </h1>
-
-
-                <p class="dashboard-subtitle">
-                    Veja o que precisa da sua atenção hoje.
-                </p>
-
-
-                <!--
-                    Mensagem dinâmica visual.
-                    O JS principal continua responsável
-                    pelos dados reais do dashboard.
-                -->
-
-                <div class="dashboard-status-message">
-
-                    <span class="status-message-icon">
-
-                        <i
-                            data-lucide="activity"
-                        ></i>
-
-                    </span>
-
-                    <span>
-                        Acompanhe as principais movimentações
-                        da operação.
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="header-actions">
-
-                <a
-                    class="button button-secondary"
-                    href="producao.html"
-                >
-                    <i data-lucide="plus"></i>
-
-                    Nova produção
-
-                </a>
-
-
-                <a
-                    class="button"
-                    href="etiquetas.html"
-                >
-                    <i data-lucide="printer"></i>
-
-                    Imprimir etiqueta
-
-                </a>
-
-            </div>
-
-        </header>
-
-
-
-        <!-- =================================================
-             CARDS PRINCIPAIS
-        ================================================== -->
-
-        <section class="metric-grid">
-
-
-            <!-- PRODUÇÕES -->
-
-            <a
-                href="producao.html"
-                class="metric-card metric-link"
-            >
-
-                <span class="metric-icon success">
-
-                    <i
-                        data-lucide="chef-hat"
-                    ></i>
-
-                </span>
-
-
-                <div class="metric-content">
-
-                    <p>
-                        Produções hoje
-                    </p>
-
-
-                    <strong id="producoesHoje">
-                        —
-                    </strong>
-
-
-                    <small>
-                        Registros finalizados
-                    </small>
-
-                </div>
-
-
-                <span class="metric-arrow">
-
-                    <i
-                        data-lucide="arrow-up-right"
-                    ></i>
-
-                </span>
-
-            </a>
-
-
-
-            <!-- ETIQUETAS -->
-
-            <a
-                href="etiquetas.html"
-                class="metric-card metric-link"
-            >
-
-                <span class="metric-icon info">
-
-                    <i
-                        data-lucide="printer"
-                    ></i>
-
-                </span>
-
-
-                <div class="metric-content">
-
-                    <p>
-                        Etiquetas
-                    </p>
-
-
-                    <strong id="etiquetasHoje">
-                        —
-                    </strong>
-
-
-                    <small>
-                        Emitidas hoje
-                    </small>
-
-                </div>
-
-
-                <span class="metric-arrow">
-
-                    <i
-                        data-lucide="arrow-up-right"
-                    ></i>
-
-                </span>
-
-            </a>
-
-
-
-            <!-- VENCIMENTOS -->
-
-            <a
-                href="etiquetas.html"
-                class="metric-card metric-link metric-alert"
-            >
-
-                <span class="metric-icon warning">
-
-                    <i
-                        data-lucide="calendar-clock"
-                    ></i>
-
-                </span>
-
-
-                <div class="metric-content">
-
-                    <p>
-                        Vencendo hoje
-                    </p>
-
-
-                    <strong id="vencendoHoje">
-                        —
-                    </strong>
-
-
-                    <small id="vencendoHojeDescricao">
-                        Produtos para revisar
-                    </small>
-
-                </div>
-
-
-                <span class="metric-arrow">
-
-                    <i
-                        data-lucide="arrow-up-right"
-                    ></i>
-
-                </span>
-
-            </a>
-
-
-
-            <!-- ESTOQUE -->
-
-            <a
-                href="estoque.html"
-                class="metric-card metric-link"
-            >
-
-                <span class="metric-icon danger">
-
-                    <i
-                        data-lucide="package-x"
-                    ></i>
-
-                </span>
-
-
-                <div class="metric-content">
-
-                    <p>
-                        Estoque crítico
-                    </p>
-
-
-                    <strong id="estoqueCritico">
-                        —
-                    </strong>
-
-
-                    <small id="estoqueCriticoDescricao">
-                        Abaixo do mínimo
-                    </small>
-
-                </div>
-
-
-                <span class="metric-arrow">
-
-                    <i
-                        data-lucide="arrow-up-right"
-                    ></i>
-
-                </span>
-
-            </a>
-
-        </section>
-
-
-
-        <!-- =================================================
-             MENSAGEM OPERACIONAL
-        ================================================== -->
-
-        <section class="dashboard-attention-banner">
-
-            <div class="attention-banner-icon">
-
-                <i
-                    data-lucide="bell-ring"
-                ></i>
-
-            </div>
-
-
-            <div class="attention-banner-content">
-
-                <strong>
-                    Atenção operacional
-                </strong>
-
-                <span>
-                    <span
-                        id="resumoOperacional"
-                        aria-live="polite"
-                    >
-                    Confira os vencimentos e os níveis
-                    de estoque antes de iniciar a produção.
-                    </span>
-                </span>
-
-            </div>
-
-
-            <a href="etiquetas.html">
-
-                Revisar
-
-                <i
-                    data-lucide="arrow-right"
-                ></i>
-
-            </a>
-
-        </section>
-
-
-
-        <!-- =================================================
-             PRODUÇÃO + RANKING
-        ================================================== -->
-
-        <section class="dashboard-main-grid">
-
-
-            <!-- =================================================
-                 GRÁFICO
-            ================================================== -->
-
-            <article
-                class="dashboard-panel production-chart-panel"
-            >
-
-                <div class="panel-heading">
-
-                    <div>
-
-                        <p class="panel-eyebrow">
-                            Produção
-                        </p>
-
-
-                        <h2>
-                            Produção da semana
-                        </h2>
-
-
-                        <span class="panel-description">
-                            Acompanhe o volume produzido
-                            nos últimos 7 dias.
-                        </span>
-
-                    </div>
-
-
-                    <span class="panel-badge">
-
-                        <i
-                            data-lucide="calendar-days"
-                        ></i>
-
-                        Últimos 7 dias
-
-                    </span>
-
-                </div>
-
-
-                <div class="chart-wrap">
-
-                    <canvas
-                        id="graficoProducao"
-                    ></canvas>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 RANKING
-            ================================================== -->
-
-            <article
-                class="dashboard-panel ranking-panel"
-            >
-
-                <div class="panel-heading">
-
-                    <div>
-
-                        <p class="panel-eyebrow">
-                            Ranking
-                        </p>
-
-
-                        <h2>
-                            Mais produzidos
-                        </h2>
-
-
-                        <span class="panel-description">
-                            Produtos com maior volume
-                            de produção.
-                        </span>
-
-                    </div>
-
-
-                    <span class="ranking-icon">
-
-                        <i
-                            data-lucide="trophy"
-                        ></i>
-
-                    </span>
-
-                </div>
-
-
-                <ol
-                    class="rank-list"
-                    id="produtosMaisProduzidos"
-                >
-
-                    <li class="skeleton-row"></li>
-
-                    <li class="skeleton-row"></li>
-
-                    <li class="skeleton-row"></li>
-
-                </ol>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 VALIDADES
-            ================================================== -->
-
-            <article
-                class="dashboard-panel validity-panel"
-            >
-
-                <div class="panel-heading validity-heading">
-
-                    <div>
-
-                        <p class="panel-eyebrow validity-eyebrow">
-                            Atenção
-                        </p>
-
-
-                        <h2>
-                            Validades
-                        </h2>
-
-
-                        <span class="panel-description">
-                            Produtos que precisam de revisão.
-                        </span>
-
-                    </div>
-
-
-                    <a href="etiquetas.html">
-
-                        Ver todas
-
-                        <i
-                            data-lucide="arrow-up-right"
-                        ></i>
-
-                    </a>
-
-                </div>
-
-
-
-               <!-- ALERTA DE ETIQUETAS -->
-
-<div class="etiqueta-alertas">
-
-    <button
-        type="button"
-        class="etiqueta-alerta-card alerta-prestes"
-        data-alerta="prestes"
-        aria-controls="listaAlertasEtiquetas"
-        aria-expanded="false"
+    <div
+        class="sidebar-options"
+        id="sidebarOptions"
+        hidden
     >
-        <span class="etiqueta-alerta-icon">
-            <i data-lucide="clock-3"></i>
-        </span>
+        <a href="dashboard.html">
+            <i data-lucide="home"></i>
+            Início
+        </a>
 
-        <span class="etiqueta-alerta-content">
-            <strong>PRESTES A VENCER</strong>
-            <small>Até 7 dias</small>
-        </span>
-
-        <b id="alertaEtiquetasPrestes">0</b>
-
-        <i
-            class="etiqueta-alerta-arrow"
-            data-lucide="chevron-down"
-        ></i>
-    </button>
-
-
-    <button
-        type="button"
-        class="etiqueta-alerta-card alerta-dias"
-        data-alerta="dias"
-        aria-controls="listaAlertasEtiquetas"
-        aria-expanded="false"
-    >
-        <span class="etiqueta-alerta-icon">
-            <i data-lucide="calendar-check"></i>
-        </span>
-
-        <span class="etiqueta-alerta-content">
-            <strong>ETIQUETA EM DIAS</strong>
-            <small>Mais de 7 dias</small>
-        </span>
-
-        <b id="alertaEtiquetasDias">0</b>
-
-        <i
-            class="etiqueta-alerta-arrow"
-            data-lucide="chevron-down"
-        ></i>
-    </button>
-
-
-    <button
-        type="button"
-        class="etiqueta-alerta-card alerta-vencida"
-        data-alerta="vencida"
-        aria-controls="listaAlertasEtiquetas"
-        aria-expanded="false"
-    >
-        <span class="etiqueta-alerta-icon">
-            <i data-lucide="circle-alert"></i>
-        </span>
-
-        <span class="etiqueta-alerta-content">
-            <strong>ETIQUETA VENCIDA</strong>
-            <small>Validade ultrapassada</small>
-        </span>
-
-        <b id="alertaEtiquetasVencidas">0</b>
-
-        <i
-            class="etiqueta-alerta-arrow"
-            data-lucide="chevron-down"
-        ></i>
-    </button>
+        <button
+            type="button"
+            id="sidebarRefresh"
+        >
+            <i data-lucide="refresh-cw"></i>
+            Atualizar
+        </button>
+    </div>
 
 </div>
 
 
-<!-- LISTA DAS ETIQUETAS SELECIONADAS -->
+<nav
+    class="menu"
+    aria-label="Menu principal"
+>
+
+    <div class="menu-section">
+
+        <div class="menu-title">
+            Geral
+        </div>
+
+        <a
+            href="dashboard.html"
+            data-page="dashboard.html"
+        >
+            <i data-lucide="layout-dashboard"></i>
+            <span class="nav-label">Dashboard</span>
+        </a>
+
+    </div>
+
+
+    <div class="menu-section">
+
+        <div class="menu-title">
+            Operação
+        </div>
+
+        <a
+            href="producao.html"
+            data-page="producao.html"
+        >
+            <i data-lucide="factory"></i>
+            <span class="nav-label">Produção</span>
+        </a>
+
+        <a
+            href="produtos.html"
+            data-page="produtos.html"
+        >
+            <i data-lucide="package"></i>
+            <span class="nav-label">Produtos</span>
+        </a>
+
+        <a
+            href="etiquetas.html"
+            data-page="etiquetas.html"
+        >
+            <i data-lucide="tag"></i>
+            <span class="nav-label">Etiquetas</span>
+        </a>
+
+        <a
+            href="estoque.html"
+            data-page="estoque.html"
+        >
+            <i data-lucide="boxes"></i>
+            <span class="nav-label">Estoque</span>
+        </a>
+
+    </div>
+
+
+    <div class="menu-section">
+
+        <div class="menu-title">
+            Gestão
+        </div>
+
+        <a
+            href="relatorios.html"
+            data-page="relatorios.html"
+        >
+            <i data-lucide="bar-chart-3"></i>
+            <span class="nav-label">Relatórios</span>
+        </a>
+
+        <a
+            href="auditoria.html"
+            data-page="auditoria.html"
+        >
+            <i data-lucide="clipboard-check"></i>
+            <span class="nav-label">Auditoria</span>
+        </a>
+
+        <a
+            href="usuario.html"
+            data-page="usuario.html"
+        >
+            <i data-lucide="users"></i>
+            <span class="nav-label">Usuários</span>
+        </a>
+
+        <a
+            href="sac-admin.html"
+            data-page="sac-admin.html"
+        >
+            <i data-lucide="headphones"></i>
+            <span class="nav-label">SAC Admin</span>
+        </a>
+
+    </div>
+
+
+    <div class="menu-section">
+
+        <div class="menu-title">
+            Sistema
+        </div>
+
+        <a
+            href="configuracoes.html"
+            data-page="configuracoes.html"
+        >
+            <i data-lucide="settings"></i>
+            <span class="nav-label">Configurações</span>
+        </a>
+
+        <a
+            href="ajuda.html"
+            data-page="ajuda.html"
+        >
+            <i data-lucide="circle-help"></i>
+            <span class="nav-label">Ajuda</span>
+        </a>
+
+        <a
+            href="sac.html"
+            data-page="sac.html"
+        >
+            <i data-lucide="message-circle"></i>
+            <span class="nav-label">SAC</span>
+        </a>
+
+    </div>
+
+</nav>
+
+
+<div class="sidebar-footer">
+
+    <div class="user-card">
+
+        <div class="avatar">
+            <i data-lucide="user-round" aria-hidden="true"></i>
+        </div>
+
+        <div class="user-info">
+
+            <strong id="nomeUsuarioLogado">
+                Usuário
+            </strong>
+
+            <small id="perfilUsuarioLogado">
+                Usuário
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="company-card">
+
+        <span class="company-label">
+            Empresa
+        </span>
+
+        <strong
+            class="company-name"
+            id="nomeEmpresaLogada"
+        >
+            Carregando...
+        </strong>
+
+    </div>
+
+
+    <button
+        class="logout-button"
+        type="button"
+        onclick="logout()"
+    >
+        <i data-lucide="log-out"></i>
+        <span>Sair</span>
+    </button>
+
+</div>
+
+</aside>
 
 <div
-    id="listaAlertasEtiquetas"
-    class="lista-alertas-etiquetas"
-    hidden
+    class="sidebar-overlay"
+    id="sidebarOverlay"
+    aria-hidden="true"
 ></div>
 
-                <!-- LISTA PRINCIPAL -->
+<!-- =========================================================
+     LAYOUT
+========================================================= -->
+
+<div class="layout">
+
+<!-- =====================================================
+     CONTEÚDO PRINCIPAL
+====================================================== -->
+
+<main class="content dashboard-page">
+
+
+    <!-- =================================================
+         CABEÇALHO
+    ================================================== -->
+
+    <header class="top-header dashboard-header">
+
+        <div class="dashboard-welcome">
+
+            <p
+                class="header-kicker"
+                id="dataAtual"
+            >
+                Visão operacional
+            </p>
+
+            <h1 id="saudacao">
+                Boa noite 👋
+            </h1>
+
+            <p class="dashboard-subtitle">
+                Um resumo rápido do que está acontecendo na operação.
+            </p>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <a
+                class="button button-secondary"
+                href="producao.html"
+            >
+                <i data-lucide="plus"></i>
+                Nova produção
+            </a>
+
+            <a
+                class="button"
+                href="etiquetas.html"
+            >
+                <i data-lucide="printer"></i>
+                Imprimir etiqueta
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- =================================================
+         RESUMO PRINCIPAL
+    ================================================== -->
+
+    <section
+        class="dashboard-summary"
+        aria-label="Resumo do dia"
+    >
+
+        <a
+            href="producao.html"
+            class="dashboard-summary-card"
+        >
+
+            <span class="summary-icon success">
+                <i data-lucide="chef-hat"></i>
+            </span>
+
+            <span class="summary-copy">
+
+                <small>
+                    Produções hoje
+                </small>
+
+                <strong id="producoesHoje">
+                    —
+                </strong>
+
+                <span>
+                    Registros finalizados
+                </span>
+
+            </span>
+
+            <i
+                class="summary-arrow"
+                data-lucide="arrow-up-right"
+            ></i>
+
+        </a>
+
+
+        <a
+            href="etiquetas.html"
+            class="dashboard-summary-card"
+        >
+
+            <span class="summary-icon info">
+                <i data-lucide="printer"></i>
+            </span>
+
+            <span class="summary-copy">
+
+                <small>
+                    Etiquetas emitidas
+                </small>
+
+                <strong id="etiquetasHoje">
+                    —
+                </strong>
+
+                <span>
+                    Hoje
+                </span>
+
+            </span>
+
+            <i
+                class="summary-arrow"
+                data-lucide="arrow-up-right"
+            ></i>
+
+        </a>
+
+
+        <a
+            href="estoque.html"
+            class="dashboard-summary-card"
+        >
+
+            <span class="summary-icon danger">
+                <i data-lucide="package-x"></i>
+            </span>
+
+            <span class="summary-copy">
+
+                <small>
+                    Estoque crítico
+                </small>
+
+                <strong id="estoqueCritico">
+                    —
+                </strong>
+
+                <span id="estoqueCriticoDescricao">
+                    Abaixo do mínimo
+                </span>
+
+            </span>
+
+            <i
+                class="summary-arrow"
+                data-lucide="arrow-up-right"
+            ></i>
+
+        </a>
+
+    </section>
+
+
+    <!-- Compatibilidade com dashboard.js -->
+
+    <span
+        id="resumoOperacional"
+        hidden
+    >
+        Operação em acompanhamento.
+    </span>
+
+    <span
+        id="vencendoHoje"
+        hidden
+    >
+        0
+    </span>
+
+    <span
+        id="vencendoHojeDescricao"
+        hidden
+    ></span>
+
+
+    <!-- =================================================
+         STATUS DA OPERAÇÃO
+    ================================================== -->
+
+    <section
+        class="dashboard-operation-status"
+        id="statusOperacaoDashboard"
+        aria-live="polite"
+    >
+
+        <div class="operation-main">
+
+            <span
+                class="operation-indicator"
+                id="indicadorOperacao"
+                aria-hidden="true"
+            >
+                <i data-lucide="circle-check"></i>
+            </span>
+
+            <div class="operation-copy">
+
+                <strong id="statusOperacaoTitulo">
+                    Operação normal
+                </strong>
+
+                <span id="statusOperacaoDescricao">
+                    Nenhum alerta crítico identificado.
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="operation-badges"
+            aria-label="Resumo da operação"
+        >
+
+            <span class="operation-badge badge-danger">
+
+                <strong id="statusVencidas">
+                    0
+                </strong>
+
+                vencidas
+
+            </span>
+
+
+            <span class="operation-badge badge-warning">
+
+                <strong id="statusPrestes">
+                    0
+                </strong>
+
+                prestes a vencer
+
+            </span>
+
+
+            <span class="operation-badge">
+
+                <strong id="statusEstoque">
+                    0
+                </strong>
+
+                estoque crítico
+
+            </span>
+
+        </div>
+
+
+        <a
+            class="status-action"
+            href="etiquetas.html"
+        >
+            Ver pendências
+            <i data-lucide="arrow-right"></i>
+        </a>
+
+    </section>
+
+
+    <!-- =================================================
+         CONTEÚDO
+    ================================================== -->
+
+    <section class="dashboard-main-grid">
+
+
+        <!-- =================================================
+             PRODUÇÃO DA SEMANA
+        ================================================== -->
+
+        <article class="dashboard-panel production-chart-panel">
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <p class="panel-eyebrow">
+                        Produção
+                    </p>
+
+                    <h2>
+                        Produção da semana
+                    </h2>
+
+                    <span class="panel-description">
+                        Volume produzido nos últimos 7 dias.
+                    </span>
+
+                </div>
+
+
+                <span class="panel-badge">
+
+                    <i data-lucide="calendar-days"></i>
+
+                    Últimos 7 dias
+
+                </span>
+
+            </div>
+
+
+            <div class="chart-wrap">
+
+                <canvas id="graficoProducao"></canvas>
+
+            </div>
+
+        </article>
+
+
+        <!-- =================================================
+             RANKING
+        ================================================== -->
+
+        <article class="dashboard-panel ranking-panel">
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <p class="panel-eyebrow">
+                        Ranking
+                    </p>
+
+                    <h2>
+                        Mais produzidos
+                    </h2>
+
+                    <span class="panel-description">
+                        Produtos com maior volume de produção.
+                    </span>
+
+                </div>
+
+
+                <span class="ranking-icon">
+
+                    <i data-lucide="trophy"></i>
+
+                </span>
+
+            </div>
+
+
+            <ol
+                class="rank-list"
+                id="produtosMaisProduzidos"
+            >
+
+                <li class="skeleton-row"></li>
+                <li class="skeleton-row"></li>
+                <li class="skeleton-row"></li>
+
+            </ol>
+
+        </article>
+
+
+        <!-- =================================================
+             VALIDADE — RESUMO
+        ================================================== -->
+
+        <article class="dashboard-panel validity-panel">
+
+            <div class="panel-heading validity-heading">
+
+                <div>
+
+                    <p class="panel-eyebrow">
+                        Atenção
+                    </p>
+
+                    <h2>
+                        Validade das etiquetas
+                    </h2>
+
+                    <span class="panel-description">
+                        O dashboard mostra somente o que precisa de atenção.
+                    </span>
+
+                </div>
+
+
+                <a href="etiquetas.html">
+
+                    Abrir etiquetas
+
+                    <i data-lucide="arrow-up-right"></i>
+
+                </a>
+
+            </div>
+
+
+            <div class="etiqueta-alertas dashboard-validity-summary">
+
+
+                <button
+                    type="button"
+                    class="etiqueta-alerta-card alerta-vencida"
+                    data-alerta="vencida"
+                    aria-controls="listaAlertasEtiquetas"
+                    aria-expanded="false"
+                >
+
+                    <span class="etiqueta-alerta-icon">
+                        <i data-lucide="circle-alert"></i>
+                    </span>
+
+                    <span class="etiqueta-alerta-content">
+
+                        <strong>
+                            Vencidas
+                        </strong>
+
+                        <small>
+                            Revisão imediata
+                        </small>
+
+                    </span>
+
+                    <b id="alertaEtiquetasVencidas">
+                        0
+                    </b>
+
+                    <i
+                        class="etiqueta-alerta-arrow"
+                        data-lucide="chevron-right"
+                    ></i>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="etiqueta-alerta-card alerta-prestes"
+                    data-alerta="prestes"
+                    aria-controls="listaAlertasEtiquetas"
+                    aria-expanded="false"
+                >
+
+                    <span class="etiqueta-alerta-icon">
+                        <i data-lucide="clock-3"></i>
+                    </span>
+
+                    <span class="etiqueta-alerta-content">
+
+                        <strong>
+                            Prestes a vencer
+                        </strong>
+
+                        <small>
+                            Próximos 7 dias
+                        </small>
+
+                    </span>
+
+                    <b id="alertaEtiquetasPrestes">
+                        0
+                    </b>
+
+                    <i
+                        class="etiqueta-alerta-arrow"
+                        data-lucide="chevron-right"
+                    ></i>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="etiqueta-alerta-card alerta-dias"
+                    data-alerta="dias"
+                    aria-controls="listaAlertasEtiquetas"
+                    aria-expanded="false"
+                >
+
+                    <span class="etiqueta-alerta-icon">
+                        <i data-lucide="calendar-check"></i>
+                    </span>
+
+                    <span class="etiqueta-alerta-content">
+
+                        <strong>
+                            Em dias
+                        </strong>
+
+                        <small>
+                            Mais de 7 dias
+                        </small>
+
+                    </span>
+
+                    <b id="alertaEtiquetasDias">
+                        0
+                    </b>
+
+                    <i
+                        class="etiqueta-alerta-arrow"
+                        data-lucide="chevron-right"
+                    ></i>
+
+                </button>
+
+            </div>
+
+
+            <div
+                id="listaAlertasEtiquetas"
+                class="lista-alertas-etiquetas"
+                hidden
+            ></div>
+
+
+            <div class="validity-next">
+
+                <div class="validity-next-title">
+
+                    <span>
+                        Próximos vencimentos
+                    </span>
+
+                    <small>
+                        Itens que merecem atenção
+                    </small>
+
+                </div>
+
 
                 <div
                     class="attention-list validity-list"
@@ -710,309 +1415,124 @@
                 >
 
                     <div class="skeleton-row"></div>
-
                     <div class="skeleton-row"></div>
-
                     <div class="skeleton-row"></div>
-
-                </div>
-
-
-                <div class="validity-footer">
-
-                    <a href="etiquetas.html">
-
-                        Ver todas as validades
-
-                        <i
-                            data-lucide="arrow-right"
-                        ></i>
-
-                    </a>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 PRODUÇÕES RECENTES
-            ================================================== -->
-
-            <article
-                class="dashboard-panel recent-panel"
-            >
-
-                <div class="panel-heading">
-
-                    <div>
-
-                        <p class="panel-eyebrow">
-                            Atividade recente
-                        </p>
-
-
-                        <h2>
-                            Últimas produções
-                        </h2>
-
-                    </div>
-
-
-                    <a href="producao.html">
-
-                        Ver todas
-
-                        <i
-                            data-lucide="arrow-up-right"
-                        ></i>
-
-                    </a>
-
-                </div>
-
-
-                <div
-                    class="activity-list"
-                    id="listaProducao"
-                >
-
-                    <div class="skeleton-row"></div>
-
-                    <div class="skeleton-row"></div>
-
-                    <div class="skeleton-row"></div>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 ESTOQUE
-            ================================================== -->
-
-            <article
-                class="dashboard-panel stock-panel"
-            >
-
-                <div class="panel-heading">
-
-                    <div>
-
-                        <p class="panel-eyebrow">
-                            Estoque
-                        </p>
-
-
-                        <h2>
-                            Situação do estoque
-                        </h2>
-
-                    </div>
-
-
-                    <a href="estoque.html">
-
-                        Abrir estoque
-
-                        <i
-                            data-lucide="arrow-up-right"
-                        ></i>
-
-                    </a>
-
-                </div>
-
-
-                <div
-                    class="stock-overview"
-                >
-
-                    <div
-                        class="stock-status-icon"
-                    >
-
-                        <i
-                            data-lucide="package-check"
-                        ></i>
-
-                    </div>
-
-
-                    <div>
-
-                        <strong>
-                            Controle de estoque
-                        </strong>
-
-                        <span>
-                            Produtos abaixo do mínimo
-                            aparecem automaticamente aqui.
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="attention-list"
-                    id="listaEstoqueBaixo"
-                >
-
-                    <div class="skeleton-row"></div>
-
-                    <div class="skeleton-row"></div>
-
-                    <div class="skeleton-row"></div>
-
-                </div>
-
-
-                <div class="stock-footer">
-
-                    <a href="estoque.html">
-
-                        Abrir estoque
-
-                        <i
-                            data-lucide="arrow-right"
-                        ></i>
-
-                    </a>
-
-                </div>
-
-            </article>
-
-
-        </section>
-
-
-
-        <!-- =================================================
-             MONITORIA DE VALIDADES
-             
-             Mantida compatível com o dashboard.js.
-             Pode ser utilizada posteriormente sem quebrar
-             o restante do Dashboard.
-        ================================================== -->
-
-        <section
-            class="monitoria-validade dashboard-monitoria"
-            id="monitoriaValidade"
-            hidden
-        >
-
-            <div class="monitoria-topo">
-
-                <div class="monitoria-titulo">
-
-                    <p class="panel-eyebrow">
-                        Monitoramento
-                    </p>
-
-                    <h2>
-                        Monitoria de validades
-                    </h2>
-
-                    <p>
-                        Acompanhamento detalhado das etiquetas
-                        próximas do vencimento.
-                    </p>
 
                 </div>
 
             </div>
 
 
-            <div class="monitoria-cards">
+            <div class="validity-footer">
+
+                <a href="etiquetas.html">
+
+                    Ver histórico completo
+
+                    <i data-lucide="arrow-right"></i>
+
+                </a>
+
+            </div>
+
+        </article>
 
 
-                <div class="monitoria-card ontem">
+        <!-- =================================================
+             ÚLTIMAS PRODUÇÕES
+        ================================================== -->
 
-                    <span class="monitoria-periodo">
-                        Ontem
-                    </span>
+        <article class="dashboard-panel recent-panel">
 
-                    <div class="monitoria-numero">
+            <div class="panel-heading">
 
-                        <strong id="validadeOntemMonitoria">
-                            —
-                        </strong>
+                <div>
 
-                        <span>
-                            produtos
-                        </span>
+                    <p class="panel-eyebrow">
+                        Atividade
+                    </p>
 
-                    </div>
-
-                    <span
-                        class="monitoria-data"
-                        id="dataValidadeOntemMonitoria"
-                    >
-                        —
-                    </span>
-
-                </div>
-
-
-
-                <div class="monitoria-card hoje">
-
-                    <span class="monitoria-periodo">
-                        Hoje
-                    </span>
-
-                    <div class="monitoria-numero">
-
-                        <strong id="validadeHojeMonitoria">
-                            —
-                        </strong>
-
-                        <span>
-                            produtos
-                        </span>
-
-                    </div>
-
-                    <span
-                        class="monitoria-data"
-                        id="dataValidadeHojeMonitoria"
-                    >
-                        —
-                    </span>
+                    <h2>
+                        Últimas produções
+                    </h2>
 
                 </div>
 
 
+                <a href="producao.html">
 
-                <div class="monitoria-card amanha">
+                    Ver todas
 
-                    <span class="monitoria-periodo">
-                        Amanhã
-                    </span>
+                    <i data-lucide="arrow-up-right"></i>
 
-                    <div class="monitoria-numero">
+                </a>
 
-                        <strong id="validadeAmanhaMonitoria">
-                            —
-                        </strong>
+            </div>
 
-                        <span>
-                            produtos
-                        </span>
 
-                    </div>
+            <div
+                class="activity-list"
+                id="listaProducao"
+            >
 
-                    <span
-                        class="monitoria-data"
-                        id="dataValidadeAmanhaMonitoria"
-                    >
-                        —
+                <div class="skeleton-row"></div>
+                <div class="skeleton-row"></div>
+                <div class="skeleton-row"></div>
+
+            </div>
+
+        </article>
+
+
+        <!-- =================================================
+             ESTOQUE CRÍTICO
+        ================================================== -->
+
+        <article class="dashboard-panel stock-panel">
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <p class="panel-eyebrow">
+                        Estoque
+                    </p>
+
+                    <h2>
+                        Itens críticos
+                    </h2>
+
+                </div>
+
+
+                <a href="estoque.html">
+
+                    Abrir estoque
+
+                    <i data-lucide="arrow-up-right"></i>
+
+                </a>
+
+            </div>
+
+
+            <div class="stock-overview">
+
+                <div class="stock-status-icon">
+
+                    <i data-lucide="package-check"></i>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        Controle de estoque
+                    </strong>
+
+                    <span>
+                        Produtos abaixo do mínimo aparecem aqui.
                     </span>
 
                 </div>
@@ -1021,55 +1541,193 @@
 
 
             <div
-                class="lista-monitoria-validades"
-                id="listaMonitoriaValidades"
-            ></div>
+                class="attention-list"
+                id="listaEstoqueBaixo"
+            >
 
-        </section>
+                <div class="skeleton-row"></div>
+                <div class="skeleton-row"></div>
+                <div class="skeleton-row"></div>
+
+            </div>
 
 
-    </main>
+            <div class="stock-footer">
+
+                <a href="estoque.html">
+
+                    Ver estoque completo
+
+                    <i data-lucide="arrow-right"></i>
+
+                </a>
+
+            </div>
+
+        </article>
+
+
+    </section>
+
+
+    <!-- =================================================
+         COMPATIBILIDADE — MONITORIA ANTIGA
+         Mantida para o dashboard.js existente.
+    ================================================== -->
+
+    <section
+        class="monitoria-validade dashboard-monitoria"
+        id="monitoriaValidade"
+        hidden
+    >
+
+        <div class="monitoria-topo">
+
+            <div class="monitoria-titulo">
+
+                <p class="panel-eyebrow">
+                    Monitoramento
+                </p>
+
+                <h2>
+                    Monitoria de validades
+                </h2>
+
+                <p>
+                    Acompanhamento detalhado das etiquetas próximas do vencimento.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="monitoria-cards">
+
+            <div class="monitoria-card ontem">
+
+                <span class="monitoria-periodo">
+                    Ontem
+                </span>
+
+                <div class="monitoria-numero">
+
+                    <strong id="validadeOntemMonitoria">
+                        —
+                    </strong>
+
+                    <span>
+                        produtos
+                    </span>
+
+                </div>
+
+                <span
+                    class="monitoria-data"
+                    id="dataValidadeOntemMonitoria"
+                >
+                    —
+                </span>
+
+            </div>
+
+
+            <div class="monitoria-card hoje">
+
+                <span class="monitoria-periodo">
+                    Hoje
+                </span>
+
+                <div class="monitoria-numero">
+
+                    <strong id="validadeHojeMonitoria">
+                        —
+                    </strong>
+
+                    <span>
+                        produtos
+                    </span>
+
+                </div>
+
+                <span
+                    class="monitoria-data"
+                    id="dataValidadeHojeMonitoria"
+                >
+                    —
+                </span>
+
+            </div>
+
+
+            <div class="monitoria-card amanha">
+
+                <span class="monitoria-periodo">
+                    Amanhã
+                </span>
+
+                <div class="monitoria-numero">
+
+                    <strong id="validadeAmanhaMonitoria">
+                        —
+                    </strong>
+
+                    <span>
+                        produtos
+                    </span>
+
+                </div>
+
+                <span
+                    class="monitoria-data"
+                    id="dataValidadeAmanhaMonitoria"
+                >
+                    —
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="lista-monitoria-validades"
+            id="listaMonitoriaValidades"
+        ></div>
+
+    </section>
+
+
+</main>
 
 </div>
 
-
-
-<!-- =====================================================
+<!-- =========================================================
      BIBLIOTECAS
-====================================================== -->
+========================================================= -->
 
-<script
-    src="https://cdn.jsdelivr.net/npm/chart.js"
-></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script src="https://unpkg.com/lucide@latest"></script>
 
-<script
-    src="https://unpkg.com/lucide@latest"
-></script>
-
-
-
-<!-- =====================================================
+<!-- =========================================================
      FIREBASE / LOTRIX
-====================================================== -->
+========================================================= -->
 
 <script
     type="module"
     src="js/firebase.js"
 ></script>
 
-
 <script
     type="module"
     src="js/auth.js"
 ></script>
 
-
 <script
     type="module"
     src="js/app.js"
 ></script>
-
 
 <script
     type="module"
@@ -1077,39 +1735,251 @@
 ></script>
 
 <script src="js/design-system.js"></script>
-  
 
 <script src="js/sidebar.js"></script>
 
-<!-- =====================================================
+<!-- =========================================================
      ÍCONES
-====================================================== -->
+========================================================= -->
 
 <script>
 
-    document.addEventListener(
-        "DOMContentLoaded",
-        () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-            if (
-                window.lucide &&
-                typeof window.lucide.createIcons ===
-                "function"
-            ) {
+        if (
+            window.lucide &&
+            typeof window.lucide.createIcons === "function"
+        ) {
 
-                window.lucide.createIcons();
+            window.lucide.createIcons();
+
+        }
+
+    }
+);
+
+</script>
+
+<!-- =========================================================
+     STATUS INTELIGENTE
+========================================================= -->
+
+<script>
+
+(function () {
+
+    function numberFrom(id) {
+
+        const el =
+            document.getElementById(id);
+
+        if (!el) {
+            return 0;
+        }
+
+        const value =
+            String(
+                el.textContent || ""
+            ).replace(
+                /[^0-9-]/g,
+                ""
+            );
+
+        const n =
+            Number(value);
+
+        return Number.isFinite(n)
+            ? Math.max(0, n)
+            : 0;
+
+    }
+
+
+    function atualizarStatusOperacao() {
+
+        const vencidas =
+            numberFrom(
+                "alertaEtiquetasVencidas"
+            );
+
+        const prestes =
+            numberFrom(
+                "alertaEtiquetasPrestes"
+            );
+
+        const estoque =
+            numberFrom(
+                "estoqueCritico"
+            );
+
+
+        const title =
+            document.getElementById(
+                "statusOperacaoTitulo"
+            );
+
+        const desc =
+            document.getElementById(
+                "statusOperacaoDescricao"
+            );
+
+        const indicator =
+            document.getElementById(
+                "indicadorOperacao"
+            );
+
+        const statusVencidas =
+            document.getElementById(
+                "statusVencidas"
+            );
+
+        const statusPrestes =
+            document.getElementById(
+                "statusPrestes"
+            );
+
+        const statusEstoque =
+            document.getElementById(
+                "statusEstoque"
+            );
+
+
+        if (
+            !title ||
+            !desc ||
+            !indicator
+        ) {
+            return;
+        }
+
+
+        if (statusVencidas) {
+            statusVencidas.textContent =
+                vencidas;
+        }
+
+
+        if (statusPrestes) {
+            statusPrestes.textContent =
+                prestes;
+        }
+
+
+        if (statusEstoque) {
+            statusEstoque.textContent =
+                estoque;
+        }
+
+
+        const totalCritico =
+            vencidas + estoque;
+
+
+        if (totalCritico > 0) {
+
+            title.textContent =
+                "Ação necessária";
+
+            if (vencidas > 0) {
+
+                desc.textContent =
+                    `${vencidas} etiqueta(s) vencida(s) precisam de revisão imediata.`;
+
+            } else {
+
+                desc.textContent =
+                    `${estoque} produto(s) estão abaixo do estoque mínimo.`;
 
             }
+
+
+            indicator.innerHTML =
+                '<i data-lucide="circle-alert"></i>';
+
+        }
+
+        else if (prestes > 0) {
+
+            title.textContent =
+                "Atenção necessária";
+
+            desc.textContent =
+                `${prestes} etiqueta(s) estão prestes a vencer nos próximos 7 dias.`;
+
+            indicator.innerHTML =
+                '<i data-lucide="triangle-alert"></i>';
+
+        }
+
+        else {
+
+            title.textContent =
+                "Operação normal";
+
+            desc.textContent =
+                "Nenhum alerta crítico identificado no momento.";
+
+            indicator.innerHTML =
+                '<i data-lucide="circle-check"></i>';
+
+        }
+
+
+        if (
+            window.lucide &&
+            typeof window.lucide.createIcons ===
+            "function"
+        ) {
+
+            window.lucide.createIcons();
+
+        }
+
+    }
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            atualizarStatusOperacao();
+
+
+            let tentativas = 0;
+
+
+            const timer =
+                setInterval(
+                    function () {
+
+                        atualizarStatusOperacao();
+
+                        tentativas++;
+
+
+                        if (
+                            tentativas >= 20
+                        ) {
+
+                            clearInterval(
+                                timer
+                            );
+
+                        }
+
+                    },
+                    500
+                );
 
         }
     );
 
-</script>
+})();
 
+</script>
 
 </body>
 
 </html>
-
-
-

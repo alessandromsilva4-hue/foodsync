@@ -463,6 +463,177 @@ button:active {
     opacity: .5;
     cursor: not-allowed;
 }
+
+/* =====================================================
+   IMPRESSÃO RÁPIDA — fluxo simples para a operação diária
+===================================================== */
+.etiqueta-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 18px;
+}
+
+.etiqueta-page-header h1 {
+    margin: 0;
+    color: #082968;
+    font-size: clamp(22px, 2.2vw, 30px);
+    line-height: 1.1;
+}
+
+.etiqueta-page-header p {
+    margin: 7px 0 0;
+    color: #5f78aa;
+    font-size: 14px;
+}
+
+.etiqueta-flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    max-width: 430px;
+}
+
+.etiqueta-flow-step {
+    min-height: 36px;
+    padding: 7px 13px;
+    border: 1px solid #c9d8ef;
+    border-radius: 9px;
+    background: #fff;
+    color: #082968;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.etiqueta-flow-step.is-active {
+    border-color: #2f65dd;
+    background: #2f65dd;
+    color: #fff;
+}
+
+.etiqueta-workspace {
+    grid-template-columns: minmax(300px, 1fr) minmax(280px, .84fr) !important;
+    gap: 20px !important;
+    padding: 22px !important;
+    border: 1px solid #d8e4f5;
+    border-radius: 18px;
+    background: #f9fbff;
+    box-shadow: 0 12px 30px rgba(17, 57, 112, .09);
+}
+
+.quick-print-heading {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2px;
+}
+
+.quick-print-heading-icon {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border-radius: 10px;
+    background: #102f72;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.quick-print-heading strong,
+.quick-print-heading small {
+    display: block;
+}
+
+.quick-print-heading strong { color: #082968; font-size: 16px; }
+.quick-print-heading small { margin-top: 3px; color: #5f78aa; font-size: 12px; }
+
+.etiqueta-workspace .print-panel,
+.etiqueta-workspace .preview-panel {
+    width: auto !important;
+    margin: 0 !important;
+    padding: 18px !important;
+    border: 1px solid #d7e3f5 !important;
+    border-radius: 14px !important;
+    background: #fff !important;
+    box-shadow: none !important;
+}
+
+.etiqueta-workspace .print-panel { grid-column: 1 !important; grid-row: 2 !important; }
+.etiqueta-workspace .preview-panel { grid-column: 2 !important; grid-row: 2 !important; }
+.etiqueta-workspace .print-panel .panel-title,
+.etiqueta-workspace .print-panel .panel-description,
+.etiqueta-workspace .preview-panel .panel-title { display: none; }
+
+.etiqueta-workspace .field-full { margin-bottom: 18px; }
+.etiqueta-workspace .field-full > label,
+.etiqueta-workspace .quantity-box > label { color: #082968; font-size: 12px; }
+.etiqueta-workspace .produto-search-input { min-height: 60px !important; border-color: #bfd0eb !important; border-radius: 11px !important; font-weight: 700; }
+.etiqueta-workspace .produto-search-hint { color: #5f78aa; }
+
+.quick-print-details {
+    grid-template-columns: 1fr !important;
+    margin-bottom: 16px !important;
+}
+
+.quick-print-hidden-field { display: none !important; }
+
+.quantity-print-row {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    margin-top: 0 !important;
+}
+
+.etiqueta-workspace .quantity-control { min-height: 48px !important; border-color: #bfd0eb !important; border-radius: 10px !important; }
+.etiqueta-workspace .quantity-btn { width: 48px !important; height: 48px !important; min-width: 48px !important; min-height: 48px !important; color: #1d55bd !important; background: #f2f6ff !important; }
+.etiqueta-workspace .btn-print { min-height: 52px !important; border-radius: 10px !important; background: #2f65dd !important; font-size: 16px !important; }
+.etiqueta-workspace .btn-generate { display: none !important; }
+
+.quick-print-meta {
+    margin: 14px 0 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #f1f5fb;
+    color: #496287;
+    font-size: 12px;
+    text-align: center;
+}
+
+.quick-print-meta strong { color: #203d6e; }
+
+.etiqueta-workspace .preview-stage {
+    min-height: 282px !important;
+    padding: 16px !important;
+    border-color: #d7e3f5 !important;
+    background: #fff !important;
+}
+
+.etiqueta-workspace .etiqueta { transform: scale(.88); transform-origin: center; }
+.etiqueta-workspace .preview-caption { margin-top: -4px; color: #5f78aa; }
+
+@media screen and (max-width: 760px) {
+    .etiqueta-page-header { flex-direction: column; gap: 14px; }
+    .etiqueta-flow { max-width: none; }
+    .etiqueta-workspace { grid-template-columns: 1fr !important; padding: 14px !important; }
+    .etiqueta-workspace .print-panel { grid-column: 1 !important; grid-row: 2 !important; }
+    .etiqueta-workspace .preview-panel { grid-column: 1 !important; grid-row: 3 !important; }
+}
+
+html[data-theme="dark"] .etiqueta-workspace { background: #102b60; border-color: rgba(132,169,231,.28); }
+html[data-theme="dark"] .etiqueta-page-header h1,
+html[data-theme="dark"] .quick-print-heading strong { color: #f5f8ff; }
+html[data-theme="dark"] .etiqueta-page-header p,
+html[data-theme="dark"] .quick-print-heading small,
+html[data-theme="dark"] .quick-print-meta { color: #b9c9e8; }
+html[data-theme="dark"] .etiqueta-flow-step { background: #183571; border-color: rgba(132,169,231,.38); color: #f5f8ff; }
+html[data-theme="dark"] .etiqueta-workspace .print-panel,
+html[data-theme="dark"] .etiqueta-workspace .preview-panel,
+html[data-theme="dark"] .etiqueta-workspace .preview-stage { background: #183571 !important; border-color: rgba(132,169,231,.28) !important; }
+html[data-theme="dark"] .quick-print-meta { background: #122f68; }
 </style>
 
 </head>
@@ -544,24 +715,25 @@ button:active {
 
         <!-- CABEÇALHO -->
 
-        <header class="top-header">
-
+        <header class="etiqueta-page-header">
             <div>
-
-                <h1>Etiquetas</h1>
-
-                <p>
-                    Gere e imprima etiquetas de validade
-                </p>
-
+                <h1>Impressão de etiquetas mais simples</h1>
+                <p>Selecione o produto, informe o responsável e imprima.</p>
             </div>
-
         </header>
 
 
         <!-- ÁREA PRINCIPAL -->
 
-        <section class="etiqueta-workspace">
+        <section class="etiqueta-workspace" id="impressaoRapida">
+
+            <div class="quick-print-heading">
+                <span class="quick-print-heading-icon" aria-hidden="true">L</span>
+                <div>
+                    <strong>Lotrix · Imprimir etiqueta</strong>
+                    <small>Só o que é necessário para imprimir.</small>
+                </div>
+            </div>
 
 
             <!-- PRÉVIA -->
@@ -814,9 +986,9 @@ button:active {
 
                     <!-- DATA + RESPONSÁVEL -->
 
-                    <div class="field-grid">
+                    <div class="field-grid quick-print-details">
 
-                        <div class="field">
+                        <div class="field quick-print-hidden-field" aria-hidden="true">
 
                             <label for="dataProducao">
                                 Data de produção
@@ -910,23 +1082,16 @@ button:active {
                             type="submit"
                             class="btn-print">
 
-                            🖨 Imprimir
+                            ⎙ &nbsp; Imprimir etiqueta
 
                         </button>
 
                     </div>
 
-
-                    <!-- BOTÃO ORIGINAL, MANTIDO PARA O JS -->
-
-                    <button
-                        type="button"
-                        class="btn-generate"
-                        onclick="document.getElementById('etiquetaForm').requestSubmit()">
-
-                        Atualizar etiqueta
-
-                    </button>
+                    <p class="quick-print-meta">
+                        Data de produção: <strong id="dataProducaoRapida">hoje</strong>
+                        · Responsável: <strong id="responsavelRapido">usuário logado</strong>
+                    </p>
 
                 </form>
 
@@ -939,7 +1104,7 @@ button:active {
      HISTÓRICO DE ETIQUETAS
 ===================================================== -->
 
-<section class="table-box etiqueta-history">
+<section class="table-box etiqueta-history" id="historicoEtiquetas">
 
 
 <div class="historico-header">

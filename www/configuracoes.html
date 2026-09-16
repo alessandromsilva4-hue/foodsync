@@ -641,14 +641,19 @@
             <div class="input-group">
 
                 <label for="printerServiceIp">
-                    IP do Lotrix Printer Service
+                    Computador do Lotrix Printer Service
                 </label>
 
                 <input
                     type="text"
                     id="printerServiceIp"
-                    inputmode="decimal"
-                    placeholder="Ex.: 192.168.1.50">
+                    value="localhost"
+                    readonly
+                    aria-describedby="printerServiceIpHelp">
+
+                <small id="printerServiceIpHelp" class="input-help">
+                    Detectado automaticamente na rede. Não é necessário alterar o IP quando ele mudar.
+                </small>
 
             </div>
 
@@ -862,4 +867,3 @@
 </body>
 
 </html>
-

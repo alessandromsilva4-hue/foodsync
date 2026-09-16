@@ -1,6 +1,7 @@
 // =======================================
-// FOODSYNCH - RELATÓRIOS
-// V3 - MULTIEMPRESA
+// LOTRIX - RELATÓRIOS
+// V5 - PERFORMANCE + MULTIEMPRESA
+// PROTEÇÃO DE CARGA
 // =======================================
 
 import { db } from "./firebase.js";
@@ -14,7 +15,11 @@ import {
     limit
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-console.log("RELATORIOS.JS V3 CARREGADO");
+
+console.log("=======================================");
+console.log("RELATORIOS.JS V5 LOTRIX CARREGADO");
+console.log("PERFORMANCE + MULTIEMPRESA");
+console.log("=======================================");
 
 
 // =======================================
@@ -41,7 +46,39 @@ const graficoProducao =
 
 
 // =======================================
-// OBTER ID DA EMPRESA
+// LIMITES DE SEGURANÇA
+// =======================================
+
+const LIMITES = Object.freeze({
+
+    producoes: 30,
+
+    etiquetas: 50,
+
+    produtos: 50,
+
+    estoque: 50,
+
+    tabela: 10,
+
+    grafico: 8
+
+});
+
+
+// =======================================
+// CONTROLE
+// =======================================
+
+let graficoInstance = null;
+
+let relatorioCarregando = false;
+
+let relatorioFinalizado = false;
+
+
+// =======================================
+// EMPRESA
 // =======================================
 
 function obterEmpresaId() {
@@ -49,48 +86,43 @@ function obterEmpresaId() {
     try {
 
         const perfilSalvo =
-            localStorage.getItem("usuarioFoodSync");
+            localStorage.getItem(
+                "usuarioFoodSync"
+            );
 
 
         if (!perfilSalvo) {
 
             console.error(
-                "RELATÓRIOS: perfil não encontrado no localStorage."
+                "RELATÓRIOS: perfil não encontrado."
             );
 
             return null;
-
         }
 
 
         const perfil =
-            JSON.parse(perfilSalvo);
+            JSON.parse(
+                perfilSalvo
+            );
 
 
-        console.log(
-            "RELATÓRIOS: perfil carregado:",
-            perfil
-        );
-
-
-        if (!perfil.idEmpresa) {
+        if (
+            !perfil ||
+            !perfil.idEmpresa
+        ) {
 
             console.error(
                 "RELATÓRIOS: idEmpresa não encontrado."
             );
 
             return null;
-
         }
 
 
-        console.log(
-            "RELATÓRIOS - ID EMPRESA:",
+        return String(
             perfil.idEmpresa
         );
-
-
-        return perfil.idEmpresa;
 
     } catch (error) {
 
@@ -100,548 +132,51 @@ function obterEmpresaId() {
         );
 
         return null;
-
     }
-
 }
 
 
 // =======================================
-// CARREGAR RELATÓRIOS
+// ESCAPAR HTML
 // =======================================
 
-async function carregarRelatorios() {
+function escaparHTML(valor) {
 
-    console.log(
-        "RELATÓRIOS: iniciando carregamento..."
-    );
+    if (
+        valor === null ||
+        valor === undefined
+    ) {
 
-
-    const empresaId =
-        obterEmpresaId();
-
-
-    if (!empresaId) {
-
-        console.error(
-            "RELATÓRIOS: empresa não identificada."
-        );
-
-        return;
-
+        return "";
     }
 
 
-    console.log(
-        "RELATÓRIOS: empresa atual:",
-        empresaId
-    );
+    return String(valor)
 
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
-    // =======================================
-    // PRODUÇÕES
-    // =======================================
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-    try {
+        .replace(
+            />/g,
+            "&gt;"
+        )
 
-        console.log(
-            "RELATÓRIOS: buscando PRODUÇÕES..."
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
         );
-
-
-        const consultaProducoes =
-            query(
-
-                collection(
-                    db,
-                    "producoes"
-                ),
-
-                where(
-                    "idEmpresa",
-                    "==",
-                    empresaId
-                )
-
-            );
-
-
-        const producoes =
-            await getDocs(
-                consultaProducoes
-            );
-
-
-        console.log(
-            "RELATÓRIOS: PRODUÇÕES OK:",
-            producoes.size
-        );
-
-
-        if (totalProducoes) {
-
-            totalProducoes.innerText =
-                producoes.size;
-
-        }
-
-
-        // =======================================
-        // GRÁFICO
-        // =======================================
-
-        if (graficoProducao) {
-
-            const dadosGrafico = {};
-
-
-            producoes.forEach(doc => {
-
-                const p =
-                    doc.data();
-
-
-                const nome =
-                    p.produto ||
-                    "Sem nome";
-
-
-                const quantidade =
-                    Number(
-                        p.quantidade || 0
-                    );
-
-
-                if (!dadosGrafico[nome]) {
-
-                    dadosGrafico[nome] = 0;
-
-                }
-
-
-                dadosGrafico[nome] +=
-                    quantidade;
-
-            });
-
-
-            if (
-                typeof Chart !== "undefined"
-            ) {
-
-                new Chart(
-
-                    graficoProducao,
-
-                    {
-
-                        type: "bar",
-
-                        data: {
-
-                            labels:
-                                Object.keys(
-                                    dadosGrafico
-                                ),
-
-                            datasets: [
-
-                                {
-
-                                    label:
-                                        "Quantidade Produzida",
-
-                                    data:
-                                        Object.values(
-                                            dadosGrafico
-                                        )
-
-                                }
-
-                            ]
-
-                        },
-
-                        options: {
-
-                            responsive: true,
-
-                            maintainAspectRatio: false
-
-                        }
-
-                    }
-
-                );
-
-            } else {
-
-                console.warn(
-                    "Chart.js não está carregado."
-                );
-
-            }
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "RELATÓRIOS: ERRO EM PRODUÇÕES:",
-            error
-        );
-
-    }
-
-
-    // =======================================
-    // ETIQUETAS
-    // =======================================
-
-    try {
-
-        console.log(
-            "RELATÓRIOS: buscando ETIQUETAS..."
-        );
-
-
-        const consultaEtiquetas =
-            query(
-
-                collection(
-                    db,
-                    "etiquetas"
-                ),
-
-                where(
-                    "idEmpresa",
-                    "==",
-                    empresaId
-                )
-
-            );
-
-
-        const etiquetas =
-            await getDocs(
-                consultaEtiquetas
-            );
-
-
-        console.log(
-            "RELATÓRIOS: ETIQUETAS OK:",
-            etiquetas.size
-        );
-
-
-        if (totalEtiquetas) {
-
-            totalEtiquetas.innerText =
-                etiquetas.size;
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "RELATÓRIOS: ERRO EM ETIQUETAS:",
-            error
-        );
-
-    }
-
-
-    // =======================================
-    // PRODUTOS
-    // =======================================
-
-    try {
-
-        console.log(
-            "RELATÓRIOS: buscando PRODUTOS..."
-        );
-
-
-        // IMPORTANTE:
-        // Produtos utiliza o campo "empresas"
-        // como ARRAY.
-
-        const consultaProdutos =
-            query(
-
-                collection(
-                    db,
-                    "produtos"
-                ),
-
-                where(
-                    "empresas",
-                    "array-contains",
-                    empresaId
-                )
-
-            );
-
-
-        const produtos =
-            await getDocs(
-                consultaProdutos
-            );
-
-
-        console.log(
-            "RELATÓRIOS: PRODUTOS OK:",
-            produtos.size
-        );
-
-
-        if (totalProdutos) {
-
-            totalProdutos.innerText =
-                produtos.size;
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "RELATÓRIOS: ERRO EM PRODUTOS:",
-            error
-        );
-
-    }
-
-
-    // =======================================
-    // ESTOQUE
-    // =======================================
-
-    try {
-
-        console.log(
-            "RELATÓRIOS: buscando ESTOQUE..."
-        );
-
-
-        const consultaEstoque =
-            query(
-
-                collection(
-                    db,
-                    "estoque"
-                ),
-
-                where(
-                    "idEmpresa",
-                    "==",
-                    empresaId
-                )
-
-            );
-
-
-        const estoque =
-            await getDocs(
-                consultaEstoque
-            );
-
-
-        console.log(
-            "RELATÓRIOS: ESTOQUE OK:",
-            estoque.size
-        );
-
-
-        let baixo = 0;
-
-
-        estoque.forEach(doc => {
-
-            const e =
-                doc.data();
-
-
-            const quantidade =
-                Number(
-                    e.quantidade || 0
-                );
-
-
-            const minimo =
-                Number(
-                    e.minimo || 0
-                );
-
-
-            if (
-                quantidade <= minimo
-            ) {
-
-                baixo++;
-
-            }
-
-        });
-
-
-        if (totalEstoqueBaixo) {
-
-            totalEstoqueBaixo.innerText =
-                baixo;
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "RELATÓRIOS: ERRO EM ESTOQUE:",
-            error
-        );
-
-    }
-
-
-    // =======================================
-    // ÚLTIMAS PRODUÇÕES
-    // =======================================
-
-    if (tabelaProducao) {
-
-        try {
-
-            console.log(
-                "RELATÓRIOS: buscando ÚLTIMAS PRODUÇÕES..."
-            );
-
-
-            tabelaProducao.innerHTML = "";
-
-
-            const consultaUltimasProducoes =
-                query(
-
-                    collection(
-                        db,
-                        "producoes"
-                    ),
-
-                    where(
-                        "idEmpresa",
-                        "==",
-                        empresaId
-                    ),
-
-                    orderBy(
-                        "criadoEm",
-                        "desc"
-                    ),
-
-                    limit(10)
-
-                );
-
-
-            const dados =
-                await getDocs(
-                    consultaUltimasProducoes
-                );
-
-
-            console.log(
-                "RELATÓRIOS: ÚLTIMAS PRODUÇÕES OK:",
-                dados.size
-            );
-
-
-            if (dados.empty) {
-
-                tabelaProducao.innerHTML = `
-
-                    <tr>
-
-                        <td colspan="4">
-
-                            Sem dados
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-            } else {
-
-                dados.forEach(item => {
-
-                    const p =
-                        item.data();
-
-
-                    tabelaProducao.innerHTML += `
-
-                        <tr>
-
-                            <td>
-                                ${p.produto || "-"}
-                            </td>
-
-                            <td>
-                                ${p.quantidade || 0}
-                            </td>
-
-                            <td>
-                                ${p.responsavel || "-"}
-                            </td>
-
-                            <td>
-                                ${formatarData(
-                                    p.dataProducao
-                                )}
-                            </td>
-
-                        </tr>
-
-                    `;
-
-                });
-
-            }
-
-        } catch (error) {
-
-            console.error(
-                "RELATÓRIOS: ERRO NAS ÚLTIMAS PRODUÇÕES:",
-                error
-            );
-
-
-            if (tabelaProducao) {
-
-                tabelaProducao.innerHTML = `
-
-                    <tr>
-
-                        <td colspan="4">
-
-                            Erro ao carregar produções.
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-            }
-
-        }
-
-    }
-
-
-    console.log(
-        "RELATÓRIOS: FINALIZADO."
-    );
-
 }
 
 
@@ -654,7 +189,6 @@ function formatarData(data) {
     if (!data) {
 
         return "-";
-
     }
 
 
@@ -663,19 +197,60 @@ function formatarData(data) {
     if (
         typeof data === "object" &&
         data !== null &&
-        data.seconds
+        typeof data.toDate === "function"
     ) {
 
-        return new Date(
-            data.seconds * 1000
-        ).toLocaleDateString(
-            "pt-BR"
-        );
+        try {
 
+            return data
+                .toDate()
+                .toLocaleDateString(
+                    "pt-BR"
+                );
+
+        } catch {
+
+            return "-";
+        }
     }
 
 
-    // Data YYYY-MM-DD
+    // Timestamp antigo
+
+    if (
+        typeof data === "object" &&
+        data !== null &&
+        data.seconds !== undefined
+    ) {
+
+        try {
+
+            const convertido =
+                new Date(
+                    data.seconds * 1000
+                );
+
+
+            if (
+                !Number.isNaN(
+                    convertido.getTime()
+                )
+            ) {
+
+                return convertido
+                    .toLocaleDateString(
+                        "pt-BR"
+                    );
+            }
+
+        } catch {
+
+            return "-";
+        }
+    }
+
+
+    // YYYY-MM-DD
 
     if (
         typeof data === "string"
@@ -686,202 +261,1110 @@ function formatarData(data) {
 
 
         if (
-            partes.length === 3
+            partes.length === 3 &&
+            partes[0].length === 4
         ) {
 
-            return `${partes[2]}/${partes[1]}/${partes[0]}`;
-
+            return (
+                `${partes[2]}/${partes[1]}/${partes[0]}`
+            );
         }
 
+
+        try {
+
+            const convertido =
+                new Date(data);
+
+
+            if (
+                !Number.isNaN(
+                    convertido.getTime()
+                )
+            ) {
+
+                return convertido
+                    .toLocaleDateString(
+                        "pt-BR"
+                    );
+            }
+
+        } catch {
+
+            return "-";
+        }
     }
 
 
-    return data;
-
+    return String(data);
 }
 
 
 // =======================================
-// INICIAR
+// DESTRUIR GRÁFICO
 // =======================================
 
-document.addEventListener(
+function destruirGrafico() {
 
-    "DOMContentLoaded",
+    if (!graficoInstance) {
 
-    () => {
-
-        carregarRelatorios();
-
+        return;
     }
 
-);
+
+    try {
+
+        graficoInstance.destroy();
+
+    } catch (error) {
+
+        console.warn(
+            "RELATÓRIOS: erro ao destruir gráfico:",
+            error
+        );
+    }
+
+
+    graficoInstance = null;
+}
+
+
+// =======================================
+// CARREGAR PRODUÇÕES
+// =======================================
+
+async function carregarProducoes(
+    empresaId
+) {
+
+    console.log(
+        "RELATÓRIOS: buscando últimas produções..."
+    );
+
+
+    const consulta =
+        query(
+
+            collection(
+                db,
+                "producoes"
+            ),
+
+            where(
+                "idEmpresa",
+                "==",
+                empresaId
+            ),
+
+            orderBy(
+                "criadoEm",
+                "desc"
+            ),
+
+            limit(
+                LIMITES.producoes
+            )
+
+        );
+
+
+    const snapshot =
+        await getDocs(
+            consulta
+        );
+
+
+    console.log(
+        "RELATÓRIOS: produções carregadas:",
+        snapshot.size
+    );
+
+
+    // ===================================
+    // CARD
+    // ===================================
+
+    if (totalProducoes) {
+
+        totalProducoes.innerText =
+            snapshot.size >=
+            LIMITES.producoes
+
+                ? `${LIMITES.producoes}+`
+
+                : snapshot.size;
+    }
+
+
+    // ===================================
+    // SEM DADOS
+    // ===================================
+
+    if (
+        snapshot.empty
+    ) {
+
+        if (tabelaProducao) {
+
+            tabelaProducao.innerHTML = `
+                <tr>
+                    <td colspan="4">
+                        Sem dados
+                    </td>
+                </tr>
+            `;
+        }
+
+
+        destruirGrafico();
+
+        return;
+    }
+
+
+    const dadosGrafico =
+        Object.create(null);
+
+
+    const linhas = [];
+
+
+    let contadorTabela = 0;
+
+
+    snapshot.forEach(
+        (documento) => {
+
+            const p =
+                documento.data();
+
+
+            const produto =
+                p.produto ||
+                "Sem nome";
+
+
+            const quantidade =
+                Number(
+                    p.quantidade || 0
+                );
+
+
+            // ---------------------------
+            // DADOS DO GRÁFICO
+            // ---------------------------
+
+            if (
+                !dadosGrafico[produto]
+            ) {
+
+                dadosGrafico[produto] =
+                    0;
+            }
+
+
+            dadosGrafico[produto] +=
+                quantidade;
+
+
+            // ---------------------------
+            // TABELA
+            // ---------------------------
+
+            if (
+                contadorTabela <
+                LIMITES.tabela
+            ) {
+
+                linhas.push(`
+
+                    <tr>
+
+                        <td>
+                            ${escaparHTML(
+                                produto
+                            )}
+                        </td>
+
+                        <td>
+                            ${escaparHTML(
+                                p.quantidade || 0
+                            )}
+                        </td>
+
+                        <td>
+                            ${escaparHTML(
+                                p.responsavel || "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escaparHTML(
+                                formatarData(
+                                    p.dataProducao ||
+                                    p.criadoEm
+                                )
+                            )}
+                        </td>
+
+                    </tr>
+
+                `);
+
+
+                contadorTabela++;
+            }
+
+        }
+    );
+
+
+    if (tabelaProducao) {
+
+        tabelaProducao.innerHTML =
+            linhas.join("");
+    }
+
+
+    criarGrafico(
+        dadosGrafico
+    );
+}
+
+
+// =======================================
+// CRIAR GRÁFICO
+// =======================================
+
+function criarGrafico(
+    dadosGrafico
+) {
+
+    if (
+        !graficoProducao
+    ) {
+
+        return;
+    }
+
+
+    if (
+        typeof Chart ===
+        "undefined"
+    ) {
+
+        console.warn(
+            "RELATÓRIOS: Chart.js não carregado."
+        );
+
+        return;
+    }
+
+
+    destruirGrafico();
+
+
+    const ranking =
+        Object.entries(
+            dadosGrafico
+        )
+
+        .map(
+            ([nome, valor]) => ({
+
+                nome:
+                    String(nome),
+
+                valor:
+                    Number(valor) || 0
+
+            })
+        )
+
+        .sort(
+            (a, b) =>
+                b.valor -
+                a.valor
+        )
+
+        .slice(
+            0,
+            LIMITES.grafico
+        );
+
+
+    if (
+        ranking.length === 0
+    ) {
+
+        return;
+    }
+
+
+    try {
+
+        graficoInstance =
+            new Chart(
+                graficoProducao,
+                {
+
+                    type: "bar",
+
+
+                    data: {
+
+                        labels:
+                            ranking.map(
+                                item =>
+                                    item.nome
+                            ),
+
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Quantidade Produzida",
+
+                                data:
+                                    ranking.map(
+                                        item =>
+                                            item.valor
+                                    )
+
+                            }
+
+                        ]
+
+                    },
+
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio:
+                            false,
+
+                        animation: false,
+
+                        parsing: false,
+
+                        normalized: true,
+
+
+                        plugins: {
+
+                            legend: {
+
+                                display: true
+
+                            }
+
+                        },
+
+
+                        scales: {
+
+                            x: {
+
+                                ticks: {
+
+                                    autoSkip: true,
+
+                                    maxTicksLimit:
+                                        LIMITES.grafico,
+
+                                    maxRotation: 45,
+
+                                    minRotation: 0
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+    } catch (error) {
+
+        console.error(
+            "RELATÓRIOS: erro ao criar gráfico:",
+            error
+        );
+
+        graficoInstance = null;
+    }
+}
+
+
+// =======================================
+// ETIQUETAS
+// =======================================
+
+async function carregarEtiquetas(
+    empresaId
+) {
+
+    console.log(
+        "RELATÓRIOS: buscando etiquetas..."
+    );
+
+
+    const consulta =
+        query(
+
+            collection(
+                db,
+                "etiquetas"
+            ),
+
+            where(
+                "idEmpresa",
+                "==",
+                empresaId
+            ),
+
+            limit(
+                LIMITES.etiquetas
+            )
+
+        );
+
+
+    const snapshot =
+        await getDocs(
+            consulta
+        );
+
+
+    console.log(
+        "RELATÓRIOS: etiquetas carregadas:",
+        snapshot.size
+    );
+
+
+    if (totalEtiquetas) {
+
+        totalEtiquetas.innerText =
+            snapshot.size >=
+            LIMITES.etiquetas
+
+                ? `${LIMITES.etiquetas}+`
+
+                : snapshot.size;
+    }
+}
+
+
+// =======================================
+// PRODUTOS
+// =======================================
+
+async function carregarProdutos(
+    empresaId
+) {
+
+    console.log(
+        "RELATÓRIOS: buscando produtos..."
+    );
+
+
+    const consulta =
+        query(
+
+            collection(
+                db,
+                "produtos"
+            ),
+
+            where(
+                "empresas",
+                "array-contains",
+                empresaId
+            ),
+
+            limit(
+                LIMITES.produtos
+            )
+
+        );
+
+
+    const snapshot =
+        await getDocs(
+            consulta
+        );
+
+
+    console.log(
+        "RELATÓRIOS: produtos carregados:",
+        snapshot.size
+    );
+
+
+    if (totalProdutos) {
+
+        totalProdutos.innerText =
+            snapshot.size >=
+            LIMITES.produtos
+
+                ? `${LIMITES.produtos}+`
+
+                : snapshot.size;
+    }
+}
+
+
+// =======================================
+// ESTOQUE
+// =======================================
+
+async function carregarEstoque(
+    empresaId
+) {
+
+    console.log(
+        "RELATÓRIOS: buscando estoque..."
+    );
+
+
+    const consulta =
+        query(
+
+            collection(
+                db,
+                "estoque"
+            ),
+
+            where(
+                "idEmpresa",
+                "==",
+                empresaId
+            ),
+
+            limit(
+                LIMITES.estoque
+            )
+
+        );
+
+
+    const snapshot =
+        await getDocs(
+            consulta
+        );
+
+
+    console.log(
+        "RELATÓRIOS: estoque carregado:",
+        snapshot.size
+    );
+
+
+    let baixo = 0;
+
+
+    snapshot.forEach(
+        (documento) => {
+
+            const estoque =
+                documento.data();
+
+
+            const quantidade =
+                Number(
+                    estoque.quantidade || 0
+                );
+
+
+            const minimo =
+                Number(
+                    estoque.minimo || 0
+                );
+
+
+            if (
+                quantidade <=
+                minimo
+            ) {
+
+                baixo++;
+            }
+
+        }
+    );
+
+
+    if (totalEstoqueBaixo) {
+
+        totalEstoqueBaixo.innerText =
+            snapshot.size >=
+            LIMITES.estoque
+
+                ? `${baixo}+`
+
+                : baixo;
+    }
+}
+
+
+// =======================================
+// ERRO NO CARD
+// =======================================
+
+function mostrarErroCard(
+    elemento
+) {
+
+    if (elemento) {
+
+        elemento.innerText =
+            "—";
+    }
+}
+
+
+// =======================================
+// CARREGAR RELATÓRIOS
+// =======================================
+
+async function carregarRelatorios() {
+
+    if (
+        relatorioCarregando ||
+        relatorioFinalizado
+    ) {
+
+        console.warn(
+            "RELATÓRIOS: carregamento ignorado."
+        );
+
+        return;
+    }
+
+
+    relatorioCarregando =
+        true;
+
+
+    console.log(
+        "RELATÓRIOS: iniciando carregamento..."
+    );
+
+
+    try {
+
+        const empresaId =
+            obterEmpresaId();
+
+
+        if (!empresaId) {
+
+            console.error(
+                "RELATÓRIOS: empresa não identificada."
+            );
+
+            return;
+        }
+
+
+        // ===================================
+        // PLACEHOLDERS
+        // ===================================
+
+        if (totalProducoes) {
+
+            totalProducoes.innerText =
+                "...";
+        }
+
+
+        if (totalEtiquetas) {
+
+            totalEtiquetas.innerText =
+                "...";
+        }
+
+
+        if (totalProdutos) {
+
+            totalProdutos.innerText =
+                "...";
+        }
+
+
+        if (totalEstoqueBaixo) {
+
+            totalEstoqueBaixo.innerText =
+                "...";
+        }
+
+
+        // ===================================
+        // 1. PRODUÇÕES
+        // ===================================
+
+        try {
+
+            await carregarProducoes(
+                empresaId
+            );
+
+        } catch (error) {
+
+            console.error(
+                "RELATÓRIOS: erro em produções:",
+                error
+            );
+
+            mostrarErroCard(
+                totalProducoes
+            );
+        }
+
+
+        // ===================================
+        // 2. ETIQUETAS
+        // ===================================
+
+        try {
+
+            await carregarEtiquetas(
+                empresaId
+            );
+
+        } catch (error) {
+
+            console.error(
+                "RELATÓRIOS: erro em etiquetas:",
+                error
+            );
+
+            mostrarErroCard(
+                totalEtiquetas
+            );
+        }
+
+
+        // ===================================
+        // 3. PRODUTOS
+        // ===================================
+
+        try {
+
+            await carregarProdutos(
+                empresaId
+            );
+
+        } catch (error) {
+
+            console.error(
+                "RELATÓRIOS: erro em produtos:",
+                error
+            );
+
+            mostrarErroCard(
+                totalProdutos
+            );
+        }
+
+
+        // ===================================
+        // 4. ESTOQUE
+        // ===================================
+
+        try {
+
+            await carregarEstoque(
+                empresaId
+            );
+
+        } catch (error) {
+
+            console.error(
+                "RELATÓRIOS: erro em estoque:",
+                error
+            );
+
+            mostrarErroCard(
+                totalEstoqueBaixo
+            );
+        }
+
+
+        console.log(
+            "======================================="
+        );
+
+        console.log(
+            "RELATÓRIOS: CARREGAMENTO FINALIZADO"
+        );
+
+        console.log(
+            "Empresa:",
+            empresaId
+        );
+
+        console.log(
+            "=======================================");
+
+
+        relatorioFinalizado =
+            true;
+
+    } catch (error) {
+
+        console.error(
+            "RELATÓRIOS: erro geral:",
+            error
+        );
+
+    } finally {
+
+        relatorioCarregando =
+            false;
+    }
+}
 
 
 // =======================================
 // EXPORTAR EXCEL
 // =======================================
 
-window.exportarExcel = function () {
+window.exportarExcel =
+    function () {
 
-    const tabela =
-        document.querySelector("table");
-
-
-    if (!tabela) {
-
-        alert(
-            "Tabela não encontrada."
-        );
-
-        return;
-
-    }
+        const tabela =
+            document.querySelector(
+                "table"
+            );
 
 
-    if (
-        typeof XLSX === "undefined"
-    ) {
+        if (!tabela) {
 
-        alert(
-            "A biblioteca XLSX não foi carregada."
-        );
+            alert(
+                "Tabela não encontrada."
+            );
 
-        return;
-
-    }
+            return;
+        }
 
 
-    const workbook =
-        XLSX.utils.table_to_book(
-            tabela
-        );
+        if (
+            typeof XLSX ===
+            "undefined"
+        ) {
+
+            alert(
+                "A biblioteca XLSX não foi carregada."
+            );
+
+            return;
+        }
 
 
-    XLSX.writeFile(
+        try {
 
-        workbook,
+            const workbook =
+                XLSX.utils.table_to_book(
+                    tabela
+                );
 
-        "relatorio-foodsync.xlsx"
 
-    );
+            XLSX.writeFile(
+                workbook,
+                "relatorio-lotrix.xlsx"
+            );
 
-};
+        } catch (error) {
+
+            console.error(
+                "RELATÓRIOS: erro ao exportar Excel:",
+                error
+            );
+
+            alert(
+                "Não foi possível exportar o relatório."
+            );
+        }
+    };
 
 
 // =======================================
 // EXPORTAR CSV
 // =======================================
 
-window.exportarCSV = function () {
+window.exportarCSV =
+    function () {
 
-    const tabela =
-        document.querySelector("table");
-
-
-    if (!tabela) {
-
-        alert(
-            "Tabela não encontrada."
-        );
-
-        return;
-
-    }
-
-
-    let csv = [];
-
-
-    tabela
-        .querySelectorAll("tr")
-        .forEach(linha => {
-
-            const dados = [];
-
-
-            linha
-                .querySelectorAll(
-                    "th, td"
-                )
-                .forEach(coluna => {
-
-                    const texto =
-                        coluna.innerText
-                            .replace(
-                                /"/g,
-                                '""'
-                            );
-
-
-                    dados.push(
-                        `"${texto}"`
-                    );
-
-                });
-
-
-            csv.push(
-                dados.join(";")
+        const tabela =
+            document.querySelector(
+                "table"
             );
 
-        });
+
+        if (!tabela) {
+
+            alert(
+                "Tabela não encontrada."
+            );
+
+            return;
+        }
 
 
-    const arquivo =
-        csv.join("\n");
+        const linhas = [];
 
 
-    const blob =
-        new Blob(
+        tabela
+            .querySelectorAll("tr")
+            .forEach(
+                linha => {
 
-            [arquivo],
+                    const dados = [];
 
-            {
 
-                type:
-                    "text/csv;charset=utf-8;"
+                    linha
+                        .querySelectorAll(
+                            "th, td"
+                        )
+                        .forEach(
+                            coluna => {
 
-            }
+                                const texto =
+                                    (
+                                        coluna.innerText ||
+                                        ""
+                                    )
+                                    .replace(
+                                        /"/g,
+                                        '""'
+                                    );
 
+
+                                dados.push(
+                                    `"${texto}"`
+                                );
+
+                            }
+                        );
+
+
+                    linhas.push(
+                        dados.join(";")
+                    );
+
+                }
+            );
+
+
+        const arquivo =
+            linhas.join("\n");
+
+
+        const blob =
+            new Blob(
+                [arquivo],
+                {
+                    type:
+                        "text/csv;charset=utf-8;"
+                }
+            );
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        link.href =
+            url;
+
+
+        link.download =
+            "relatorio-lotrix.csv";
+
+
+        document.body.appendChild(
+            link
         );
 
 
-    const link =
-        document.createElement(
-            "a"
+        link.click();
+
+
+        link.remove();
+
+
+        setTimeout(
+            () => {
+
+                URL.revokeObjectURL(
+                    url
+                );
+
+            },
+            1000
         );
-
-
-    link.href =
-        URL.createObjectURL(
-            blob
-        );
-
-
-    link.download =
-        "relatorio-foodsync.csv";
-
-
-    link.click();
-
-
-    URL.revokeObjectURL(
-        link.href
-    );
-
-};
+    };
 
 
 // =======================================
-// IMPRIMIR RELATÓRIO
+// IMPRIMIR
 // =======================================
 
-window.imprimirRelatorio = function () {
+window.imprimirRelatorio =
+    function () {
 
-    window.print();
+        window.print();
 
-};
+    };
+
+
+// =======================================
+// INICIALIZAÇÃO
+// =======================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        /*
+         * Pequeno atraso para deixar:
+         * - DOM
+         * - sidebar
+         * - Firebase
+         * - Chart.js
+         * estabilizarem antes das consultas.
+         */
+
+        setTimeout(
+            () => {
+
+                carregarRelatorios();
+
+            },
+            200
+        );
+
+    },
+    {
+        once: true
+    }
+);
 
 
 // =======================================
@@ -889,5 +1372,5 @@ window.imprimirRelatorio = function () {
 // =======================================
 
 console.log(
-    "RELATORIOS.JS V3 MULTIEMPRESA PRONTO"
+    "RELATORIOS.JS V5 LOTRIX PRONTO"
 );

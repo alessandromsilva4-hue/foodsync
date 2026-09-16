@@ -107,7 +107,25 @@ function obterPorta() {
 // URL PRINTER SERVICE
 // =========================================================
 
-function obterUrlPrinterService() {
+async function obterUrlPrinterService() {
+
+    const plugin = window.Capacitor?.Plugins?.LotrixPrinterDiscovery;
+
+    if (plugin?.discover) {
+        try {
+            const encontrado = await plugin.discover({ timeoutMs: 2500 });
+            const hostDescoberto = normalizarHost(encontrado.host);
+            const portaDescoberta = Number(encontrado.port);
+
+            if (hostDescoberto && Number.isInteger(portaDescoberta) && portaDescoberta >= 1 && portaDescoberta <= 65535) {
+                const campoHost = campo("printerServiceIp");
+                if (campoHost) campoHost.value = hostDescoberto;
+                return `https://${hostDescoberto}:${portaDescoberta}/health`;
+            }
+        } catch (erro) {
+            console.warn("Printer Service não localizado automaticamente:", erro);
+        }
+    }
 
     const host = normalizarHost(
         campo("printerServiceIp")?.value
@@ -436,13 +454,13 @@ document.addEventListener(
                 async () => {
 
                     const url =
-                        obterUrlPrinterService();
+                        await obterUrlPrinterService();
 
 
                     if (!url) {
 
                         mostrarStatusPrinter(
-                            "Informe um IP e uma porta válidos.",
+                            "Não foi possível localizar o Printer Service na rede.",
                             true
                         );
 
@@ -865,4 +883,3 @@ function baixarAtualizacao() {
     );
 
 }
-
