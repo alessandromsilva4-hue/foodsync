@@ -149,6 +149,86 @@ function usuarioAtual() {
 }
 
 // =======================================
+// ÚLTIMO RESPONSÁVEL DA ETIQUETA
+// =======================================
+
+function chaveUltimoResponsavelEtiqueta() {
+
+    const idEmpresa =
+        empresaAtual();
+
+    return idEmpresa
+        ? `lotrix:etiquetas:responsavel:${idEmpresa}`
+        : null;
+
+}
+
+function restaurarUltimoResponsavelEtiqueta() {
+
+    const campo =
+        obterElemento(
+            "responsavelSelect"
+        );
+
+    const chave =
+        chaveUltimoResponsavelEtiqueta();
+
+    if (!campo || !chave || campo.value.trim()) {
+
+        return;
+
+    }
+
+    try {
+
+        campo.value =
+            localStorage.getItem(chave)?.trim() ||
+            "";
+
+    } catch (error) {
+
+        console.warn(
+            "Não foi possível restaurar o responsável da etiqueta:",
+            error
+        );
+
+    }
+
+}
+
+function salvarUltimoResponsavelEtiqueta(nome) {
+
+    const chave =
+        chaveUltimoResponsavelEtiqueta();
+
+    const responsavel =
+        String(nome || "").trim();
+
+    if (!chave || !responsavel) {
+
+        return;
+
+    }
+
+    try {
+
+        localStorage.setItem(
+            chave,
+            responsavel
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "Não foi possível salvar o responsável da etiqueta:",
+            error
+        );
+
+    }
+
+}
+
+// =======================================
 // EMPRESA ATUAL
 // =======================================
 
@@ -2054,6 +2134,10 @@ async function salvarEtiqueta() {
 
         }
 
+        salvarUltimoResponsavelEtiqueta(
+            responsavel
+        );
+
         // ===================================
         // UNIDADE
         // ===================================
@@ -3441,6 +3525,8 @@ document.addEventListener(
 
             preencherDataAtual();
 
+            restaurarUltimoResponsavelEtiqueta();
+
             // ===================================
             // PRODUTOS
             // ===================================
@@ -3572,6 +3658,27 @@ document.addEventListener(
                 );
 
             }
+
+            const campoResponsavel =
+                obterElemento(
+                    "responsavelSelect"
+                );
+
+            campoResponsavel?.addEventListener(
+                "input",
+                atualizarResponsavelPrevia
+            );
+
+            campoResponsavel?.addEventListener(
+                "change",
+                () => {
+
+                    salvarUltimoResponsavelEtiqueta(
+                        campoResponsavel.value
+                    );
+
+                }
+            );
 // ===================================
 // BOTÃO LIMPAR HISTÓRICO
 // ===================================

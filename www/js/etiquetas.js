@@ -196,6 +196,86 @@ function usuarioAtual() {
 }
 
 // =======================================
+// ÚLTIMO RESPONSÁVEL DA ETIQUETA
+// =======================================
+
+function chaveUltimoResponsavelEtiqueta() {
+
+    const idEmpresa =
+        empresaAtual();
+
+    return idEmpresa
+        ? `lotrix:etiquetas:responsavel:${idEmpresa}`
+        : null;
+
+}
+
+function restaurarUltimoResponsavelEtiqueta() {
+
+    const campo =
+        obterElemento(
+            "responsavelSelect"
+        );
+
+    const chave =
+        chaveUltimoResponsavelEtiqueta();
+
+    if (!campo || !chave || campo.value.trim()) {
+
+        return;
+
+    }
+
+    try {
+
+        campo.value =
+            localStorage.getItem(chave)?.trim() ||
+            "";
+
+    } catch (error) {
+
+        console.warn(
+            "Não foi possível restaurar o responsável da etiqueta:",
+            error
+        );
+
+    }
+
+}
+
+function salvarUltimoResponsavelEtiqueta(nome) {
+
+    const chave =
+        chaveUltimoResponsavelEtiqueta();
+
+    const responsavel =
+        String(nome || "").trim();
+
+    if (!chave || !responsavel) {
+
+        return;
+
+    }
+
+    try {
+
+        localStorage.setItem(
+            chave,
+            responsavel
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "Não foi possível salvar o responsável da etiqueta:",
+            error
+        );
+
+    }
+
+}
+
+// =======================================
 // EMPRESA ATUAL
 // =======================================
 
@@ -1362,6 +1442,8 @@ function prepararImpressaoRapida() {
     const usuario =
         usuarioAtual();
 
+    restaurarUltimoResponsavelEtiqueta();
+
     const responsavel =
         obterElemento(
             "responsavelSelect"
@@ -2162,6 +2244,10 @@ async function salvarEtiqueta() {
             return;
 
         }
+
+        salvarUltimoResponsavelEtiqueta(
+            responsavel
+        );
 
         // ===================================
         // UNIDADE
@@ -4467,6 +4553,8 @@ if (btnApagarEtiquetasFiltradas) {
 
             preencherDataAtual();
 
+            restaurarUltimoResponsavelEtiqueta();
+
             prepararImpressaoRapida();
 
             // ===================================
@@ -4608,6 +4696,17 @@ if (btnApagarEtiquetasFiltradas) {
             campoResponsavel?.addEventListener(
                 "input",
                 atualizarResponsavelPrevia
+            );
+
+            campoResponsavel?.addEventListener(
+                "change",
+                () => {
+
+                    salvarUltimoResponsavelEtiqueta(
+                        campoResponsavel.value
+                    );
+
+                }
             );
 
             document
