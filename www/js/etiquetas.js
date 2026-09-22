@@ -3062,9 +3062,7 @@ async function imprimirEtiquetaExistente(
 
         );
 
-        alert(
-            `${quantidade} etiqueta(s) enviada(s) para a impressora.`
-        );
+        mostrarConfirmacaoImpressao(quantidade);
 
     } catch (error) {
 
@@ -3134,9 +3132,7 @@ async function imprimirEtiqueta() {
 
         );
 
-        alert(
-            `${ultimaEtiquetaGerada.quantidade} etiqueta(s) enviada(s) para a impressora.`
-        );
+        mostrarConfirmacaoImpressao(ultimaEtiquetaGerada.quantidade);
 
     } catch (error) {
 
