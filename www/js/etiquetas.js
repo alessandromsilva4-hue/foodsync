@@ -3037,6 +3037,17 @@ function limparSelecaoEtiquetas() {
     renderizarEtiquetasFiltradas();
 }
 
+function atualizarProgressoImpressaoSelecionada(mensagem, concluidas, total, mostrar = true) {
+    const container = obterElemento("impressaoSelecaoProgresso");
+    const texto = obterElemento("impressaoSelecaoMensagem");
+    const barra = obterElemento("impressaoSelecaoBarra");
+    if (!container || !texto || !barra) return;
+    container.hidden = !mostrar;
+    texto.textContent = mensagem;
+    barra.max = Math.max(total, 1);
+    barra.value = Math.min(concluidas, barra.max);
+}
+
 async function imprimirEtiquetasSelecionadas() {
     const selecionadas = etiquetas.filter(etiqueta =>
         etiquetasSelecionadasParaImpressao.has(etiqueta.id)
@@ -3048,22 +3059,38 @@ async function imprimirEtiquetasSelecionadas() {
 
     let totalCopiasEnviadas = 0;
     let registrosEnviados = 0;
+    let concluidas = 0;
+    const falhas = [];
+    atualizarProgressoImpressaoSelecionada(`Preparando ${selecionadas.length} etiqueta(s)...`, 0, selecionadas.length);
 
     try {
         for (const etiqueta of selecionadas) {
-            const quantidade = await enviarEtiquetaExistente(etiqueta);
-            totalCopiasEnviadas += quantidade;
-            registrosEnviados += 1;
-            etiquetasSelecionadasParaImpressao.delete(etiqueta.id);
+            const nome = etiqueta.produto || etiqueta.codigo || "etiqueta";
+            atualizarProgressoImpressaoSelecionada(`Enviando ${concluidas + 1} de ${selecionadas.length}: ${nome}`, concluidas, selecionadas.length);
+            try {
+                const quantidade = await enviarEtiquetaExistente(etiqueta);
+                totalCopiasEnviadas += quantidade;
+                registrosEnviados += 1;
+                etiquetasSelecionadasParaImpressao.delete(etiqueta.id);
+            } catch (error) {
+                console.error(`ERRO AO IMPRIMIR ETIQUETA ${etiqueta.id}:`, error);
+                falhas.push(etiqueta);
+            }
+            concluidas += 1;
+            atualizarProgressoImpressaoSelecionada(`Processadas ${concluidas} de ${selecionadas.length} etiqueta(s).`, concluidas, selecionadas.length);
         }
 
-        mostrarConfirmacaoImpressao(totalCopiasEnviadas);
+        if (falhas.length) {
+            atualizarProgressoImpressaoSelecionada(`${registrosEnviados} enviada(s); ${falhas.length} falhou/falharam. As que falharam continuam selecionadas para nova tentativa.`, concluidas, selecionadas.length);
+            mostrarErroImpressao(`${registrosEnviados} etiqueta(s) enviada(s); ${falhas.length} não foi/foram enviada(s). As etiquetas com falha continuam selecionadas. Toque em “Imprimir selecionadas” para tentar novamente.`);
+        } else {
+            atualizarProgressoImpressaoSelecionada(`${registrosEnviados} etiqueta(s) enviada(s) com sucesso.`, concluidas, selecionadas.length);
+            mostrarConfirmacaoImpressao(totalCopiasEnviadas);
+        }
     } catch (error) {
         console.error("ERRO AO IMPRIMIR ETIQUETAS SELECIONADAS:", error);
-        const parcial = registrosEnviados
-            ? `${registrosEnviados} etiqueta(s) já enviada(s). `
-            : "";
-        mostrarErroImpressao(parcial + (error.message || "Não foi possível imprimir as etiquetas selecionadas."));
+        atualizarProgressoImpressaoSelecionada(`${registrosEnviados} enviada(s); impressão interrompida.`, concluidas, selecionadas.length);
+        mostrarErroImpressao(error.message || "Não foi possível imprimir as etiquetas selecionadas.");
     } finally {
         imprimindoSelecaoEtiquetas = false;
         renderizarEtiquetasFiltradas();
@@ -4249,6 +4276,12 @@ function renderizarEtiquetasFiltradas() {
                 </td>
 
             `;
+
+            ["Selecionar", "Código", "Produto", "Data de produção", "Validade", "Quantidade", "Responsável", "Lote", "Status", "Ações"]
+                .forEach((rotulo, indice) => {
+                    const celula = tr.cells[indice];
+                    if (celula) celula.dataset.label = rotulo;
+                });
 
             tr.querySelector(".check-etiqueta-impressao")?.addEventListener("change", evento => {
                 if (evento.currentTarget.checked) {

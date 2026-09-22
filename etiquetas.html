@@ -470,6 +470,63 @@ button:active {
 .etiqueta-selecao-celula { width: 44px; text-align: center; }
 .check-etiqueta-impressao { width: 18px; height: 18px; accent-color: #2f65dd; cursor: pointer; }
 
+.impressao-selecao-progresso {
+    flex: 1 0 100%;
+    width: 100%;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 7px;
+    margin: 10px 0;
+    padding: 10px 12px;
+    border: 1px solid #dbe5f4;
+    border-radius: 9px;
+    background: #f5f8ff;
+    color: #173b7a;
+    font-size: 13px;
+}
+.impressao-selecao-progresso[hidden] { display: none; }
+.impressao-selecao-progresso progress { width: 100%; height: 8px; accent-color: #2f65dd; }
+
+@media screen and (max-width: 700px) {
+    .historico-acoes { justify-content: stretch; }
+    .historico-acoes > button { flex: 1 1 145px; }
+    .etiqueta-history-table { overflow: visible; }
+    .etiquetas-table { display: block; width: 100%; }
+    .etiquetas-table thead { display: none; }
+    .etiquetas-table tbody { display: grid; gap: 10px; }
+    .etiquetas-table tbody tr {
+        display: block;
+        overflow: hidden;
+        border: 1px solid #dbe3ef;
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 2px 8px rgb(15 23 42 / 5%);
+    }
+    .etiquetas-table tbody tr td {
+        display: grid;
+        grid-template-columns: minmax(94px, 34%) minmax(0, 1fr);
+        align-items: center;
+        gap: 10px;
+        width: auto;
+        padding: 9px 12px;
+        border-bottom: 1px solid #edf1f7;
+        text-align: left;
+        overflow-wrap: anywhere;
+    }
+    .etiquetas-table tbody tr td::before {
+        content: attr(data-label);
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 700;
+    }
+    .etiquetas-table tbody tr td.etiqueta-selecao-celula { width: auto; text-align: left; }
+    .etiquetas-table tbody tr td:last-child { border-bottom: 0; }
+    .etiquetas-table tbody tr td:last-child button { min-width: 42px; min-height: 40px; }
+    .etiquetas-table tbody tr td[colspan] { display: block; text-align: center !important; }
+    .etiquetas-table tbody tr td[colspan]::before { content: none; }
+}
+
 .btn-apagar-filtradas {
     height: 36px;
     padding: 0 14px;
@@ -1276,8 +1333,9 @@ html[data-theme="dark"] .print-error-title { color: #ffe1dc !important; }
 
     </div>
 
-</div>
+<div id="impressaoSelecaoProgresso" class="impressao-selecao-progresso" role="status" aria-live="polite" hidden><span id="impressaoSelecaoMensagem"></span><progress id="impressaoSelecaoBarra" max="1" value="0" aria-label="Progresso da impressão"></progress></div>
 
+</div>
 
 <!-- =====================================================
      FILTROS
@@ -1394,7 +1452,7 @@ html[data-theme="dark"] .print-error-title { color: #ffe1dc !important; }
      TABELA DO HISTÓRICO
 ===================================================== -->
 
-<div class="table-responsive">
+<div class="table-responsive etiqueta-history-table">
 
     <table class="data-table etiquetas-table">
 
@@ -1516,7 +1574,7 @@ html[data-theme="dark"] .print-error-title { color: #ffe1dc !important; }
             <span class="print-success-icon print-error-icon" aria-hidden="true">!</span>
             <div>
                 <span class="print-success-kicker">ETIQUETA SALVA</span>
-                <h2 class="print-error-title" id="printErrorTitle">Etiqueta criada com sucesso</h2>
+                <h2 class="print-error-title" id="printErrorTitle">Não foi possível imprimir</h2>
             </div>
         </div>
         <div class="print-success-body">
