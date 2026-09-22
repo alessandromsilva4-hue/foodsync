@@ -135,7 +135,8 @@ let etiquetas = [];
 // PRODUTOS SELECIONADOS PARA IMPRESSÃO
 // =======================================
 
-let produtosEtiquetasSelecionados = new Set();
+let etiquetasSelecionadasParaImpressao = new Set();
+let imprimindoSelecaoEtiquetas = false;
 // =======================================
 // CONTROLE DOS FILTROS DO HISTÓRICO
 // =======================================
@@ -2939,6 +2940,11 @@ async function carregarEtiquetas() {
         // APLICA OS FILTROS
         // =======================================
 
+        const idsEtiquetasDisponiveis = new Set(etiquetas.map(etiqueta => etiqueta.id));
+        etiquetasSelecionadasParaImpressao.forEach(id => {
+            if (!idsEtiquetasDisponiveis.has(id)) etiquetasSelecionadasParaImpressao.delete(id);
+        });
+
         aplicarFiltrosEtiquetas();
 
         console.log(
@@ -2955,6 +2961,113 @@ async function carregarEtiquetas() {
 
     }
 
+}
+
+async function enviarEtiquetaExistente(etiqueta) {
+    const idEmpresa = empresaAtual();
+    if (!idEmpresa) throw new Error("Empresa não identificada.");
+    if (etiqueta.idEmpresa !== idEmpresa) {
+        throw new Error("Esta etiqueta não pertence à empresa atual.");
+    }
+
+    const produto = {
+        nome: etiqueta.produto || "Produto",
+        codigo: etiqueta.codigoProduto || ""
+    };
+    const quantidade = Number(etiqueta.quantidade) || 1;
+
+    await imprimirEtiquetaDireto(
+        produto,
+        etiqueta.lote || "",
+        etiqueta.dataProducao || "",
+        etiqueta.validade || "",
+        etiqueta.temperatura || "AMBIENTE",
+        etiqueta.responsavel || "Não informado",
+        etiqueta.codigo || "",
+        quantidade
+    );
+
+    return quantidade;
+}
+
+function atualizarControlesSelecaoEtiquetas() {
+    const botaoSelecionar = obterElemento("btnSelecionarEtiquetasVisiveis");
+    const botaoLimpar = obterElemento("btnLimparSelecaoEtiquetas");
+    const botaoImprimir = obterElemento("btnImprimirEtiquetasSelecionadas");
+    const contador = obterElemento("quantidadeEtiquetasSelecionadas");
+
+    const visiveis = etiquetasFiltradas.map(etiqueta => etiqueta.id);
+    const todasVisiveisSelecionadas = visiveis.length > 0 &&
+        visiveis.every(id => etiquetasSelecionadasParaImpressao.has(id));
+
+    if (botaoSelecionar) {
+        botaoSelecionar.disabled = imprimindoSelecaoEtiquetas || visiveis.length === 0;
+        botaoSelecionar.textContent = todasVisiveisSelecionadas
+            ? "Desmarcar visíveis"
+            : "Selecionar visíveis";
+    }
+    if (botaoLimpar) {
+        botaoLimpar.disabled = imprimindoSelecaoEtiquetas || etiquetasSelecionadasParaImpressao.size === 0;
+    }
+    if (botaoImprimir) {
+        botaoImprimir.disabled = imprimindoSelecaoEtiquetas || etiquetasSelecionadasParaImpressao.size === 0;
+    }
+    if (contador) contador.textContent = String(etiquetasSelecionadasParaImpressao.size);
+
+    document.querySelectorAll(".check-etiqueta-impressao").forEach(checkbox => {
+        checkbox.disabled = imprimindoSelecaoEtiquetas;
+    });
+}
+
+function alternarSelecaoEtiquetasVisiveis() {
+    const idsVisiveis = etiquetasFiltradas.map(etiqueta => etiqueta.id);
+    const todasSelecionadas = idsVisiveis.length > 0 &&
+        idsVisiveis.every(id => etiquetasSelecionadasParaImpressao.has(id));
+
+    idsVisiveis.forEach(id => {
+        if (todasSelecionadas) etiquetasSelecionadasParaImpressao.delete(id);
+        else etiquetasSelecionadasParaImpressao.add(id);
+    });
+
+    renderizarEtiquetasFiltradas();
+}
+
+function limparSelecaoEtiquetas() {
+    etiquetasSelecionadasParaImpressao.clear();
+    renderizarEtiquetasFiltradas();
+}
+
+async function imprimirEtiquetasSelecionadas() {
+    const selecionadas = etiquetas.filter(etiqueta =>
+        etiquetasSelecionadasParaImpressao.has(etiqueta.id)
+    );
+    if (!selecionadas.length || imprimindoSelecaoEtiquetas) return;
+
+    imprimindoSelecaoEtiquetas = true;
+    atualizarControlesSelecaoEtiquetas();
+
+    let totalCopiasEnviadas = 0;
+    let registrosEnviados = 0;
+
+    try {
+        for (const etiqueta of selecionadas) {
+            const quantidade = await enviarEtiquetaExistente(etiqueta);
+            totalCopiasEnviadas += quantidade;
+            registrosEnviados += 1;
+            etiquetasSelecionadasParaImpressao.delete(etiqueta.id);
+        }
+
+        mostrarConfirmacaoImpressao(totalCopiasEnviadas);
+    } catch (error) {
+        console.error("ERRO AO IMPRIMIR ETIQUETAS SELECIONADAS:", error);
+        const parcial = registrosEnviados
+            ? `${registrosEnviados} etiqueta(s) já enviada(s). `
+            : "";
+        mostrarErroImpressao(parcial + (error.message || "Não foi possível imprimir as etiquetas selecionadas."));
+    } finally {
+        imprimindoSelecaoEtiquetas = false;
+        renderizarEtiquetasFiltradas();
+    }
 }
 // =======================================
 // IMPRIMIR ETIQUETA EXISTENTE
@@ -3019,49 +3132,10 @@ async function imprimirEtiquetaExistente(
 
         }
 
-        const produto = {
-
-            nome:
-                etiqueta.produto ||
-                "Produto",
-
-            codigo:
-                etiqueta.codigoProduto ||
-                ""
-
-        };
-
-        const quantidade =
-            Number(
-                etiqueta.quantidade
-            ) || 1;
-
-        await imprimirEtiquetaDireto(
-
-            produto,
-
-            etiqueta.lote ||
-                "",
-
-            etiqueta.dataProducao ||
-                "",
-
-            etiqueta.validade ||
-                "",
-
-            etiqueta.temperatura ||
-                "AMBIENTE",
-
-            etiqueta.responsavel ||
-                "Não informado",
-
-            etiqueta.codigo ||
-                "",
-
-            quantidade
-
-        );
-
+        const quantidade = await enviarEtiquetaExistente({
+            ...etiqueta,
+            idEmpresa: etiqueta.idEmpresa || idEmpresa
+        });
         mostrarConfirmacaoImpressao(quantidade);
 
     } catch (error) {
@@ -4050,7 +4124,7 @@ function renderizarEtiquetasFiltradas() {
             <tr>
 
                 <td
-                    colspan="9"
+                    colspan="10"
                     style="text-align:center;"
                 >
 
@@ -4062,6 +4136,7 @@ function renderizarEtiquetasFiltradas() {
 
         `;
 
+        atualizarControlesSelecaoEtiquetas();
         return;
 
     }
@@ -4080,6 +4155,15 @@ function renderizarEtiquetasFiltradas() {
                 );
 
             tr.innerHTML = `
+
+                <td class="etiqueta-selecao-celula">
+                    <input
+                        type="checkbox"
+                        class="check-etiqueta-impressao"
+                        data-id="${escaparHTML(etiqueta.id)}"
+                        aria-label="Selecionar etiqueta de ${escaparHTML(etiqueta.produto || "produto") }"
+                        ${etiquetasSelecionadasParaImpressao.has(etiqueta.id) ? "checked" : ""}>
+                </td>
 
                 <td>
                     ${escaparHTML(
@@ -4166,6 +4250,15 @@ function renderizarEtiquetasFiltradas() {
 
             `;
 
+            tr.querySelector(".check-etiqueta-impressao")?.addEventListener("change", evento => {
+                if (evento.currentTarget.checked) {
+                    etiquetasSelecionadasParaImpressao.add(etiqueta.id);
+                } else {
+                    etiquetasSelecionadasParaImpressao.delete(etiqueta.id);
+                }
+                atualizarControlesSelecaoEtiquetas();
+            });
+
             // ===============================
             // IMPRIMIR
             // ===============================
@@ -4220,6 +4313,8 @@ function renderizarEtiquetasFiltradas() {
 
         }
     );
+
+    atualizarControlesSelecaoEtiquetas();
 
 }
 
@@ -4964,6 +5059,21 @@ if (btnApagarEtiquetasFiltradas) {
                 obterElemento(
                     "printSuccessClose"
                 );
+
+            obterElemento("btnSelecionarEtiquetasVisiveis")?.addEventListener(
+                "click",
+                alternarSelecaoEtiquetasVisiveis
+            );
+
+            obterElemento("btnLimparSelecaoEtiquetas")?.addEventListener(
+                "click",
+                limparSelecaoEtiquetas
+            );
+
+            obterElemento("btnImprimirEtiquetasSelecionadas")?.addEventListener(
+                "click",
+                imprimirEtiquetasSelecionadas
+            );
 
             btnFecharConfirmacaoImpressao?.addEventListener(
                 "click",

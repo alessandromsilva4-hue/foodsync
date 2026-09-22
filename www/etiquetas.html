@@ -442,6 +442,34 @@ button:active {
     flex-wrap: wrap;
 }
 
+.btn-selecao-etiquetas,
+.btn-imprimir-selecionadas {
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid #cbd8ee;
+    border-radius: 8px;
+    background: #fff;
+    color: #173b7a;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.btn-imprimir-selecionadas {
+    border-color: #245bd4;
+    background: #2f65dd;
+    color: #fff;
+}
+
+.btn-selecao-etiquetas:disabled,
+.btn-imprimir-selecionadas:disabled {
+    opacity: .48;
+    cursor: not-allowed;
+}
+
+.etiqueta-selecao-celula { width: 44px; text-align: center; }
+.check-etiqueta-impressao { width: 18px; height: 18px; accent-color: #2f65dd; cursor: pointer; }
+
 .btn-apagar-filtradas {
     height: 36px;
     padding: 0 14px;
@@ -1216,6 +1244,18 @@ html[data-theme="dark"] .print-error-title { color: #ffe1dc !important; }
 
     <div class="historico-acoes">
 
+        <button type="button" id="btnSelecionarEtiquetasVisiveis" class="btn-selecao-etiquetas">
+            Selecionar visíveis
+        </button>
+
+        <button type="button" id="btnLimparSelecaoEtiquetas" class="btn-selecao-etiquetas" disabled>
+            Limpar seleção
+        </button>
+
+        <button type="button" id="btnImprimirEtiquetasSelecionadas" class="btn-imprimir-selecionadas" disabled>
+            🖨 Imprimir selecionadas (<span id="quantidadeEtiquetasSelecionadas">0</span>)
+        </button>
+
         <button
             type="button"
             id="btnApagarEtiquetasFiltradas"
@@ -1362,6 +1402,8 @@ html[data-theme="dark"] .print-error-title { color: #ffe1dc !important; }
 
             <tr>
 
+                <th scope="col">Selecionar</th>
+
                 <th>
                     Código
                 </th>
@@ -1407,7 +1449,7 @@ html[data-theme="dark"] .print-error-title { color: #ffe1dc !important; }
             <tr>
 
                 <td
-                    colspan="9"
+                    colspan="10"
                     style="text-align:center; padding:30px;">
 
                     Carregando histórico de etiquetas...
