@@ -634,6 +634,99 @@ html[data-theme="dark"] .etiqueta-workspace .print-panel,
 html[data-theme="dark"] .etiqueta-workspace .preview-panel,
 html[data-theme="dark"] .etiqueta-workspace .preview-stage { background: #183571 !important; border-color: rgba(132,169,231,.28) !important; }
 html[data-theme="dark"] .quick-print-meta { background: #122f68; }
+
+/* =====================================================
+   LOTRIX — CONFIRMAÇÃO DE IMPRESSÃO
+===================================================== */
+.print-success-modal[hidden] { display: none !important; }
+
+.print-success-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(7, 28, 67, .52);
+    backdrop-filter: blur(3px);
+}
+
+.print-success-dialog {
+    width: min(100%, 390px);
+    overflow: hidden;
+    border: 1px solid #d7e3f5;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 22px 56px rgba(8, 41, 104, .28);
+}
+
+.print-success-top {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 20px 22px 16px;
+    background: linear-gradient(135deg, #edf4ff, #f8fbff);
+    border-bottom: 1px solid #dce8f8;
+}
+
+.print-success-icon {
+    display: grid;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border-radius: 50%;
+    background: #e7f8ee;
+    color: #168047;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.print-success-kicker {
+    display: block;
+    margin-bottom: 3px;
+    color: #52709e;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .09em;
+}
+
+.print-success-top h2 {
+    margin: 0;
+    color: #082968;
+    font-size: 18px;
+}
+
+.print-success-body { padding: 19px 22px 22px; }
+.print-success-body p { margin: 0; color: #496287; font-size: 14px; line-height: 1.5; }
+.print-success-quantity { color: #082968; font-weight: 800; }
+
+.print-success-action {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 20px;
+    border: 0;
+    border-radius: 10px;
+    background: #2f65dd;
+    color: #fff;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+html[data-theme="dark"] .print-success-dialog { background: #183571; border-color: rgba(132,169,231,.35); }
+html[data-theme="dark"] .print-success-top { background: #102b60; border-color: rgba(132,169,231,.25); }
+html[data-theme="dark"] .print-success-top h2,
+html[data-theme="dark"] .print-success-quantity { color: #f5f8ff; }
+html[data-theme="dark"] .print-success-body p { color: #c2d1e9; }
+
+.print-error-top { background: linear-gradient(135deg, #fff4f2, #fffafa); border-color: #f3d6d1; }
+.print-error-icon { background: #fff0ed; color: #c2412d; }
+.print-error-title { color: #8b2418 !important; }
+.print-error-action { background: #2f65dd; }
+
+html[data-theme="dark"] .print-error-top { background: #412333; border-color: rgba(255, 170, 160, .22); }
+html[data-theme="dark"] .print-error-title { color: #ffe1dc !important; }
 </style>
 
 </head>
@@ -1331,6 +1424,67 @@ html[data-theme="dark"] .quick-print-meta { background: #122f68; }
 
 
 </section>
+
+
+<!-- CONFIRMAÇÃO DE IMPRESSÃO -->
+<div
+    id="printSuccessModal"
+    class="print-success-modal"
+    role="presentation"
+    hidden>
+    <section
+        class="print-success-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="printSuccessTitle"
+        aria-describedby="printSuccessDescription">
+        <div class="print-success-top">
+            <span class="print-success-icon" aria-hidden="true">✓</span>
+            <div>
+                <span class="print-success-kicker">IMPRESSÃO ENVIADA</span>
+                <h2 id="printSuccessTitle">Etiqueta criada com sucesso</h2>
+            </div>
+        </div>
+        <div class="print-success-body">
+            <p id="printSuccessDescription">
+                <strong class="print-success-quantity" id="printSuccessQuantity">1 etiqueta</strong>
+                foi enviada para a impressora.
+            </p>
+            <button type="button" class="print-success-action" id="printSuccessClose">
+                Concluir
+            </button>
+        </div>
+    </section>
+</div>
+
+
+<!-- ERRO DE IMPRESSÃO -->
+<div
+    id="printErrorModal"
+    class="print-success-modal"
+    role="presentation"
+    hidden>
+    <section
+        class="print-success-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="printErrorTitle"
+        aria-describedby="printErrorDescription">
+        <div class="print-success-top print-error-top">
+            <span class="print-success-icon print-error-icon" aria-hidden="true">!</span>
+            <div>
+                <span class="print-success-kicker">ETIQUETA SALVA</span>
+                <h2 class="print-error-title" id="printErrorTitle">Etiqueta criada com sucesso</h2>
+            </div>
+        </div>
+        <div class="print-success-body">
+            <p id="printErrorDescription"></p>
+            <button type="button" class="print-success-action print-error-action" id="printErrorClose">
+                Entendi
+            </button>
+        </div>
+    </section>
+</div>
 
 
 <!-- FIREBASE -->

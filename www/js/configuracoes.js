@@ -407,6 +407,12 @@ document.addEventListener(
 
         carregarConfiguracoes();
 
+        obterUrlPrinterService().then(url => {
+            if (url) mostrarStatusPrinter("Printer Service encontrado na rede.");
+        }).catch(() => {
+            // A descoberta é opcional enquanto o serviço estiver desligado.
+        });
+
 
         const seletorTema =
             campo("temaSistema");

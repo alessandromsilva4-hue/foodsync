@@ -25,7 +25,7 @@ console.log("Produção: NÃO UTILIZADA");
 console.log("Estoque: NÃO UTILIZADO");
 console.log("Movimentações: NÃO UTILIZADAS");
 console.log("Impressão: ZPL RAW");
-console.log("Printer Service: HTTPS 192.168.0.109:9100");
+console.log("Printer Service: HTTPS configurado por empresa");
 console.log("Layout: PADRÃO DEFINITIVO");
 console.log("=======================================");
 
@@ -52,6 +52,35 @@ serverTimestamp
 // CONFIGURAÇÃO DA IMPRESSORA
 // =======================================
 
+let printerServiceDescoberto = null;
+
+async function descobrirPrinterService() {
+
+    if (printerServiceDescoberto && Date.now() - printerServiceDescoberto.em < 300000) {
+        return printerServiceDescoberto;
+    }
+
+    const plugin = window.Capacitor?.Plugins?.LotrixPrinterDiscovery;
+
+    if (!plugin?.discover) return null;
+
+    try {
+        const resultado = await plugin.discover({ timeoutMs: 2500 });
+        const host = String(resultado.host || "").trim();
+        const porta = Number(resultado.port);
+
+        if (!host || !Number.isInteger(porta) || porta < 1 || porta > 65535) {
+            return null;
+        }
+
+        printerServiceDescoberto = { host, porta, em: Date.now() };
+        return printerServiceDescoberto;
+    } catch (erro) {
+        console.warn("Printer Service não localizado automaticamente:", erro);
+        return null;
+    }
+}
+
 async function obterUrlPrinterService() {
 
     const idEmpresa = empresaAtual();
@@ -70,18 +99,22 @@ async function obterUrlPrinterService() {
         ? configuracao.data()
         : {};
 
-    const host = String(dados.printerServiceIp || "")
+    // No Android, descubra o serviço na rede antes de usar a configuração
+    // antiga. Assim, uma troca de IP do computador não exige intervenção.
+    const encontrado = await descobrirPrinterService();
+
+    const host = String(encontrado?.host || dados.printerServiceIp || "")
         .trim()
         .replace(/^https?:\/\//i, "")
         .replace(/\/.*$/, "")
         .replace(/:\d+$/, "");
 
-    const porta = Number(dados.printerServicePort || 9100);
+    const porta = Number(encontrado?.porta || dados.printerServicePort || 9100);
 
     if (!host || !Number.isInteger(porta) || porta < 1 || porta > 65535) {
 
         throw new Error(
-            "Configure o IP e a porta do Lotrix Printer Service em Configurações antes de imprimir."
+            "Não foi possível localizar o Lotrix Printer Service na rede. Verifique se ele está aberto no computador da impressora."
         );
 
     }
@@ -98,11 +131,25 @@ let produtos = [];
 
 let etiquetas = [];
 
-let empresaAtualDados = null;
+// =======================================
+// CONTROLE DOS FILTROS DO HISTÓRICO
+// =======================================
+
+let etiquetasFiltradas = [];
+
+let filtroEtiquetasAplicado = false;
+
+let termoBuscaEtiqueta = "";
+
+let statusFiltroEtiqueta = "todas";
 
 let imprimirDepoisDeSalvar = false;
 
 let ultimaEtiquetaGerada = null;
+
+let filtroInicialUrl = null;
+
+let empresaAtualDados = null;
 
 // =======================================
 // ELEMENTOS
@@ -1371,6 +1418,263 @@ function atualizarResponsavelPrevia() {
         campo?.value?.trim() ||
         "--";
 
+    const resumoResponsavel =
+        obterElemento(
+            "responsavelRapido"
+        );
+
+    if (resumoResponsavel) {
+
+        resumoResponsavel.textContent =
+            campo?.value?.trim() ||
+            "usuário logado";
+
+    }
+
+}
+
+// =======================================
+// RESUMO DA IMPRESSÃO RÁPIDA
+// =======================================
+
+function prepararImpressaoRapida() {
+
+    const usuario =
+        usuarioAtual();
+
+    restaurarUltimoResponsavelEtiqueta();
+
+    const responsavel =
+        obterElemento(
+            "responsavelSelect"
+        );
+
+    if (
+        responsavel &&
+        !responsavel.value.trim()
+    ) {
+
+        responsavel.value =
+            usuario?.nome ||
+            usuario?.email ||
+            "Usuário logado";
+
+    }
+
+    const data =
+        obterElemento(
+            "dataProducao"
+        );
+
+    const resumoData =
+        obterElemento(
+            "dataProducaoRapida"
+        );
+
+    if (resumoData) {
+
+        resumoData.textContent =
+            data?.value
+                ? "hoje"
+                : "não informada";
+
+    }
+
+    atualizarResponsavelPrevia();
+
+}
+
+// =======================================
+// ETAPA DA IMPRESSÃO
+// =======================================
+
+function ativarEtapaImpressao(etapa) {
+
+    document
+        .querySelectorAll(
+            "[data-label-step]"
+        )
+        .forEach(
+            botao => {
+
+                const estaAtiva =
+                    botao.dataset.labelStep === etapa;
+
+                botao.classList.toggle(
+                    "is-active",
+                    estaAtiva
+                );
+
+                botao.setAttribute(
+                    "aria-current",
+                    estaAtiva
+                        ? "step"
+                        : "false"
+                );
+
+            }
+        );
+
+}
+
+// =======================================
+// CONFIRMAÇÃO VISUAL DE IMPRESSÃO
+// =======================================
+
+function mostrarConfirmacaoImpressao(quantidade) {
+
+    const modal =
+        obterElemento(
+            "printSuccessModal"
+        );
+
+    const quantidadeElemento =
+        obterElemento(
+            "printSuccessQuantity"
+        );
+
+    if (!modal || !quantidadeElemento) {
+
+        return;
+
+    }
+
+    quantidadeElemento.textContent =
+        `${quantidade} ${quantidade === 1 ? "etiqueta" : "etiquetas"}`;
+
+    modal.hidden = false;
+
+    window.setTimeout(
+        () => {
+
+            obterElemento(
+                "printSuccessClose"
+            )?.focus();
+
+        },
+        0
+    );
+
+}
+
+function fecharConfirmacaoImpressao() {
+
+    const modal =
+        obterElemento(
+            "printSuccessModal"
+        );
+
+    if (modal) {
+
+        modal.hidden = true;
+
+    }
+
+}
+
+function mostrarErroImpressao(mensagem) {
+
+    const modal =
+        obterElemento(
+            "printErrorModal"
+        );
+
+    const descricao =
+        obterElemento(
+            "printErrorDescription"
+        );
+
+    if (!modal || !descricao) {
+
+        return;
+
+    }
+
+    descricao.textContent =
+        mensagem;
+
+    modal.hidden = false;
+
+    window.setTimeout(
+        () => {
+
+            obterElemento(
+                "printErrorClose"
+            )?.focus();
+
+        },
+        0
+    );
+
+}
+
+function fecharErroImpressao() {
+
+    const modal =
+        obterElemento(
+            "printErrorModal"
+        );
+
+    if (modal) {
+
+        modal.hidden = true;
+
+    }
+
+}
+
+// =======================================
+// CONFIRMAR IMPRESSÃO RÁPIDA
+// =======================================
+
+async function confirmarImpressaoRapida() {
+
+    prepararImpressaoRapida();
+
+    const produto =
+        produtoSelecionado();
+
+    if (!produto) {
+
+        alert(
+            "Escolha o produto antes de imprimir."
+        );
+
+        obterElemento(
+            "produtoEtiquetaBusca"
+        )?.focus();
+
+        return;
+
+    }
+
+    const quantidade =
+        parseInt(
+            obterElemento(
+                "quantidadeProducao"
+            )?.value,
+            10
+        );
+
+    if (!Number.isInteger(quantidade) || quantidade < 1) {
+
+        alert(
+            "Informe uma quantidade válida de etiquetas."
+        );
+
+        obterElemento(
+            "quantidadeProducao"
+        )?.focus();
+
+        return;
+
+    }
+
+    imprimirDepoisDeSalvar =
+        true;
+
+    await salvarEtiqueta();
+
 }
 
 // =======================================
@@ -2428,8 +2732,12 @@ await setDoc(
 
                 );
 
-                alert(
-                    `Etiqueta criada e ${quantidade} etiqueta(s) enviada(s) para a impressora.`
+                mostrarConfirmacaoImpressao(
+                    quantidade
+                );
+
+                ativarEtapaImpressao(
+                    "confirm"
                 );
 
             } catch (error) {
@@ -2439,11 +2747,11 @@ await setDoc(
                     error
                 );
 
-                alert(
-                    "A etiqueta foi salva, mas não foi possível imprimir.\n\n" +
+                mostrarErroImpressao(
+                    "A etiqueta foi salva, mas não foi possível enviá-la à impressora. " +
                     (
                         error.message ||
-                        "Verifique o LOTRIX PRINTER SERVICE."
+                        "Verifique se o LOTRIX PRINTER SERVICE está aberto no computador da impressora."
                     )
                 );
 
@@ -2475,6 +2783,8 @@ await setDoc(
         // ===================================
 
         preencherDataAtual();
+
+        prepararImpressaoRapida();
 
         if (campoQuantidade) {
 
@@ -2600,6 +2910,10 @@ async function carregarEtiquetas() {
             }
         );
 
+        // =======================================
+        // ORDENAR MAIS RECENTES PRIMEIRO
+        // =======================================
+
         etiquetas.sort(
             (a, b) => {
 
@@ -2616,157 +2930,11 @@ async function carregarEtiquetas() {
             }
         );
 
-        lista.innerHTML =
-            "";
+        // =======================================
+        // APLICA OS FILTROS
+        // =======================================
 
-        if (
-            etiquetas.length === 0
-        ) {
-
-            lista.innerHTML = `
-
-                <tr>
-
-                    <td colspan="7">
-
-                        Nenhuma etiqueta registrada.
-
-                    </td>
-
-                </tr>
-
-            `;
-
-            return;
-
-        }
-
-        etiquetas.forEach(
-            etiqueta => {
-
-                const tr =
-                    document.createElement(
-                        "tr"
-                    );
-
-                tr.innerHTML = `
-
-                    <td>
-                        ${escaparHTML(
-                            etiqueta.codigo ||
-                            "-"
-                        )}
-                    </td>
-
-                    <td>
-                        ${escaparHTML(
-                            etiqueta.produto ||
-                            "-"
-                        )}
-                    </td>
-
-                    <td>
-                        ${escaparHTML(
-                            etiqueta.quantidade ??
-                            1
-                        )}
-                    </td>
-
-                    <td>
-                        ${escaparHTML(
-                            formatarDataEtiqueta(
-                                etiqueta.dataProducao
-                            )
-                        )}
-                    </td>
-
-                    <td>
-                        ${escaparHTML(
-                            formatarDataEtiqueta(
-                                etiqueta.validade
-                            )
-                        )}
-                    </td>
-
-                    <td>
-                        ${escaparHTML(
-                            etiqueta.responsavel ||
-                            "-"
-                        )}
-                    </td>
-
-                    <td>
-
-                        <button
-                            type="button"
-                            class="btn-imprimir-etiqueta"
-                            data-id="${escaparHTML(
-                                etiqueta.id
-                            )}">
-                            🖨️
-                        </button>
-
-                        <button
-                            type="button"
-                            class="btn-delete-etiqueta"
-                            data-id="${escaparHTML(
-                                etiqueta.id
-                            )}">
-                            🗑️
-                        </button>
-
-                    </td>
-
-                `;
-
-                const imprimir =
-                    tr.querySelector(
-                        ".btn-imprimir-etiqueta"
-                    );
-
-                if (imprimir) {
-
-                    imprimir.addEventListener(
-                        "click",
-                        () => {
-
-                            imprimirEtiquetaExistente(
-                                etiqueta.id
-                            );
-
-                        }
-                    );
-
-                }
-
-                const excluir =
-                    tr.querySelector(
-                        ".btn-delete-etiqueta"
-                    );
-
-                if (excluir) {
-
-                    excluir.addEventListener(
-                        "click",
-                        () => {
-
-                            excluirEtiqueta(
-                                etiqueta.id
-                            );
-
-                        }
-                    );
-
-                }
-
-                lista.appendChild(
-                    tr
-                );
-
-            }
-        );
-
-        aplicarBuscaEtiquetas();
+        aplicarFiltrosEtiquetas();
 
         console.log(
             "ETIQUETAS CARREGADAS:",
@@ -2783,7 +2951,6 @@ async function carregarEtiquetas() {
     }
 
 }
-
 // =======================================
 // IMPRIMIR ETIQUETA EXISTENTE
 // =======================================
@@ -3080,7 +3247,212 @@ async function excluirEtiqueta(
     }
 
 }
+// =======================================
+// APAGAR ETIQUETAS FILTRADAS
+// SOMENTE EMPRESA ATUAL
+// =======================================
 
+async function apagarEtiquetasFiltradas() {
+
+    if (
+        !filtroEtiquetasAplicado
+    ) {
+
+        alert(
+            "Aplique um filtro antes de apagar etiquetas."
+        );
+
+        return;
+
+    }
+
+    if (
+        !etiquetasFiltradas ||
+        etiquetasFiltradas.length === 0
+    ) {
+
+        alert(
+            "Nenhuma etiqueta encontrada para apagar."
+        );
+
+        return;
+
+    }
+
+    const quantidade =
+        etiquetasFiltradas.length;
+
+    const confirmar =
+        confirm(
+            `Deseja realmente apagar ${quantidade} etiqueta(s) filtrada(s)?\n\nEssa ação não pode ser desfeita.`
+        );
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+    const idEmpresa =
+        empresaAtual();
+
+    if (!idEmpresa) {
+
+        alert(
+            "Empresa atual não identificada."
+        );
+
+        return;
+
+    }
+
+    const botao =
+        obterElemento(
+            "btnApagarEtiquetasFiltradas"
+        );
+
+    if (botao) {
+
+        botao.disabled =
+            true;
+
+        botao.textContent =
+            "⏳ Apagando...";
+
+    }
+
+    let apagadas =
+        0;
+
+    try {
+
+        for (
+            const etiqueta
+            of etiquetasFiltradas
+        ) {
+
+            if (!etiqueta.id) {
+
+                continue;
+
+            }
+
+            const referencia =
+                doc(
+                    db,
+                    "etiquetas",
+                    etiqueta.id
+                );
+
+            const documento =
+                await getDoc(
+                    referencia
+                );
+
+            if (
+                !documento.exists()
+            ) {
+
+                continue;
+
+            }
+
+            const dados =
+                documento.data();
+
+            // ===================================
+            // SEGURANÇA MULTIEMPRESA
+            // ===================================
+
+            if (
+                dados.idEmpresa !==
+                idEmpresa
+            ) {
+
+                console.warn(
+                    "ETIQUETA IGNORADA - OUTRA EMPRESA:",
+                    etiqueta.id
+                );
+
+                continue;
+
+            }
+
+            await deleteDoc(
+                referencia
+            );
+
+            apagadas++;
+
+        }
+
+        // ===================================
+        // AUDITORIA
+        // ===================================
+
+        try {
+
+            await registrarAuditoria(
+                "etiquetas",
+                "exclusao_filtradas",
+                {
+                    quantidade: apagadas,
+                    idEmpresa: idEmpresa
+                }
+            );
+
+        } catch (
+            erroAuditoria
+        ) {
+
+            console.warn(
+                "AUDITORIA NÃO REGISTRADA:",
+                erroAuditoria
+            );
+
+        }
+
+        alert(
+            `${apagadas} etiqueta(s) apagada(s) com sucesso.`
+        );
+
+        filtroEtiquetasAplicado =
+            false;
+
+        termoBuscaEtiqueta =
+            "";
+
+        statusFiltroEtiqueta =
+            "todas";
+
+        await carregarEtiquetas();
+
+    } catch (error) {
+
+        console.error(
+            "ERRO AO APAGAR ETIQUETAS FILTRADAS:",
+            error
+        );
+
+        alert(
+            "Erro ao apagar as etiquetas filtradas. Verifique o console."
+        );
+
+    } finally {
+
+        if (botao) {
+
+            botao.disabled =
+                false;
+
+            botao.textContent =
+                "🗑 Apagar filtradas";
+
+        }
+
+    }
+
+}
 // =======================================
 // LIMPAR HISTÓRICO DE ETIQUETAS
 // SOMENTE EMPRESA ATUAL
@@ -3299,52 +3671,866 @@ async function limparHistoricoEtiquetas() {
 }
 
 // =======================================
-// BUSCA DE ETIQUETAS
+// FILTROS DE ETIQUETAS
+// PESQUISA + VALIDADE
 // =======================================
 
-function aplicarBuscaEtiquetas() {
+function obterDataEtiquetaFiltro(valor) {
 
-    const campo =
+    if (!valor) {
+        return null;
+    }
+
+    // Firestore Timestamp
+    if (
+        typeof valor.toDate === "function"
+    ) {
+
+        const data =
+            valor.toDate();
+
+        return isNaN(data.getTime())
+            ? null
+            : data;
+
+    }
+
+    // Firestore Timestamp antigo
+    if (
+        valor.seconds !== undefined
+    ) {
+
+        const data =
+            new Date(
+                valor.seconds * 1000
+            );
+
+        return isNaN(data.getTime())
+            ? null
+            : data;
+
+    }
+
+    if (
+        valor instanceof Date
+    ) {
+
+        return isNaN(valor.getTime())
+            ? null
+            : valor;
+
+    }
+
+    const texto =
+        String(valor)
+            .trim();
+
+    if (!texto) {
+        return null;
+    }
+
+    // YYYY-MM-DD
+    if (
+        /^\d{4}-\d{2}-\d{2}$/.test(
+            texto
+        )
+    ) {
+
+        const partes =
+            texto.split("-");
+
+        const data =
+            new Date(
+                Number(partes[0]),
+                Number(partes[1]) - 1,
+                Number(partes[2])
+            );
+
+        return isNaN(data.getTime())
+            ? null
+            : data;
+
+    }
+
+    // DD/MM/YYYY
+    if (
+        /^\d{2}\/\d{2}\/\d{4}$/.test(
+            texto
+        )
+    ) {
+
+        const partes =
+            texto.split("/");
+
+        const data =
+            new Date(
+                Number(partes[2]),
+                Number(partes[1]) - 1,
+                Number(partes[0])
+            );
+
+        return isNaN(data.getTime())
+            ? null
+            : data;
+
+    }
+
+    const data =
+        new Date(texto);
+
+    return isNaN(data.getTime())
+        ? null
+        : data;
+}
+
+
+// =======================================
+// HOJE
+// =======================================
+
+function obterHojeFiltroEtiqueta() {
+
+    const hoje =
+        new Date();
+
+    hoje.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+    return hoje;
+
+}
+
+
+// =======================================
+// STATUS DA VALIDADE
+// =======================================
+
+function obterStatusValidadeEtiqueta(
+    validade
+) {
+
+    const dataValidade =
+        obterDataEtiquetaFiltro(
+            validade
+        );
+
+    if (!dataValidade) {
+
+        return "sem-data";
+
+    }
+
+    dataValidade.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+    const hoje =
+        obterHojeFiltroEtiqueta();
+
+    // VENCIDA
+    if (
+        dataValidade < hoje
+    ) {
+
+        return "vencidas";
+
+    }
+
+    // 3 DIAS PARA VENCER
+    const limitePrestes =
+        new Date(
+            hoje
+        );
+
+    limitePrestes.setDate(
+        limitePrestes.getDate() + 3
+    );
+
+    if (
+        dataValidade <=
+        limitePrestes
+    ) {
+
+        return "prestes";
+
+    }
+
+    // DENTRO DA VALIDADE
+    return "em-dias";
+
+}
+
+
+// =======================================
+// TEXTO DO STATUS
+// =======================================
+
+function obterTextoStatusEtiqueta(
+    validade
+) {
+
+    const status =
+        obterStatusValidadeEtiqueta(
+            validade
+        );
+
+    if (
+        status === "vencidas"
+    ) {
+
+        return "🔴 Vencida";
+
+    }
+
+    if (
+        status === "prestes"
+    ) {
+
+        return "🟠 Prestes a vencer";
+
+    }
+
+    if (
+        status === "em-dias"
+    ) {
+
+        return "🟢 Em dias";
+
+    }
+
+    return "⚪ Sem validade";
+
+}
+
+
+// =======================================
+// APLICAR TODOS OS FILTROS
+// =======================================
+
+function aplicarFiltrosEtiquetas() {
+
+    const campoBusca =
         obterElemento(
             "buscarEtiqueta"
         );
 
-    if (!campo) {
+    const campoStatus =
+        obterElemento(
+            "filtroStatusEtiqueta"
+        );
+
+    termoBuscaEtiqueta =
+        campoBusca
+            ? campoBusca.value
+                .trim()
+                .toLowerCase()
+            : "";
+
+    statusFiltroEtiqueta =
+        campoStatus
+            ? campoStatus.value
+            : "todas";
+
+    etiquetasFiltradas =
+        etiquetas.filter(
+            etiqueta => {
+
+                // ===============================
+                // PESQUISA
+                // ===============================
+
+                const textoPesquisa = [
+
+                    etiqueta.codigo,
+                    etiqueta.produto,
+                    etiqueta.responsavel,
+                    etiqueta.lote,
+                    etiqueta.codigoProduto,
+                    etiqueta.usuario
+
+                ]
+                    .filter(
+                        valor =>
+                            valor !==
+                            undefined &&
+                            valor !==
+                            null
+                    )
+                    .join(" ")
+                    .toLowerCase();
+
+                const passouPesquisa =
+                    !termoBuscaEtiqueta ||
+                    textoPesquisa.includes(
+                        termoBuscaEtiqueta
+                    );
+
+                if (
+                    !passouPesquisa
+                ) {
+
+                    return false;
+
+                }
+
+                // ===============================
+                // FILTRO DE VALIDADE
+                // ===============================
+
+                if (
+                    statusFiltroEtiqueta ===
+                    "todas"
+                ) {
+
+                    return true;
+
+                }
+
+                const status =
+                    obterStatusValidadeEtiqueta(
+                        etiqueta.validade
+                    );
+
+                return (
+                    status ===
+                    statusFiltroEtiqueta
+                );
+
+            }
+        );
+
+    filtroEtiquetasAplicado =
+        Boolean(
+            termoBuscaEtiqueta ||
+            statusFiltroEtiqueta !==
+            "todas"
+        );
+
+    renderizarEtiquetasFiltradas();
+
+    atualizarStatusFiltroEtiquetas();
+
+}
+
+
+// =======================================
+// RENDERIZAR ETIQUETAS FILTRADAS
+// =======================================
+
+function renderizarEtiquetasFiltradas() {
+
+    const lista =
+        obterElemento(
+            "listaEtiquetas"
+        );
+
+    if (!lista) {
 
         return;
 
     }
 
-    campo.oninput =
-        function () {
+    lista.innerHTML =
+        "";
 
-            const termo =
-                this.value
-                    .trim()
-                    .toLowerCase();
+    if (
+        etiquetasFiltradas.length === 0
+    ) {
 
-            document
-                .querySelectorAll(
-                    "#listaEtiquetas tr"
-                )
-                .forEach(
-                    linha => {
+        lista.innerHTML = `
 
-                        const texto =
-                            linha.innerText
-                                .toLowerCase();
+            <tr>
 
-                        linha.style.display =
-                            texto.includes(
-                                termo
-                            )
-                                ? ""
-                                : "none";
+                <td
+                    colspan="9"
+                    style="text-align:center;"
+                >
+
+                    Nenhuma etiqueta encontrada.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+    etiquetasFiltradas.forEach(
+        etiqueta => {
+
+            const tr =
+                document.createElement(
+                    "tr"
+                );
+
+            const status =
+                obterTextoStatusEtiqueta(
+                    etiqueta.validade
+                );
+
+            tr.innerHTML = `
+
+                <td>
+                    ${escaparHTML(
+                        etiqueta.codigo ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        etiqueta.produto ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        formatarDataEtiqueta(
+                            etiqueta.dataProducao
+                        )
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        formatarDataEtiqueta(
+                            etiqueta.validade
+                        )
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        etiqueta.quantidade ??
+                        1
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        etiqueta.responsavel ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        etiqueta.lote ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        status
+                    )}
+                </td>
+
+                <td>
+
+                    <button
+                        type="button"
+                        class="btn-imprimir-etiqueta"
+                        data-id="${escaparHTML(
+                            etiqueta.id
+                        )}"
+                        title="Imprimir etiqueta"
+                    >
+                        🖨️
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-delete-etiqueta"
+                        data-id="${escaparHTML(
+                            etiqueta.id
+                        )}"
+                        title="Excluir etiqueta"
+                    >
+                        🗑️
+                    </button>
+
+                </td>
+
+            `;
+
+            // ===============================
+            // IMPRIMIR
+            // ===============================
+
+            const imprimir =
+                tr.querySelector(
+                    ".btn-imprimir-etiqueta"
+                );
+
+            if (imprimir) {
+
+                imprimir.addEventListener(
+                    "click",
+                    () => {
+
+                        imprimirEtiquetaExistente(
+                            etiqueta.id
+                        );
 
                     }
                 );
 
-        };
+            }
+
+            // ===============================
+            // EXCLUIR
+            // ===============================
+
+            const excluir =
+                tr.querySelector(
+                    ".btn-delete-etiqueta"
+                );
+
+            if (excluir) {
+
+                excluir.addEventListener(
+                    "click",
+                    () => {
+
+                        excluirEtiqueta(
+                            etiqueta.id
+                        );
+
+                    }
+                );
+
+            }
+
+            lista.appendChild(
+                tr
+            );
+
+        }
+    );
+
+}
+
+
+// =======================================
+// STATUS DO FILTRO
+// =======================================
+
+function atualizarStatusFiltroEtiquetas() {
+
+    const status =
+        obterElemento(
+            "filtroEtiquetasStatus"
+        );
+
+    if (!status) {
+
+        return;
+
+    }
+
+    const total =
+        etiquetas.length;
+
+    const exibidas =
+        etiquetasFiltradas.length;
+
+    let texto =
+        `Exibindo ${exibidas} de ${total} etiqueta(s).`;
+
+    if (
+        statusFiltroEtiqueta !==
+        "todas"
+    ) {
+
+        if (
+            statusFiltroEtiqueta ===
+            "vencidas"
+        ) {
+
+            texto +=
+                " Filtro: 🔴 Vencidas.";
+
+        }
+
+        else if (
+            statusFiltroEtiqueta ===
+            "prestes"
+        ) {
+
+            texto +=
+                " Filtro: 🟠 Prestes a vencer.";
+
+        }
+
+        else if (
+            statusFiltroEtiqueta ===
+            "em-dias"
+        ) {
+
+            texto +=
+                " Filtro: 🟢 Em dias.";
+
+        }
+
+    }
+
+    if (
+        termoBuscaEtiqueta
+    ) {
+
+        texto +=
+            ` Pesquisa: "${termoBuscaEtiqueta}".`;
+
+    }
+
+    status.textContent =
+        texto;
+
+}
+
+
+// =======================================
+// CONFIGURAR FILTROS
+// =======================================
+
+function configurarFiltrosEtiquetas() {
+
+    const campoBusca =
+        obterElemento(
+            "buscarEtiqueta"
+        );
+
+    const botaoPesquisa =
+        obterElemento(
+            "btnPesquisarEtiqueta"
+        );
+
+    const campoStatus =
+        obterElemento(
+            "filtroStatusEtiqueta"
+        );
+
+    const botaoAplicar =
+        obterElemento(
+            "btnAplicarFiltroEtiqueta"
+        );
+
+    const botaoLimpar =
+        obterElemento(
+            "btnLimparFiltrosEtiqueta"
+        );
+
+
+    // =======================================
+    // FILTRO VINDO DO DASHBOARD
+    // =======================================
+
+const parametros = new URLSearchParams(window.location.search);
+const filtroUrl = parametros.get("filtro");
+
+const filtrosValidos = [
+  "todas",
+  "vencidas",
+  "prestes",
+  "em-dias"
+];
+
+if (filtroUrl && filtrosValidos.includes(filtroUrl)) {
+
+  statusFiltroEtiqueta = filtroUrl;
+
+  if (campoStatus) {
+    campoStatus.value = filtroUrl;
+  }
+
+  console.log(
+    "🔎 FILTRO RECEBIDO PELA URL:",
+    filtroUrl
+  );
+
+} else {
+
+  statusFiltroEtiqueta = "todas";
+
+  if (campoStatus) {
+    campoStatus.value = "todas";
+  }
+
+}
+
+
+    // =======================================
+    // EVITA CONFIGURAR DUAS VEZES
+    // =======================================
+
+    if (
+        campoBusca &&
+        campoBusca.dataset.filtroConfigurado ===
+        "true"
+    ) {
+
+        return;
+
+    }
+
+
+    // =======================================
+    // CAMPO DE BUSCA
+    // =======================================
+
+    if (campoBusca) {
+
+        campoBusca.dataset.filtroConfigurado =
+            "true";
+
+
+        campoBusca.addEventListener(
+            "keydown",
+            evento => {
+
+                if (
+                    evento.key ===
+                    "Enter"
+                ) {
+
+                    evento.preventDefault();
+
+                    executarPesquisaEtiqueta();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    // =======================================
+    // BOTÃO PESQUISAR
+    // =======================================
+
+    if (botaoPesquisa) {
+
+        botaoPesquisa.addEventListener(
+            "click",
+            executarPesquisaEtiqueta
+        );
+
+    }
+
+
+    // =======================================
+    // SELECT DE STATUS
+    // =======================================
+
+    if (campoStatus) {
+
+        campoStatus.addEventListener(
+            "change",
+            aplicarFiltrosEtiquetas
+        );
+
+    }
+
+
+    // =======================================
+    // BOTÃO APLICAR
+    // =======================================
+
+    if (botaoAplicar) {
+
+        botaoAplicar.addEventListener(
+            "click",
+            aplicarFiltrosEtiquetas
+        );
+
+    }
+
+
+    // =======================================
+    // BOTÃO LIMPAR
+    // =======================================
+
+    if (botaoLimpar) {
+
+        botaoLimpar.addEventListener(
+            "click",
+            limparFiltrosEtiquetas
+        );
+
+    }
+
+}
+// =======================================
+// EXECUTAR PESQUISA
+// =======================================
+
+function executarPesquisaEtiqueta() {
+
+    aplicarFiltrosEtiquetas();
+
+}
+
+
+// =======================================
+// LIMPAR FILTROS
+// =======================================
+
+function limparFiltrosEtiquetas() {
+
+    const campoBusca =
+        obterElemento(
+            "buscarEtiqueta"
+        );
+
+    const campoStatus =
+        obterElemento(
+            "filtroStatusEtiqueta"
+        );
+
+    if (campoBusca) {
+
+        campoBusca.value =
+            "";
+
+    }
+
+    if (campoStatus) {
+
+        campoStatus.value =
+            "todas";
+
+    }
+
+    termoBuscaEtiqueta =
+        "";
+
+    statusFiltroEtiqueta =
+        "todas";
+
+    filtroEtiquetasAplicado =
+        false;
+
+    etiquetasFiltradas =
+        [
+            ...etiquetas
+        ];
+
+    renderizarEtiquetasFiltradas();
+
+    atualizarStatusFiltroEtiquetas();
 
 }
 
@@ -3461,6 +4647,14 @@ window.carregarEtiquetas =
 
 window.carregarProdutosEtiquetas =
     carregarProdutos;
+window.apagarEtiquetasFiltradas =
+    apagarEtiquetasFiltradas;
+
+window.limparFiltrosEtiquetas =
+    limparFiltrosEtiquetas;
+
+window.aplicarFiltrosEtiquetas =
+    aplicarFiltrosEtiquetas;
 
 window.imprimirEtiquetaExistente =
     imprimirEtiquetaExistente;
@@ -3492,7 +4686,34 @@ document.addEventListener(
         console.log("=======================================");
 
         try {
+         // =======================================
+// CONFIGURAR FILTROS DE ETIQUETAS
+// =======================================
 
+configurarFiltrosEtiquetas();
+
+
+// =======================================
+// BOTÃO APAGAR ETIQUETAS FILTRADAS
+// =======================================
+
+const btnApagarEtiquetasFiltradas =
+    obterElemento(
+        "btnApagarEtiquetasFiltradas"
+    );
+
+if (btnApagarEtiquetasFiltradas) {
+
+    btnApagarEtiquetasFiltradas.addEventListener(
+        "click",
+        async () => {
+
+            await apagarEtiquetasFiltradas();
+
+        }
+    );
+
+}
             // ===================================
             // EMPRESA
             // ===================================
@@ -3526,6 +4747,8 @@ document.addEventListener(
             preencherDataAtual();
 
             restaurarUltimoResponsavelEtiqueta();
+
+            prepararImpressaoRapida();
 
             // ===================================
             // PRODUTOS
@@ -3566,10 +4789,7 @@ document.addEventListener(
 
                         evento.preventDefault();
 
-                        imprimirDepoisDeSalvar =
-                            true;
-
-                        await salvarEtiqueta();
+                        await confirmarImpressaoRapida();
 
                     }
                 );
@@ -3622,6 +4842,8 @@ document.addEventListener(
                         atualizarPreviaDatas();
 
                         atualizarPrevia();
+
+                        prepararImpressaoRapida();
 
                     }
                 );
@@ -3676,6 +4898,131 @@ document.addEventListener(
                     salvarUltimoResponsavelEtiqueta(
                         campoResponsavel.value
                     );
+
+                }
+            );
+
+            document
+                .querySelectorAll(
+                    "[data-label-step]"
+                )
+                .forEach(
+                    botao => {
+
+                        botao.addEventListener(
+                            "click",
+                            () => {
+
+                                const etapa =
+                                    botao.dataset.labelStep;
+
+                                if (etapa === "confirm") {
+
+                                    confirmarImpressaoRapida();
+
+                                    return;
+
+                                }
+
+                                ativarEtapaImpressao(
+                                    etapa
+                                );
+
+                                const destino =
+                                    etapa === "history"
+                                        ? obterElemento("historicoEtiquetas")
+                                        : obterElemento("impressaoRapida");
+
+                                destino?.scrollIntoView({
+                                    behavior: "smooth",
+                                    block: "start"
+                                });
+
+                                if (etapa === "print") {
+
+                                    window.setTimeout(
+                                        () => {
+
+                                            obterElemento(
+                                                "produtoEtiquetaBusca"
+                                            )?.focus();
+
+                                        },
+                                        350
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
+
+            const btnFecharConfirmacaoImpressao =
+                obterElemento(
+                    "printSuccessClose"
+                );
+
+            btnFecharConfirmacaoImpressao?.addEventListener(
+                "click",
+                fecharConfirmacaoImpressao
+            );
+
+            obterElemento(
+                "printErrorClose"
+            )?.addEventListener(
+                "click",
+                fecharErroImpressao
+            );
+
+            obterElemento(
+                "printSuccessModal"
+            )?.addEventListener(
+                "click",
+                evento => {
+
+                    if (
+                        evento.target ===
+                        evento.currentTarget
+                    ) {
+
+                        fecharConfirmacaoImpressao();
+
+                    }
+
+                }
+            );
+
+            obterElemento(
+                "printErrorModal"
+            )?.addEventListener(
+                "click",
+                evento => {
+
+                    if (
+                        evento.target ===
+                        evento.currentTarget
+                    ) {
+
+                        fecharErroImpressao();
+
+                    }
+
+                }
+            );
+
+            document.addEventListener(
+                "keydown",
+                evento => {
+
+                    if (evento.key === "Escape") {
+
+                        fecharConfirmacaoImpressao();
+
+                        fecharErroImpressao();
+
+                    }
 
                 }
             );

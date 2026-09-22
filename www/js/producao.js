@@ -10,6 +10,7 @@ import { db } from "./firebase.js";
 
 import {
     collection,
+    getDoc,
     getDocs,
     addDoc,
     updateDoc,
@@ -25,8 +26,36 @@ import {
 // CONFIGURAÇÃO DA IMPRESSORA
 // =======================================
 
-const PRINTER_SERVICE_URL =
-    "https://localhost:9100/print";
+let printerServiceDescoberto = null;
+
+async function obterUrlPrinterService() {
+    const plugin = window.Capacitor?.Plugins?.LotrixPrinterDiscovery;
+    if (plugin?.discover) {
+        try {
+            const encontrado = await plugin.discover({ timeoutMs: 2500 });
+            const host = String(encontrado.host || "").trim();
+            const porta = Number(encontrado.port);
+            if (host && Number.isInteger(porta) && porta > 0 && porta <= 65535) {
+                printerServiceDescoberto = { url: `https://${host}:${porta}/print`, em: Date.now() };
+                return printerServiceDescoberto.url;
+            }
+        } catch (erro) {
+            console.warn("Descoberta automática do Printer Service falhou:", erro);
+        }
+    }
+
+    const idEmpresa = empresaAtual();
+    if (!idEmpresa) throw new Error("Empresa não identificada para impressão.");
+    const snapshot = await getDoc(doc(db, "configuracoes", idEmpresa));
+    const configuracao = snapshot.exists() ? snapshot.data() : {};
+    const host = String(configuracao.printerServiceIp || "")
+        .trim().replace(/^https?:\/\//i, "").replace(/\/.*$/, "").replace(/:\d+$/, "");
+    const porta = Number(configuracao.printerServicePort || 9100);
+    if (!host || !Number.isInteger(porta) || porta < 1 || porta > 65535) {
+        throw new Error("Não foi possível localizar o Printer Service na rede. Verifique se ele está aberto no computador da impressora.");
+    }
+    return `https://${host}:${porta}/print`;
+}
 
 
 // =======================================
@@ -1189,6 +1218,8 @@ async function imprimirEtiquetasDireto(
     quantidade
 ) {
 
+    const printerServiceUrl = await obterUrlPrinterService();
+
     const qtd =
         Number(
             quantidade
@@ -1272,7 +1303,7 @@ async function imprimirEtiquetasDireto(
 
     console.log(
         "Enviando para:",
-        PRINTER_SERVICE_URL
+        printerServiceUrl
     );
 
 
@@ -1283,7 +1314,7 @@ async function imprimirEtiquetasDireto(
 
         resposta =
             await fetch(
-                PRINTER_SERVICE_URL,
+                printerServiceUrl,
                 {
 
                     method:
@@ -2585,7 +2616,7 @@ document.addEventListener(
 
         console.log(
             "PRINTER SERVICE:",
-            PRINTER_SERVICE_URL
+            printerServiceDescoberto?.url || "Descoberto ao imprimir"
         );
 
 
@@ -2643,9 +2674,10 @@ window.testarImpressoraLotrix =
                 );
 
 
+            const printerServiceUrl = await obterUrlPrinterService();
             const resposta =
                 await fetch(
-                    PRINTER_SERVICE_URL,
+                    printerServiceUrl,
                     {
 
                         method:
@@ -2702,3 +2734,4 @@ window.testarImpressoraLotrix =
             );
         }
     };
+

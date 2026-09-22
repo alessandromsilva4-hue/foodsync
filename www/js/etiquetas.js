@@ -132,6 +132,11 @@ let produtos = [];
 let etiquetas = [];
 
 // =======================================
+// PRODUTOS SELECIONADOS PARA IMPRESSÃO
+// =======================================
+
+let produtosEtiquetasSelecionados = new Set();
+// =======================================
 // CONTROLE DOS FILTROS DO HISTÓRICO
 // =======================================
 
@@ -1485,6 +1490,145 @@ function prepararImpressaoRapida() {
 }
 
 // =======================================
+// ETAPA DA IMPRESSÃO
+// =======================================
+
+function ativarEtapaImpressao(etapa) {
+
+    document
+        .querySelectorAll(
+            "[data-label-step]"
+        )
+        .forEach(
+            botao => {
+
+                const estaAtiva =
+                    botao.dataset.labelStep === etapa;
+
+                botao.classList.toggle(
+                    "is-active",
+                    estaAtiva
+                );
+
+                botao.setAttribute(
+                    "aria-current",
+                    estaAtiva
+                        ? "step"
+                        : "false"
+                );
+
+            }
+        );
+
+}
+
+// =======================================
+// CONFIRMAÇÃO VISUAL DE IMPRESSÃO
+// =======================================
+
+function mostrarConfirmacaoImpressao(quantidade) {
+
+    const modal =
+        obterElemento(
+            "printSuccessModal"
+        );
+
+    const quantidadeElemento =
+        obterElemento(
+            "printSuccessQuantity"
+        );
+
+    if (!modal || !quantidadeElemento) {
+
+        return;
+
+    }
+
+    quantidadeElemento.textContent =
+        `${quantidade} ${quantidade === 1 ? "etiqueta" : "etiquetas"}`;
+
+    modal.hidden = false;
+
+    window.setTimeout(
+        () => {
+
+            obterElemento(
+                "printSuccessClose"
+            )?.focus();
+
+        },
+        0
+    );
+
+}
+
+function fecharConfirmacaoImpressao() {
+
+    const modal =
+        obterElemento(
+            "printSuccessModal"
+        );
+
+    if (modal) {
+
+        modal.hidden = true;
+
+    }
+
+}
+
+function mostrarErroImpressao(mensagem) {
+
+    const modal =
+        obterElemento(
+            "printErrorModal"
+        );
+
+    const descricao =
+        obterElemento(
+            "printErrorDescription"
+        );
+
+    if (!modal || !descricao) {
+
+        return;
+
+    }
+
+    descricao.textContent =
+        mensagem;
+
+    modal.hidden = false;
+
+    window.setTimeout(
+        () => {
+
+            obterElemento(
+                "printErrorClose"
+            )?.focus();
+
+        },
+        0
+    );
+
+}
+
+function fecharErroImpressao() {
+
+    const modal =
+        obterElemento(
+            "printErrorModal"
+        );
+
+    if (modal) {
+
+        modal.hidden = true;
+
+    }
+
+}
+
+// =======================================
 // CONFIRMAR IMPRESSÃO RÁPIDA
 // =======================================
 
@@ -2593,8 +2737,8 @@ await setDoc(
 
                 );
 
-                alert(
-                    `Etiqueta criada e ${quantidade} etiqueta(s) enviada(s) para a impressora.`
+                mostrarConfirmacaoImpressao(
+                    quantidade
                 );
 
                 ativarEtapaImpressao(
@@ -2608,11 +2752,11 @@ await setDoc(
                     error
                 );
 
-                alert(
-                    "A etiqueta foi salva, mas não foi possível imprimir.\n\n" +
+                mostrarErroImpressao(
+                    "A etiqueta foi salva, mas não foi possível enviá-la à impressora. " +
                     (
                         error.message ||
-                        "Verifique o LOTRIX PRINTER SERVICE."
+                        "Verifique se o LOTRIX PRINTER SERVICE está aberto no computador da impressora."
                     )
                 );
 
@@ -4819,6 +4963,74 @@ if (btnApagarEtiquetasFiltradas) {
 
                     }
                 );
+
+            const btnFecharConfirmacaoImpressao =
+                obterElemento(
+                    "printSuccessClose"
+                );
+
+            btnFecharConfirmacaoImpressao?.addEventListener(
+                "click",
+                fecharConfirmacaoImpressao
+            );
+
+            obterElemento(
+                "printErrorClose"
+            )?.addEventListener(
+                "click",
+                fecharErroImpressao
+            );
+
+            obterElemento(
+                "printSuccessModal"
+            )?.addEventListener(
+                "click",
+                evento => {
+
+                    if (
+                        evento.target ===
+                        evento.currentTarget
+                    ) {
+
+                        fecharConfirmacaoImpressao();
+
+                    }
+
+                }
+            );
+
+            obterElemento(
+                "printErrorModal"
+            )?.addEventListener(
+                "click",
+                evento => {
+
+                    if (
+                        evento.target ===
+                        evento.currentTarget
+                    ) {
+
+                        fecharErroImpressao();
+
+                    }
+
+                }
+            );
+
+            document.addEventListener(
+                "keydown",
+                evento => {
+
+                    if (evento.key === "Escape") {
+
+                        fecharConfirmacaoImpressao();
+
+                        fecharErroImpressao();
+
+                    }
+
+                }
+            );
 // ===================================
 // BOTÃO LIMPAR HISTÓRICO
 // ===================================

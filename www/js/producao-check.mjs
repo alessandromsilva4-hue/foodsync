@@ -1,4 +1,4 @@
-// =======================================
+﻿// =======================================
 // LOTRIX - PRODUÇÃO V7
 // MULTIEMPRESA + FIRESTORE
 // IMPRESSÃO DIRETA ZD220 VIA PRINTER SERVICE
@@ -26,7 +26,7 @@ import {
 // =======================================
 
 const PRINTER_SERVICE_URL =
-    "https://192.168.0.109:9100/print";
+    "https://192.168.0.68:9100/print";
 
 
 // =======================================
@@ -2414,3 +2414,4 @@ window.testarImpressoraLotrix =
             );
         }
     };
+

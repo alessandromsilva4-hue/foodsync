@@ -472,15 +472,20 @@ const server = https.createServer(
 
         const origem = req.headers.origin;
 
-        const origensPermitidas = [
-            "https://foodsync-43a7e.web.app",
-            "http://localhost",
-            "http://localhost:3000",
-            "http://127.0.0.1:5500",
-            "https://localhost",
-            "https://localhost:3000",
-            "https://127.0.0.1:5500"
-        ];
+       const origensPermitidas = [
+    "https://lotrix.web.app",
+    "https://foodsync-43a7e.web.app",
+
+    "http://localhost",
+    "http://localhost:3000",
+    "http://127.0.0.1",
+    "http://127.0.0.1:5500",
+
+    "https://localhost",
+    "https://localhost:3000",
+    "https://127.0.0.1",
+    "https://127.0.0.1:5500"
+];
 
         if (origensPermitidas.includes(origem)) {
 

@@ -62,6 +62,671 @@ button:active {
         grid-template-columns: 36px minmax(0, 1fr) 36px !important;
     }
 }
+
+
+/* =====================================================
+   LOTRIX — LISTA DE PRODUTOS
+   Corrige o visual dos resultados da pesquisa.
+   Os itens da lista NÃO devem herdar o estilo dos botões
+   principais do sistema.
+===================================================== */
+.etiqueta-workspace .produto-search-list {
+    width: 100%;
+    max-height: 280px;
+    overflow-y: auto;
+    margin-top: 6px;
+    padding: 0;
+    background: #fff;
+    border: 1px solid #dbe3ef;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, .10);
+    overflow-x: hidden;
+}
+
+.etiqueta-workspace .produto-search-option {
+    width: 100% !important;
+    min-height: 50px !important;
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    margin: 0 !important;
+    padding: 8px 12px !important;
+    box-sizing: border-box !important;
+    border: 0 !important;
+    border-bottom: 1px solid #eef2f7 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+    transform: none !important;
+    translate: none !important;
+    scale: 1 !important;
+    text-align: left !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+.etiqueta-workspace .produto-search-option:last-child {
+    border-bottom: 0 !important;
+}
+
+.etiqueta-workspace .produto-search-option:hover,
+.etiqueta-workspace .produto-search-option:focus,
+.etiqueta-workspace .produto-search-option:active {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+    transform: none !important;
+    translate: none !important;
+    scale: 1 !important;
+    outline: none !important;
+}
+
+.etiqueta-workspace .produto-search-option-icon {
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 0;
+}
+
+.etiqueta-workspace .produto-search-option-icon::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border: 1.5px solid #2563eb;
+    border-radius: 2px;
+    box-sizing: border-box;
+}
+
+.etiqueta-workspace .produto-search-option-text {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2px;
+    line-height: 1.2;
+}
+
+.etiqueta-workspace .produto-search-option-text strong {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.etiqueta-workspace .produto-search-option-text small {
+    display: block;
+    color: #94a3b8;
+    font-size: 10px;
+    font-weight: 400;
+}
+
+.etiqueta-workspace .produto-search-empty {
+    padding: 14px;
+    color: #64748b;
+    background: #fff;
+    font-size: 12px;
+    text-align: center;
+}
+
+
+
+/* =====================================================
+   LOTRIX — CORREÇÃO DEFINITIVA DO CAMPO DE PESQUISA
+   A lupa fica separada do texto e nunca sobrepõe o placeholder.
+===================================================== */
+.etiqueta-workspace .produto-search-input-wrap {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    display: block !important;
+}
+
+.etiqueta-workspace .produto-search-icon {
+    position: absolute !important;
+    left: 15px !important;
+    top: 50% !important;
+    width: 16px !important;
+    height: 16px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    z-index: 5 !important;
+    pointer-events: none !important;
+    transform: translateY(-50%) !important;
+    box-sizing: border-box !important;
+    border: 2px solid #64748b !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+}
+
+.etiqueta-workspace .produto-search-icon::after {
+    content: "" !important;
+    position: absolute !important;
+    width: 7px !important;
+    height: 2px !important;
+    right: -5px !important;
+    bottom: -2px !important;
+    background: #64748b !important;
+    border-radius: 2px !important;
+    transform: rotate(45deg) !important;
+    transform-origin: left center !important;
+}
+
+.etiqueta-workspace #produtoEtiquetaBusca,
+.etiqueta-workspace .produto-search-input {
+    position: relative !important;
+    z-index: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    padding-left: 46px !important;
+    padding-right: 48px !important;
+}
+
+/* Remove o ícone nativo do type=search do navegador. */
+.etiqueta-workspace #produtoEtiquetaBusca::-webkit-search-decoration,
+.etiqueta-workspace #produtoEtiquetaBusca::-webkit-search-cancel-button,
+.etiqueta-workspace #produtoEtiquetaBusca::-webkit-search-results-button,
+.etiqueta-workspace #produtoEtiquetaBusca::-webkit-search-results-decoration {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+.etiqueta-workspace .produto-search-clear {
+    position: absolute !important;
+    right: 8px !important;
+    top: 50% !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transform: translateY(-50%) !important;
+    translate: none !important;
+    scale: 1 !important;
+    z-index: 6 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.etiqueta-workspace .produto-search-clear:hover,
+.etiqueta-workspace .produto-search-clear:focus,
+.etiqueta-workspace .produto-search-clear:active {
+    transform: translateY(-50%) !important;
+    translate: none !important;
+    scale: 1 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+
+/* LOTRIX - FORMULÁRIO E PRÉVIA LADO A LADO */
+.etiqueta-workspace { display:grid !important; grid-template-columns:minmax(320px,1.15fr) minmax(280px,.85fr) !important; gap:22px !important; align-items:start !important; width:100% !important; }
+.etiqueta-workspace .preview-panel, .etiqueta-workspace .print-panel { width:100% !important; min-width:0 !important; margin:0 !important; }
+.etiqueta-workspace .print-panel { grid-column:1 !important; grid-row:1 !important; }
+.etiqueta-workspace .preview-panel { grid-column:2 !important; grid-row:1 !important; }
+.etiqueta-workspace .preview-stage { width:100% !important; min-width:0 !important; display:flex !important; align-items:center !important; justify-content:center !important; overflow:hidden !important; }
+@media screen and (max-width:900px) { .etiqueta-workspace { grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) !important; gap:14px !important; } .etiqueta-workspace .panel-title h2 { font-size:17px !important; } .etiqueta-workspace .panel-description { font-size:11px !important; } .etiqueta-workspace .preview-caption { font-size:10px !important; } .etiqueta-workspace .field-grid { grid-template-columns:1fr !important; gap:10px !important; } .etiqueta-workspace .quantity-print-row { grid-template-columns:1fr !important; gap:10px !important; } .etiqueta-workspace .btn-print, .etiqueta-workspace .btn-generate { width:100% !important; } }
+@media screen and (max-width:420px) { .etiqueta-workspace { grid-template-columns:1fr !important; gap:16px !important; } .etiqueta-workspace .print-panel { grid-column:1 !important; grid-row:1 !important; } .etiqueta-workspace .preview-panel { grid-column:1 !important; grid-row:2 !important; } }
+/* =====================================================
+   LOTRIX — CONTROLES DO FILTRO DE ETIQUETAS
+===================================================== */
+
+.etiquetas-filtros {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr);
+    gap: 16px;
+    margin: 18px 0 10px;
+}
+
+.etiquetas-filtros label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+}
+
+.filtro-busca-controle,
+.filtro-validade-controle {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+}
+
+.etiquetas-filtros input,
+.etiquetas-filtros select {
+    width: 100%;
+    height: 42px;
+    box-sizing: border-box;
+    padding: 0 12px;
+    border: 1px solid #dbe3ef;
+    border-radius: 9px;
+    background: #fff;
+    color: #0f172a;
+    font-size: 13px;
+    outline: none;
+}
+
+.etiquetas-filtros input:focus,
+.etiquetas-filtros select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+}
+
+
+/* BOTÃO PESQUISAR */
+
+.btn-filtro-pesquisar,
+.btn-filtro-aplicar {
+    height: 42px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 9px;
+    cursor: pointer;
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 700;
+    box-sizing: border-box;
+}
+
+.btn-filtro-pesquisar {
+    background: #2563eb;
+    color: #fff;
+}
+
+.btn-filtro-aplicar {
+    background: #15803d;
+    color: #fff;
+}
+
+
+/* LIMPAR */
+
+.filtros-acoes {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
+.btn-limpar-filtros {
+    height: 34px;
+    padding: 0 13px;
+    border: 1px solid #dbe3ef;
+    border-radius: 8px;
+    background: #fff;
+    color: #475569;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.btn-limpar-filtros:hover {
+    background: #f8fafc;
+}
+
+
+/* INDICADOR */
+
+.filtro-etiquetas-status {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 12px;
+}
+
+.filtro-etiquetas-status a {
+    margin-left: 8px;
+    color: #2563eb;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+
+/* RESPONSIVO */
+
+@media screen and (max-width: 800px) {
+
+    .etiquetas-filtros {
+        grid-template-columns: 1fr;
+    }
+
+    .filtro-busca-controle,
+    .filtro-validade-controle {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-filtro-pesquisar,
+    .btn-filtro-aplicar {
+        width: 100%;
+    }
+
+}
+/* =====================================================
+   LOTRIX — AÇÕES DO HISTÓRICO
+===================================================== */
+
+.historico-acoes {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-apagar-filtradas {
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    background: #fff;
+    color: #b91c1c;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.btn-apagar-filtradas:hover {
+    background: #fef2f2;
+    border-color: #fca5a5;
+}
+
+.btn-apagar-filtradas:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* =====================================================
+   IMPRESSÃO RÁPIDA — fluxo simples para a operação diária
+===================================================== */
+.etiqueta-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 18px;
+}
+
+.etiqueta-page-header h1 {
+    margin: 0;
+    color: #082968;
+    font-size: clamp(22px, 2.2vw, 30px);
+    line-height: 1.1;
+}
+
+.etiqueta-page-header p {
+    margin: 7px 0 0;
+    color: #5f78aa;
+    font-size: 14px;
+}
+
+.etiqueta-flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    max-width: 430px;
+}
+
+.etiqueta-flow-step {
+    min-height: 36px;
+    padding: 7px 13px;
+    border: 1px solid #c9d8ef;
+    border-radius: 9px;
+    background: #fff;
+    color: #082968;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.etiqueta-flow-step.is-active {
+    border-color: #2f65dd;
+    background: #2f65dd;
+    color: #fff;
+}
+
+.etiqueta-workspace {
+    grid-template-columns: minmax(300px, 1fr) minmax(280px, .84fr) !important;
+    gap: 20px !important;
+    padding: 22px !important;
+    border: 1px solid #d8e4f5;
+    border-radius: 18px;
+    background: #f9fbff;
+    box-shadow: 0 12px 30px rgba(17, 57, 112, .09);
+}
+
+.quick-print-heading {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2px;
+}
+
+.quick-print-heading-icon {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border-radius: 10px;
+    background: #102f72;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.quick-print-heading strong,
+.quick-print-heading small {
+    display: block;
+}
+
+.quick-print-heading strong { color: #082968; font-size: 16px; }
+.quick-print-heading small { margin-top: 3px; color: #5f78aa; font-size: 12px; }
+
+.etiqueta-workspace .print-panel,
+.etiqueta-workspace .preview-panel {
+    width: auto !important;
+    margin: 0 !important;
+    padding: 18px !important;
+    border: 1px solid #d7e3f5 !important;
+    border-radius: 14px !important;
+    background: #fff !important;
+    box-shadow: none !important;
+}
+
+.etiqueta-workspace .print-panel { grid-column: 1 !important; grid-row: 2 !important; }
+.etiqueta-workspace .preview-panel { grid-column: 2 !important; grid-row: 2 !important; }
+.etiqueta-workspace .print-panel .panel-title,
+.etiqueta-workspace .print-panel .panel-description,
+.etiqueta-workspace .preview-panel .panel-title { display: none; }
+
+.etiqueta-workspace .field-full { margin-bottom: 18px; }
+.etiqueta-workspace .field-full > label,
+.etiqueta-workspace .quantity-box > label { color: #082968; font-size: 12px; }
+.etiqueta-workspace .produto-search-input { min-height: 60px !important; border-color: #bfd0eb !important; border-radius: 11px !important; font-weight: 700; }
+.etiqueta-workspace .produto-search-hint { color: #5f78aa; }
+
+.quick-print-details {
+    grid-template-columns: 1fr !important;
+    margin-bottom: 16px !important;
+}
+
+.quick-print-hidden-field { display: none !important; }
+
+.quantity-print-row {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    margin-top: 0 !important;
+}
+
+.etiqueta-workspace .quantity-control { min-height: 48px !important; border-color: #bfd0eb !important; border-radius: 10px !important; }
+.etiqueta-workspace .quantity-btn { width: 48px !important; height: 48px !important; min-width: 48px !important; min-height: 48px !important; color: #1d55bd !important; background: #f2f6ff !important; }
+.etiqueta-workspace .btn-print { min-height: 52px !important; border-radius: 10px !important; background: #2f65dd !important; font-size: 16px !important; }
+.etiqueta-workspace .btn-generate { display: none !important; }
+
+.quick-print-meta {
+    margin: 14px 0 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #f1f5fb;
+    color: #496287;
+    font-size: 12px;
+    text-align: center;
+}
+
+.quick-print-meta strong { color: #203d6e; }
+
+.etiqueta-workspace .preview-stage {
+    min-height: 282px !important;
+    padding: 16px !important;
+    border-color: #d7e3f5 !important;
+    background: #fff !important;
+}
+
+.etiqueta-workspace .etiqueta { transform: scale(.88); transform-origin: center; }
+.etiqueta-workspace .preview-caption { margin-top: -4px; color: #5f78aa; }
+
+@media screen and (max-width: 760px) {
+    .etiqueta-page-header { flex-direction: column; gap: 14px; }
+    .etiqueta-flow { max-width: none; }
+    .etiqueta-workspace { grid-template-columns: 1fr !important; padding: 14px !important; }
+    .etiqueta-workspace .print-panel { grid-column: 1 !important; grid-row: 2 !important; }
+    .etiqueta-workspace .preview-panel { grid-column: 1 !important; grid-row: 3 !important; }
+}
+
+html[data-theme="dark"] .etiqueta-workspace { background: #102b60; border-color: rgba(132,169,231,.28); }
+html[data-theme="dark"] .etiqueta-page-header h1,
+html[data-theme="dark"] .quick-print-heading strong { color: #f5f8ff; }
+html[data-theme="dark"] .etiqueta-page-header p,
+html[data-theme="dark"] .quick-print-heading small,
+html[data-theme="dark"] .quick-print-meta { color: #b9c9e8; }
+html[data-theme="dark"] .etiqueta-flow-step { background: #183571; border-color: rgba(132,169,231,.38); color: #f5f8ff; }
+html[data-theme="dark"] .etiqueta-workspace .print-panel,
+html[data-theme="dark"] .etiqueta-workspace .preview-panel,
+html[data-theme="dark"] .etiqueta-workspace .preview-stage { background: #183571 !important; border-color: rgba(132,169,231,.28) !important; }
+html[data-theme="dark"] .quick-print-meta { background: #122f68; }
+
+/* =====================================================
+   LOTRIX — CONFIRMAÇÃO DE IMPRESSÃO
+===================================================== */
+.print-success-modal[hidden] { display: none !important; }
+
+.print-success-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(7, 28, 67, .52);
+    backdrop-filter: blur(3px);
+}
+
+.print-success-dialog {
+    width: min(100%, 390px);
+    overflow: hidden;
+    border: 1px solid #d7e3f5;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 22px 56px rgba(8, 41, 104, .28);
+}
+
+.print-success-top {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 20px 22px 16px;
+    background: linear-gradient(135deg, #edf4ff, #f8fbff);
+    border-bottom: 1px solid #dce8f8;
+}
+
+.print-success-icon {
+    display: grid;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border-radius: 50%;
+    background: #e7f8ee;
+    color: #168047;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.print-success-kicker {
+    display: block;
+    margin-bottom: 3px;
+    color: #52709e;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .09em;
+}
+
+.print-success-top h2 {
+    margin: 0;
+    color: #082968;
+    font-size: 18px;
+}
+
+.print-success-body { padding: 19px 22px 22px; }
+.print-success-body p { margin: 0; color: #496287; font-size: 14px; line-height: 1.5; }
+.print-success-quantity { color: #082968; font-weight: 800; }
+
+.print-success-action {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 20px;
+    border: 0;
+    border-radius: 10px;
+    background: #2f65dd;
+    color: #fff;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+html[data-theme="dark"] .print-success-dialog { background: #183571; border-color: rgba(132,169,231,.35); }
+html[data-theme="dark"] .print-success-top { background: #102b60; border-color: rgba(132,169,231,.25); }
+html[data-theme="dark"] .print-success-top h2,
+html[data-theme="dark"] .print-success-quantity { color: #f5f8ff; }
+html[data-theme="dark"] .print-success-body p { color: #c2d1e9; }
+
+.print-error-top { background: linear-gradient(135deg, #fff4f2, #fffafa); border-color: #f3d6d1; }
+.print-error-icon { background: #fff0ed; color: #c2412d; }
+.print-error-title { color: #8b2418 !important; }
+.print-error-action { background: #2f65dd; }
+
+html[data-theme="dark"] .print-error-top { background: #412333; border-color: rgba(255, 170, 160, .22); }
+html[data-theme="dark"] .print-error-title { color: #ffe1dc !important; }
 </style>
 
 </head>
@@ -119,14 +784,14 @@ button:active {
     <div class="sidebar-footer">
         <div class="user-card">
             <div class="avatar"><i data-lucide="user-round" aria-hidden="true"></i></div>
-           <div class="user-info">
+            <div class="user-info">
     <strong id="nomeUsuarioLogado">Usuário</strong>
     <small id="perfilUsuarioLogado">Usuário</small>
 </div>
         </div>
         <div class="company-card">
             <span class="company-label">Empresa</span>
-            <strong class="company-name">Izu Oeste</strong>
+            <strong class="company-name" id="nomeEmpresaLogada">Carregando...</strong>
         </div>
         <button class="logout-button" type="button" onclick="logout()"><i data-lucide="log-out"></i><span>Sair</span></button>
     </div>
@@ -143,24 +808,25 @@ button:active {
 
         <!-- CABEÇALHO -->
 
-        <header class="top-header">
-
+        <header class="etiqueta-page-header">
             <div>
-
                 <h1>Etiquetas</h1>
-
-                <p>
-                    Gere e imprima etiquetas de validade
-                </p>
-
+                <p>Selecione o produto, informe o responsável e imprima.</p>
             </div>
-
         </header>
 
 
         <!-- ÁREA PRINCIPAL -->
 
-        <section class="etiqueta-workspace">
+        <section class="etiqueta-workspace" id="impressaoRapida">
+
+            <div class="quick-print-heading">
+                <span class="quick-print-heading-icon" aria-hidden="true">L</span>
+                <div>
+                    <strong>Lotrix · Imprimir etiqueta</strong>
+                    <small>Só o que é necessário para imprimir.</small>
+                </div>
+            </div>
 
 
             <!-- PRÉVIA -->
@@ -361,7 +1027,7 @@ button:active {
 
                             <div class="produto-search-input-wrap">
 
-                                <span class="produto-search-icon" aria-hidden="true">⌕</span>
+                                <span class="produto-search-icon" aria-hidden="true"></span>
 
                                 <input
                                     type="search"
@@ -413,9 +1079,9 @@ button:active {
 
                     <!-- DATA + RESPONSÁVEL -->
 
-                    <div class="field-grid">
+                    <div class="field-grid quick-print-details">
 
-                        <div class="field">
+                        <div class="field quick-print-hidden-field" aria-hidden="true">
 
                             <label for="dataProducao">
                                 Data de produção
@@ -439,9 +1105,30 @@ button:active {
                                 type="text"
                                 id="responsavelSelect"
                                 name="responsavel"
-                                placeholder="Digite o nome do responsável"
+                                list="responsaveisFixos"
+                                placeholder="Selecione ou digite o nome..."
                                 autocomplete="off"
                                 required>
+
+                            <datalist id="responsaveisFixos">
+                                <option value="Alessandro"></option>
+                                <option value="Ana Luiza"></option>
+                                <option value="Carlos Flavio"></option>
+                                <option value="Davilaa"></option>
+                                <option value="Erika"></option>
+                                <option value="Fernando"></option>
+                                <option value="Genegilda"></option>
+                                <option value="Hugo"></option>
+                                <option value="João"></option>
+                                <option value="Laércio"></option>
+                                <option value="Luís Miguel"></option>
+                                <option value="Maria"></option>
+                                <option value="Manu"></option>
+                                <option value="Ramon"></option>
+                            </datalist>
+                            <small style="display:block; margin-top:6px; color:#94a3b8; font-size:11px;">
+                                Se o nome não estiver na lista, digite normalmente.
+                            </small>
 
                         </div>
 
@@ -488,23 +1175,16 @@ button:active {
                             type="submit"
                             class="btn-print">
 
-                            🖨 Imprimir
+                            ⎙ &nbsp; Imprimir etiqueta
 
                         </button>
 
                     </div>
 
-
-                    <!-- BOTÃO ORIGINAL, MANTIDO PARA O JS -->
-
-                    <button
-                        type="button"
-                        class="btn-generate"
-                        onclick="document.getElementById('etiquetaForm').requestSubmit()">
-
-                        Atualizar etiqueta
-
-                    </button>
+                    <p class="quick-print-meta">
+                        Data de produção: <strong id="dataProducaoRapida">hoje</strong>
+                        · Responsável: <strong id="responsavelRapido">usuário logado</strong>
+                    </p>
 
                 </form>
 
@@ -513,97 +1193,297 @@ button:active {
         </section>
 
 
-        <!-- HISTÓRICO -->
+   <!-- =====================================================
+     HISTÓRICO DE ETIQUETAS
+===================================================== -->
 
-        <section class="table-box etiqueta-history">
+<section class="table-box etiqueta-history" id="historicoEtiquetas">
 
-            <div class="historico-header">
 
-                <div>
+<div class="historico-header">
 
-                    <span class="panel-kicker">
-                        HISTÓRICO
-                    </span>
+    <div>
 
-                    <h2>
-                        Histórico de Etiquetas
-                    </h2>
+        <span class="panel-kicker">
+            HISTÓRICO
+        </span>
 
-                </div>
+        <h2>
+            Histórico de Etiquetas
+        </h2>
 
-                <button
-                    type="button"
-                    id="btnLimparHistorico"
-                    class="btn-limpar-historico">
+    </div>
 
-                    🗑 Limpar histórico
+    <div class="historico-acoes">
 
-                </button>
+        <button
+            type="button"
+            id="btnApagarEtiquetasFiltradas"
+            class="btn-apagar-filtradas">
 
+            🗑 Apagar filtradas
+
+        </button>
+
+        <button
+            type="button"
+            id="btnLimparHistorico"
+            class="btn-limpar-historico">
+
+            🗑 Limpar histórico
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     FILTROS
+===================================================== -->
+
+<div class="etiquetas-filtros">
+
+    <!-- PESQUISA -->
+
+    <div class="etiquetas-filtro-busca">
+
+        <label for="buscarEtiqueta">
+            Pesquisar etiquetas
+        </label>
+
+        <div class="filtro-busca-controle">
+
+            <input
+                type="search"
+                id="buscarEtiqueta"
+                placeholder="Código, produto ou responsável..."
+                autocomplete="off">
+
+            <button
+                type="button"
+                id="btnPesquisarEtiqueta"
+                class="btn-filtro-pesquisar">
+
+                🔎 Pesquisar
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- FILTRO DE VALIDADE -->
+
+    <div class="etiquetas-filtro-validade">
+
+        <label for="filtroStatusEtiqueta">
+            Validade
+        </label>
+
+        <div class="filtro-validade-controle">
+
+            <select id="filtroStatusEtiqueta">
+
+                <option value="todas">
+                    Todas
+                </option>
+
+                <option value="vencidas">
+                    🔴 Vencidas
+                </option>
+
+                <option value="prestes">
+                    🟠 Prestes a vencer
+                </option>
+
+                <option value="em-dias">
+                    🟢 Em dias
+                </option>
+
+            </select>
+
+            <button
+                type="button"
+                id="btnAplicarFiltroEtiqueta"
+                class="btn-filtro-aplicar">
+
+                Aplicar filtro
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     LIMPAR FILTROS
+===================================================== -->
+
+<div class="filtros-acoes">
+
+    <button
+        type="button"
+        id="btnLimparFiltrosEtiqueta"
+        class="btn-limpar-filtros">
+
+        ✕ Limpar filtros
+
+    </button>
+
+</div>
+
+
+<!-- =====================================================
+     STATUS DOS FILTROS
+===================================================== -->
+
+<div
+    id="filtroEtiquetasStatus"
+    class="filtro-etiquetas-status"
+    hidden>
+</div>
+
+
+<!-- =====================================================
+     TABELA DO HISTÓRICO
+===================================================== -->
+
+<div class="table-responsive">
+
+    <table class="data-table etiquetas-table">
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    Código
+                </th>
+
+                <th>
+                    Produto
+                </th>
+
+                <th>
+                    Data de produção
+                </th>
+
+                <th>
+                    Validade
+                </th>
+
+                <th>
+                    Quantidade
+                </th>
+
+                <th>
+                    Responsável
+                </th>
+
+                <th>
+                    Lote
+                </th>
+
+                <th>
+                    Status
+                </th>
+
+                <th>
+                    Ações
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="listaEtiquetas">
+
+            <tr>
+
+                <td
+                    colspan="9"
+                    style="text-align:center; padding:30px;">
+
+                    Carregando histórico de etiquetas...
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+</section>
+
+
+<!-- CONFIRMAÇÃO DE IMPRESSÃO -->
+<div
+    id="printSuccessModal"
+    class="print-success-modal"
+    role="presentation"
+    hidden>
+    <section
+        class="print-success-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="printSuccessTitle"
+        aria-describedby="printSuccessDescription">
+        <div class="print-success-top">
+            <span class="print-success-icon" aria-hidden="true">✓</span>
+            <div>
+                <span class="print-success-kicker">IMPRESSÃO ENVIADA</span>
+                <h2 id="printSuccessTitle">Etiqueta criada com sucesso</h2>
             </div>
+        </div>
+        <div class="print-success-body">
+            <p id="printSuccessDescription">
+                <strong class="print-success-quantity" id="printSuccessQuantity">1 etiqueta</strong>
+                foi enviada para a impressora.
+            </p>
+            <button type="button" class="print-success-action" id="printSuccessClose">
+                Concluir
+            </button>
+        </div>
+    </section>
+</div>
 
 
-            <div class="table-scroll">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                Código
-                            </th>
-
-                            <th>
-                                Produto
-                            </th>
-
-                            <th>
-                                Quantidade
-                            </th>
-
-                            <th>
-                                Produção
-                            </th>
-
-                            <th>
-                                Validade
-                            </th>
-
-                            <th>
-                                Responsável
-                            </th>
-
-                            <th>
-                                Ações
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="listaEtiquetas">
-
-                        <tr>
-
-                            <td colspan="7">
-                                Nenhuma etiqueta gerada.
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
+<!-- ERRO DE IMPRESSÃO -->
+<div
+    id="printErrorModal"
+    class="print-success-modal"
+    role="presentation"
+    hidden>
+    <section
+        class="print-success-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="printErrorTitle"
+        aria-describedby="printErrorDescription">
+        <div class="print-success-top print-error-top">
+            <span class="print-success-icon print-error-icon" aria-hidden="true">!</span>
+            <div>
+                <span class="print-success-kicker">ETIQUETA SALVA</span>
+                <h2 class="print-error-title" id="printErrorTitle">Etiqueta criada com sucesso</h2>
             </div>
-
-        </section>
-
-    </main>
-
+        </div>
+        <div class="print-success-body">
+            <p id="printErrorDescription"></p>
+            <button type="button" class="print-success-action print-error-action" id="printErrorClose">
+                Entendi
+            </button>
+        </div>
+    </section>
 </div>
 
 
