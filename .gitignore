@@ -118,3 +118,6 @@ keystore/
 keystore/keystore.properties
 
 www/segredos/
+
+# Cache local usado ao compilar Android
+android/.gradle-cache/
