@@ -4251,6 +4251,7 @@ function renderizarEtiquetasFiltradas() {
 
                 <td>
 
+                    <div class="etiqueta-acoes-botoes">
                     <button
                         type="button"
                         class="btn-imprimir-etiqueta"
@@ -4272,6 +4273,8 @@ function renderizarEtiquetasFiltradas() {
                     >
                         🗑️
                     </button>
+
+                    </div>
 
                 </td>
 
