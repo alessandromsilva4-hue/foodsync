@@ -125,6 +125,39 @@ function obterCertificadoLocal() {
     };
 }
 
+function obterCertificadoParaIp(ip) {
+    const octetos = String(ip).split(".");
+    const ipValido = octetos.length === 4 && octetos.every(octeto =>
+        /^\d{1,3}$/.test(octeto) && Number(octeto) >= 0 && Number(octeto) <= 255
+    );
+
+    if (!ipValido) {
+        throw new Error(`IP inválido para o certificado HTTPS: ${ip}`);
+    }
+
+    let certificado = encontrarCertificadoCompativel([ip]);
+
+    if (!certificado) {
+        const sufixo = ip.replace(/\./g, "-");
+        const caminhoCert = path.join(__dirname, `lotrix-${sufixo}.pem`);
+        const caminhoChave = path.join(__dirname, `lotrix-${sufixo}-key.pem`);
+
+        execFileSync(
+            encontrarMkcert(),
+            ["-cert-file", caminhoCert, "-key-file", caminhoChave, "localhost", ip],
+            { cwd: __dirname, stdio: "ignore" }
+        );
+
+        certificado = encontrarCertificadoCompativel([ip]);
+    }
+
+    if (!certificado) {
+        throw new Error(`Não foi possível gerar um certificado HTTPS para ${ip}.`);
+    }
+
+    return certificado;
+}
+
 const certificadoLocal = obterCertificadoLocal();
 const SSL_KEY = fs.readFileSync(certificadoLocal.caminhoChave);
 const SSL_CERT = fs.readFileSync(certificadoLocal.caminhoCert);
@@ -798,9 +831,22 @@ const discoveryServer = dgram.createSocket("udp4");
 discoveryServer.on("message", (mensagem, remoto) => {
     if (mensagem.toString("utf8") !== DISCOVERY_MESSAGE) return;
 
+    const host = obterIpParaTablet(remoto.address);
+
+    try {
+        const certificado = obterCertificadoParaIp(host);
+        server.setSecureContext({
+            key: fs.readFileSync(certificado.caminhoChave),
+            cert: fs.readFileSync(certificado.caminhoCert)
+        });
+    } catch (erro) {
+        console.error("Não foi possível atualizar o certificado HTTPS para a descoberta:", erro);
+        return;
+    }
+
     const resposta = Buffer.from(JSON.stringify({
         service: "lotrix-printer",
-        host: obterIpParaTablet(remoto.address),
+        host,
         port: PORT
     }));
 
