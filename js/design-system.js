@@ -85,6 +85,34 @@ function enableMicroInteractions() {
     });
 }
 
+function enableMobileTableCards() {
+    const labelRows = (table) => {
+        if (table.classList.contains("etiquetas-table")) return;
+        const headers = Array.from(table.querySelectorAll("thead th"), (header) =>
+            header.textContent.trim().replace(/\s+/g, " ")
+        );
+        if (!headers.length) return;
+
+        table.classList.add("lotrix-mobile-cards");
+        table.closest(".table-box, .dashboard-panel")?.classList.add("lotrix-mobile-table-box");
+        table.querySelectorAll("tbody tr").forEach((row) => {
+            const cells = Array.from(row.cells);
+            if (cells.some((cell) => cell.colSpan > 1) || cells.length !== headers.length) return;
+            cells.forEach((cell, index) => {
+                cell.dataset.label = headers[index];
+            });
+        });
+    };
+
+    document.querySelectorAll("table").forEach((table) => {
+        labelRows(table);
+        const body = table.tBodies[0];
+        if (!body) return;
+        const observer = new MutationObserver(() => labelRows(table));
+        observer.observe(body, { childList: true, subtree: true });
+    });
+}
+
 applyTheme(currentTheme());
 loadAppShell();
 window.setLotrixThemePreference = setThemePreference;
@@ -93,4 +121,5 @@ window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ 
     if (themePreference() === "auto") applyTheme(matches ? "dark" : "light");
 });
 enableMicroInteractions();
+enableMobileTableCards();
 if (document.querySelector(".sidebar") || document.querySelector(".card-icon")) loadLucide();
