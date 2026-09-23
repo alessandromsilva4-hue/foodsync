@@ -64,6 +64,8 @@ async function obterUrlPrinterService() {
 
 let produtos = [];
 let imprimirDepoisDeSalvar = false;
+let sequenciaPreviaEstoqueProducao = 0;
+let previaEstoqueProducao = { produtoId: "", status: "vazio", estoque: null };
 
 
 // =======================================
@@ -435,6 +437,8 @@ function atualizarInformacoesProduto() {
     const produto =
         produtoSelecionado();
 
+    void atualizarPreviaEstoqueProducao();
+
 
     const infoValidade =
         obterElemento(
@@ -696,6 +700,128 @@ function preencherDataAtual() {
 // SOMENTE EMPRESA ATUAL
 // =======================================
 
+async function buscarRegistroEstoqueProduto(idEmpresa, produto) {
+    const snapshot = await getDocs(query(
+        collection(db, "estoque"),
+        where("idEmpresa", "==", idEmpresa)
+    ));
+
+    let encontradoPorNome = null;
+    const nomeProduto = String(produto.nome || "").trim().toLowerCase();
+
+    for (const item of snapshot.docs) {
+        const dados = item.data();
+        const mesmoProduto = String(dados.produtoId || "") === String(produto.id);
+        const mesmoNome = String(dados.produto || "").trim().toLowerCase() === nomeProduto;
+        if (mesmoProduto) return { id: item.id, ...dados };
+        if (!encontradoPorNome && mesmoNome) encontradoPorNome = { id: item.id, ...dados };
+    }
+
+    return encontradoPorNome;
+}
+
+function definirBotoesProducaoDisponiveis(disponivel) {
+    const salvar = document.querySelector('#producaoForm button[type="submit"]');
+    const salvarImprimir = obterElemento("btnSalvarImprimir");
+    if (salvar) salvar.disabled = !disponivel;
+    if (salvarImprimir) salvarImprimir.disabled = !disponivel;
+}
+
+function renderizarPreviaEstoqueProducao() {
+    const resumo = obterElemento("resumoEstoqueProducao");
+    const produto = produtoSelecionado();
+    if (!resumo) return;
+
+    if (!produto) {
+        resumo.hidden = true;
+        resumo.textContent = "";
+        definirBotoesProducaoDisponiveis(false);
+        return;
+    }
+
+    resumo.hidden = false;
+    const quantidade = Number(obterElemento("quantidadeProducao")?.value || 0);
+    if (previaEstoqueProducao.status === "carregando") {
+        resumo.className = "resumo-estoque-producao";
+        resumo.textContent = "Consultando o saldo atual do estoque...";
+        definirBotoesProducaoDisponiveis(false);
+        return;
+    }
+
+    if (previaEstoqueProducao.status === "erro") {
+        resumo.className = "resumo-estoque-producao is-error";
+        resumo.textContent = previaEstoqueProducao.mensagem;
+        definirBotoesProducaoDisponiveis(false);
+        return;
+    }
+
+    const estoque = previaEstoqueProducao.estoque;
+    if (!estoque) {
+        resumo.className = "resumo-estoque-producao is-error";
+        resumo.textContent = "Este produto não tem estoque cadastrado para a empresa. Cadastre o saldo na aba Estoque antes de registrar a produção.";
+        definirBotoesProducaoDisponiveis(false);
+        return;
+    }
+
+    const disponivel = Number(estoque.quantidade || 0);
+    const unidade = produto.unidade || estoque.unidade || "UN";
+    const formatar = valor => new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 }).format(valor);
+    if (!Number.isFinite(quantidade) || quantidade <= 0) {
+        resumo.className = "resumo-estoque-producao is-error";
+        resumo.textContent = "Informe uma quantidade produzida maior que zero para calcular o saldo estimado.";
+        definirBotoesProducaoDisponiveis(false);
+        return;
+    }
+
+    const saldoEstimado = disponivel - quantidade;
+    if (saldoEstimado < 0) {
+        resumo.className = "resumo-estoque-producao is-error";
+        resumo.textContent = `Saldo atual: ${formatar(disponivel)} ${unidade}. Esta produção precisa de ${formatar(quantidade)} ${unidade}; faltam ${formatar(Math.abs(saldoEstimado))} ${unidade}.`;
+        definirBotoesProducaoDisponiveis(false);
+        return;
+    }
+
+    resumo.className = "resumo-estoque-producao is-ok";
+    resumo.textContent = `Saldo atual: ${formatar(disponivel)} ${unidade} · Saída desta produção: ${formatar(quantidade)} ${unidade} · Saldo estimado após salvar: ${formatar(saldoEstimado)} ${unidade}.`;
+    definirBotoesProducaoDisponiveis(true);
+}
+
+async function atualizarPreviaEstoqueProducao() {
+    const produto = produtoSelecionado();
+    const idEmpresa = empresaAtual();
+    if (!produto || !idEmpresa) {
+        sequenciaPreviaEstoqueProducao += 1;
+        previaEstoqueProducao = { produtoId: "", status: "vazio", estoque: null };
+        renderizarPreviaEstoqueProducao();
+        return;
+    }
+
+    if (
+        previaEstoqueProducao.produtoId === produto.id &&
+        previaEstoqueProducao.idEmpresa === idEmpresa &&
+        ["pronto", "carregando"].includes(previaEstoqueProducao.status)
+    ) {
+        renderizarPreviaEstoqueProducao();
+        return;
+    }
+
+    const sequencia = ++sequenciaPreviaEstoqueProducao;
+    previaEstoqueProducao = { produtoId: produto.id, idEmpresa, status: "carregando", estoque: null };
+    renderizarPreviaEstoqueProducao();
+
+    try {
+        const estoque = await buscarRegistroEstoqueProduto(idEmpresa, produto);
+        if (sequencia !== sequenciaPreviaEstoqueProducao) return;
+        previaEstoqueProducao = { produtoId: produto.id, idEmpresa, status: "pronto", estoque };
+    } catch (error) {
+        if (sequencia !== sequenciaPreviaEstoqueProducao) return;
+        console.error("Não foi possível consultar o saldo para a prévia:", error);
+        previaEstoqueProducao = { produtoId: produto.id, idEmpresa, status: "erro", estoque: null, mensagem: "Não foi possível consultar o estoque. Confira sua conexão e tente novamente." };
+    }
+
+    renderizarPreviaEstoqueProducao();
+}
+
 async function baixarEstoque(
     idEmpresa,
     produto,
@@ -712,81 +838,7 @@ async function baixarEstoque(
         );
 
 
-        const consulta =
-            query(
-                collection(
-                    db,
-                    "estoque"
-                ),
-                where(
-                    "idEmpresa",
-                    "==",
-                    idEmpresa
-                )
-            );
-
-
-        const snapshot =
-            await getDocs(
-                consulta
-            );
-
-
-        let estoqueEncontrado =
-            null;
-
-
-        for (
-            const item of snapshot.docs
-        ) {
-
-            const estoque =
-                item.data();
-
-
-            const mesmoProduto =
-                estoque.produtoId ===
-                produto.id;
-
-
-            const nomeEstoque =
-                String(
-                    estoque.produto || ""
-                )
-                .trim()
-                .toLowerCase();
-
-
-            const nomeProduto =
-                String(
-                    produto.nome || ""
-                )
-                .trim()
-                .toLowerCase();
-
-
-            const mesmoNome =
-                nomeEstoque ===
-                nomeProduto;
-
-
-            if (
-                mesmoProduto ||
-                mesmoNome
-            ) {
-
-                estoqueEncontrado = {
-
-                    id:
-                        item.id,
-
-                    ...estoque
-
-                };
-
-                break;
-            }
-        }
+        const estoqueEncontrado = await buscarRegistroEstoqueProduto(idEmpresa, produto);
 
 
         if (!estoqueEncontrado) {
@@ -881,6 +933,12 @@ async function baixarEstoque(
 
                 motivo:
                     "Produção",
+
+                saldoAnterior:
+                    quantidadeAtual,
+
+                saldoAtual:
+                    novaQuantidade,
 
                 usuario:
                     usuario?.nome ||
@@ -1913,6 +1971,7 @@ async function salvarProducao() {
         // ===================================
 
         formulario.reset();
+        atualizarInformacoesProduto();
 
 
         preencherDataAtual();
@@ -2569,6 +2628,11 @@ document.addEventListener(
                 }
             );
         }
+
+        const campoQuantidade = obterElemento("quantidadeProducao");
+        campoQuantidade?.addEventListener("input", () => void atualizarPreviaEstoqueProducao());
+        campoQuantidade?.addEventListener("change", () => void atualizarPreviaEstoqueProducao());
+        void atualizarPreviaEstoqueProducao();
 
 
         // ===================================

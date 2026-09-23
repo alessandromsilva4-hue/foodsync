@@ -1,4 +1,4 @@
-﻿
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -306,7 +306,20 @@
 
                 </div>
 
-
+                <div class="estoque-resumo-filtros" role="group" aria-label="Filtrar estoque por situação">
+                    <button type="button" class="estoque-filtro-ativo" data-filtro-estoque="todos" aria-pressed="true">
+                        <span>Todos os itens</span><strong id="contagemEstoqueTodos">0</strong>
+                    </button>
+                    <button type="button" data-filtro-estoque="critico" aria-pressed="false">
+                        <span>Crítico</span><strong id="contagemEstoqueCritico">0</strong>
+                    </button>
+                    <button type="button" data-filtro-estoque="atencao" aria-pressed="false">
+                        <span>Atenção</span><strong id="contagemEstoqueAtencao">0</strong>
+                    </button>
+                    <button type="button" data-filtro-estoque="normal" aria-pressed="false">
+                        <span>Normal</span><strong id="contagemEstoqueNormal">0</strong>
+                    </button>
+                </div>
 
                 <div
                     style="
@@ -525,8 +538,12 @@
 
 
 
+                    <div id="previsaoMovimentacaoEstoque" class="previsao-movimentacao-estoque" role="status" aria-live="polite" hidden></div>
+
                     <button
-                        type="submit">
+                        type="submit"
+                        id="btnRegistrarMovimentacao"
+                        disabled>
 
                         ↕️
                         Registrar Movimentação
@@ -588,23 +605,21 @@
                             <tr>
 
                                 <th>
-                                    Produto
-                                </th>
-
-                                <th>
-                                    Tipo
-                                </th>
-
-                                <th>
-                                    Quantidade
-                                </th>
-
-                                <th>
-                                    Motivo
-                                </th>
-
-                                <th>
                                     Data
+                                </th>
+
+                                <th>Produto</th>
+
+                                <th>Tipo</th>
+
+                                <th>Quantidade</th>
+
+                                <th>Unidade</th>
+
+                                <th>Motivo</th>
+
+                                <th>
+                                    Saldo antes → depois
                                 </th>
 
                             </tr>
@@ -619,7 +634,7 @@
                             <tr>
 
                                 <td
-                                    colspan="5"
+                                    colspan="7"
                                     style="
                                         padding:30px;
                                         text-align:center;

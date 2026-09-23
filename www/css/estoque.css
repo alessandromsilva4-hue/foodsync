@@ -206,6 +206,83 @@
     white-space: nowrap;
 }
 
+.estoque-resumo-filtros {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin: -8px 0 18px;
+}
+
+.estoque-resumo-filtros button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid var(--border, #dbe3ef);
+    border-radius: 10px;
+    background: var(--surface, #fff);
+    color: var(--text, #334155);
+    cursor: pointer;
+    text-align: left;
+}
+
+.estoque-resumo-filtros button strong {
+    display: grid;
+    min-width: 26px;
+    min-height: 26px;
+    place-items: center;
+    border-radius: 999px;
+    background: #f1f5f9;
+}
+
+.estoque-resumo-filtros button.estoque-filtro-ativo {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgb(37 99 235 / 12%);
+}
+
+.estoque-resumo-filtros button[data-filtro-estoque="critico"] strong { background: #fee2e2; color: #991b1b; }
+.estoque-resumo-filtros button[data-filtro-estoque="atencao"] strong { background: #fef3c7; color: #92400e; }
+.estoque-resumo-filtros button[data-filtro-estoque="normal"] strong { background: #dcfce7; color: #166534; }
+
+.previsao-movimentacao-estoque {
+    grid-column: 1 / -1;
+    padding: 11px 13px;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    background: #eff6ff;
+    color: #1e3a8a;
+    font-size: 13px;
+    line-height: 1.45;
+}
+.previsao-movimentacao-estoque[hidden] { display: none; }
+.previsao-movimentacao-estoque.is-ok { border-color: #bbf7d0; background: #f0fdf4; color: #166534; }
+.previsao-movimentacao-estoque.is-error { border-color: #fecaca; background: #fef2f2; color: #991b1b; }
+.estoque-status { white-space: nowrap; font-weight: 700; }
+.estoque-status-critico { color: #dc2626; }
+.estoque-status-atencao { color: #ca8a04; }
+.estoque-status-normal { color: #16a34a; }
+
+@media (max-width: 700px) {
+    .estoque-resumo-filtros { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+    .estoque-resumo-filtros button { min-height: 40px; padding: 7px 9px; font-size: 12px; }
+    .estoque-page table.lotrix-mobile-cards { min-width: 0 !important; }
+    .estoque-page table.lotrix-mobile-cards tbody td,
+    .estoque-page table.lotrix-mobile-cards tbody td:first-child,
+    .estoque-page table.lotrix-mobile-cards tbody td:last-child {
+        min-width: 0 !important;
+        padding: 7px 10px !important;
+    }
+    .estoque-page table.lotrix-mobile-cards tbody td:last-child { justify-content: flex-end; }
+}
+
+[data-theme="dark"] .estoque-resumo-filtros button { border-color: #334155; background: #102b60; color: #e2e8f0; }
+[data-theme="dark"] .estoque-resumo-filtros button strong { background: #1e3a5f; color: #e2e8f0; }
+[data-theme="dark"] .previsao-movimentacao-estoque { border-color: #31558a; background: #102b60; color: #dbeafe; }
+[data-theme="dark"] .previsao-movimentacao-estoque.is-ok { border-color: #166534; background: #052e16; color: #bbf7d0; }
+[data-theme="dark"] .previsao-movimentacao-estoque.is-error { border-color: #7f1d1d; background: #450a0a; color: #fecaca; }
+
 
 /* ==========================================
    BOTÃO DE EXCLUSÃO

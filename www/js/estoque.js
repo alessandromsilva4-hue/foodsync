@@ -12,11 +12,11 @@ import { db } from "./firebase.js";
 import {
     collection,
     getDocs,
-    addDoc,
-    updateDoc,
     deleteDoc,
     doc,
     serverTimestamp,
+    runTransaction,
+    writeBatch,
     query,
     where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -48,6 +48,8 @@ let tipoMovimentacao = null;
 let quantidadeMovimentacao = null;
 let motivoMovimentacao = null;
 let listaMovimentacoes = null;
+let filtroEstoqueAtual = "todos";
+let previsaoMovimentacaoEstoque = null;
 
 // =======================================
 // OBTER EMPRESA ATUAL
@@ -296,6 +298,8 @@ function iniciarElementos() {
         document.getElementById(
             "listaMovimentacoes"
         );
+
+    previsaoMovimentacaoEstoque = document.getElementById("previsaoMovimentacaoEstoque");
 
     console.log(
         "ELEMENTOS ESTOQUE:",
@@ -616,49 +620,23 @@ async function carregarEstoque() {
 // STATUS
 // =======================================
 
+function classificarStatusEstoque(item) {
+    const quantidade = Number(item.quantidade || 0);
+    const minimo = Number(item.minimo || 0);
+    if (quantidade <= minimo) return "critico";
+    if (quantidade <= minimo + 5) return "atencao";
+    return "normal";
+}
+
 function verificarStatus(item) {
-
-    const quantidade =
-        Number(
-            item.quantidade || 0
-        );
-
-    const minimo =
-        Number(
-            item.minimo || 0
-        );
-
-    if (
-        quantidade <= minimo
-    ) {
-
-        return `
-            <span style="color:#dc2626;font-weight:bold;">
-                🔴 Crítico
-            </span>
-        `;
-
-    }
-
-    if (
-        quantidade <=
-        minimo + 5
-    ) {
-
-        return `
-            <span style="color:#ca8a04;font-weight:bold;">
-                🟡 Atenção
-            </span>
-        `;
-
-    }
-
-    return `
-        <span style="color:#16a34a;font-weight:bold;">
-            🟢 Normal
-        </span>
-    `;
-
+    const estado = classificarStatusEstoque(item);
+    const rotulos = {
+        critico: ["🔴", "Crítico"],
+        atencao: ["🟡", "Atenção"],
+        normal: ["🟢", "Normal"]
+    };
+    const [icone, rotulo] = rotulos[estado];
+    return `<span class="estoque-status estoque-status-${estado}">${icone} ${rotulo}</span>`;
 }
 
 // =======================================
@@ -673,15 +651,41 @@ function renderizarEstoque() {
 
     listaEstoque.innerHTML = "";
 
+    const contagens = {
+        todos: estoqueAtual.length,
+        critico: estoqueAtual.filter(item => classificarStatusEstoque(item) === "critico").length,
+        atencao: estoqueAtual.filter(item => classificarStatusEstoque(item) === "atencao").length,
+        normal: estoqueAtual.filter(item => classificarStatusEstoque(item) === "normal").length
+    };
+    Object.entries({
+        todos: "contagemEstoqueTodos",
+        critico: "contagemEstoqueCritico",
+        atencao: "contagemEstoqueAtencao",
+        normal: "contagemEstoqueNormal"
+    }).forEach(([chave, id]) => {
+        const contador = document.getElementById(id);
+        if (contador) contador.textContent = String(contagens[chave]);
+    });
+
+    document.querySelectorAll("[data-filtro-estoque]").forEach(botao => {
+        const ativo = botao.dataset.filtroEstoque === filtroEstoqueAtual;
+        botao.classList.toggle("estoque-filtro-ativo", ativo);
+        botao.setAttribute("aria-pressed", String(ativo));
+    });
+
+    const itensVisiveis = filtroEstoqueAtual === "todos"
+        ? estoqueAtual
+        : estoqueAtual.filter(item => classificarStatusEstoque(item) === filtroEstoqueAtual);
+
     if (
-        estoqueAtual.length === 0
+        itensVisiveis.length === 0
     ) {
 
         listaEstoque.innerHTML = `
             <tr>
                 <td colspan="7"
                     style="text-align:center;padding:20px;">
-                    Nenhum item cadastrado.
+                    ${estoqueAtual.length === 0 ? "Nenhum item cadastrado." : "Nenhum item neste filtro."}
                 </td>
             </tr>
         `;
@@ -690,7 +694,7 @@ function renderizarEstoque() {
 
     }
 
-    estoqueAtual.forEach(
+    itensVisiveis.forEach(
         item => {
 
             const tr =
@@ -767,6 +771,8 @@ function renderizarEstoque() {
 
         }
     );
+
+    atualizarPrevisaoMovimentacao();
 
 }
 
@@ -892,48 +898,36 @@ async function salvarEstoque(evento) {
     };
 
     try {
+        const saldoAnterior = Number(existente?.quantidade || 0);
+        const referenciaEstoque = existente
+            ? doc(db, "estoque", existente.id)
+            : doc(collection(db, "estoque"));
+        const lote = writeBatch(db);
 
         if (existente) {
-
-            await updateDoc(
-
-                doc(
-                    db,
-                    "estoque",
-                    existente.id
-                ),
-
-                dados
-
-            );
-
-            console.log(
-                "ESTOQUE ATUALIZADO:",
-                existente.id
-            );
-
+            lote.update(referenciaEstoque, dados);
+        } else {
+            lote.set(referenciaEstoque, { ...dados, criadoEm: serverTimestamp() });
         }
-        else {
 
-            dados.criadoEm =
-                serverTimestamp();
-
-            await addDoc(
-
-                collection(
-                    db,
-                    "estoque"
-                ),
-
-                dados
-
-            );
-
-            console.log(
-                "NOVO ESTOQUE CRIADO"
-            );
-
+        if (quantidade !== saldoAnterior) {
+            const referenciaMovimentacao = doc(collection(db, "movimentacoes"));
+            lote.set(referenciaMovimentacao, {
+                idEmpresa,
+                produtoId: produto.id,
+                produto: produto.nome || "",
+                tipo: "AJUSTE",
+                quantidade: Math.abs(quantidade - saldoAnterior),
+                saldoAnterior,
+                saldoAtual: quantidade,
+                unidade: produto.unidade || "UN",
+                motivo: existente ? "Ajuste manual do estoque" : "Saldo inicial cadastrado",
+                usuario: usuarioLogado?.nome || "Sistema",
+                data: serverTimestamp()
+            });
         }
+
+        await lote.commit();
 
         alert(
             "Estoque salvo com sucesso!"
@@ -944,6 +938,7 @@ async function salvarEstoque(evento) {
         }
 
         await carregarEstoque();
+        await carregarMovimentacoes();
 
     }
     catch (erro) {
@@ -1044,6 +1039,56 @@ async function excluirEstoque(id) {
 
     }
 
+}
+
+// =======================================
+// PRÉVIA DO IMPACTO DA MOVIMENTAÇÃO
+// =======================================
+
+function atualizarPrevisaoMovimentacao() {
+    const resumo = previsaoMovimentacaoEstoque;
+    const botao = document.getElementById("btnRegistrarMovimentacao");
+    if (!resumo) return;
+
+    const produtoId = produtoMovimentacao?.value || "";
+    const quantidade = Number(quantidadeMovimentacao?.value || 0);
+    const tipo = tipoMovimentacao?.value;
+    const estoque = estoqueAtual.find(item =>
+        String(item.produtoId || "") === String(produtoId) &&
+        String(item.idEmpresa || "") === String(idEmpresa)
+    );
+
+    if (!produtoId) {
+        resumo.hidden = true;
+        if (botao) botao.disabled = true;
+        return;
+    }
+
+    resumo.hidden = false;
+    if (!estoque) {
+        resumo.className = "previsao-movimentacao-estoque is-error";
+        resumo.textContent = "Este produto ainda não tem saldo cadastrado neste estoque.";
+        if (botao) botao.disabled = true;
+        return;
+    }
+
+    const saldoAnterior = Number(estoque.quantidade || 0);
+    const saldoNovo = tipo === "ENTRADA" ? saldoAnterior + quantidade : saldoAnterior - quantidade;
+    const formatar = valor => new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 }).format(valor);
+    const unidade = estoque.unidade || produtos.find(item => item.id === produtoId)?.unidade || "UN";
+
+    if (!Number.isFinite(quantidade) || quantidade <= 0 || saldoNovo < 0) {
+        resumo.className = "previsao-movimentacao-estoque is-error";
+        resumo.textContent = saldoNovo < 0
+            ? `Saldo atual: ${formatar(saldoAnterior)} ${unidade}. A saída excede o saldo em ${formatar(Math.abs(saldoNovo))} ${unidade}.`
+            : "Informe uma quantidade maior que zero.";
+        if (botao) botao.disabled = true;
+        return;
+    }
+
+    resumo.className = "previsao-movimentacao-estoque is-ok";
+    resumo.textContent = `Saldo: ${formatar(saldoAnterior)} → ${formatar(saldoNovo)} ${unidade}`;
+    if (botao) botao.disabled = false;
 }
 
 // =======================================
@@ -1187,69 +1232,41 @@ async function registrarMovimentacao(evento) {
 
     }
 
+    const botaoRegistrar = document.getElementById("btnRegistrarMovimentacao");
+    if (botaoRegistrar) botaoRegistrar.disabled = true;
+
     try {
+        const referenciaEstoque = doc(db, "estoque", estoque.id);
+        const referenciaMovimentacao = doc(collection(db, "movimentacoes"));
 
-        await updateDoc(
+        await runTransaction(db, async transacao => {
+            const snapshotAtual = await transacao.get(referenciaEstoque);
+            if (!snapshotAtual.exists()) throw new Error("O registro de estoque foi removido. Atualize a página e tente novamente.");
 
-            doc(
-                db,
-                "estoque",
-                estoque.id
-            ),
+            const saldoAnterior = Number(snapshotAtual.data().quantidade || 0);
+            const saldoAtual = tipo === "ENTRADA"
+                ? saldoAnterior + quantidade
+                : saldoAnterior - quantidade;
+            if (saldoAtual < 0) throw new Error(`Estoque insuficiente. Saldo atual: ${saldoAnterior} ${produto.unidade || "UN"}.`);
 
-            {
-
-                quantidade:
-                    novaQuantidade,
-
-                atualizadoEm:
-                    serverTimestamp()
-
-            }
-
-        );
-
-        await addDoc(
-
-            collection(
-                db,
-                "movimentacoes"
-            ),
-
-            {
-
-                idEmpresa:
-                    idEmpresa,
-
-                produtoId:
-                    produto.id,
-
-                produto:
-                    produto.nome || "",
-
-                tipo:
-                    tipo,
-
-                quantidade:
-                    quantidade,
-
-                unidade:
-                    produto.unidade ||
-                    "UN",
-
-                motivo:
-                    motivo,
-
-                usuario:
-                    usuarioLogado?.nome ||
-                    "Sistema",
-
-                data:
-                    serverTimestamp()
-
-            }
-
-        );
+            transacao.update(referenciaEstoque, {
+                quantidade: saldoAtual,
+                atualizadoEm: serverTimestamp()
+            });
+            transacao.set(referenciaMovimentacao, {
+                idEmpresa,
+                produtoId: produto.id,
+                produto: produto.nome || "",
+                tipo,
+                quantidade,
+                saldoAnterior,
+                saldoAtual,
+                unidade: produto.unidade || "UN",
+                motivo,
+                usuario: usuarioLogado?.nome || "Sistema",
+                data: serverTimestamp()
+            });
+        });
 
         alert(
             "Movimentação registrada!"
@@ -1258,6 +1275,8 @@ async function registrarMovimentacao(evento) {
         if (movimentacaoForm) {
             movimentacaoForm.reset();
         }
+
+        atualizarPrevisaoMovimentacao();
 
         await carregarEstoque();
 
@@ -1271,10 +1290,11 @@ async function registrarMovimentacao(evento) {
             erro
         );
 
-        alert(
-            "Erro ao registrar movimentação."
-        );
+        alert(erro.message || "Erro ao registrar movimentação.");
 
+    }
+    finally {
+        atualizarPrevisaoMovimentacao();
     }
 
 }
@@ -1295,7 +1315,7 @@ async function carregarMovimentacoes() {
 
     listaMovimentacoes.innerHTML = `
         <tr>
-            <td colspan="6"
+            <td colspan="7"
                 style="text-align:center;padding:20px;">
                 Carregando movimentações...
             </td>
@@ -1396,6 +1416,12 @@ async function carregarMovimentacoes() {
                         )}
                     </td>
 
+                    <td>
+                        ${mov.saldoAnterior != null && mov.saldoAtual != null
+                            ? `${Number(mov.saldoAnterior)} → ${Number(mov.saldoAtual)} ${escaparHTML(mov.unidade || "UN")}`
+                            : "—"}
+                    </td>
+
                 `;
 
                 listaMovimentacoes.appendChild(
@@ -1409,7 +1435,7 @@ async function carregarMovimentacoes() {
 
             listaMovimentacoes.innerHTML = `
                 <tr>
-                    <td colspan="6"
+                    <td colspan="7"
                         style="text-align:center;padding:20px;">
                         Nenhuma movimentação.
                     </td>
@@ -1434,7 +1460,7 @@ async function carregarMovimentacoes() {
 
         listaMovimentacoes.innerHTML = `
             <tr>
-                <td colspan="6"
+                <td colspan="7"
                     style="text-align:center;padding:20px;color:red;">
                     Erro ao carregar movimentações.
                 </td>
@@ -1468,6 +1494,19 @@ function configurarEventos() {
         );
 
     }
+
+    document.querySelectorAll("[data-filtro-estoque]").forEach(botao => {
+        botao.addEventListener("click", () => {
+            filtroEstoqueAtual = botao.dataset.filtroEstoque || "todos";
+            renderizarEstoque();
+        });
+    });
+
+    produtoMovimentacao?.addEventListener("change", atualizarPrevisaoMovimentacao);
+    tipoMovimentacao?.addEventListener("change", atualizarPrevisaoMovimentacao);
+    quantidadeMovimentacao?.addEventListener("input", atualizarPrevisaoMovimentacao);
+    quantidadeMovimentacao?.addEventListener("change", atualizarPrevisaoMovimentacao);
+    atualizarPrevisaoMovimentacao();
 
 }
 
