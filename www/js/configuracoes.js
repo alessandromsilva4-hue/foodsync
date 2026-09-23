@@ -120,6 +120,28 @@ async function obterUrlPrinterService() {
             if (hostDescoberto && Number.isInteger(portaDescoberta) && portaDescoberta >= 1 && portaDescoberta <= 65535) {
                 const campoHost = campo("printerServiceIp");
                 if (campoHost) campoHost.value = hostDescoberto;
+
+                const idEmpresa = idEmpresaAtual();
+                if (idEmpresa) {
+                    try {
+                        const referencia = doc(db, "configuracoes", idEmpresa);
+                        const snapshot = await getDoc(referencia);
+                        const dadosSalvos = snapshot.exists() ? snapshot.data() : {};
+                        if (
+                            normalizarHost(dadosSalvos.printerServiceIp) !== hostDescoberto ||
+                            Number(dadosSalvos.printerServicePort || 9100) !== portaDescoberta
+                        ) {
+                            await setDoc(referencia, {
+                                printerServiceIp: hostDescoberto,
+                                printerServicePort: portaDescoberta,
+                                atualizadoEm: serverTimestamp()
+                            }, { merge: true });
+                        }
+                    } catch (erro) {
+                        console.warn("Não foi possível salvar o IP descoberto do Printer Service:", erro);
+                    }
+                }
+
                 return `https://${hostDescoberto}:${portaDescoberta}/health`;
             }
         } catch (erro) {
@@ -405,9 +427,7 @@ document.addEventListener(
     "DOMContentLoaded",
     () => {
 
-        carregarConfiguracoes();
-
-        obterUrlPrinterService().then(url => {
+        carregarConfiguracoes().then(() => obterUrlPrinterService()).then(url => {
             if (url) mostrarStatusPrinter("Printer Service encontrado na rede.");
         }).catch(() => {
             // A descoberta é opcional enquanto o serviço estiver desligado.
