@@ -28,13 +28,26 @@ function obterIpsLocais() {
 }
 
 function obterIpParaTablet(ipTablet) {
-    const ips = obterIpsLocais();
-    const mesmaRede = ips.find(ip =>
-        ip.split(".").slice(0, 3).join(".") ===
-        ipTablet.split(".").slice(0, 3).join(".")
-    );
+    const interfaces = Object.values(os.networkInterfaces())
+        .flat()
+        .filter(item => item && item.family === "IPv4" && !item.internal);
+    const paraNumero = endereco => {
+        const octetos = String(endereco).split(".").map(Number);
+        if (octetos.length !== 4 || octetos.some(octeto =>
+            !Number.isInteger(octeto) || octeto < 0 || octeto > 255
+        )) return null;
+        return octetos.reduce((valor, octeto) => ((valor << 8) | octeto) >>> 0, 0);
+    };
 
-    return mesmaRede || ips[0] || "127.0.0.1";
+    const ipRemoto = paraNumero(ipTablet);
+    const mesmaSubrede = interfaces.find(item => {
+        const ipLocal = paraNumero(item.address);
+        const mascara = paraNumero(item.netmask);
+        return ipRemoto !== null && ipLocal !== null && mascara !== null &&
+            (ipLocal & mascara) === (ipRemoto & mascara);
+    });
+    const alternativa = interfaces.find(item => !item.address.startsWith("169.254."));
+    return (mesmaSubrede || alternativa || interfaces[0])?.address || "127.0.0.1";
 }
 
 // =======================================

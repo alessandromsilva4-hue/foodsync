@@ -55,11 +55,6 @@ serverTimestamp
 let printerServiceDescoberto = null;
 
 async function descobrirPrinterService() {
-
-    if (printerServiceDescoberto && Date.now() - printerServiceDescoberto.em < 300000) {
-        return printerServiceDescoberto;
-    }
-
     const plugin = window.Capacitor?.Plugins?.LotrixPrinterDiscovery;
 
     if (!plugin?.discover) return null;
