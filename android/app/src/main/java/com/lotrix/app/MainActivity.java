@@ -11,29 +11,37 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 
+import androidx.core.content.FileProvider;
+
 import com.getcapacitor.BridgeActivity;
 
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class MainActivity extends BridgeActivity {
 
     private static final String VERSION_URL =
-            "https://lotrix-app.alessandromsilva4.workers.dev/version.json";
+            "https://lotrix.web.app/version.json";
 
-    private static final String APK_FILE_NAME = "lotrix-update.apk";
+    private static final String APK_FILE_NAME = "lotrix-update.zip";
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         registerPlugin(LotrixPrinterDiscoveryPlugin.class);
+        registerPlugin(LotrixAppInfoPlugin.class);
         super.onCreate(savedInstanceState);
         verificarAtualizacao();
     }
@@ -141,7 +149,7 @@ public class MainActivity extends BridgeActivity {
 
             request.setTitle("Atualização do Lotrix");
             request.setDescription("Baixando nova versão...");
-            request.setMimeType("application/vnd.android.package-archive");
+            request.setMimeType("application/zip");
             request.setNotificationVisibility(
                     DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
             );
@@ -213,9 +221,42 @@ public class MainActivity extends BridgeActivity {
 
     private void instalarApk(Uri apkUri) {
         try {
+            File apkFile = new File(getCacheDir(), "lotrix-update.apk");
+            boolean apkExtraido = false;
+
+            try (
+                    InputStream input = getContentResolver().openInputStream(apkUri);
+                    ZipInputStream zip = new ZipInputStream(input)
+            ) {
+                ZipEntry entry;
+                byte[] buffer = new byte[8192];
+
+                while ((entry = zip.getNextEntry()) != null) {
+                    if (!entry.isDirectory() && entry.getName().toLowerCase().endsWith(".apk")) {
+                        try (FileOutputStream output = new FileOutputStream(apkFile)) {
+                            int bytesRead;
+                            while ((bytesRead = zip.read(buffer)) != -1) {
+                                output.write(buffer, 0, bytesRead);
+                            }
+                        }
+                        apkExtraido = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!apkExtraido) {
+                throw new IllegalStateException("O pacote baixado não contém um APK.");
+            }
+
+            Uri uriInstalacao = FileProvider.getUriForFile(
+                    this,
+                    getPackageName() + ".fileprovider",
+                    apkFile
+            );
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(
-                    apkUri,
+                    uriInstalacao,
                     "application/vnd.android.package-archive"
             );
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

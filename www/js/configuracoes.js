@@ -27,10 +27,10 @@ import {
 //
 // =========================================================
 
-const VERSAO_ATUAL = "1.0.0";
-
+const LotrixAppInfo = window.Capacitor?.registerPlugin?.("LotrixAppInfo") || null;
 const VERSAO_DISPONIVEL_URL =
-    "https://SEU-ENDERECO.com/lotrix/version.json";
+    new URL("../version.json", import.meta.url).toString();
+let versaoAtualInstalada = null;
 
 
 // =========================================================
@@ -553,6 +553,9 @@ function inicializarAtualizacao() {
     const ultimaVerificacao =
         campo("ultimaVerificacao");
 
+    const versaoDisponivel =
+        campo("versaoDisponivel");
+
 
     const status =
         campo("statusAtualizacao");
@@ -578,10 +581,22 @@ function inicializarAtualizacao() {
     }
 
 
-    // Mostrar versão instalada
-
-    versaoInstalada.textContent =
-        VERSAO_ATUAL;
+    Promise.resolve()
+        .then(() => {
+            if (!LotrixAppInfo) throw new Error("App nativo indisponível");
+            return LotrixAppInfo.getVersion();
+        })
+        .then((info) => {
+            versaoAtualInstalada = info?.versionName || null;
+            campo("versaoInstalada").textContent =
+                versaoAtualInstalada || "Não identificada";
+        })
+        .catch(() => {
+            campo("versaoInstalada").textContent = "Acesso pelo navegador";
+        })
+        .finally(() => {
+            verificarAtualizacao();
+        });
 
 
     // Botão verificar
@@ -594,7 +609,6 @@ function inicializarAtualizacao() {
 
         }
     );
-
 
     // Botão baixar
 
@@ -700,6 +714,9 @@ async function verificarAtualizacao() {
     const botaoBaixar =
         campo("baixarAtualizacao");
 
+    const campoVersaoDisponivel =
+        campo("versaoDisponivel");
+
 
     if (!status) return;
 
@@ -761,11 +778,13 @@ async function verificarAtualizacao() {
         }
 
 
-        const comparacao =
-            compararVersoes(
-                VERSAO_ATUAL,
-                versaoDisponivel
-            );
+        if (campoVersaoDisponivel) {
+            campoVersaoDisponivel.textContent = versaoDisponivel;
+        }
+
+        const comparacao = versaoAtualInstalada
+            ? compararVersoes(versaoAtualInstalada, versaoDisponivel)
+            : 0;
 
 
         ultimaVerificacao.textContent =
@@ -777,6 +796,12 @@ async function verificarAtualizacao() {
         // =============================================
         // NOVA VERSÃO
         // =============================================
+
+        if (urlApk) {
+            botaoBaixar.dataset.urlApk = urlApk;
+            botaoBaixar.textContent = `⬇️ Baixar app Android (${versaoDisponivel})`;
+            botaoBaixar.style.display = "inline-block";
+        }
 
         if (comparacao < 0) {
 
@@ -792,18 +817,6 @@ async function verificarAtualizacao() {
                 `;
 
 
-            if (urlApk) {
-
-                botaoBaixar.dataset.urlApk =
-                    urlApk;
-
-
-                botaoBaixar.style.display =
-                    "inline-block";
-
-            }
-
-
             return;
         }
 
@@ -816,11 +829,9 @@ async function verificarAtualizacao() {
             "atualizacao-status sucesso";
 
 
-        status.innerHTML =
-            `
-            ✅ <strong>Seu Lotrix está atualizado!</strong><br>
-            Você já está usando a versão mais recente.
-            `;
+        status.textContent = versaoAtualInstalada
+            ? "✅ Seu Lotrix está atualizado. Você já está usando a versão mais recente."
+            : "✅ Esta é a versão mais recente do app Android. Baixe o ZIP, extraia o APK e toque nele para instalar.";
 
 
     } catch (error) {
