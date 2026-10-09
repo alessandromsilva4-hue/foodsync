@@ -9,6 +9,7 @@ import {
     doc,
     setDoc,
     getDoc,
+    onSnapshot,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -30,7 +31,56 @@ import {
 const LotrixAppInfo = window.Capacitor?.registerPlugin?.("LotrixAppInfo") || null;
 const VERSAO_DISPONIVEL_URL =
     new URL("../version.json", import.meta.url).toString();
+const SUPABASE_PRINTER_STATUS_READ_ENABLED = false;
 let versaoAtualInstalada = null;
+let ultimoIpPrinterDescobertoEm = 0;
+let erroLeituraStatusSupabaseReportado = false;
+
+function statusPrinterFoiAtualizadoRecentemente(dados) {
+    const marca = dados?.lastSeenAt;
+    let atualizadoEm;
+    if (marca instanceof Date) {
+        atualizadoEm = marca.getTime();
+    } else if (typeof marca?.toDate === "function") {
+        atualizadoEm = marca.toDate().getTime();
+    } else if (typeof marca === "string") {
+        atualizadoEm = Date.parse(marca);
+    } else if (typeof marca === "number") {
+        atualizadoEm = marca;
+    }
+
+    if (!Number.isFinite(atualizadoEm)) return false;
+    const idade = Date.now() - atualizadoEm;
+    return idade >= -30000 && idade <= 180000;
+}
+
+async function atualizarStatusPrinterDoSupabase() {
+    if (!SUPABASE_PRINTER_STATUS_READ_ENABLED) return;
+    const idEmpresa = idEmpresaAtual();
+    if (!idEmpresa || Date.now() - ultimoIpPrinterDescobertoEm < 120000) return;
+
+    try {
+        const { obterDocumentoSupabase } = await import("./supabase-documents.js");
+        const dados = await obterDocumentoSupabase("printerServiceStatus", idEmpresa);
+        if (!dados || !statusPrinterFoiAtualizadoRecentemente(dados) ||
+            Date.now() - ultimoIpPrinterDescobertoEm < 120000) return;
+
+        const campoHost = campo("printerServiceIp");
+        const campoPorta = campo("printerServicePort");
+        if (campoHost && dados.host && document.activeElement !== campoHost) {
+            campoHost.value = dados.host;
+        }
+        if (campoPorta && dados.port && document.activeElement !== campoPorta) {
+            campoPorta.value = String(dados.port);
+        }
+        erroLeituraStatusSupabaseReportado = false;
+    } catch (erro) {
+        if (!erroLeituraStatusSupabaseReportado) {
+            console.warn("Leitura do status da impressora no Supabase indisponível:", erro);
+            erroLeituraStatusSupabaseReportado = true;
+        }
+    }
+}
 
 
 // =========================================================
@@ -118,6 +168,7 @@ async function obterUrlPrinterService() {
             const portaDescoberta = Number(encontrado.port);
 
             if (hostDescoberto && Number.isInteger(portaDescoberta) && portaDescoberta >= 1 && portaDescoberta <= 65535) {
+                ultimoIpPrinterDescobertoEm = Date.now();
                 const campoHost = campo("printerServiceIp");
                 if (campoHost) campoHost.value = hostDescoberto;
 
@@ -149,11 +200,22 @@ async function obterUrlPrinterService() {
         }
     }
 
-    const host = normalizarHost(
-        campo("printerServiceIp")?.value
-    );
-
-    const porta = obterPorta();
+    let host = normalizarHost(campo("printerServiceIp")?.value);
+    let porta = obterPorta();
+    const idEmpresa = idEmpresaAtual();
+    if (idEmpresa) {
+        try {
+            const status = await getDoc(doc(db, "printerServiceStatus", idEmpresa));
+            if (status.exists()) {
+                host = normalizarHost(status.data().host) || host;
+                porta = Number(status.data().port) || porta;
+                if (campo("printerServiceIp")) campo("printerServiceIp").value = host;
+                if (campo("printerServicePort")) campo("printerServicePort").value = String(porta);
+            }
+        } catch (erro) {
+            console.warn("Não foi possível ler o IP publicado pelo Printer Service:", erro);
+        }
+    }
 
     if (
         !host ||
@@ -427,7 +489,30 @@ document.addEventListener(
     "DOMContentLoaded",
     () => {
 
-        carregarConfiguracoes().then(() => obterUrlPrinterService()).then(url => {
+        carregarConfiguracoes().then(() => {
+            const idEmpresa = idEmpresaAtual();
+            if (idEmpresa) {
+                onSnapshot(doc(db, "printerServiceStatus", idEmpresa), snapshot => {
+                    // A descoberta local conhece a interface acessível deste
+                    // tablet. Não deixe um status antigo da nuvem sobrescrevê-la.
+                    if (Date.now() - ultimoIpPrinterDescobertoEm < 120000) return;
+
+                    const dados = snapshot.exists() ? snapshot.data() : {};
+                    if (!statusPrinterFoiAtualizadoRecentemente(dados)) return;
+                    const campoHost = campo("printerServiceIp");
+                    const campoPorta = campo("printerServicePort");
+                    if (campoHost && dados.host && document.activeElement !== campoHost) {
+                        campoHost.value = dados.host;
+                    }
+                    if (campoPorta && dados.port) campoPorta.value = String(dados.port);
+                });
+            }
+            if (SUPABASE_PRINTER_STATUS_READ_ENABLED) {
+                void atualizarStatusPrinterDoSupabase();
+                window.setInterval(atualizarStatusPrinterDoSupabase, 15000);
+            }
+            return obterUrlPrinterService();
+        }).then(url => {
             if (url) mostrarStatusPrinter("Printer Service encontrado na rede.");
         }).catch(() => {
             // A descoberta é opcional enquanto o serviço estiver desligado.
@@ -436,6 +521,37 @@ document.addEventListener(
 
         const seletorTema =
             campo("temaSistema");
+
+        campo("vincularPrinterService")?.addEventListener("click", async () => {
+            const idEmpresa = idEmpresaAtual();
+            if (!idEmpresa) {
+                mostrarStatusPrinter("Entre novamente no sistema para vincular o computador da impressora.", true);
+                return;
+            }
+
+            try {
+                const bytes = new Uint8Array(32);
+                window.crypto.getRandomValues(bytes);
+                const token = Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("");
+                await setDoc(doc(db, "printerServicePairings", idEmpresa), {
+                    idEmpresa,
+                    token,
+                    atualizadoEm: serverTimestamp()
+                });
+
+                const conteudo = JSON.stringify({ idEmpresa, token }, null, 2);
+                const arquivo = new Blob([conteudo], { type: "application/json" });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(arquivo);
+                link.download = "registration.json";
+                link.click();
+                setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+                mostrarStatusPrinter("Arquivo de pareamento baixado. Copie-o para a pasta printer-service no computador da impressora e reinicie o serviço.");
+            } catch (erro) {
+                console.error("Falha ao vincular o Printer Service:", erro);
+                mostrarStatusPrinter("Não foi possível criar o pareamento do Printer Service.", true);
+            }
+        });
 
 
         if (seletorTema) {

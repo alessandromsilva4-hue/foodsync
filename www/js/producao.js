@@ -48,9 +48,11 @@ async function obterUrlPrinterService() {
     if (!idEmpresa) throw new Error("Empresa não identificada para impressão.");
     const snapshot = await getDoc(doc(db, "configuracoes", idEmpresa));
     const configuracao = snapshot.exists() ? snapshot.data() : {};
-    const host = String(configuracao.printerServiceIp || "")
+    const statusSnapshot = await getDoc(doc(db, "printerServiceStatus", idEmpresa));
+    const statusAtual = statusSnapshot.exists() ? statusSnapshot.data() : {};
+    const host = String(statusAtual.host || configuracao.printerServiceIp || "")
         .trim().replace(/^https?:\/\//i, "").replace(/\/.*$/, "").replace(/:\d+$/, "");
-    const porta = Number(configuracao.printerServicePort || 9100);
+    const porta = Number(statusAtual.port || configuracao.printerServicePort || 9100);
     if (!host || !Number.isInteger(porta) || porta < 1 || porta > 65535) {
         throw new Error("Não foi possível localizar o Printer Service na rede. Verifique se ele está aberto no computador da impressora.");
     }

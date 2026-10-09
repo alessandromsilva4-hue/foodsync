@@ -15,6 +15,9 @@ import {
     getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// Enable only after RLS and company-level parity have been verified.
+const SUPABASE_AUDIT_ENABLED = false;
+
 
 // =======================================
 // ELEMENTOS
@@ -263,49 +266,35 @@ async function carregarAuditoria() {
         // CONSULTA FIRESTORE
         // =======================================
 
-        const consulta =
-            query(
+        let registros = null;
+        if (SUPABASE_AUDIT_ENABLED) {
+            try {
+                const { listarDocumentosSupabase } = await import("./supabase-documents.js");
+                const documentos = await listarDocumentosSupabase("auditoria");
+                registros = documentos
+                    .filter(({ data }) => String(data?.idEmpresa || "") === String(idEmpresa))
+                    .map(({ id, data }) => ({ id, ...data }));
+            } catch (supabaseError) {
+                console.warn("Auditoria no Supabase falhou; usando Firebase durante a migração:", supabaseError);
+            }
+        }
 
-                collection(
-                    db,
-                    "auditoria"
-                ),
-
-                where(
-                    "idEmpresa",
-                    "==",
-                    idEmpresa
-                )
-
+        // Firebase remains authoritative until both row counts and tenant
+        // membership have been compared; empty staged data also falls back.
+        if (!registros || registros.length === 0) {
+            const consulta = query(
+                collection(db, "auditoria"),
+                where("idEmpresa", "==", idEmpresa)
             );
-
-
-        const snapshot =
-            await getDocs(
-                consulta
-            );
-
-
-        console.log(
-            "Registros de auditoria encontrados:",
-            snapshot.size
-        );
-
-
-        dadosAuditoria = [];
-
-
-        snapshot.forEach(item => {
-
-            dadosAuditoria.push({
-
+            const snapshot = await getDocs(consulta);
+            registros = snapshot.docs.map(item => ({
                 id: item.id,
-
                 ...item.data()
+            }));
+        }
 
-            });
-
-        });
+        console.log("Registros de auditoria encontrados:", registros.length);
+        dadosAuditoria = registros;
 
 
         // =======================================

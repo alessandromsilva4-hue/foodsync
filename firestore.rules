@@ -38,6 +38,24 @@ service cloud.firestore {
       return perfilUsuario().data.idEmpresa;
     }
 
+    function tokenPrinterService(empresaId) {
+      return get(
+        /databases/$(database)/documents/printerServicePairings/$(empresaId)
+      ).data.token;
+    }
+
+    function registroPrinterServiceValido(empresaId) {
+      let token = tokenPrinterService(empresaId);
+      let registro = getAfter(
+        /databases/$(database)/documents/printerServiceUpdates/$(empresaId)/services/$(token)
+      );
+      return token is string
+        && registro.data.idEmpresa == empresaId
+        && registro.data.host == request.resource.data.host
+        && registro.data.port == request.resource.data.port
+        && registro.data.lastSeenAt == request.resource.data.lastSeenAt;
+    }
+
 
     // =====================================
     // PRODUTOS
@@ -420,13 +438,55 @@ service cloud.firestore {
 
       allow update: if
         usuarioAtivo()
-        &&
-        empresaId == idEmpresaUsuario()
-        &&
-        resource.data.idEmpresa == idEmpresaUsuario()
-        &&
-        request.resource.data.idEmpresa == idEmpresaUsuario();
+        && empresaId == idEmpresaUsuario()
+        && resource.data.idEmpresa == idEmpresaUsuario()
+        && request.resource.data.idEmpresa == idEmpresaUsuario();
 
+      allow delete: if false;
+    }
+
+    match /printerServicePairings/{empresaId} {
+      allow read, create, update, delete: if
+        administrador() && empresaId == idEmpresaUsuario();
+    }
+
+    // O token secreto é o ID do documento e não pode ser lido nem listado.
+    match /printerServiceUpdates/{empresaId}/services/{token} {
+      allow read, delete: if false;
+      allow create, update: if
+        token == tokenPrinterService(empresaId)
+        && request.resource.data.keys().hasOnly([
+          "idEmpresa", "host", "port", "lastSeenAt"
+        ])
+        && request.resource.data.idEmpresa == empresaId
+        && request.resource.data.host is string
+        && request.resource.data.port is int
+        && request.resource.data.port > 0
+        && request.resource.data.port <= 65535
+        && request.resource.data.lastSeenAt is timestamp;
+    }
+
+    match /printerServiceStatus/{empresaId} {
+      allow read: if
+        usuarioAtivo() && empresaId == idEmpresaUsuario();
+      allow create: if
+        registroPrinterServiceValido(empresaId)
+        && request.resource.data.keys().hasOnly([
+          "idEmpresa", "host", "port", "lastSeenAt"
+        ])
+        && request.resource.data.idEmpresa == empresaId
+        && request.resource.data.host is string
+        && request.resource.data.port is int
+        && request.resource.data.lastSeenAt is timestamp;
+      allow update: if
+        registroPrinterServiceValido(empresaId)
+        && request.resource.data.idEmpresa == empresaId
+        && request.resource.data.host is string
+        && request.resource.data.port is int
+        && request.resource.data.lastSeenAt is timestamp
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          "host", "port", "lastSeenAt"
+        ]);
       allow delete: if false;
     }
 

@@ -1,5 +1,6 @@
 const {onCall, HttpsError} = require("firebase-functions/v2/https");
 const {onSchedule} = require("firebase-functions/v2/scheduler");
+const {onDocumentWritten} = require("firebase-functions/v2/firestore");
 const {initializeApp} = require("firebase-admin/app");
 const {getAuth} = require("firebase-admin/auth");
 const {
@@ -7,6 +8,7 @@ const {
   FieldValue,
 } = require("firebase-admin/firestore");
 const {getMessaging} = require("firebase-admin/messaging");
+const {createHash} = require("node:crypto");
 
 initializeApp();
 
@@ -1035,3 +1037,128 @@ exports.criarUsuario = onCall(async (request) => {
 
   };
 });
+
+// =======================================
+// PONTE TEMPORÁRIA DE AUTH PARA SUPABASE
+// =======================================
+
+exports.prepararAcessoSupabase = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError(
+        "unauthenticated",
+        "Entre na sua conta antes de conectar ao Supabase.",
+    );
+  }
+
+  const uid = request.auth.uid;
+  const user = await adminAuth.getUser(uid);
+  const customClaims = user.customClaims || {};
+  if (customClaims.role === "authenticated") {
+    return {atualizado: false};
+  }
+
+  // Supabase maps Firebase JWTs to the Postgres role in the `role` claim.
+  // Preserve every existing custom claim and allow users to update only their
+  // own token; tenant and administrator authorization remains in RLS profiles.
+  await adminAuth.setCustomUserClaims(uid, {
+    ...customClaims,
+    role: "authenticated",
+  });
+
+  return {atualizado: true};
+});
+
+// Opt-in incremental mirror. Keep this out of normal Firebase deployments
+// until migrations 001-007 are applied and the Supabase secret is configured.
+if (process.env.SUPABASE_FIRESTORE_SYNC_ENABLED === "true") {
+  const {defineSecret} = require("firebase-functions/params");
+  const {syncFirestoreEvent} = require("./migration/firestore-supabase-sync");
+  const supabaseSecret = defineSecret("SUPABASE_SECRET_KEY");
+  const supabaseUrl = process.env.SUPABASE_URL;
+
+  if (!supabaseUrl) {
+    throw new Error(
+        "SUPABASE_URL é obrigatório quando o espelhamento Firestore-Supabase " +
+        "está ativado.",
+    );
+  }
+
+  const createSupabaseMirror = (documentPattern, buildDocumentPath) => {
+    return onDocumentWritten({
+      document: documentPattern,
+      retry: true,
+      secrets: [supabaseSecret],
+    }, async (event) => {
+      await syncFirestoreEvent(event, buildDocumentPath(event.params), {
+        fetch,
+        secret: supabaseSecret.value(),
+        supabaseUrl,
+      });
+    });
+  };
+
+  exports.syncFirestoreRootDocumentToSupabase = createSupabaseMirror(
+      "{collection}/{documentId}",
+      ({collection, documentId}) => `${collection}/${documentId}`,
+  );
+
+  // Current data model includes this nested path:
+  // printerServiceUpdates/{company}/services/{token}.
+  exports.syncFirestoreNestedDocumentToSupabase = createSupabaseMirror(
+      "{rootCollection}/{rootDocument}/{nestedCollection}/{documentId}",
+      ({rootCollection, rootDocument, nestedCollection, documentId}) => [
+        rootCollection,
+        rootDocument,
+        nestedCollection,
+        documentId,
+      ].join("/"),
+  );
+
+  const deepTriggerPatterns = require(
+      "./migration/firestore-trigger-patterns.json",
+  );
+  if (!Array.isArray(deepTriggerPatterns)) {
+    throw new Error(
+        "firestore-trigger-patterns.json precisa conter " +
+        "uma lista de padrões.",
+    );
+  }
+  for (const pattern of [...new Set(deepTriggerPatterns)].sort()) {
+    if (typeof pattern !== "string") {
+      throw new Error("Padrão de trigger profundo inválido.");
+    }
+    const segments = pattern.split("/");
+    const invalidPattern = segments.length < 6 ||
+      segments.length % 2 !== 0 ||
+      segments.some((segment, index) => {
+        const invalidCollection = index % 2 === 0 && /[{}]/.test(segment);
+        const invalidDocument = index % 2 === 1 &&
+          !/^\{[A-Za-z][A-Za-z0-9_]*\}$/.test(segment);
+        return !segment || invalidCollection || invalidDocument;
+      });
+    if (invalidPattern) {
+      throw new Error(`Padrão de trigger profundo inválido: ${pattern}`);
+    }
+
+    const functionSuffix = createHash("sha256")
+        .update(pattern)
+        .digest("hex")
+        .slice(0, 12);
+    const functionName = `syncFirestoreDeep${functionSuffix}ToSupabase`;
+    exports[functionName] = createSupabaseMirror(
+        pattern,
+        (params) => segments.map((segment) => {
+          const parameter = /^\{([^{}]+)\}$/.exec(segment);
+          return parameter ? params[parameter[1]] : segment;
+        }).join("/"),
+    );
+    const parameterCount = segments
+        .filter((segment) => segment.startsWith("{"))
+        .length;
+    if (parameterCount !== segments.length / 2) {
+      throw new Error(
+          "Padrão de trigger profundo sem parâmetros completos: " + pattern,
+      );
+    }
+  }
+}

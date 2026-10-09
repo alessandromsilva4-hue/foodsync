@@ -37,6 +37,9 @@ import {
     arrayRemove
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// Enable only after RLS and the Firebase-auth bridge have been validated.
+const SUPABASE_PRODUCTS_ENABLED = false;
+
 
 // =======================================
 // USUÁRIO LOGADO
@@ -265,56 +268,34 @@ async function carregarProdutos() {
         // CONSULTA MULTIEMPRESA
         // =================================
 
-        const consulta =
-            query(
-
-                collection(
-                    db,
-                    "produtos"
-                ),
-
-                where(
-                    "empresas",
-                    "array-contains",
-                    idEmpresa
-                )
-
-            );
-
-
-        const snapshot =
-            await getDocs(
-                consulta
-            );
-
-
-        console.log(
-            "PRODUTOS ENCONTRADOS:",
-            snapshot.size
-        );
-
-
-        produtos = [];
-
-
-        snapshot.forEach(
-            (docSnap) => {
-
-                const dados =
-                    docSnap.data();
-
-
-                produtos.push({
-
-                    id:
-                        docSnap.id,
-
-                    ...dados
-
-                });
-
+        let listaProdutos = null;
+        if (SUPABASE_PRODUCTS_ENABLED) {
+            try {
+                const { listarDocumentosSupabase } = await import("./supabase-documents.js");
+                const documentos = await listarDocumentosSupabase("produtos");
+                listaProdutos = documentos
+                    .filter(({ data }) => Array.isArray(data?.empresas) && data.empresas.includes(idEmpresa))
+                    .map(({ id, data }) => ({ id, ...data }));
+            } catch (supabaseError) {
+                console.warn("Produtos no Supabase falharam; usando Firebase durante a migração:", supabaseError);
             }
-        );
+        }
+
+        // An empty Supabase result falls back while product parity is pending.
+        if (!listaProdutos || listaProdutos.length === 0) {
+            const consulta = query(
+                collection(db, "produtos"),
+                where("empresas", "array-contains", idEmpresa)
+            );
+            const snapshot = await getDocs(consulta);
+            listaProdutos = snapshot.docs.map(docSnap => ({
+                id: docSnap.id,
+                ...docSnap.data()
+            }));
+        }
+
+        console.log("PRODUTOS ENCONTRADOS:", listaProdutos.length);
+        produtos = listaProdutos;
 
 
         console.log(

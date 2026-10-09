@@ -86,25 +86,27 @@ async function obterUrlPrinterService() {
 
     }
 
-    const configuracao = await getDoc(
-        doc(db, "configuracoes", idEmpresa)
-    );
+    const [configuracao, statusPrinter] = await Promise.all([
+        getDoc(doc(db, "configuracoes", idEmpresa)),
+        getDoc(doc(db, "printerServiceStatus", idEmpresa))
+    ]);
 
     const dados = configuracao.exists()
         ? configuracao.data()
         : {};
+    const statusAtual = statusPrinter.exists() ? statusPrinter.data() : {};
 
     // No Android, descubra o serviço na rede antes de usar a configuração
     // antiga. Assim, uma troca de IP do computador não exige intervenção.
     const encontrado = await descobrirPrinterService();
 
-    const host = String(encontrado?.host || dados.printerServiceIp || "")
+    const host = String(encontrado?.host || statusAtual.host || dados.printerServiceIp || "")
         .trim()
         .replace(/^https?:\/\//i, "")
         .replace(/\/.*$/, "")
         .replace(/:\d+$/, "");
 
-    const porta = Number(encontrado?.porta || dados.printerServicePort || 9100);
+    const porta = Number(encontrado?.porta || statusAtual.port || dados.printerServicePort || 9100);
 
     if (!host || !Number.isInteger(porta) || porta < 1 || porta > 65535) {
 

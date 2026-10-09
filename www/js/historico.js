@@ -6,6 +6,9 @@ import {
     orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// Keep Firebase as the source of truth until Supabase row counts are compared.
+const SUPABASE_HISTORY_ENABLED = false;
+
 const tabela =
 document.getElementById("tabelaHistorico");
 
@@ -82,9 +85,20 @@ async function carregarHistorico(){
 
     try{
 
-   const snapshot = await getDocs(
-    collection(db,"etiquetas")
-);
+        let documentos = null;
+        if (SUPABASE_HISTORY_ENABLED) {
+            try {
+                const { listarDocumentosSupabase } = await import("./supabase-documents.js");
+                documentos = await listarDocumentosSupabase("etiquetas");
+            } catch (supabaseError) {
+                console.warn("Histórico no Supabase falhou; usando Firebase durante a migração:", supabaseError);
+            }
+        }
+
+        if (!documentos || documentos.length === 0) {
+            const snapshot = await getDocs(collection(db, "etiquetas"));
+            documentos = snapshot.docs.map(documento => ({ data: documento.data() }));
+        }
 
         tabela.innerHTML = "";
 
@@ -93,9 +107,7 @@ async function carregarHistorico(){
         let vencidas = 0;
         let total = 0;
 
-        snapshot.forEach((doc)=>{
-
-    const dados = doc.data();
+        documentos.forEach(({ data: dados }) => {
 
    
 

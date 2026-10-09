@@ -25,6 +25,9 @@ import {
     where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// Mantenha desligado até validar migrations, Auth e RLS no Supabase.
+const SUPABASE_DASHBOARD_ENABLED = false;
+
 console.log("=================================");
 console.log("LOTRIX DASHBOARD CARREGADO");
 console.log("FIRESTORE: MULTIEMPRESA ISOLADO");
@@ -1853,6 +1856,29 @@ async function loadCollection(
 
         }
 
+
+        if (SUPABASE_DASHBOARD_ENABLED) {
+            try {
+                const { listarDocumentosSupabase } = await import("./supabase-documents.js");
+                const documentos = await listarDocumentosSupabase(collectionName);
+                const dadosSupabase = documentos
+                    .filter(({ data }) => String(data.idEmpresa) === String(idEmpresa))
+                    .map(({ id, data }) => ({ id, ...data }));
+
+                if (dadosSupabase.length > 0) {
+                    console.log(
+                        `✅ ${collectionName.toUpperCase()} DA EMPRESA ${idEmpresa} (SUPABASE):`,
+                        dadosSupabase.length
+                    );
+                    return dadosSupabase;
+                }
+            } catch (error) {
+                console.warn(
+                    `⚠️ SUPABASE INDISPONÍVEL PARA ${collectionName}; usando Firebase.`,
+                    error
+                );
+            }
+        }
 
         const consulta =
 

@@ -65,6 +65,42 @@ const LIMITES = Object.freeze({
 
 });
 
+// Leitura do Supabase fica desativada até aplicar/validar migrations e RLS.
+const SUPABASE_REPORTS_ENABLED = false;
+
+async function obterSnapshotRelatorio(colecao, empresaId, limite, consultaFirebase, filtro, ordenar) {
+    if (SUPABASE_REPORTS_ENABLED) {
+        try {
+            const { listarDocumentosSupabase } = await import("./supabase-documents.js");
+            let documentos = await listarDocumentosSupabase(colecao);
+            documentos = documentos.filter(({ data }) => filtro(data));
+            if (ordenar) documentos.sort(ordenar);
+            documentos = documentos.slice(0, limite);
+
+            if (documentos.length) {
+                const linhas = documentos.map(({ id, data }) => ({ id, data: () => data }));
+                return {
+                    size: linhas.length,
+                    empty: linhas.length === 0,
+                    forEach(callback) { linhas.forEach(callback); }
+                };
+            }
+        } catch (error) {
+            console.warn(`RELATÓRIOS: falha ao ler ${colecao} no Supabase; usando Firebase.`, error);
+        }
+    }
+
+    return getDocs(consultaFirebase);
+}
+
+function dataEmMilissegundos(valor) {
+    const data = valor && typeof valor.toDate === "function"
+        ? valor.toDate()
+        : valor instanceof Date ? valor : new Date(valor);
+    const horario = data.getTime();
+    return Number.isFinite(horario) ? horario : 0;
+}
+
 
 // =======================================
 // CONTROLE
@@ -368,10 +404,11 @@ async function carregarProducoes(
         );
 
 
-    const snapshot =
-        await getDocs(
-            consulta
-        );
+    const snapshot = await obterSnapshotRelatorio(
+        "producoes", empresaId, LIMITES.producoes, consulta,
+        data => String(data.idEmpresa) === empresaId && data.criadoEm != null,
+        (a, b) => dataEmMilissegundos(b.data.criadoEm) - dataEmMilissegundos(a.data.criadoEm)
+    );
 
 
     console.log(
@@ -737,10 +774,10 @@ async function carregarEtiquetas(
         );
 
 
-    const snapshot =
-        await getDocs(
-            consulta
-        );
+    const snapshot = await obterSnapshotRelatorio(
+        "etiquetas", empresaId, LIMITES.etiquetas, consulta,
+        data => String(data.idEmpresa) === empresaId
+    );
 
 
     console.log(
@@ -796,10 +833,10 @@ async function carregarProdutos(
         );
 
 
-    const snapshot =
-        await getDocs(
-            consulta
-        );
+    const snapshot = await obterSnapshotRelatorio(
+        "produtos", empresaId, LIMITES.produtos, consulta,
+        data => Array.isArray(data.empresas) && data.empresas.some(id => String(id) === empresaId)
+    );
 
 
     console.log(
@@ -855,10 +892,10 @@ async function carregarEstoque(
         );
 
 
-    const snapshot =
-        await getDocs(
-            consulta
-        );
+    const snapshot = await obterSnapshotRelatorio(
+        "estoque", empresaId, LIMITES.estoque, consulta,
+        data => String(data.idEmpresa) === empresaId
+    );
 
 
     console.log(

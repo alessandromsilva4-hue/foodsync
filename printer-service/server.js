@@ -12,6 +12,22 @@ const path = require("path");
 const PORT = 9100;
 const DISCOVERY_PORT = 9101;
 const DISCOVERY_MESSAGE = "LOTRIX_PRINTER_DISCOVER_V1";
+const FIRESTORE_COMMIT_URL = "https://firestore.googleapis.com/v1/projects/foodsync-43a7e/databases/(default)/documents:commit";
+const FIREBASE_API_KEY = "AIzaSyBT-DwnbqUYmnkL-u0QK6FO4-RLJC0fXA4";
+const SUPABASE_URL = (process.env.SUPABASE_URL || "").replace(/\/$/, "");
+const SUPABASE_SERVER_KEY = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+const SUPABASE_PRINTER_DIRECT_WRITE_ENABLED = process.env.SUPABASE_PRINTER_DIRECT_WRITE_ENABLED === "true";
+const FIREBASE_PRINTER_WRITE_ENABLED = process.env.PRINTER_FIREBASE_WRITE_ENABLED !== "false";
+const REGISTRATION_FILE = path.join(__dirname, "registration.json");
+let ultimaDescobertaTabletEm = 0;
+
+if (SUPABASE_PRINTER_DIRECT_WRITE_ENABLED &&
+    (!SUPABASE_URL || !SUPABASE_SERVER_KEY || SUPABASE_SERVER_KEY.startsWith("sb_publishable_"))) {
+    throw new Error("A escrita direta do Printer Service no Supabase exige SUPABASE_URL e uma chave privada.");
+}
+if (!FIREBASE_PRINTER_WRITE_ENABLED && !SUPABASE_PRINTER_DIRECT_WRITE_ENABLED) {
+    throw new Error("Não desative a escrita no Firebase sem ativar e configurar a escrita privada no Supabase.");
+}
 
 const PRINTER = "ZDesigner ZD220-203dpi ZPL";
 const USB_PORT = "USB005";
@@ -25,6 +41,32 @@ function obterIpsLocais() {
             !interfaceRede.internal
         )
         .map(interfaceRede => interfaceRede.address);
+}
+
+// Let the OS choose the interface for its IPv4 default route. Picking the
+// first adapter is unreliable on Windows machines with VPN/Hyper-V adapters.
+function obterIpDaRotaPrincipal() {
+    return new Promise(resolve => {
+        const socket = dgram.createSocket("udp4");
+        const finalizar = ip => {
+            try { socket.close(); } catch (_) {}
+            resolve(ip || null);
+        };
+
+        socket.once("error", () => finalizar(null));
+        socket.connect(53, "8.8.8.8", () => {
+            try {
+                const ip = socket.address().address;
+                if (!ip || ip === "0.0.0.0" || ip === "127.0.0.1" || ip.startsWith("169.254.")) {
+                    finalizar(null);
+                    return;
+                }
+                finalizar(ip);
+            } catch (_) {
+                finalizar(null);
+            }
+        });
+    });
 }
 
 function obterIpParaTablet(ipTablet) {
@@ -48,6 +90,102 @@ function obterIpParaTablet(ipTablet) {
     });
     const alternativa = interfaces.find(item => !item.address.startsWith("169.254."));
     return (mesmaSubrede || alternativa || interfaces[0])?.address || "127.0.0.1";
+}
+
+function lerConfiguracaoRegistro() {
+    try {
+        const dados = JSON.parse(fs.readFileSync(REGISTRATION_FILE, "utf8"));
+        if (
+            typeof dados.idEmpresa !== "string" ||
+            !/^[A-Za-z0-9_-]{1,128}$/.test(dados.idEmpresa) ||
+            typeof dados.token !== "string" || !/^[a-f0-9]{64}$/.test(dados.token)
+        ) return null;
+        return { idEmpresa: dados.idEmpresa, token: dados.token };
+    } catch (_) {
+        return null;
+    }
+}
+
+async function registrarIpNaNuvem(host) {
+    const credencial = lerConfiguracaoRegistro();
+    if (!credencial || !host || host === "127.0.0.1") return;
+
+    const lastSeenAt = new Date().toISOString();
+    const campos = {
+        idEmpresa: { stringValue: credencial.idEmpresa },
+        host: { stringValue: host },
+        port: { integerValue: String(PORT) },
+        lastSeenAt: { timestampValue: lastSeenAt }
+    };
+
+    if (FIREBASE_PRINTER_WRITE_ENABLED) {
+        try {
+            const baseDocumento = `projects/foodsync-43a7e/databases/(default)/documents`;
+            const documentoPrivado = `${baseDocumento}/printerServiceUpdates/${credencial.idEmpresa}/services/${credencial.token}`;
+            const documentoPublico = `${baseDocumento}/printerServiceStatus/${credencial.idEmpresa}`;
+            const resposta = await fetch(`${FIRESTORE_COMMIT_URL}?key=${FIREBASE_API_KEY}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ writes: [
+                    { update: { name: documentoPrivado, fields: campos } },
+                    { update: { name: documentoPublico, fields: campos } }
+                ] }),
+                signal: AbortSignal.timeout(10000)
+            });
+            if (!resposta.ok) {
+                console.warn(`Registro automático de IP no Firestore recusado (${resposta.status}).`);
+            }
+        } catch (erro) {
+            console.warn("Não foi possível publicar o IP do Printer Service no Firestore:", erro.message);
+        }
+    }
+
+    // Direct writes remain opt-in until the SQL schema and app reads are
+    // validated. Do not run alongside Firestore event mirroring because both
+    // paths can race on the same app_documents watermark.
+    if (!SUPABASE_PRINTER_DIRECT_WRITE_ENABLED) return;
+
+    try {
+        const base = `${SUPABASE_URL}/rest/v1/app_documents?on_conflict=collection_path%2Cdocument_id`;
+        const payload = {
+            idEmpresa: credencial.idEmpresa,
+            host,
+            port: PORT,
+            lastSeenAt
+        };
+        const registros = [
+            {
+                collection_path: "printerServiceStatus",
+                document_id: credencial.idEmpresa,
+                payload
+            },
+            {
+                collection_path: `printerServiceUpdates/${credencial.idEmpresa}/services`,
+                document_id: credencial.token,
+                payload
+            }
+        ];
+        const headers = {
+            apikey: SUPABASE_SERVER_KEY,
+            "Content-Type": "application/json",
+            Prefer: "resolution=merge-duplicates,return=minimal"
+        };
+        if (!SUPABASE_SERVER_KEY.startsWith("sb_secret_")) {
+            headers.Authorization = `Bearer ${SUPABASE_SERVER_KEY}`;
+        }
+
+        const resposta = await fetch(base, {
+            method: "POST",
+            headers,
+            body: JSON.stringify(registros),
+            signal: AbortSignal.timeout(10000)
+        });
+        if (!resposta.ok) {
+            console.warn(`Cópia de status para Supabase recusada (${resposta.status}).`);
+        }
+    } catch (erro) {
+        console.warn("Não foi possível copiar o IP do Printer Service para Supabase:", erro.message);
+    }
 }
 
 // =======================================
@@ -102,7 +240,24 @@ function encontrarMkcert() {
         // O mkcert também pode estar disponível no PATH.
     }
 
-    return "mkcert";
+    return process.env.MKCERT_PATH || "mkcert";
+}
+
+function gerarCertificado(ips, caminhoCert, caminhoChave) {
+    try {
+        execFileSync(
+            encontrarMkcert(),
+            ["-cert-file", caminhoCert, "-key-file", caminhoChave, "localhost", ...ips],
+            { cwd: __dirname, stdio: "pipe", windowsHide: true }
+        );
+    } catch (erro) {
+        const detalhe = [erro.stderr, erro.stdout]
+            .map(saida => Buffer.isBuffer(saida) ? saida.toString("utf8").trim() : String(saida || "").trim())
+            .filter(Boolean)
+            .join(" ");
+        throw new Error(`mkcert não conseguiu emitir o certificado para ${ips.join(", ")}. ` +
+            `${detalhe || erro.message}. Confirme que o mkcert e a CA usada pelo aplicativo estão instalados para esta conta do Windows.`);
+    }
 }
 
 function obterCertificadoLocal() {
@@ -114,21 +269,16 @@ function obterCertificadoLocal() {
     // esse certificado, portanto o tablet continua confiando na conexão.
     if (!certificadoCompativel && ipsLocais.length) {
         try {
-            execFileSync(
-                encontrarMkcert(),
-                [
-                    "-cert-file", "lotrix-local.pem",
-                    "-key-file", "lotrix-local-key.pem",
-                    "localhost",
-                    ...ipsLocais
-                ],
-                { cwd: __dirname, stdio: "ignore" }
-            );
+            gerarCertificado(ipsLocais, "lotrix-local.pem", "lotrix-local-key.pem");
 
             certificadoCompativel = encontrarCertificadoCompativel(ipsLocais);
         } catch (erro) {
-            console.error("Não foi possível renovar o certificado HTTPS:", erro.message);
+            throw new Error(`Não foi possível iniciar o HTTPS com o IP atual (${ipsLocais.join(", ")}): ${erro.message}`);
         }
+    }
+
+    if (ipsLocais.length && !certificadoCompativel) {
+        throw new Error(`Nenhum certificado HTTPS válido cobre os IPs locais: ${ipsLocais.join(", ")}.`);
     }
 
     return certificadoCompativel || {
@@ -155,11 +305,7 @@ function obterCertificadoParaIp(ip) {
         const caminhoCert = path.join(__dirname, `lotrix-${sufixo}.pem`);
         const caminhoChave = path.join(__dirname, `lotrix-${sufixo}-key.pem`);
 
-        execFileSync(
-            encontrarMkcert(),
-            ["-cert-file", caminhoCert, "-key-file", caminhoChave, "localhost", ip],
-            { cwd: __dirname, stdio: "ignore" }
-        );
+        gerarCertificado([ip], caminhoCert, caminhoChave);
 
         certificado = encontrarCertificadoCompativel([ip]);
     }
@@ -845,6 +991,8 @@ discoveryServer.on("message", (mensagem, remoto) => {
     if (mensagem.toString("utf8") !== DISCOVERY_MESSAGE) return;
 
     const host = obterIpParaTablet(remoto.address);
+    ultimaDescobertaTabletEm = Date.now();
+    void registrarIpNaNuvem(host);
 
     try {
         const certificado = obterCertificadoParaIp(host);
@@ -873,5 +1021,16 @@ discoveryServer.on("error", erro => {
 discoveryServer.bind(DISCOVERY_PORT, "0.0.0.0", () => {
     discoveryServer.setBroadcast(true);
     console.log(`Descoberta automática ativa na porta UDP ${DISCOVERY_PORT}.`);
+    const atualizarIpPublico = async () => {
+        // A descoberta do tablet usa a sub-rede exata. Dê prioridade a esse
+        // resultado por um curto período para o heartbeat não sobrescrevê-lo
+        // com a interface de VPN/Hyper-V/default route logo em seguida.
+        if (Date.now() - ultimaDescobertaTabletEm < 90000) return;
+        const ipAtual = await obterIpDaRotaPrincipal();
+        if (ipAtual) void registrarIpNaNuvem(ipAtual);
+    };
+
+    void atualizarIpPublico();
+    setInterval(atualizarIpPublico, 60000).unref();
 });
 

@@ -64,6 +64,8 @@ node_modules/
 
 # dotenv environment variables file
 .env
+.env.migration
+scripts/migration/generated/
 
 # dataconnect generated files
 .dataconnect
@@ -74,6 +76,7 @@ FoodSync-AI/serviceAccountKey.json
 # Printer Service - certificados e chaves privadas
 printer-service/*.pem
 printer-service/*-key.pem
+printer-service/registration.json
 
 # Backups locais de corre  o UTF-8
 *_backup*

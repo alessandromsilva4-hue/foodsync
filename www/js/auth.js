@@ -4,7 +4,7 @@
 // =======================================
 
 import "./design-system.js";
-import { auth, db } from "./firebase.js";
+import { app, auth, db, SUPABASE_AUTH_BRIDGE_ENABLED } from "./firebase.js";
 
 import {
     signInWithEmailAndPassword,
@@ -23,6 +23,32 @@ import {
     getDoc,
     setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+async function prepararTokenFirebaseParaSupabase(user) {
+    if (!SUPABASE_AUTH_BRIDGE_ENABLED || !user) return;
+
+    try {
+        const tokenAtual = await user.getIdTokenResult();
+        if (tokenAtual.claims.role === "authenticated") return;
+
+        const { getFunctions, httpsCallable } = await import(
+            "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js"
+        );
+        const prepararAcesso = httpsCallable(
+            getFunctions(app),
+            "prepararAcessoSupabase"
+        );
+        await prepararAcesso();
+
+        // The callable updates custom claims server-side. Force a new ID token
+        // so the Supabase client receives `role: authenticated` immediately.
+        await user.getIdToken(true);
+    } catch (error) {
+        // Keep Firebase login available during staged rollout if the bridge is
+        // temporarily unavailable; Supabase access remains unavailable then.
+        console.warn("Ponte temporária do Supabase indisponível:", error);
+    }
+}
 
 // =======================================
 // LOTRIX - NOTIFICAÇÕES PUSH
@@ -2147,6 +2173,8 @@ onAuthStateChanged(
 
         if (user) {
 
+            await prepararTokenFirebaseParaSupabase(user);
+
             console.log(
                 "UID ATUAL:",
                 user.uid
@@ -2949,4 +2977,3 @@ console.log(
 console.log(
     "======================================="
 );
-
