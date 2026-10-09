@@ -54,6 +54,19 @@ serverTimestamp
 
 let printerServiceDescoberto = null;
 
+function printerStatusFoiAtualizadoRecentemente(dados) {
+    const marca = dados?.lastSeenAt;
+    let atualizadoEm;
+    if (marca instanceof Date) atualizadoEm = marca.getTime();
+    else if (typeof marca?.toDate === "function") atualizadoEm = marca.toDate().getTime();
+    else if (typeof marca === "string") atualizadoEm = Date.parse(marca);
+    else if (typeof marca === "number") atualizadoEm = marca;
+
+    if (!Number.isFinite(atualizadoEm)) return false;
+    const idade = Date.now() - atualizadoEm;
+    return idade >= -30000 && idade <= 180000;
+}
+
 async function descobrirPrinterService() {
     const plugin = window.Capacitor?.Plugins?.LotrixPrinterDiscovery;
 
@@ -95,18 +108,19 @@ async function obterUrlPrinterService() {
         ? configuracao.data()
         : {};
     const statusAtual = statusPrinter.exists() ? statusPrinter.data() : {};
+    const statusRecente = printerStatusFoiAtualizadoRecentemente(statusAtual);
 
     // No Android, descubra o serviço na rede antes de usar a configuração
     // antiga. Assim, uma troca de IP do computador não exige intervenção.
     const encontrado = await descobrirPrinterService();
 
-    const host = String(encontrado?.host || statusAtual.host || dados.printerServiceIp || "")
+    const host = String(encontrado?.host || (statusRecente ? statusAtual.host : "") || dados.printerServiceIp || "")
         .trim()
         .replace(/^https?:\/\//i, "")
         .replace(/\/.*$/, "")
         .replace(/:\d+$/, "");
 
-    const porta = Number(encontrado?.porta || statusAtual.port || dados.printerServicePort || 9100);
+    const porta = Number(encontrado?.porta || (statusRecente ? statusAtual.port : "") || dados.printerServicePort || 9100);
 
     if (!host || !Number.isInteger(porta) || porta < 1 || porta > 65535) {
 

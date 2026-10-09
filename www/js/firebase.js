@@ -66,13 +66,6 @@ appId: "1:937632219130:web:1caf4150ddc8c969922e43"
 
 export const app = initializeApp(firebaseConfig);
 
-// Enable only after Firebase Auth is registered as a Supabase third-party
-// provider, its existing-user claims are prepared, and the bridge function is
-// deployed. This remains off so the current production login is unchanged.
-export const SUPABASE_AUTH_BRIDGE_ENABLED = false;
-
-
-
 // Autenticação
 
 

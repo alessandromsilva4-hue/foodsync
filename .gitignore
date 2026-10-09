@@ -64,8 +64,9 @@ node_modules/
 
 # dotenv environment variables file
 .env
-.env.migration
-scripts/migration/generated/
+
+# Local-only service credentials
+/private/
 
 # dataconnect generated files
 .dataconnect
@@ -119,8 +120,6 @@ ios/
 # Chave de assinatura Android - NUNCA enviar ao GitHub
 keystore/
 keystore/keystore.properties
-
-www/segredos/
 
 # Cache local usado ao compilar Android
 android/.gradle-cache/

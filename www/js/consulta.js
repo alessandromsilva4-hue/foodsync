@@ -4,10 +4,6 @@ import {
     getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// QR IDs and payloads matched exactly against the current Firebase snapshot.
-// Keep Firebase as fallback while the Supabase read path rolls out.
-const SUPABASE_PUBLIC_QR_ENABLED = true;
-
 const resultado = document.getElementById("dadosEtiqueta");
 
 function escaparHtml(valor) {
@@ -77,11 +73,6 @@ function exibirEtiqueta(etiqueta) {
     `;
 }
 
-async function buscarEtiquetaNoSupabase(codigo) {
-    const { obterDocumentoSupabase } = await import("./supabase-documents.js");
-    return obterDocumentoSupabase("consultasPublicas", codigo);
-}
-
 async function buscarEtiquetaNoFirebase(codigo) {
     const consulta = await getDoc(doc(db, "consultasPublicas", codigo));
     return consulta.exists() ? consulta.data() : null;
@@ -98,18 +89,7 @@ async function consultarEtiqueta() {
     }
 
     try {
-        let etiqueta = null;
-        if (SUPABASE_PUBLIC_QR_ENABLED) {
-            try {
-                etiqueta = await buscarEtiquetaNoSupabase(codigo);
-            } catch (supabaseError) {
-                console.warn("Consulta QR no Supabase falhou; usando Firebase durante a migração:", supabaseError);
-            }
-        }
-
-        // An absent row also falls back: until parity is confirmed, Firebase
-        // remains authoritative for QR links not yet present in the archive.
-        if (!etiqueta) etiqueta = await buscarEtiquetaNoFirebase(codigo);
+        const etiqueta = await buscarEtiquetaNoFirebase(codigo);
 
         if (!etiqueta) {
             resultado.innerHTML = "<div class=\"status alerta\">Etiqueta não encontrada.</div>";

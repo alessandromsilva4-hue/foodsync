@@ -14,20 +14,22 @@ const DISCOVERY_PORT = 9101;
 const DISCOVERY_MESSAGE = "LOTRIX_PRINTER_DISCOVER_V1";
 const FIRESTORE_COMMIT_URL = "https://firestore.googleapis.com/v1/projects/foodsync-43a7e/databases/(default)/documents:commit";
 const FIREBASE_API_KEY = "AIzaSyBT-DwnbqUYmnkL-u0QK6FO4-RLJC0fXA4";
-const SUPABASE_URL = (process.env.SUPABASE_URL || "").replace(/\/$/, "");
-const SUPABASE_SERVER_KEY = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-const SUPABASE_PRINTER_DIRECT_WRITE_ENABLED = process.env.SUPABASE_PRINTER_DIRECT_WRITE_ENABLED === "true";
-const FIREBASE_PRINTER_WRITE_ENABLED = process.env.PRINTER_FIREBASE_WRITE_ENABLED !== "false";
 const REGISTRATION_FILE = path.join(__dirname, "registration.json");
+const CERTIFICADO_RAIZ_LOTRIX = path.join(
+    __dirname,
+    "..",
+    "android",
+    "app",
+    "src",
+    "main",
+    "res",
+    "raw",
+    "mkcert_root_ca.pem"
+);
+const CERTIFICADO_CA_LOTRIX = new crypto.X509Certificate(
+    fs.readFileSync(CERTIFICADO_RAIZ_LOTRIX)
+);
 let ultimaDescobertaTabletEm = 0;
-
-if (SUPABASE_PRINTER_DIRECT_WRITE_ENABLED &&
-    (!SUPABASE_URL || !SUPABASE_SERVER_KEY || SUPABASE_SERVER_KEY.startsWith("sb_publishable_"))) {
-    throw new Error("A escrita direta do Printer Service no Supabase exige SUPABASE_URL e uma chave privada.");
-}
-if (!FIREBASE_PRINTER_WRITE_ENABLED && !SUPABASE_PRINTER_DIRECT_WRITE_ENABLED) {
-    throw new Error("Não desative a escrita no Firebase sem ativar e configurar a escrita privada no Supabase.");
-}
 
 const PRINTER = "ZDesigner ZD220-203dpi ZPL";
 const USB_PORT = "USB005";
@@ -118,73 +120,24 @@ async function registrarIpNaNuvem(host) {
         lastSeenAt: { timestampValue: lastSeenAt }
     };
 
-    if (FIREBASE_PRINTER_WRITE_ENABLED) {
-        try {
-            const baseDocumento = `projects/foodsync-43a7e/databases/(default)/documents`;
-            const documentoPrivado = `${baseDocumento}/printerServiceUpdates/${credencial.idEmpresa}/services/${credencial.token}`;
-            const documentoPublico = `${baseDocumento}/printerServiceStatus/${credencial.idEmpresa}`;
-            const resposta = await fetch(`${FIRESTORE_COMMIT_URL}?key=${FIREBASE_API_KEY}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ writes: [
-                    { update: { name: documentoPrivado, fields: campos } },
-                    { update: { name: documentoPublico, fields: campos } }
-                ] }),
-                signal: AbortSignal.timeout(10000)
-            });
-            if (!resposta.ok) {
-                console.warn(`Registro automático de IP no Firestore recusado (${resposta.status}).`);
-            }
-        } catch (erro) {
-            console.warn("Não foi possível publicar o IP do Printer Service no Firestore:", erro.message);
-        }
-    }
-
-    // Direct writes remain opt-in until the SQL schema and app reads are
-    // validated. Do not run alongside Firestore event mirroring because both
-    // paths can race on the same app_documents watermark.
-    if (!SUPABASE_PRINTER_DIRECT_WRITE_ENABLED) return;
-
     try {
-        const base = `${SUPABASE_URL}/rest/v1/app_documents?on_conflict=collection_path%2Cdocument_id`;
-        const payload = {
-            idEmpresa: credencial.idEmpresa,
-            host,
-            port: PORT,
-            lastSeenAt
-        };
-        const registros = [
-            {
-                collection_path: "printerServiceStatus",
-                document_id: credencial.idEmpresa,
-                payload
-            },
-            {
-                collection_path: `printerServiceUpdates/${credencial.idEmpresa}/services`,
-                document_id: credencial.token,
-                payload
-            }
-        ];
-        const headers = {
-            apikey: SUPABASE_SERVER_KEY,
-            "Content-Type": "application/json",
-            Prefer: "resolution=merge-duplicates,return=minimal"
-        };
-        if (!SUPABASE_SERVER_KEY.startsWith("sb_secret_")) {
-            headers.Authorization = `Bearer ${SUPABASE_SERVER_KEY}`;
-        }
-
-        const resposta = await fetch(base, {
+        const baseDocumento = `projects/foodsync-43a7e/databases/(default)/documents`;
+        const documentoPrivado = `${baseDocumento}/printerServiceUpdates/${credencial.idEmpresa}/services/${credencial.token}`;
+        const documentoPublico = `${baseDocumento}/printerServiceStatus/${credencial.idEmpresa}`;
+        const resposta = await fetch(`${FIRESTORE_COMMIT_URL}?key=${FIREBASE_API_KEY}`, {
             method: "POST",
-            headers,
-            body: JSON.stringify(registros),
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ writes: [
+                { update: { name: documentoPrivado, fields: campos } },
+                { update: { name: documentoPublico, fields: campos } }
+            ] }),
             signal: AbortSignal.timeout(10000)
         });
         if (!resposta.ok) {
-            console.warn(`Cópia de status para Supabase recusada (${resposta.status}).`);
+            console.warn(`Registro automático de IP no Firestore recusado (${resposta.status}).`);
         }
     } catch (erro) {
-        console.warn("Não foi possível copiar o IP do Printer Service para Supabase:", erro.message);
+        console.warn("Não foi possível publicar o IP do Printer Service no Firestore:", erro.message);
     }
 }
 
@@ -205,6 +158,10 @@ function encontrarCertificadoCompativel(ipsLocais) {
                 const certificado = new crypto.X509Certificate(
                     fs.readFileSync(caminhoCert)
                 );
+                if (certificado.issuer !== CERTIFICADO_CA_LOTRIX.subject ||
+                    !certificado.verify(CERTIFICADO_CA_LOTRIX.publicKey)) {
+                    return null;
+                }
 
                 const ip = ipsLocais.find(endereco =>
                     certificado.subjectAltName.includes(`IP Address:${endereco}`)
@@ -241,6 +198,37 @@ function encontrarMkcert() {
     }
 
     return process.env.MKCERT_PATH || "mkcert";
+}
+
+function configurarMkcertDoLotrix() {
+    const diretorios = [
+        process.env.LOTRIX_MKCERT_CAROOT,
+        process.env.CAROOT,
+        path.join(os.homedir(), "AppData", "Local", "mkcert"),
+        path.join(process.env.LOCALAPPDATA || "", "mkcert")
+    ].filter(Boolean);
+
+    for (const diretorio of [...new Set(diretorios)]) {
+        const arquivoRaiz = path.join(diretorio, "rootCA.pem");
+        const chaveRaiz = path.join(diretorio, "rootCA-key.pem");
+        if (!fs.existsSync(arquivoRaiz) || !fs.existsSync(chaveRaiz)) continue;
+
+        try {
+            const raizEncontrada = new crypto.X509Certificate(fs.readFileSync(arquivoRaiz));
+            if (raizEncontrada.fingerprint256 !== CERTIFICADO_CA_LOTRIX.fingerprint256) continue;
+
+            process.env.CAROOT = diretorio;
+            console.log("CA HTTPS Lotrix configurada para os certificados dinâmicos.");
+            return;
+        } catch (_) {
+            // Tente a próxima pasta candidata.
+        }
+    }
+
+    throw new Error(
+        "A chave privada da CA HTTPS do Lotrix não foi encontrada. " +
+        "Configure LOTRIX_MKCERT_CAROOT para a pasta que contém rootCA.pem e rootCA-key.pem."
+    );
 }
 
 function gerarCertificado(ips, caminhoCert, caminhoChave) {
@@ -316,6 +304,8 @@ function obterCertificadoParaIp(ip) {
 
     return certificado;
 }
+
+configurarMkcertDoLotrix();
 
 const certificadoLocal = obterCertificadoLocal();
 const SSL_KEY = fs.readFileSync(certificadoLocal.caminhoChave);
@@ -882,6 +872,21 @@ const server = https.createServer(
     }
 );
 
+let ipCertificadoHttpsAtivo = certificadoLocal.ip;
+
+function ativarCertificadoHttps(ip, forcarRecarga = false) {
+    const certificado = obterCertificadoParaIp(ip);
+    if (!forcarRecarga && ipCertificadoHttpsAtivo === ip) return certificado;
+
+    server.setSecureContext({
+        key: fs.readFileSync(certificado.caminhoChave),
+        cert: fs.readFileSync(certificado.caminhoCert)
+    });
+    ipCertificadoHttpsAtivo = ip;
+    console.log(`Certificado HTTPS ativo para ${ip}.`);
+    return certificado;
+}
+
 // =======================================
 // ERROS DO SERVIDOR
 // =======================================
@@ -992,14 +997,10 @@ discoveryServer.on("message", (mensagem, remoto) => {
 
     const host = obterIpParaTablet(remoto.address);
     ultimaDescobertaTabletEm = Date.now();
-    void registrarIpNaNuvem(host);
 
     try {
-        const certificado = obterCertificadoParaIp(host);
-        server.setSecureContext({
-            key: fs.readFileSync(certificado.caminhoChave),
-            cert: fs.readFileSync(certificado.caminhoCert)
-        });
+        ativarCertificadoHttps(host, true);
+        void registrarIpNaNuvem(host);
     } catch (erro) {
         console.error("Não foi possível atualizar o certificado HTTPS para a descoberta:", erro);
         return;
@@ -1027,7 +1028,14 @@ discoveryServer.bind(DISCOVERY_PORT, "0.0.0.0", () => {
         // com a interface de VPN/Hyper-V/default route logo em seguida.
         if (Date.now() - ultimaDescobertaTabletEm < 90000) return;
         const ipAtual = await obterIpDaRotaPrincipal();
-        if (ipAtual) void registrarIpNaNuvem(ipAtual);
+        if (!ipAtual) return;
+
+        try {
+            ativarCertificadoHttps(ipAtual);
+            void registrarIpNaNuvem(ipAtual);
+        } catch (erro) {
+            console.error(`Não foi possível atualizar HTTPS para o novo IP ${ipAtual}:`, erro.message);
+        }
     };
 
     void atualizarIpPublico();

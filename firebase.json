@@ -6,7 +6,9 @@
       "ignore": [
         "firebase.json",
         "**/.*",
-        "**/node_modules/**"
+        "**/node_modules/**",
+        "**/segredos/**",
+        "**/*.backup*"
       ]
     },
     {
@@ -15,7 +17,9 @@
       "ignore": [
         "firebase.json",
         "**/.*",
-        "**/node_modules/**"
+        "**/node_modules/**",
+        "**/segredos/**",
+        "**/*.backup*"
       ]
     }
   ],

@@ -28,6 +28,19 @@ import {
 
 let printerServiceDescoberto = null;
 
+function printerStatusFoiAtualizadoRecentemente(dados) {
+    const marca = dados?.lastSeenAt;
+    let atualizadoEm;
+    if (marca instanceof Date) atualizadoEm = marca.getTime();
+    else if (typeof marca?.toDate === "function") atualizadoEm = marca.toDate().getTime();
+    else if (typeof marca === "string") atualizadoEm = Date.parse(marca);
+    else if (typeof marca === "number") atualizadoEm = marca;
+
+    if (!Number.isFinite(atualizadoEm)) return false;
+    const idade = Date.now() - atualizadoEm;
+    return idade >= -30000 && idade <= 180000;
+}
+
 async function obterUrlPrinterService() {
     const plugin = window.Capacitor?.Plugins?.LotrixPrinterDiscovery;
     if (plugin?.discover) {
@@ -50,9 +63,10 @@ async function obterUrlPrinterService() {
     const configuracao = snapshot.exists() ? snapshot.data() : {};
     const statusSnapshot = await getDoc(doc(db, "printerServiceStatus", idEmpresa));
     const statusAtual = statusSnapshot.exists() ? statusSnapshot.data() : {};
-    const host = String(statusAtual.host || configuracao.printerServiceIp || "")
+    const statusRecente = printerStatusFoiAtualizadoRecentemente(statusAtual);
+    const host = String((statusRecente ? statusAtual.host : "") || configuracao.printerServiceIp || "")
         .trim().replace(/^https?:\/\//i, "").replace(/\/.*$/, "").replace(/:\d+$/, "");
-    const porta = Number(statusAtual.port || configuracao.printerServicePort || 9100);
+    const porta = Number((statusRecente ? statusAtual.port : "") || configuracao.printerServicePort || 9100);
     if (!host || !Number.isInteger(porta) || porta < 1 || porta > 65535) {
         throw new Error("Não foi possível localizar o Printer Service na rede. Verifique se ele está aberto no computador da impressora.");
     }
