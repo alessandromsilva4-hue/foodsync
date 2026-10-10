@@ -14,6 +14,9 @@ const DISCOVERY_PORT = 9101;
 const DISCOVERY_MESSAGE = "LOTRIX_PRINTER_DISCOVER_V1";
 const FIRESTORE_COMMIT_URL = "https://firestore.googleapis.com/v1/projects/foodsync-43a7e/databases/(default)/documents:commit";
 const FIREBASE_API_KEY = "AIzaSyBT-DwnbqUYmnkL-u0QK6FO4-RLJC0fXA4";
+const FIREBASE_SECURE_TOKEN_CERTS_URL = "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com";
+const FIRESTORE_DOCUMENTS_URL = "https://firestore.googleapis.com/v1/projects/foodsync-43a7e/databases/(default)/documents";
+const MAX_PRINT_BODY_BYTES = 1024 * 1024;
 const REGISTRATION_FILE = path.join(__dirname, "registration.json");
 const CERTIFICADO_RAIZ_LOTRIX = path.join(
     __dirname,
@@ -30,6 +33,8 @@ const CERTIFICADO_CA_LOTRIX = new crypto.X509Certificate(
     fs.readFileSync(CERTIFICADO_RAIZ_LOTRIX)
 );
 let ultimaDescobertaTabletEm = 0;
+let certificadosFirebase = null;
+let certificadosFirebaseExpiramEm = 0;
 
 const PRINTER = "ZDesigner ZD220-203dpi ZPL";
 const USB_PORT = "USB005";
@@ -139,6 +144,90 @@ async function registrarIpNaNuvem(host) {
     } catch (erro) {
         console.warn("Não foi possível publicar o IP do Printer Service no Firestore:", erro.message);
     }
+}
+
+async function obterCertificadosFirebase(ignorarCache = false) {
+    if (!ignorarCache && certificadosFirebase && Date.now() < certificadosFirebaseExpiramEm) {
+        return certificadosFirebase;
+    }
+
+    const resposta = await fetch(FIREBASE_SECURE_TOKEN_CERTS_URL, {
+        signal: AbortSignal.timeout(10000)
+    });
+    if (!resposta.ok) {
+        throw new Error(`Certificados do Firebase indisponíveis (${resposta.status})`);
+    }
+
+    const controleCache = resposta.headers.get("cache-control") || "";
+    const duracao = Number(controleCache.match(/max-age=(\d+)/i)?.[1]) || 3600;
+    certificadosFirebase = await resposta.json();
+    certificadosFirebaseExpiramEm = Date.now() + Math.max(duracao, 60) * 1000;
+    return certificadosFirebase;
+}
+
+async function validarUsuarioParaImpressao(idToken, idEmpresaEsperada) {
+    const partes = String(idToken).split(".");
+    if (partes.length !== 3) return { autorizado: false, status: 401 };
+
+    let cabecalho;
+    let claims;
+    try {
+        cabecalho = JSON.parse(Buffer.from(partes[0], "base64url").toString("utf8"));
+        claims = JSON.parse(Buffer.from(partes[1], "base64url").toString("utf8"));
+    } catch (_) {
+        return { autorizado: false, status: 401 };
+    }
+
+    const agora = Math.floor(Date.now() / 1000);
+    if (
+        cabecalho.alg !== "RS256" ||
+        typeof cabecalho.kid !== "string" ||
+        claims.aud !== "foodsync-43a7e" ||
+        claims.iss !== "https://securetoken.google.com/foodsync-43a7e" ||
+        typeof claims.sub !== "string" ||
+        claims.sub.length < 1 ||
+        claims.sub.length > 128 ||
+        !Number.isFinite(claims.exp) || claims.exp <= agora ||
+        !Number.isFinite(claims.iat) || claims.iat > agora + 300
+    ) {
+        return { autorizado: false, status: 401 };
+    }
+
+    const certificados = await obterCertificadosFirebase();
+    let certificado = certificados[cabecalho.kid];
+    if (!certificado) {
+        certificado = (await obterCertificadosFirebase(true))[cabecalho.kid];
+    }
+    if (!certificado) return { autorizado: false, status: 401 };
+
+    const assinaturaValida = crypto.verify(
+        "RSA-SHA256",
+        Buffer.from(`${partes[0]}.${partes[1]}`),
+        certificado,
+        Buffer.from(partes[2], "base64url")
+    );
+    if (!assinaturaValida) return { autorizado: false, status: 401 };
+
+    const respostaPerfil = await fetch(
+        `${FIRESTORE_DOCUMENTS_URL}/usuarios/${encodeURIComponent(claims.sub)}`,
+        {
+            headers: { Authorization: `Bearer ${idToken}` },
+            signal: AbortSignal.timeout(10000)
+        }
+    );
+
+    if (respostaPerfil.status === 401 || respostaPerfil.status === 403 || respostaPerfil.status === 404) {
+        return { autorizado: false, status: 403 };
+    }
+    if (!respostaPerfil.ok) {
+        throw new Error(`Perfil do usuário indisponível (${respostaPerfil.status})`);
+    }
+
+    const perfil = await respostaPerfil.json();
+    const campos = perfil.fields || {};
+    const ativo = campos.status?.stringValue === "ativo";
+    const mesmaEmpresa = campos.idEmpresa?.stringValue === idEmpresaEsperada;
+    return { autorizado: ativo && mesmaEmpresa, status: 403 };
 }
 
 // =======================================
@@ -683,7 +772,7 @@ const server = https.createServer(
 
             res.setHeader(
                 "Access-Control-Allow-Headers",
-                "Content-Type"
+                "Content-Type, Authorization"
             );
         }
 
@@ -751,7 +840,25 @@ const server = https.createServer(
             return;
         }
 
+        const registroPrinter = lerConfiguracaoRegistro();
+        if (!registroPrinter) {
+            res.writeHead(403, { "Content-Type": "text/plain; charset=utf-8" });
+            res.end("Vincule este computador à empresa antes de imprimir.");
+            return;
+        }
+
+        const cabecalhoAutorizacao = req.headers.authorization || "";
+        const correspondenciaToken = cabecalhoAutorizacao.match(/^Bearer\s+([A-Za-z0-9._~-]+)$/);
+        if (!correspondenciaToken) {
+            res.writeHead(401, { "Content-Type": "text/plain; charset=utf-8" });
+            res.end("Autenticação necessária para imprimir.");
+            return;
+        }
+        const idToken = correspondenciaToken[1];
+
         const bodyChunks = [];
+        let totalBytes = 0;
+        let bodyTooLarge = false;
 
         // =======================================
         // RECEBER ZPL
@@ -760,6 +867,15 @@ const server = https.createServer(
         req.on(
             "data",
             chunk => {
+
+                if (bodyTooLarge) return;
+                totalBytes += chunk.length;
+                if (totalBytes > MAX_PRINT_BODY_BYTES) {
+                    bodyTooLarge = true;
+                    res.writeHead(413, { "Content-Type": "text/plain; charset=utf-8" });
+                    res.end("ZPL excede o limite permitido.");
+                    return;
+                }
 
                 // Mantenha os bytes até o fim da requisição. Converter cada
                 // chunk separadamente pode corromper um caractere UTF-8 que
@@ -775,7 +891,26 @@ const server = https.createServer(
 
         req.on(
             "end",
-            () => {
+            async () => {
+
+                if (bodyTooLarge) return;
+
+                try {
+                    const autorizacao = await validarUsuarioParaImpressao(
+                        idToken,
+                        registroPrinter.idEmpresa
+                    );
+                    if (!autorizacao.autorizado) {
+                        res.writeHead(autorizacao.status, { "Content-Type": "text/plain; charset=utf-8" });
+                        res.end("Usuário sem permissão para imprimir nesta empresa.");
+                        return;
+                    }
+                } catch (erro) {
+                    console.error("Falha ao validar usuário para impressão:", erro.message);
+                    res.writeHead(503, { "Content-Type": "text/plain; charset=utf-8" });
+                    res.end("Não foi possível validar a sessão com o Firebase.");
+                    return;
+                }
 
                 const body = Buffer
                     .concat(bodyChunks)

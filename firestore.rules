@@ -220,12 +220,21 @@ service cloud.firestore {
 
     match /consultasPublicas/{codigoEtiqueta} {
 
-      allow read: if true;
+      // O QR consulta um código único por documento; a listagem pública é bloqueada.
+      allow get: if true;
+      allow list: if false;
 
       allow create: if
         usuarioAtivo()
         &&
-        request.resource.data.idEmpresa == idEmpresaUsuario();
+        request.resource.data.idEmpresa == idEmpresaUsuario()
+        &&
+        request.resource.data.codigo == codigoEtiqueta
+        &&
+        request.resource.data.keys().hasOnly([
+          "codigo", "idEmpresa", "produto", "temperatura", "dataProducao",
+          "validade", "lote", "responsavel", "criadoEm"
+        ]);
 
       allow update, delete: if false;
     }

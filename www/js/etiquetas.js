@@ -34,6 +34,7 @@ console.log("=======================================");
 // =======================================
 
 import { db } from "./firebase.js";
+import { obterCabecalhosPrinterService } from "./printer-auth.js";
 
 import {
     collection,
@@ -458,12 +459,12 @@ function formatarCNPJ(cnpj) {
 // =======================================
 
 function gerarCodigoEtiqueta() {
-
-    return (
-        "LOT-" +
-        Date.now()
-    );
-
+    const aleatorios = new Uint8Array(16);
+    crypto.getRandomValues(aleatorios);
+    const codigo = Array.from(aleatorios, byte =>
+        byte.toString(16).padStart(2, "0")
+    ).join("");
+    return `LOT-${codigo}`;
 }
 
 // =======================================
@@ -2197,12 +2198,7 @@ async function imprimirEtiquetaDireto(
                     method:
                         "POST",
 
-                    headers: {
-
-                        "Content-Type":
-                            "text/plain"
-
-                    },
+                    headers: await obterCabecalhosPrinterService(),
 
                     body:
                         zplFinal
@@ -2638,15 +2634,6 @@ await setDoc(
 
         responsavel:
             dadosEtiqueta.responsavel || "",
-
-        quantidade:
-            dadosEtiqueta.quantidade || "",
-
-        unidade:
-            dadosEtiqueta.unidade || "",
-
-        observacao:
-            dadosEtiqueta.observacao || "",
 
         criadoEm:
             serverTimestamp()
@@ -4726,12 +4713,7 @@ window.testarImpressoraLotrix =
                         method:
                             "POST",
 
-                        headers: {
-
-                            "Content-Type":
-                                "text/plain"
-
-                        },
+                        headers: await obterCabecalhosPrinterService(),
 
                         body:
                             zpl

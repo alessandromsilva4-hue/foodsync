@@ -7,6 +7,7 @@
 console.log("PRODUCAO.JS V7 CARREGADO");
 
 import { db } from "./firebase.js";
+import { obterCabecalhosPrinterService } from "./printer-auth.js";
 
 import {
     collection,
@@ -1394,12 +1395,7 @@ async function imprimirEtiquetasDireto(
                     method:
                         "POST",
 
-                    headers: {
-
-                        "Content-Type":
-                            "text/plain"
-
-                    },
+                    headers: await obterCabecalhosPrinterService(),
 
                     body:
                         zplFinal
@@ -2763,12 +2759,7 @@ window.testarImpressoraLotrix =
                         method:
                             "POST",
 
-                        headers: {
-
-                            "Content-Type":
-                                "text/plain"
-
-                        },
+                        headers: await obterCabecalhosPrinterService(),
 
                         body:
                             zpl
