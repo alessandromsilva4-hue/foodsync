@@ -61,6 +61,15 @@ document.getElementById("listaChamados");
 
 let usuarioAtual = null;
 
+function escaparHtml(valor) {
+    return String(valor ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
 // =======================================
 // ASSISTENTE DO SAC
 // =======================================
@@ -263,22 +272,14 @@ tabela.innerHTML += `
 
 <td>
 
-${data}
+${escaparHtml(data)}
 
 </td>
 
 
 <td>
 
-${chamado.tipo || "-"}
-
-</td>
-
-
-
-<td>
-
-${chamado.assunto || "-"}
+${escaparHtml(chamado.tipo || "-")}
 
 </td>
 
@@ -286,7 +287,7 @@ ${chamado.assunto || "-"}
 
 <td>
 
-${chamado.prioridade || "-"}
+${escaparHtml(chamado.assunto || "-")}
 
 </td>
 
@@ -294,7 +295,7 @@ ${chamado.prioridade || "-"}
 
 <td>
 
-${status}
+${escaparHtml(chamado.prioridade || "-")}
 
 </td>
 
@@ -302,8 +303,16 @@ ${status}
 
 <td>
 
-${chamado.resposta || 
-"Aguardando atendimento"}
+${escaparHtml(status)}
+
+</td>
+
+
+
+<td>
+
+${escaparHtml(chamado.resposta ||
+"Aguardando atendimento")}
 
 </td>
 
@@ -570,6 +579,10 @@ await addDoc(
 collection(db,"auditoria"),
 
 {
+
+idEmpresa:
+
+JSON.parse(localStorage.getItem("usuarioFoodSync"))?.idEmpresa || "",
 
 
 usuario:

@@ -654,6 +654,9 @@ window.salvarAtendimentoSAC = async function () {
 
                 {
 
+                    idEmpresa:
+                        JSON.parse(localStorage.getItem("usuarioFoodSync"))?.idEmpresa || "",
+
                     usuario: "admin",
 
                     modulo: "SAC",

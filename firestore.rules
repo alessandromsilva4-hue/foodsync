@@ -38,6 +38,15 @@ service cloud.firestore {
       return perfilUsuario().data.idEmpresa;
     }
 
+    function temPermissao(chave) {
+      return administrador()
+        || (
+          usuarioAtivo()
+          && perfilUsuario().data.permissoes is map
+          && perfilUsuario().data.permissoes[chave] == true
+        );
+    }
+
     function tokenPrinterService(empresaId) {
       return get(
         /databases/$(database)/documents/printerServicePairings/$(empresaId)
@@ -69,12 +78,12 @@ service cloud.firestore {
         idEmpresaUsuario() in resource.data.empresas;
 
       allow create: if
-        usuarioAtivo()
+        temPermissao("produtos")
         &&
         idEmpresaUsuario() in request.resource.data.empresas;
 
       allow update: if
-        usuarioAtivo()
+        temPermissao("produtos")
         &&
         idEmpresaUsuario() in resource.data.empresas
         &&
@@ -99,12 +108,12 @@ service cloud.firestore {
         resource.data.idEmpresa == idEmpresaUsuario();
 
       allow create: if
-        usuarioAtivo()
+        (temPermissao("estoque") || temPermissao("producao"))
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
 
       allow update: if
-        usuarioAtivo()
+        (temPermissao("estoque") || temPermissao("producao"))
         &&
         resource.data.idEmpresa == idEmpresaUsuario()
         &&
@@ -129,12 +138,12 @@ service cloud.firestore {
         resource.data.idEmpresa == idEmpresaUsuario();
 
       allow create: if
-        usuarioAtivo()
+        temPermissao("producao")
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
 
       allow update: if
-        usuarioAtivo()
+        temPermissao("producao")
         &&
         resource.data.idEmpresa == idEmpresaUsuario()
         &&
@@ -159,12 +168,12 @@ service cloud.firestore {
         resource.data.idEmpresa == idEmpresaUsuario();
 
       allow create: if
-        usuarioAtivo()
+        (temPermissao("estoque") || temPermissao("producao"))
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
 
       allow update: if
-        usuarioAtivo()
+        (temPermissao("estoque") || temPermissao("producao"))
         &&
         resource.data.idEmpresa == idEmpresaUsuario()
         &&
@@ -192,13 +201,13 @@ service cloud.firestore {
 
       // Criação somente dentro da própria empresa.
       allow create: if
-        usuarioAtivo()
+        (temPermissao("etiquetas") || temPermissao("producao"))
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
 
       // Alteração somente dentro da própria empresa.
       allow update: if
-        usuarioAtivo()
+        (temPermissao("etiquetas") || temPermissao("producao"))
         &&
         resource.data.idEmpresa == idEmpresaUsuario()
         &&
@@ -279,10 +288,15 @@ service cloud.firestore {
       allow read: if
         usuarioAtivo()
         &&
-        resource.data.idEmpresa == idEmpresaUsuario();
+        resource.data.idEmpresa == idEmpresaUsuario()
+        &&
+        (
+          administrador()
+          || resource.data.usuarioId == request.auth.uid
+        );
 
       allow create: if
-        usuarioAtivo()
+        temPermissao("sac")
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario()
         &&
@@ -439,14 +453,14 @@ service cloud.firestore {
         empresaId == idEmpresaUsuario();
 
       allow create: if
-        usuarioAtivo()
+        (administrador() || temPermissao("configuracoes"))
         &&
         empresaId == idEmpresaUsuario()
         &&
         request.resource.data.idEmpresa == idEmpresaUsuario();
 
       allow update: if
-        usuarioAtivo()
+        (administrador() || temPermissao("configuracoes"))
         && empresaId == idEmpresaUsuario()
         && resource.data.idEmpresa == idEmpresaUsuario()
         && request.resource.data.idEmpresa == idEmpresaUsuario();
