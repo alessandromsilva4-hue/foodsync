@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="./css/dark-theme.css">
 <link rel="stylesheet" href="css/button-interaction-fix.css">
 <link rel="stylesheet" href="css/lotrix-final-fix.css">
+<link rel="stylesheet" href="css/configuracoes-page.css">
 
 <style>
 
@@ -511,10 +512,15 @@
     </h2>
 
 
-    <form id="configForm">
+    <form id="configForm" class="config-form">
 
 
         <div class="form-grid">
+
+            <div class="settings-section-heading">
+                <h3>Preferências do sistema</h3>
+                <p>Personalize a aparência e os padrões usados pelo Lotrix.</p>
+            </div>
 
 
             <!-- NOME DO SISTEMA -->
@@ -620,7 +626,7 @@
             </div>
 
 
-            <!-- IMPRESSORA -->
+            <!-- IMPRESSORA PADRÃO -->
 
             <div class="input-group">
 
@@ -632,63 +638,6 @@
                     type="text"
                     id="impressora"
                     placeholder="Nome da impressora">
-
-            </div>
-
-
-            <!-- PRINTER SERVICE -->
-
-            <div class="input-group">
-
-                <label>Atualização automática do IP</label>
-                <p class="input-help">
-                    Vincule este computador uma vez. O Printer Service atualizará o IP na nuvem quando a rede mudar, e o app e o site receberão o endereço novo.
-                </p>
-                <button type="button" id="vincularPrinterService">
-                    Vincular computador da impressora
-                </button>
-
-            </div>
-
-            <div class="input-group">
-
-                <label for="printerServiceIp">
-                    Computador do Lotrix Printer Service
-                </label>
-
-                <input
-                    type="text"
-                    id="printerServiceIp"
-                    inputmode="decimal"
-                    autocomplete="off"
-                    placeholder="Ex.: 192.168.0.97"
-                    aria-describedby="printerServiceIpHelp">
-
-                <small id="printerServiceIpHelp" class="input-help">
-                    No app Android atualizado, o IP é detectado automaticamente. No navegador, informe o IPv4 do computador que executa o Printer Service.
-                </small>
-
-            </div>
-
-
-            <div class="input-group">
-
-                <label for="printerServicePort">
-                    Porta do Printer Service
-                </label>
-
-                <input
-                    type="number"
-                    id="printerServicePort"
-                    value="9100"
-                    min="1"
-                    max="65535">
-
-                <small class="input-help">
-
-                    O serviço padrão utiliza a porta 9100.
-
-                </small>
 
             </div>
 
@@ -719,26 +668,53 @@
         </div>
 
 
-        <button
-            type="button"
-            id="testarPrinterService">
+        <section class="printer-settings-card" aria-labelledby="printerSettingsTitle">
+            <div class="printer-settings-heading">
+                <span class="printer-settings-icon" aria-hidden="true">⌁</span>
+                <div>
+                    <h3 id="printerSettingsTitle">Impressora e conexão</h3>
+                    <p>O serviço publica o endereço atual do computador para o app e o site.</p>
+                </div>
+            </div>
 
-            🔄 Testar conexão com o Printer Service
+            <div class="printer-settings-grid">
+                <div class="input-group printer-settings-full">
+                    <label for="printerServiceIp">Computador do Lotrix Printer Service</label>
+                    <input
+                        type="text"
+                        id="printerServiceIp"
+                        inputmode="decimal"
+                        autocomplete="off"
+                        placeholder="Ex.: 192.168.0.13"
+                        aria-describedby="printerServiceIpHelp">
+                    <small id="printerServiceIpHelp" class="input-help">
+                        No Android, o endereço é detectado automaticamente. No navegador, este campo mostra o IPv4 publicado pelo serviço.
+                    </small>
+                </div>
 
-        </button>
+                <div class="input-group">
+                    <label for="printerServicePort">Porta do Printer Service</label>
+                    <input type="number" id="printerServicePort" value="9100" min="1" max="65535">
+                    <small class="input-help">Porta padrão: 9100.</small>
+                </div>
+            </div>
 
+            <div class="printer-settings-actions">
+                <button type="button" id="vincularPrinterService" class="printer-secondary-button">
+                    Vincular computador da impressora
+                </button>
+                <button type="button" id="testarPrinterService">
+                    Testar conexão
+                </button>
+            </div>
 
-        <p
-            id="statusPrinterService"
-            aria-live="polite">
-        </p>
+            <p id="statusPrinterService" class="printer-status" role="status" aria-live="polite" hidden></p>
+        </section>
 
-
-        <button type="submit">
-
-            💾 Salvar Configurações
-
-        </button>
+        <div class="config-save-row">
+            <button type="submit">Salvar configurações</button>
+            <p>As alterações são salvas nas configurações da empresa.</p>
+        </div>
 
 
     </form>

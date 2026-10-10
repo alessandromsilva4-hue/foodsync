@@ -1,0 +1,223 @@
+.config-form {
+    display: grid;
+    gap: 24px;
+}
+
+.config-form .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 20px 24px;
+}
+
+.settings-section-heading {
+    grid-column: 1 / -1;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.settings-section-heading h3,
+.printer-settings-heading h3 {
+    margin: 0;
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.settings-section-heading p,
+.printer-settings-heading p {
+    margin: 5px 0 0;
+    color: var(--text-light);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.printer-settings-card {
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface-subtle);
+}
+
+.printer-settings-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.printer-settings-icon {
+    display: grid;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    place-items: center;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    color: var(--primary);
+    font-size: 27px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.printer-settings-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(180px, .7fr);
+    gap: 18px 22px;
+}
+
+.printer-settings-full {
+    grid-column: 1 / -1;
+}
+
+.printer-settings-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.config-form .printer-settings-actions button,
+.config-save-row button {
+    width: auto;
+    min-height: 44px;
+    margin: 0;
+    padding: 11px 18px;
+    border: 1px solid var(--primary);
+    border-radius: 10px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 650;
+    transition: background-color .18s ease, border-color .18s ease, transform .18s ease;
+}
+
+.config-form .printer-settings-actions button:hover,
+.config-save-row button:hover {
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+.config-form .printer-settings-actions button:active,
+.config-save-row button:active {
+    transform: translateY(1px);
+}
+
+.config-form .printer-settings-actions .printer-secondary-button {
+    background: var(--surface);
+    color: var(--primary);
+}
+
+.config-form .printer-settings-actions .printer-secondary-button:hover {
+    background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+}
+
+.config-form button:focus-visible,
+.config-save-row button:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--primary) 35%, transparent);
+    outline-offset: 2px;
+}
+
+.printer-status {
+    margin: 14px 0 0;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text-light);
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.printer-status[hidden] {
+    display: none;
+}
+
+.printer-status::before {
+    display: inline-block;
+    margin-right: 8px;
+    font-weight: 800;
+}
+
+.printer-status.is-success {
+    border-color: color-mix(in srgb, var(--success) 30%, var(--border));
+    background: color-mix(in srgb, var(--success) 7%, var(--surface));
+    color: var(--success);
+}
+
+.printer-status.is-success::before {
+    content: "✓";
+}
+
+.printer-status.is-error {
+    border-color: color-mix(in srgb, var(--danger) 28%, var(--border));
+    background: color-mix(in srgb, var(--danger) 6%, var(--surface));
+    color: var(--danger);
+}
+
+.printer-status.is-error::before {
+    content: "!";
+}
+
+.printer-status.is-loading,
+.printer-status.is-info {
+    border-color: color-mix(in srgb, var(--primary) 26%, var(--border));
+    background: color-mix(in srgb, var(--primary) 6%, var(--surface));
+    color: var(--text);
+}
+
+.printer-status.is-loading::before,
+.printer-status.is-info::before {
+    content: "•";
+    color: var(--primary);
+}
+
+.config-save-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+}
+
+.config-save-row p {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 12px;
+}
+
+@media (max-width: 700px) {
+    .config-form {
+        gap: 20px;
+    }
+
+    .config-form .form-grid,
+    .printer-settings-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .printer-settings-full {
+        grid-column: auto;
+    }
+
+    .printer-settings-card {
+        padding: 16px;
+    }
+
+    .printer-settings-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .config-form .printer-settings-actions button,
+    .config-save-row button {
+        width: 100%;
+    }
+
+    .config-save-row {
+        align-items: stretch;
+    }
+}

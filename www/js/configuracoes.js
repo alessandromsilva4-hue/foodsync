@@ -209,7 +209,8 @@ async function obterUrlPrinterService() {
 
 function mostrarStatusPrinter(
     mensagem,
-    erro = false
+    erro = false,
+    tipo = ""
 ) {
 
     const status =
@@ -218,11 +219,9 @@ function mostrarStatusPrinter(
     if (status) {
 
         status.textContent = mensagem;
-
-        status.style.color =
-            erro
-                ? "#b42318"
-                : "#167a3d";
+        status.hidden = !mensagem;
+        status.className = "printer-status";
+        status.classList.add(`is-${tipo || (erro ? "error" : "success")}`);
 
     }
 
@@ -476,15 +475,40 @@ document.addEventListener(
                     if (!statusPrinterFoiAtualizadoRecentemente(dados)) return;
                     const campoHost = campo("printerServiceIp");
                     const campoPorta = campo("printerServicePort");
-                    if (campoHost && dados.host && document.activeElement !== campoHost) {
+                    const hostAnterior = normalizarHost(campoHost?.value);
+                    const portaAnterior = Number(campoPorta?.value || 9100);
+                    const ipPodeSerAtualizado = campoHost && dados.host && document.activeElement !== campoHost;
+                    if (ipPodeSerAtualizado) {
                         campoHost.value = dados.host;
                     }
                     if (campoPorta && dados.port) campoPorta.value = String(dados.port);
+                    const hostAtual = normalizarHost(campoHost?.value) || hostAnterior;
+                    const portaAtual = Number(campoPorta?.value) || portaAnterior;
+                    const enderecoFoiAtualizado =
+                        (ipPodeSerAtualizado && hostAtual !== hostAnterior) ||
+                        (campoPorta && dados.port && portaAtual !== portaAnterior);
+                    if (hostAtual && enderecoFoiAtualizado) {
+                        mostrarStatusPrinter(
+                            `Endereço atualizado automaticamente: ${hostAtual}:${portaAtual}. Teste a conexão para confirmar o acesso.`,
+                            false,
+                            "info"
+                        );
+                    }
                 });
             }
             return obterUrlPrinterService();
         }).then(url => {
-            if (url) mostrarStatusPrinter("Printer Service encontrado na rede.");
+            if (url) {
+                const host = normalizarHost(campo("printerServiceIp")?.value);
+                const porta = obterPorta();
+                mostrarStatusPrinter(
+                    host
+                        ? `Endereço do serviço detectado: ${host}:${porta}. Teste a conexão para confirmar o acesso.`
+                        : "Endereço do Printer Service detectado. Teste a conexão para confirmar o acesso.",
+                    false,
+                    "info"
+                );
+            }
         }).catch(() => {
             // A descoberta é opcional enquanto o serviço estiver desligado.
         });
@@ -566,31 +590,25 @@ document.addEventListener(
                 "click",
                 async () => {
 
-                    const url =
-                        await obterUrlPrinterService();
-
-
-                    if (!url) {
-
-                        mostrarStatusPrinter(
-                            "Não foi possível localizar o Printer Service na rede.",
-                            true
-                        );
-
-                        return;
-                    }
-
-
                     mostrarStatusPrinter(
-                        "Testando conexão..."
+                        "Testando conexão...",
+                        false,
+                        "loading"
                     );
-
 
                     botaoTeste.disabled =
                         true;
 
-
                     try {
+
+                        const url = await obterUrlPrinterService();
+                        if (!url) {
+                            mostrarStatusPrinter(
+                                "Não foi possível localizar o Printer Service. Confira se o serviço está ligado e se o computador está na mesma rede.",
+                                true
+                            );
+                            return;
+                        }
 
                         const resposta =
                             await fetch(url);
@@ -605,9 +623,8 @@ document.addEventListener(
                         }
 
 
-                        mostrarStatusPrinter(
-                            "Printer Service conectado."
-                        );
+                        const endereco = new URL(url);
+                        mostrarStatusPrinter(`Conectado ao Printer Service em ${endereco.hostname}:${endereco.port}.`);
 
 
                     } catch (error) {
@@ -619,7 +636,7 @@ document.addEventListener(
 
 
                         mostrarStatusPrinter(
-                            "Não foi possível conectar. Verifique IP, porta, rede e certificado HTTPS.",
+                            "Não foi possível conectar. Confira o IP e a porta, se o serviço está aberto e se o certificado HTTPS é confiável no dispositivo.",
                             true
                         );
 
